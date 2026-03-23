@@ -1,3 +1,7 @@
-# ERP SAF
+# ERP SAF — Sistema de Gestão
 
-Sistema de gestão interna da SAF com 8 módulos: Funcionários, Financeiro, Pedidos de Compra, Atletas, Investidores, Metas, Relatórios Gerenciais e Agenda de Jogos.
+## Módulo 1: Funcionários e Comissão Técnica
+
+### Pré-requisitos
+- Node.js 18+
+- PostgreSQL 14+
