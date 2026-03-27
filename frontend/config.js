@@ -15,7 +15,7 @@ window.ERP_CONFIG = {
   API_URL: "https://SEU-BACKEND.up.railway.app",
 
   // Nome da SAF (aparece na tela de login e no topo do sistema)
-  NOME_SAF: "SAF — Sistema de Gestão",
+  NOME_SAV: "SAF — Sistema de Gestão",
 
   // Versão do sistema
   VERSAO: "1.0.0",
