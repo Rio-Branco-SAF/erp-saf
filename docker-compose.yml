@@ -1,0 +1,73 @@
+# ============================================================
+# ERP SAF — Docker Compose
+# Para rodar tudo localmente com um único comando:
+#   docker compose up --build
+# ============================================================
+version: "3.9"
+
+services:
+  # ── Banco de dados PostgreSQL ──
+  db:
+    image: postgres:16-alpine
+    container_name: erp_saf_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       erp_saf
+      POSTGRES_USER:     postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-erpsaf2026}
+    volumes:
+      - db_data:/var/lib/postgresql/data          # dados persistentes
+      - ./backend/db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./backend/db/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend API (Node.js/Express) ──
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: erp_saf_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV:      production
+      PORT:          3001
+      DB_HOST:       db
+      DB_PORT:       5432
+      DB_NAME:       erp_saf
+      DB_USER:       postgres
+      DB_PASSWORD:   ${DB_PASSWORD:-erpsaf2026}
+      JWT_SECRET:    ${JWT_SECRET:-TROQUE_ESTA_CHAVE_POR_ALGO_MUITO_SEGURO_32chars}
+      JWT_EXPIRES_IN: 8h
+      FRONTEND_URL:  ${FRONTEND_URL:-http://localhost:5173}
+    ports:
+      - "3001:3001"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3001/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Frontend (servidor estático Nginx) ──
+  frontend:
+    image: nginx:alpine
+    container_name: erp_saf_frontend
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
