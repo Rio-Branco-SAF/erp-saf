@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>SAF Pusher</title>
+<style>body{font-family:monospace;background:#111;color:#eee;padding:20px;}
+#log{max-height:500px;overflow-y:auto;border:1px solid #333;padding:10px;}
+.ok{color:#4ec9b0}.err{color:#f44}.info{color:#9cf}</style></head>
+<body>
+<h2>ERP SAF GitHub Pusher</h2>
+<input type="file" id="fi" accept=".json">
+<button onclick="startPush()">Push to GitHub</button>
+<div id="prog">Select files_payload.json then click Push</div>
+<div id="log"></div>
+<script>
+const TOKEN="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";
+const OWNER="Rio-Branco-SAF",REPO="erp-saf";
+function log(m,c){const d=document.getElementById("log"),p=document.createElement("p");
+p.style.margin="2px 0";if(c)p.className=c;p.textContent=m;d.appendChild(p);d.scrollTop=d.scrollHeight;}
+async function pushFile(path,content){
+const url="https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/"+path;
+let sha;
+try{const r=await fetch(url,{headers:{Authorization:"token "+TOKEN,Accept:"application/vnd.github.v3+json"}});
+if(r.ok){const j=await r.json();sha=j.sha;}}catch(e){}
+const body={message:"Add "+path,content};if(sha)body.sha=sha;
+const r=await fetch(url,{method:"PUT",headers:{Authorization:"token "+TOKEN,"Content-Type":"application/json",Accept:"application/vnd.github.v3+json"},body:JSON.stringify(body)});
+return r.status;}
+async function startPush(){
+const fi=document.getElementById("fi");
+if(!fi.files.length){alert("Select a file first!");return;}
+const text=await fi.files[0].text();
+const files=JSON.parse(text);
+document.getElementById("prog").textContent="Loaded "+files.length+" files, pushing...";
+let ok=0,fail=0;
+for(let i=0;i<files.length;i++){
+const f=files[i];
+log("["+(i+1)+"/"+files.length+"] "+f.path+" ("+f.content.length+" chars)...","info");
+try{const s=await pushFile(f.path,f.content);
+if(s===200||s===201){ok++;log(" OK HTTP "+s,"ok");}
+else{fail++;log(" FAIL HTTP "+s,"err");}}
+catch(e){fail++;log(" ERR "+e.message,"err");}
+await new Promise(r=>setTimeout(r,200));}
+document.getElementById("prog").textContent="Done: "+ok+" OK, "+fail+" failed";}
+</script></body></html>
