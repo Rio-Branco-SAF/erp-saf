@@ -1,0 +1,14 @@
+# ============================================================
+# Configuração Railway — ERP SAF Backend
+# O Railway lê este arquivo automaticamente ao fazer deploy
+# ============================================================
+[build]
+builder = "NIXPACKS"
+buildCommand = "cd backend && npm install --omit=dev"
+
+[deploy]
+startCommand = "cd backend && node server.js"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
