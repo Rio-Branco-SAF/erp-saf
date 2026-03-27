@@ -70,4 +70,31 @@ CREATE TABLE funcionarios (
 -- Γndices para performance
 CREATE INDEX idx_funcionarios_status        ON funcionarios(status);
 CREATE INDEX idx_funcionarios_departamento  ON funcionarios(departamento_id);
-CREATE INDEX idx_funcionarios_tipo_contrato ON
+CREATE INDEX idx_funcionarios_tipo_contrato ON funcionarios(tipo_contrato);
+
+-- ============================================================
+-- TABELA: historico_salarios
+-- Toda alteraΓ§Γ£o de salΓ΅rio Γ© registrada aqui
+-- ============================================================
+CREATE TABLE historico_salarios (
+  id               SERIAL PRIMARY KEY,
+  funcionario_id   INTEGER      NOT NULL REFERENCES funcionarios(id),
+  salario_anterior NUMERIC(12,2),
+  salario_novo     NUMERIC(12,2) NOT NULL,
+  data_alteracao   DATE         NOT NULL DEFAULT CURRENT_DATE,
+  motivo           VARCHAR(300),
+  registrado_por   INTEGER      REFERENCES funcionarios(id),
+  created_at       TIMESTAMP    NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
+-- TABELA: documentos_funcionarios
+-- Armazena links para arquivos (contrato CLT, nota fiscal PJ, RG etc.)
+-- ============================================================
+CREATE TABLE documentos_funcionarios (
+  id              SERIAL PRIMARY KEY,
+  funcionario_id  INTEGER       NOT NULL REFERENCES funcionarios(id),
+  tipo            VARCHAR(50)   NOT NULL,   -- 'contrato', 'rg', 'cpf', 'nota_fiscal', 'outro'
+  nome_arquivo    VARCHAR(200)  NOT NULL,
+  arquivo_url     VARCHAR(500)  NOT NULL,
+  data_upload     TIMESTAMP     NOT NULL DEFAULT NOW(),(€ΥΑ±½…‘•‘}Α½Θ€€€%9QH€€€€€€II9L™ΥΉ¥½Ή…Ι¥½Μ΅¥¤(¤μ((΄΄€ττττττττττττττττττττττττττττττττττττττττττττττττττττττττττττ(΄΄Q	1θΥΝΥ…Ι¥½Μ(΄¬½ΉΡΙ½±”‘”…•ΝΝΌ…ΌΝ¥ΝΡ•µ„(΄΄€τττττττττττττττττττττττ
