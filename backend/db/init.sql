@@ -32,4 +32,42 @@ INSERT INTO departamentos (nome, descricao) VALUES
 -- ============================================================
 -- TABELA: funcionarios
 -- ============================================================
-CREAT
+CREATE TABLE funcionarios (
+  id               SERIAL PRIMARY KEY,
+
+  -- Dados pessoais
+  nome_completo    VARCHAR(200) NOT NULL,
+  cpf              VARCHAR(14)  UNIQUE,          -- 000.000.000-00
+  rg               VARCHAR(20),
+  data_nascimento  DATE,
+  email            VARCHAR(150) UNIQUE,
+  email_corporativo VARCHAR(150),
+  telefone         VARCHAR(20),
+  endereco         TEXT,
+  foto_url         VARCHAR(500),
+
+  -- Dados profissionais
+  cargo            VARCHAR(100) NOT NULL,
+  departamento_id  INTEGER NOT NULL REFERENCES departamentos(id),
+  tipo_contrato    VARCHAR(5)   NOT NULL CHECK (tipo_contrato IN ('CLT', 'PJ')),
+  salario          NUMERIC(12,2) NOT NULL,
+  data_admissao    DATE         NOT NULL,
+  data_demissao    DATE,
+  gestor_id        INTEGER REFERENCES funcionarios(id),   -- hierarquia
+
+  -- Para contratos PJ
+  cnpj             VARCHAR(18),                 -- CNPJ da empresa PJ
+  razao_social     VARCHAR(200),                -- Razão social da empresa PJ
+
+  -- Controle
+  status           VARCHAR(20)  NOT NULL DEFAULT 'ativo'
+                   CHECK (status IN ('ativo', 'ferias', 'afastado', 'desligado')),
+  observacoes      TEXT,
+  created_at       TIMESTAMP    NOT NULL DEFAULT NOW(),
+  updated_at       TIMESTAMP    NOT NULL DEFAULT NOW()
+);
+
+-- Índices para performance
+CREATE INDEX idx_funcionarios_status        ON funcionarios(status);
+CREATE INDEX idx_funcionarios_departamento  ON funcionarios(departamento_id);
+CREATE INDEX idx_funcionarios_tipo_contrato ON
