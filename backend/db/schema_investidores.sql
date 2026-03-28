@@ -145,4 +145,21 @@ $$;
 
 -- ------------------------------------------------------------
 -- ÍNDICES
--- ----------------------------------
+-- ------------------------------------------------------------
+CREATE INDEX IF NOT EXISTS idx_aportes_investidor  ON aportes(investidor_id);
+CREATE INDEX IF NOT EXISTS idx_aportes_data        ON aportes(data_aporte DESC);
+CREATE INDEX IF NOT EXISTS idx_retornos_investidor ON retornos_investidor(investidor_id);
+CREATE INDEX IF NOT EXISTS idx_retornos_status     ON retornos_investidor(status);
+
+-- ------------------------------------------------------------
+-- VIEW: investidores com totais calculados
+-- ------------------------------------------------------------
+CREATE OR REPLACE VIEW investidores_completo AS
+SELECT
+    i.*,
+    -- Totais de aportes
+    COALESCE((SELECT SUM(a.valor) FROM aportes a WHERE a.investidor_id = i.id AND a.status = 'confirmado'), 0)
+        AS total_aportado,
+    COALESCE((SELECT SUM(a.valor) FROM aportes a WHERE a.investidor_id = i.id AND a.tipo = 'patrocinio' AND a.status = 'confirmado'), 0)
+        AS total_patrocinio,
+    COALESCE((SELECT SUM(a.valor) FROM aportes a WHERE a.investidor_id = i.id AND a.tipo = 'emprestimo' AND a.status = 'confi
