@@ -1,0 +1,31 @@
+el:'📦 Compras',       component: TabCompras },
+];
+
+function App() {
+  const [aba, setAba] = useState('executivo');
+  const Tab = TABS.find(t => t.id === aba)?.component || TabExecutivo;
+
+  return (
+    <div className="container">
+      <div className="page-header">
+        <div className="page-title">Relatórios Gerenciais</div>
+        <div className="page-subtitle">Visão consolidada de todos os módulos do ERP SAF</div>
+      </div>
+
+      <div className="tabs">
+        {TABS.map(t => (
+          <button key={t.id} className={`tab-btn ${aba === t.id ? 'active' : ''}`} onClick={() => setAba(t.id)}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <Tab/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
