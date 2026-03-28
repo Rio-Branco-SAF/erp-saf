@@ -29,4 +29,24 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293
 .content{padding:24px 28px;flex:1}
 .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
 .btn-primary{background:#1d4ed8;color:#fff}
-.btn-primary:hover{background:#1e40a
+.btn-primary:hover{background:#1e40af}
+.btn-outline{background:#fff;color:#475569;border:1px solid #e2e8f0}
+.btn-outline:hover{background:#f8fafc}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-success{background:#16a34a;color:#fff}
+.btn-ghost{background:transparent;color:#64748b;border:none;font-size:13px;cursor:pointer;padding:4px 8px}
+.btn-ghost:hover{color:#0f172a}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+.kpi-card{background:#fff;border-radius:12px;padding:16px 18px;border:1px solid #e2e8f0}
+.kpi-label{font-size:11.5px;color:#64748b;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.kpi-value{font-size:24px;font-weight:800;margin:5px 0 2px;color:#0f172a}
+.kpi-sub{font-size:11.5px;color:#94a3b8}
+.kpi-card.urgente .kpi-value{color:#dc2626}
+.kpi-card.alerta .kpi-value{color:#d97706}
+.kpi-card.ok .kpi-value{color:#16a34a}
+
+/* FILTERS */
+.filters-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.search-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font
