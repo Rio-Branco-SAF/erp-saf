@@ -70,4 +70,27 @@ CREATE TABLE IF NOT EXISTS aportes (
     -- Para empréstimos
     taxa_juros_anual    NUMERIC(5,2),              -- ex: 12.00 = 12% a.a.
     data_vencimento     DATE,                       -- prazo para devolução
-    valo
+    valor_devolvido     NUMERIC(14,2) DEFAULT 0,   -- quanto já foi pago de volta
+
+    -- Para patrocínios: o que o patrocinador recebe em troca
+    contrapartida       TEXT,                       -- ex: "Camisa + banner estádio"
+
+    status          VARCHAR(20) NOT NULL DEFAULT 'confirmado'
+                    CHECK (status IN ('pendente','confirmado','cancelado')),
+
+    comprovante     VARCHAR(300),                   -- nome do arquivo
+    observacoes     TEXT,
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- RETORNOS AOS INVESTIDORES (dividendos, juros, devoluções)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS retornos_investidor (
+    id              SERIAL PRIMARY KEY,
+    investidor_id   INTEGER NOT NULL REFERENCES investidores(id) ON DELETE CASCADE,
+    aporte_id       INTEGER REFERENCES aportes(id),
+
+    tipo            VARCHAR(20) NOT NULL
+      
