@@ -117,4 +117,30 @@ CREATE TABLE IF NOT EXISTS cotacoes (
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS itens_cotacao (
     id              SERIAL PRIMARY KEY,
-    cotacao_id      INTEGER NOT NULL REFERENCES cotacoes(id) ON DELATE CASEADE
+    cotacao_id      INTEGER NOT NULL REFERENCES cotacoes(id) ON DELATE CASEADELETE CASCADE,
+    item_pedido_id  INTEGER NOT NULL REFERENCES itens_pedido(id) ON DELETE CASCADE,
+    valor_unitario  NUMERIC(12,2),
+    valor_total     NUMERIC(12,2),
+    disponivel      BOOLEAN DEFAULT TRUE,
+    observacoes     TEXT
+);
+
+-- ------------------------------------------------------------
+-- HISTÓRICO / AUDITORIA DO PEDIDO
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS historico_pedido (
+    id          SERIAL PRIMARY KEY,
+    pedido_id   INTEGER NOT NULL REFERENCES pedidos_compra(id) ON DELETE CASCADE,
+    usuario_id  INTEGER REFERENCES usuarios(id),
+    acao        VARCHAR(50) NOT NULL,   -- ex: criou, editou, enviou_cotacao, aprovou, rejeitou
+    descricao   TEXT,
+    created_at  TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- TRIGGERS — updated_at automatico
+-- ------------------------------------------------------------
+CREATE OR REPLACE FUNCTION atualizar_updated_at()
+BETURNS TRIGGER AS $$
+BEGIN
+    NEW.upda
