@@ -47,4 +47,26 @@ CREATE TABLE IF NOT EXISTS atletas (
 );
 
 -- ------------------------------------------------------------
--- CONTRATO
+-- CONTRATOS DE ATLETAS
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS contratos_atleta (
+    id                      SERIAL PRIMARY KEY,
+    atleta_id               INTEGER NOT NULL REFERENCES atletas(id) ON DELETE CASCADE,
+    numero_contrato         VARCHAR(50),
+
+    tipo                    VARCHAR(20) NOT NULL DEFAULT 'profissional'
+                            CHECK (tipo IN ('profissional','amador','emprestimo','formacao')),
+
+    -- Vigência
+    data_inicio             DATE NOT NULL,
+    data_fim                DATE NOT NULL,
+
+    -- Remuneração
+    salario_bruto           NUMERIC(12,2) NOT NULL,     -- salário total combinado
+    salario_carteira        NUMERIC(12,2),              -- valor registrado na CTPS (CLT)
+    direitos_imagem         NUMERIC(12,2) DEFAULT 0,    -- parcela de imagem (PJ)
+    luvas                   NUMERIC(12,2) DEFAULT 0,    -- bônus de assinatura
+    clausula_rescisoria     NUMERIC(12,2),              -- multa rescisória
+
+    -- Status do contrato
+    status       
