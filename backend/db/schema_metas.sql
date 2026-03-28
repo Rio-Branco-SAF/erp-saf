@@ -62,3 +62,30 @@ CREATE TABLE IF NOT EXISTS metas (
 
     prioridade      VARCHAR(10) NOT NULL DEFAULT 'media'
                     CHECK (prioridade IN ('alta','media','baixa')),
+
+    -- Responsável
+    responsavel_id  INTEGER REFERENCES usuarios(id),
+
+    -- Vínculo com outros módulos
+    atleta_id       INTEGER REFERENCES atletas(id),   -- meta individual de atleta
+    contrato_id     INTEGER REFERENCES contratos_atleta(id), -- meta de contrato
+
+    observacoes     TEXT,
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- ATUALIZAÇÕES DE PROGRESSO
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS atualizacoes_meta (
+    id              SERIAL PRIMARY KEY,
+    meta_id         INTEGER NOT NULL REFERENCES metas(id) ON DELETE CASCADE,
+    usuario_id      INTEGER REFERENCES usuarios(id),
+    valor_anterior  NUMERIC(14,2),
+    valor_novo      NUMERIC(14,2) NOT NULL,
+    descricao       TEXT,              -- ex: "Rodada 10 — vitória 2x0"
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- -----------------------------
