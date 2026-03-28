@@ -132,4 +132,31 @@ CREATE TABLE IF NOT EXISTS metas_contrato (
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS estatisticas_atleta (
     id                      SERIAL PRIMARY KEY,
-    atleta_id               INTEGER NOT NULL REFERENCES atletas(id) ON DEL
+    atleta_id               INTEGER NOT NULL REFERENCES atletas(id) ON DELESTE CASCADE,
+    temporada               VARCHAR(10) NOT NULL,       -- ex: "2026", "2025/2026"
+    competicao              VARCHAR(100) NOT NULL,      -- ex: "Série B", "Copa do Brasil"
+
+    -- Participação
+    jogos_disputados        INTEGER DEFAULT 0,
+    jogos_titular           INTEGER DEFAULT 0,
+    minutos_jogados         INTEGER DEFAULT 0,
+
+    -- Ofensivos
+    gols                    INTEGER DEFAULT 0,
+    assistencias            INTEGER DEFAULT 0,
+    chutes_a_gol            INTEGER DEFAULT 0,
+
+    -- Defensivos / Goleiro
+    jogos_sem_sofrer_gol    INTEGER DEFAULT 0,          -- clean sheets
+    defesas_dificeis        INTEGER DEFAULT 0,          -- para goleiros
+    interceptacoes          INTEGER DEFAULT 0,
+
+    -- Disciplina
+    cartoes_amarelos        INTEGER DEFAULT 0,
+    cartoes_vermelhos       INTEGER DEFAULT 0,
+    faltas_cometidas        INTEGER DEFAULT 0,
+
+    created_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+    UNIQUE(atleta_id
