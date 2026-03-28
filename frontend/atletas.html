@@ -110,4 +110,20 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 .artilharia-header{padding:16px 20px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700;color:#0f172a}
 
 /* LOGIN */
-.login-wrap{min-h
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;width:100%}
+.login-card{background:#fff;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo h2{font-size:22px;font-weight:800;color:#0f172a;margin-top:10px}
+.login-err{background:#fee2e2;color:#dc2626;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px}
+.empty-state{text-align:center;padding:48px 20px;color:#94a3b8}
+.empty-icon{font-size:44px;margin-bottom:12px}
+.modal-footer{padding:16px 26px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
+.alert-warning{background:#fef9c3;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+const API_URL = (window.ERP_CONFIG || {}).API_URL || 'http://localho
