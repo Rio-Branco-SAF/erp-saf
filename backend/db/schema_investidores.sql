@@ -93,4 +93,28 @@ CREATE TABLE IF NOT EXISTS retornos_investidor (
     aporte_id       INTEGER REFERENCES aportes(id),
 
     tipo            VARCHAR(20) NOT NULL
-      
+                    CHECK (tipo IN (
+                        'dividendo',        -- distribuição de lucro
+                        'juros',            -- juros de empréstimo
+                        'devolucao',        -- devolução de capital
+                        'bonificacao'       -- bonificação extra
+                    )),
+
+    descricao       VARCHAR(300) NOT NULL,
+    valor           NUMERIC(14,2) NOT NULL CHECK (valor > 0),
+    data_pagamento  DATE NOT NULL,
+    competencia     DATE,
+
+    status          VARCHAR(20) NOT NULL DEFAULT 'pendente'
+                    CHECK (status IN ('pendente','pago','cancelado')),
+
+    observacoes     TEXT,
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- DOCUMENTOS DO INVESTIDOR
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS documentos_investidor (
+    id              SERIAL PRIMARY KEY,
+    investidor_id   INTEGER NOT NULL REFERENCES investidores(id) ON DELETE CASCADE,
