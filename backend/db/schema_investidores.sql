@@ -162,4 +162,17 @@ SELECT
         AS total_aportado,
     COALESCE((SELECT SUM(a.valor) FROM aportes a WHERE a.investidor_id = i.id AND a.tipo = 'patrocinio' AND a.status = 'confirmado'), 0)
         AS total_patrocinio,
-    COALESCE((SELECT SUM(a.valor) FROM aportes a WHERE a.investidor_id = i.id AND a.tipo = 'emprestimo' AND a.status = 'confi
+    COALESCE((SELECT SUM(a.valor) FROM aportes a WHERE a.investidor_id = i.id AND a.tipo = 'emprestimo' AND a.status = 'confirmado'), 0)
+        AS total_emprestado,
+    -- Dívida de empréstimos
+    COALESCE((SELECT SUM(a.valor - COALESCE(a.valor_devolvido,0)) FROM aportes a WHERE a.investidor_id = i.id AND a.tipo = 'emprestimo' AND a.status = 'confirmado'), 0)
+        AS saldo_devedor,
+    -- Retornos
+    COALESCE((SELECT SUM(r.valor) FROM retornos_investidor r WHERE r.investidor_id = i.id AND r.status = 'pago'), 0)
+        AS total_retornado,
+    COALESCE((SELECT SUM(r.valor) FROM retornos_investidor r WHERE r.investidor_id = i.id AND r.status = 'pendente'), 0)
+        AS retorno_pendente,
+    -- Contagem de aportes
+    (SELECT COUNT(*) FROM aportes a WHERE a.investidor_id = i.id AND a.status = 'confirmado')
+        AS qtd_aportes
+FROM investidores i;
