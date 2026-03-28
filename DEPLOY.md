@@ -224,4 +224,4 @@ Acesse o frontend no Netlify e faça login com as credenciais padrão:
 | `netlify.toml` | Instrui o Netlify qual pasta publicar e rotas |
 | `backend/.env.example` | Template das variáveis de ambiente |
 | `backend/db/init.sql` | Script SQL completo (schema + seeds) |
-| `frontend/config.js` | URL da API usada pelo f
+| `frontend/config.js` | URL da API usada pelo frontend |
