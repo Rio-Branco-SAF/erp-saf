@@ -115,4 +115,19 @@ CREATE INDEX IF NOT EXISTS idx_atualizacoes    ON atualizacoes_meta(meta_id);
 CREATE OR REPLACE VIEW metas_completo AS
 SELECT
     m.*,
-    u.nome AS responsavel_n
+    u.nome AS responsavel_nome,
+    a.nome AS atleta_nome,
+    a.nome_guerra AS atleta_guerra,
+    -- Percentual de progresso
+    CASE
+        WHEN m.valor_meta = 0 THEN 0
+        WHEN m.sentido = 'abaixo' THEN
+            GREATEST(0, LEAST(100, ROUND((1 - (m.valor_atual / m.valor_meta)) * 100)))
+        ELSE
+            LEAST(100, ROUND((m.valor_atual / m.valor_meta) * 100))
+    END AS percentual,
+    -- Dias restantes
+    (m.data_fim - CURRENT_DATE) AS dias_restantes
+FROM metas m
+LEFT JOIN usuarios u ON u.id = m.responsavel_id
+LEFT JOIN atletas  a ON a.id = m.atleta_id;
