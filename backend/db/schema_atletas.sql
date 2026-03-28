@@ -204,4 +204,26 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_atletas_updated_at') THEN
         CREATE TRIGGER trg_atletas_updated_at
             BEFORE UPDATE ON atletas
-            FOR EACH ROW EXECUTE
+            FOR EACH ROW EXECUTEE FUNCTION atualizar_updated_at();
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_contratos_atleta_updated_at') THEN
+        CREATE TRIGGER trg_contratos_atleta_updated_at
+            BEFORE UPDATE ON contratos_atleta
+            FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_estatisticas_updated_at') THEN
+        CREATE TRIGGER trg_estatisticas_updated_at
+            BEFORE UPDATE ON estatisticas_atleta
+            FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+    END IF;
+END
+$$;
+
+-- ------------------------------------------------------------
+-- ÍNDICES
+-- ------------------------------------------------------------
+CREATE INDEX IF NOT EXISTS idx_atletas_status     ON atletas(status);
+CREATE INDEX IF NOT EXISTS idx_atletas_posicao    ON atletas(posicao);
+CREATE INDEX IF NOT EXISTS idx_contratos_atleta   ON contratos_atleta(atleta_id);
+CREATE INDEX IF NOT EXISTS idx_contratos_status   ON contratos_atleta(status);
+C
