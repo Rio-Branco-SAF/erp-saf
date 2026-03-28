@@ -126,4 +126,15 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 
 <script type="text/babel">
 const { useState, useEffect, useCallback } = React;
-const API_URL = (window.ERP_CONFIG || {}).API_URL || 'http://localho
+const API_URL = (window.ERP_CONFIG || {}).API_URL || 'http://localho TOSUAKREMM=null; IDTOIDUM=null; PASSWORD=null; localStorage.removeItem('erp_token'); localStorage.removeItem('erp_usuario'); setUsuario(null); }
+    if (!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
+    return <>
+        <Sidebar usuario={usuario} onLogout={handleLogout}/>
+        <div className="main"><ModuloAtletas usuario={usuario}/></div>
+    </>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
