@@ -273,4 +273,6 @@ SELECT
         SELECT SUM(e.cartoes_vermelhos) FROM estatisticas_atleta e
         WHERE e.atleta_id = a.id AND e.temporada = TO_CHAR(NOW(),'YYYY')
     ), 0) AS total_vermelhos
-FROM atle
+FROM atletas a
+LEFT JOIN contratos_atleta c
+    ON c.atleta_id = a.id AND c.status = 'ativo';
