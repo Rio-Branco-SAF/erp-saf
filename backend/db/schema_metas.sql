@@ -88,4 +88,31 @@ CREATE TABLE IF NOT EXISTS atualizacoes_meta (
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------
+-- ------------------------------------------------------------
+-- TRIGGER updated_at
+-- ------------------------------------------------------------
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_metas_updated_at') THEN
+        CREATE TRIGGER trg_metas_updated_at
+            BEFORE UPDATE ON metas
+            FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+    END IF;
+END
+$$;
+
+-- ------------------------------------------------------------
+-- ÍNDICES
+-- ------------------------------------------------------------
+CREATE INDEX IF NOT EXISTS idx_metas_tipo      ON metas(tipo);
+CREATE INDEX IF NOT EXISTS idx_metas_status    ON metas(status);
+CREATE INDEX IF NOT EXISTS idx_metas_temporada ON metas(temporada);
+CREATE INDEX IF NOT EXISTS idx_atualizacoes    ON atualizacoes_meta(meta_id);
+
+-- ------------------------------------------------------------
+-- VIEW: metas com progresso calculado
+-- ------------------------------------------------------------
+CREATE OR REPLACE VIEW metas_completo AS
+SELECT
+    m.*,
+    u.nome AS responsavel_n
