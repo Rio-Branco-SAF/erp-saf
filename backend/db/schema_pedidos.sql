@@ -95,4 +95,26 @@ CREATE TABLE IF NOT EXISTS cotacoes (
     fornecedor_id       INTEGER REFERENCES fornecedores(id),
     numero_cotacao      VARCHAR(50),        -- nԺmero da proposta do fornecedor
 
-    data_cotaca
+    data_cotacao        DATE NOT NULL DEFAULT CURRENT_DATE,
+    validade_cotacao    DATE,               -- até quando a proposta é válida
+    prazo_entrega       INTEGER,            -- dias para entrega
+
+    status              VARCHAR(20) NOT NULL DEFAULT 'pendente'
+                        CHECK (status IN ('pendente','recebida','selecionada','rejeitada')),
+
+    valor_total         NUMERIC(12,2),
+    condicoes_pagamento VARCHAR(200),
+    observacoes         TEXT,
+    arquivo_cotacao     VARCHAR(300),       -- nome do arquivo anexado
+
+    criado_por          INTEGER REFERENCES usuarios(id),
+    created_at          TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at          TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- ITENS DA COTAÇÃO (vinculado a cada item do pedido)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS itens_cotacao (
+    id              SERIAL PRIMARY KEY,
+    cotacao_id      INTEGER NOT NULL REFERENCES cotacoes(id) ON DELATE CASEADE
