@@ -103,4 +103,55 @@ psql "postgresql://USUARIO:SENHA@HOST:PORT/BANCO" -f backend/db/init.sql
 1. Acesse **netlify.com** e clique em **"Add new site"**
 2. Escolha **"Import an existing project"**
 3. Selecione **"Deploy with GitHub"**
-4. Autorize o
+4. Autorize o Netlify e selecione o repositório `erp-saf`
+
+### 4.2 Configurar o build
+
+| Campo | Valor |
+|-------|-------|
+| Branch | `main` |
+| Base directory | *(vazio)* |
+| Build command | *(vazio)* |
+| Publish directory | `frontend` |
+
+> O arquivo `netlify.toml` na raiz do projeto já configura isso automaticamente.
+
+### 4.3 Publicar
+
+Clique em **"Deploy site"**. O Netlify vai gerar uma URL como:
+```
+https://magical-sundae-abc123.netlify.app
+```
+
+---
+
+## PASSO 5 — Conectar Frontend ↔ Backend
+
+### 5.1 Atualizar a URL da API no frontend
+
+Edite o arquivo `frontend/config.js`:
+
+```js
+window.ERP_CONFIG = {
+  API_URL: "https://SEU-BACKEND.up.railway.app",  // ← URL do Railway
+  NOME_SAF: "Nome do Seu Clube",
+  VERSAO: "1.0.0",
+};
+```
+
+### 5.2 Atualizar o CORS no Railway
+
+No Railway, adicione/atualize a variável:
+```
+FRONTEND_URL = https://seu-site.netlify.app
+```
+
+### 5.3 Fazer push das mudanças
+
+```bash
+git add frontend/config.js
+git commit -m "config: conecta frontend ao backend em produção"
+git push
+```
+
+O Netlify e o Railway vão rede
