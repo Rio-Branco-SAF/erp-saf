@@ -43,4 +43,18 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 .pill-media{background:#fef9c3;color:#a16207}
 .pill-baixa{background:#f1f5f9;color:#64748b}
 .pill-ativa{background:#dbeafe;color:#1d4ed8}
-.pill-concluida{background:#dcfce
+.pill-concluida{background:#dcfce7;color:#16a34a}
+.pill-nao_atingida{background:#fee2e2;color:#dc2626}
+.pill-cancelada{background:#f1f5f9;color:#94a3b8}
+.tipo-badge-esportiva{background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.tipo-badge-financeira{background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.tipo-badge-institucional{background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+
+/* META CARD */
+.metas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.meta-card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;padding:18px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.meta-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px}
+.meta-card.esportiva::before{background:#1d4ed8}
+.meta-card.financeira::before{background:#16a34a}
+.meta-card.institucional::before{background:#7c3aed}
+.meta-card:hover{transform:tra
