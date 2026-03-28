@@ -49,4 +49,20 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293
 
 /* FILTERS */
 .filters-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.search-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font
+.search-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;width:220px;outline:none}
+.search-input:focus{border-color:#1d4ed8}
+select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
+.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#475569;transition:.15s}
+.filter-btn.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+
+/* STATUS PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill-ativo{background:#dcfce7;color:#16a34a}
+.pill-lesionado{background:#fee2e2;color:#dc2626}
+.pill-suspenso{background:#fed7aa;color:#c2410c}
+.pill-emprestado{background:#dbeafe;color:#1d4ed8}
+.pill-inativo{background:#f1f5f9;color:#94a3b8}
+
+/* CARDS DE ATLETAS */
+.atletas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.atleta-card{background:#fff;border-
