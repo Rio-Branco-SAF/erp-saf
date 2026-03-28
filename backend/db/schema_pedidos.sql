@@ -75,4 +75,24 @@ CREATE TABLE IF NOT EXISTS pedidos_compra (
 -- ITENS DO PEDIDO
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS itens_pedido (
-    id           
+    id                          SERIAL PRIMARY KEY,
+    pedido_id                   INTEGER NOT NULL REFERENCES pedidos_compra(id) ON DELETE CASCADE,
+    descricao                   VARCHAR(300) NOT NULL,
+    quantidade                  NUMERIC(10,2) NOT NULL DEFAULT 1,
+    unidade                     VARCHAR(30) DEFAULT 'un',    -- un, kg, m, caixa, etc.
+    valor_unitario_estimado     NUMERIC(12,2),
+    valor_unitario_final        NUMERIC(12,2),
+    observacoes                 TEXT,
+    created_at                  TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- COTAÇÕES (ORÇAEMENTOS DE FORNECEDORES)
+-- -----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS cotacoes (
+    id                  SERIAL PRIMARY KEY,
+    pedido_id           INTEGER NOT NULL REFERENCES pedidos_compra(id) ON DELETE CASCADE,
+    fornecedor_id       INTEGER REFERENCES fornecedores(id),
+    numero_cotacao      VARCHAR(50),        -- nԺmero da proposta do fornecedor
+
+    data_cotaca
