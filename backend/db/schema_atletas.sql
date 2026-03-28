@@ -69,4 +69,27 @@ CREATE TABLE IF NOT EXISTS contratos_atleta (
     clausula_rescisoria     NUMERIC(12,2),              -- multa rescisória
 
     -- Status do contrato
-    status       
+    status                  VARCHAR(20) NOT NULL DEFAULT 'ativo'
+                            CHECK (status IN ('ativo','encerrado','rescindido','suspenso')),
+
+    -- Se empréstimo
+    clube_cedente           VARCHAR(150),               -- clube que cedeu o atleta
+    clube_cessionario       VARCHAR(150),               -- clube que recebeu (se cedemos)
+
+    motivo_encerramento     TEXT,
+    observacoes             TEXT,
+    created_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- METAS / BONIFICAÇÕES POR DESEMPENKÓ (contrato)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS metas_contrato (
+    id                  SERIAL PRIMARY KEY,
+    contrato_id         INTEGER NOT NULL REFERENCES contratos_atleta(id) ON DELETE CASCADE,
+
+    tipo                VARCHAR(30) NOT NULL
+                        CHECK (tipo IN (
+                            'gol',
+                  
