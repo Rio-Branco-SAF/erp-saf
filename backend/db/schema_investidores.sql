@@ -118,3 +118,31 @@ CREATE TABLE IF NOT EXISTS retornos_investidor (
 CREATE TABLE IF NOT EXISTS documentos_investidor (
     id              SERIAL PRIMARY KEY,
     investidor_id   INTEGER NOT NULL REFERENCES investidores(id) ON DELETE CASCADE,
+    nome            VARCHAR(200) NOT NULL,
+    tipo            VARCHAR(50),          -- ex: "Contrato", "Comprovante", "NDA"
+    arquivo         VARCHAR(300),
+    observacoes     TEXT,
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- TRIGGER updated_at
+-- ------------------------------------------------------------
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_investidores_updated_at') THEN
+        CREATE TRIGGER trg_investidores_updated_at
+            BEFORE UPDATE ON investidores
+            FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_aportes_updated_at') THEN
+        CREATE TRIGGER trg_aportes_updated_at
+            BEFORE UPDATE ON aportes
+            FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+    END IF;
+END
+$$;
+
+-- ------------------------------------------------------------
+-- ÍNDICES
+-- ----------------------------------
