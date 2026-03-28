@@ -159,4 +159,27 @@ CREATE TABLE IF NOT EXISTS estatisticas_atleta (
     created_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
-    UNIQUE(atleta_id
+    UNIQUE(atleta_id, temporada, competicao)
+);
+
+-- ------------------------------------------------------------
+-- BONIFICAÇÕES PAGAS / PENDENTES
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS bonificacoes_atleta (
+    id              SERIAL PRIMARY KEY,
+    atleta_id       INTEGER NOT NULL REFERENCES atletas(id) ON DELETE CASCADE,
+    contrato_id     INTEGER REFERENCES contratos_atleta(id),
+    meta_id         INTEGER REFERENCES metas_contrato(id),
+
+    competencia     DATE NOT NULL,              -- mês de competência (1¾ dia do mês)
+    descricao       VARCHAR(300) NOT NULL,
+    valor           NUMERIC(12,2) NOT NULL,
+    tipo            VARCHAR(10) NOT NULL DEFAULT 'bonus'
+                    CHECK (tipo IN ('bonus','desconto')),  -- bônus ou desconto (cartão)
+    status          VARCHAR(20) NOT NULL DEFAULT 'pendente'
+                    CHECK (status IN ('pendente','pago','cancelado')),
+
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ---------------------------------------------
