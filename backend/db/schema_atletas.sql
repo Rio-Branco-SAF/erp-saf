@@ -226,4 +226,28 @@ CREATE INDEX IF NOT EXISTS idx_atletas_status     ON atletas(status);
 CREATE INDEX IF NOT EXISTS idx_atletas_posicao    ON atletas(posicao);
 CREATE INDEX IF NOT EXISTS idx_contratos_atleta   ON contratos_atleta(atleta_id);
 CREATE INDEX IF NOT EXISTS idx_contratos_status   ON contratos_atleta(status);
-C
+CREATE INDEX IF NOT EXISTS idx_stats_atleta       ON estatisticas_atleta(atleta_id, temporada);
+CREATE INDEX IF NOT EXISTS idx_bonus_atleta       ON bonificacoes_atleta(atleta_id, competencia);
+CREATE INDEX IF NOT EXISTS idx_metas_contrato     ON metas_contrato(contrato_id);
+
+-- ------------------------------------------------------------
+-- VIEW: atletas com contrato ativo e totais de stats 2026
+-- ------------------------------------------------------------
+CREATE OR REPLACE VIEW atletas_completo AS
+SELECT
+    a.*,
+    -- Contrato ativo
+    c.id                    AS contrato_id,
+    c.tipo                  AS contrato_tipo,
+    c.data_inicio           AS contrato_inicio,
+    c.data_fim              AS contrato_fim,
+    c.salario_bruto,
+    c.salario_carteira,
+    c.direitos_imagem,
+    c.clausula_rescisoria,
+    c.clube_cedente,
+    -- Dias até vencimento
+    (c.data_fim - CURRENT_DATE) AS dias_ate_vencimento,
+    -- Estatísticas acumuladas (todas as competições na temporada atual)
+    COALESCE((
+        SELECT SUM(e.jogos_dispu
