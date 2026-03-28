@@ -57,4 +57,23 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 .meta-card.esportiva::before{background:#1d4ed8}
 .meta-card.financeira::before{background:#16a34a}
 .meta-card.institucional::before{background:#7c3aed}
-.meta-card:hover{transform:tra
+.meta-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09)}
+.meta-card.concluida{opacity:.85;background:#f0fdf4}
+.meta-card.nao_atingida{opacity:.8;background:#fff5f5}
+.meta-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px}
+.meta-titulo{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;flex:1}
+.meta-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+
+/* BARRA DE PROGRESSO */
+.progress-wrap{margin-bottom:12px}
+.progress-info{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.progress-valores{font-size:12.5px;color:#475569}
+.progress-pct{font-size:18px;font-weight:800}
+.progress-bar{height:10px;background:#f1f5f9;border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;border-radius:100px;transition:width .6s ease}
+.pct-low{color:#dc2626}
+.pct-mid{color:#d97706}
+.pct-high{color:#16a34a}
+.fill-low{background:linear-gradient(90deg,#fca5a5,#dc2626)}
+.fill-mid{background:linear-gradient(90deg,#fcd34d,#d97706)}
+.fill-high{background:li
