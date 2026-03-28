@@ -48,4 +48,26 @@ CREATE TABLE IF NOT EXISTS investidores (
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS aportes (
     id              SERIAL PRIMARY KEY,
-    investidor_id   INT
+    investidor_id   INTEGER NOT NULL REFERENCES investidores(id) ON DELETE CASCADE,
+
+    tipo            VARCHAR(25) NOT NULL
+                    CHECK (tipo IN (
+                        'aporte_capital',   -- entrada de capital (equity)
+                        'patrocinio',       -- patrocínio (custeio sem retorno financeiro)
+                        'emprestimo',       -- empréstimo (deve ser devolvido + juros)
+                        'doacao'            -- doação sem retorno
+                    )),
+
+    descricao       VARCHAR(300) NOT NULL,
+    valor           NUMERIC(14,2) NOT NULL CHECK (valor > 0),
+
+    data_aporte     DATE NOT NULL DEFAULT CURRENT_DATE,
+    competencia     DATE,                -- mês de competência contábil
+
+    -- Para aportes de capital: equity concedido
+    percentual_concedido NUMERIC(6,3) DEFAULT 0,   -- % do clube concedido neste aporte
+
+    -- Para empréstimos
+    taxa_juros_anual    NUMERIC(5,2),              -- ex: 12.00 = 12% a.a.
+    data_vencimento     DATE,                       -- prazo para devolução
+    valo
