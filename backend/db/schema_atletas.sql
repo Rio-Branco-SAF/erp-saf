@@ -111,4 +111,25 @@ CREATE TABLE IF NOT EXISTS metas_contrato (
                                                         -- ex: 1 = a cada gol; 5 = a cada 5 jogos
 
     -- Valor do bônus
-    valor_bonus         NUMERIC(12,2) NOT NULL,         -- R$ por ocorr
+    valor_bonus         NUMERIC(12,2) NOT NULL,         -- R$ por ocorrência
+    tipo_calculo        VARCHAR(20) DEFAULT 'por_unidade'
+                        CHECK (tipo_calculo IN (
+                            'por_unidade',              -- R$ X a cada meta_quantidade unidades
+                            'total_periodo',            -- R$ X se atingir total no período
+                            'percentual_salario'        -- % do salário bruto
+                        )),
+
+    -- Competição aplicável (NULL = todas)
+    competicao          VARCHAR(100),                   -- ex: "Série B", "Copa do Brasil"
+
+    ativo               BOOLEAN DEFAULT TRUE,
+    observacoes         TEXT,
+    created_at          TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- ESTATÍSTICAS DO ATLETA (por temporada e competição)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS estatisticas_atleta (
+    id                      SERIAL PRIMARY KEY,
+    atleta_id               INTEGER NOT NULL REFERENCES atletas(id) ON DEL
