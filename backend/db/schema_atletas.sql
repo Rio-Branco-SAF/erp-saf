@@ -250,4 +250,27 @@ SELECT
     (c.data_fim - CURRENT_DATE) AS dias_ate_vencimento,
     -- Estatísticas acumuladas (todas as competições na temporada atual)
     COALESCE((
-        SELECT SUM(e.jogos_dispu
+        SELECT SUM(e.jogos_disputados) FROM estatisticas_atleta e
+        WHERE e.atleta_id = a.id AND e.temporada = TO_CHAR(NOW(),'YYYY')
+    ), 0) AS total_jogos,
+    COALESCE((
+        SELECT SUM(e.gols) FROM estatisticas_atleta e
+        WHERE e.atleta_id = a.id AND e.temporada = TO_CHAR(NOW(),'YYYY')
+    ), 0) AS total_gols,
+    COALESCE((
+        SELECT SUM(e.assistencias) FROM estatisticas_atleta e
+        WHERE e.atleta_id = a.id AND e.temporada = TO_CHAR(NOW(),'YYYY')
+    ), 0) AS total_assistencias,
+    COALESCE((
+        SELECT SUM(e.jogos_sem_sofrer_gol) FROM estatisticas_atleta e
+        WHERE e.atleta_id = a.id AND e.temporada = TO_CHAR(NOW(),'YYYY')
+    ), 0) AS total_clean_sheets,
+    COALESCE((
+        SELECT SUM(e.cartoes_amarelos) FROM estatisticas_atleta e
+        WHERE e.atleta_id = a.id AND e.temporada = TO_CHAR(NOW(),'YYYY')
+    ), 0) AS total_amarelos,
+    COALESCE((
+        SELECT SUM(e.cartoes_vermelhos) FROM estatisticas_atleta e
+        WHERE e.atleta_id = a.id AND e.temporada = TO_CHAR(NOW(),'YYYY')
+    ), 0) AS total_vermelhos
+FROM atle
