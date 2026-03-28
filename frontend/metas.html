@@ -76,4 +76,27 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 .pct-high{color:#16a34a}
 .fill-low{background:linear-gradient(90deg,#fca5a5,#dc2626)}
 .fill-mid{background:linear-gradient(90deg,#fcd34d,#d97706)}
-.fill-high{background:li
+.fill-high{background:li             </div>
+                <div className="modal-footer">
+                    <button className="btn btn-outline" onClick={()=>setShowNova(false)}>Cancelar</button>
+                    <button className="btn btn-primary" onClick={salvarNovaMeta}>💾 Criar Meta</button>
+                </div>
+            </div>
+        </div>}
+    </>;
+}
+
+// ============================================================
+// APP
+// ============================================================
+function App(){
+    const [usuario,setUsuario]=useState(USUARIO);
+    function logout(){TOKEN=null;USUARIO=null;localStorage.removeItem('erp_token');localStorage.removeItem('erp_usuario');setUsuario(null);}
+    if(!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
+    return <><Sidebar usuario={usuario} onLogout={logout}/><div className="main"><ModuloMetas usuario={usuario}/></div></>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
