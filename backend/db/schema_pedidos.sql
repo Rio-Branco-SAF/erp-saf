@@ -46,4 +46,33 @@ CREATE TABLE IF NOT EXISTS pedidos_compra (
                                 'em_cotacao',
                                 'aguardando_aprovacao',
                                 'aprovado',
-                        
+                                'rejeitado',
+                                'em_compra',
+                                'concluido',
+                                'cancelado'
+                            )),
+
+    -- Aprovação
+    aprovador_id            INTEGER REFERENCES usuarios(id),
+    data_aprovacao          TIMESTAMP WITH TIME ZONE,
+    motivo_rejeicao         TEXT,
+
+    -- Vínculo financeiro
+    categoria_financeira_id INTEGER REFERENCES categorias_financeiras(id),
+    centro_custo_id         INTEGER REFERENCES centros_custo(id),
+
+    -- Valores
+    valor_estimado          NUMERIC(12,2),
+    valor_aprovado          NUMERIC(12,2),
+    valor_final             NUMERIC(12,2),
+
+    observacoes             TEXT,
+    created_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- ITENS DO PEDIDO
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS itens_pedido (
+    id           
