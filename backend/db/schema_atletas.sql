@@ -92,4 +92,23 @@ CREATE TABLE IF NOT EXISTS metas_contrato (
     tipo                VARCHAR(30) NOT NULL
                         CHECK (tipo IN (
                             'gol',
-                  
+                            'assistencia',
+                            'jogo_disputado',
+                            'jogo_titular',
+                            'jogo_sem_sofrer_gol',
+                            'cartao_amarelo',       -- desconto por advertência
+                            'cartao_vermelho',      -- desconto por expulsão
+                            'classificacao',        -- bônus se o clube subir/ganhar
+                            'artilharia',           -- bônus de artilheiro
+                            'titulos',              -- título conquistado
+                            'custom'                -- meta personalizada
+                        )),
+
+    descricao           VARCHAR(300) NOT NULL,          -- ex: "Bônus por gol marcado"
+
+    -- Gatilho
+    meta_quantidade     INTEGER DEFAULT 1,              -- a cada quantas unidades paga
+                                                        -- ex: 1 = a cada gol; 5 = a cada 5 jogos
+
+    -- Valor do bônus
+    valor_bonus         NUMERIC(12,2) NOT NULL,         -- R$ por ocorr
