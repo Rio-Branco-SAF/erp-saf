@@ -192,4 +192,36 @@ Acesse o frontend no Netlify e faça login com as credenciais padrão:
 - [ ] Variáveis de ambiente no Railway configuradas
 - [ ] Frontend no Netlify publicado
 - [ ] `frontend/config.js` com a URL do Railway
-- [ ] `FRONTEND_URL` no Railway com a UR
+- [ ] `FRONTEND_URL` no Railway com a URL do Netlify
+- [ ] Login testado com sucesso
+- [ ] Senhas padrão trocadas
+
+---
+
+## Problemas Comuns
+
+### Backend não inicia
+- Verifique se `DATABASE_URL` está configurado no Railway
+- Verifique os logs em: Railway → serviço → Deployments → View logs
+
+### Erro de CORS no navegador
+- Confirme que `FRONTEND_URL` no Railway é exatamente a URL do Netlify (sem `/` no final)
+
+### Frontend não carrega dados
+- Verifique `frontend/config.js` — a `API_URL` precisa ser a URL pública do Railway
+- Teste direto: `https://SEU-BACKEND.up.railway.app/api/health`
+
+### Banco sem dados
+- Execute novamente o `init.sql` via Railway Data → Query
+
+---
+
+## Arquivos de Configuração
+
+| Arquivo | Finalidade |
+|---------|-----------|
+| `railway.toml` | Instrui o Railway como buildar e startar o backend |
+| `netlify.toml` | Instrui o Netlify qual pasta publicar e rotas |
+| `backend/.env.example` | Template das variáveis de ambiente |
+| `backend/db/init.sql` | Script SQL completo (schema + seeds) |
+| `frontend/config.js` | URL da API usada pelo f
