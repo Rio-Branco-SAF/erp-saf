@@ -182,4 +182,26 @@ CREATE TABLE IF NOT EXISTS bonificacoes_atleta (
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- ---------------------------------------------
+-- ------------------------------------------------------------
+-- HISTÓRICO DE SALÁRIO DO ATLETA
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS historico_salario_atleta (
+    id              SERIAL PRIMARY KEY,
+    atleta_id       INTEGER NOT NULL REFERENCES atletas(id) ON DELETE CASCADE,
+    contrato_id     INTEGER REFERENCES contratos_atleta(id),
+    data_alteracao  DATE NOT NULL DEFAULT CURRENT_DATE,
+    salario_anterior NUMERIC(12,2),
+    salario_novo    NUMERIC(12,2) NOT NULL,
+    motivo          VARCHAR(200),               -- ex: "Renovação contratual", "Promoção", "14 jogos completados"
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ------------------------------------------------------------
+-- TRIGGERS — updated_at automatico
+-- ------------------------------------------------------------
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_atletas_updated_at') THEN
+        CREATE TRIGGER trg_atletas_updated_at
+            BEFORE UPDATE ON atletas
+            FOR EACH ROW EXECUTE
