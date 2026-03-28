@@ -154,4 +154,42 @@ git commit -m "config: conecta frontend ao backend em produção"
 git push
 ```
 
-O Netlify e o Railway vão rede
+O Netlify e o Railway vão redeployar automaticamente em ~1 minuto.
+
+---
+
+## PASSO 6 — Testar o sistema
+
+Acesse o frontend no Netlify e faça login com as credenciais padrão:
+
+| Usuário | Senha | Perfil |
+|---------|-------|--------|
+| `admin@erpsaf.com` | `admin123` | Administrador |
+| `gestor@erpsaf.com` | `gestor123` | Gestor |
+| `financeiro@erpsaf.com` | `fin123` | Financeiro |
+
+> ⚠️ **Importante:** Troque as senhas imediatamente após o primeiro login!
+
+---
+
+## Domínio Personalizado (opcional)
+
+### No Netlify:
+1. Site Settings → Domain management → Add custom domain
+2. Aponte seu DNS para os servidores do Netlify
+
+### No Railway:
+1. Settings → Networking → Add custom domain
+2. Configure o CNAME no seu provedor DNS
+
+---
+
+## Checklist Final
+
+- [ ] Código no GitHub
+- [ ] Backend rodando no Railway (`/api/health` responde OK)
+- [ ] PostgreSQL criado e `init.sql` executado
+- [ ] Variáveis de ambiente no Railway configuradas
+- [ ] Frontend no Netlify publicado
+- [ ] `frontend/config.js` com a URL do Railway
+- [ ] `FRONTEND_URL` no Railway com a UR
