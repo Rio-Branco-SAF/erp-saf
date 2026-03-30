@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP SAF — Funcionários</title>
+  <!-- Configuração de ambiente (edite config.js para apontar para a API em produção) -->
+  <script src="config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; }
+    button { cursor: pointer; font-family: inherit; }
+    input, select, textarea { font-family: inherit; }
+
+    /* ===== VARIÁVEIS ===== */
+    :root {
+      --verde:       #155724;
+      --verde-med:   #1e8449;
+      --verde-claro: #d4edda;
+      --verde-bg:    #e8f5e9;
+      --cinza:       #f8fafc;
+      --cinza-borda: #e2e8f0;
+      --texto:       #2d3748;
+      --texto-leve:  #718096;
+      --danger:      #c0392b;
+      --warning:     #e67e22;
+      --info:        #2980b9;
+      --sombra:      0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.08);
+      --sombra-md:   0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+    }
+
+    /* ===== LAYOUT ===== */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 240px; min-height: 100vh; background: var(--verde);
+      display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,.15);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-logo .icon { font-size: 28px; }
+    .sidebar-logo .title { color: #fff; font-size: 14px; font-weight: 700; line-height: 1.3; }
+    .sidebar-logo .sub { color: rgba(255,255,255,.7); font-size: 11px; }
+    .sidebar-nav { flex: 1; padding: 12px 0; }
+    .nav-label { color: rgba(255,255,255,.5); font-size: 10px; font-weight: 700; text-transform: uppercase;
+                 letter-spacing: .08em; padding: 12px 16px 4px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+      color: rgba(255,255,255,.8); font-size: 13px; text-decoration: none;
+      transition: all .15s; border-left: 3px solid transparent;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.1); color: #fff; }
+    .nav-item.ativo { background: rgba(255,255,255,.15); color: #fff; border-left-color: #fff; font-weight: 600; }
+    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,.15); }
+    .usuario-info { display: flex; align-items: center; gap: 8px; }
+    .usuario-avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff;
+    }
+    .usuario-nome { color: #fff; font-size: 12px; font-weight: 600; }
+    .usuario-cargo { color: rgba(255,255,255,.6); font-size: 11px; }
+
+    /* ===== CONTEÚDO PRINCIPAL ===== */
+    .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ===== HEADER ===== */
+    .topbar {
+      background: #fff; border-bottom: 1px solid var(--cinza-borda);
+      padding: 0 24px; height: 60px; display: flex; align-items: center;
+      justify-content: space-between; box-shadow: var(--sombra); position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-title { font-size: 18px; font-weight: 700; color: var(--texto); }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+    /* ===== BOTÕES ===== */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+      border-radius: 6px; border: none; font-size: 13px; font-weight: 600;
+      transition: all .15s; line-height: 1;
+    }
+    .btn-primary { background: var(--verde-med); color: #fff; }
+    .btn-primary:hover { background: var(--verde); }
+    .btn-secondary { background: #fff; color: var(--texto); border: 1px solid var(--cinza-borda); }
+    .btn-secondary:hover { background: var(--cinza); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #a93226; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-icon { padding: 6px 8px; }
+
+    /* ===== PÁGINA ===== */
+    .page { padding: 24px; flex: 1; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .page-titulo { font-size: 22px; font-weight: 700; color: var(--texto); }
+    .page-sub { font-size: 13px; color: var(--texto-leve); margin-top: 2px; }
+
+    /* ===== CARDS DE RESUMO ===== */
+    .cards-resumo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .card-resumo {
+      background: #fff; border-radius: 10px; padding: 18px 20px;
+      box-shadow: var(--sombra); border-left: 4px solid transparent;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .card-resumo.verde   { border-left-color: var(--verde-med); }
+    .card-resumo.laranja { border-left-color: var(--warning); }
+    .card-resumo.azul    { border-left-color: var(--info); }
+    .card-resumo.cinza   { border-left-color: #95a5a6; }
+    .card-resumo .icon { font-size: 28px; }
+    .card-resumo .valor { font-size: 26px; font-weight: 800; color: var(--texto); }
+    .card-resumo .label { font-size: 12px; color: var(--texto-leve); font-weight: 500; }
+
+    /* ===== FILTROS ===== */
+    .filtros {
+      background: #fff; border-radius: 10px; padding: 16px 20px;
+      box-shadow: var(--sombra); margin-bottom: 20px;
+      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    }
+    .filtros input, .filtros select {
+      padding: 8px 12px; border: 1px solid var(--cinza-borda); border-radius: 6px;
+      font-size: 13px; color: var(--texto); background: #fff; outline: none;
+    }
+    .filtros input:focus, .filtros select:focus { border-color: var(--verde-med); }
+    .filtros input[type=search] { width: 280px; }
+    .filtros select { min-width: 160px; }
+
+    /* ===== TABELA ===== */
+    .tabela-wrap {
+      background: #fff; border-radius: 10px; box-shadow: var(--sombra);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #f7f9fc; }
+    th {
+      padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em; color: var(--texto-leve);
+      border-bottom: 1px solid var(--cinza-borda); white-space: nowrap;
+    }
+    td { padding: 13px 16px; font-size: 13px; color: var(--texto); border-bottom: 1px solid #f0f4f8; }
+    tr:hover td { background: #fafbff; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ===== AVATAR ===== */
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+
+    /* ===== BADGES ===== */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge.ativo     { background: #d4edda; color: #155724; }
+    .badge.ferias    { background: #fff3cd; color: #856404; }
+    .badge.afastado  { background: #fff3cd; color: #856404; }
+    .badge.desligado { background: #f8d7da; color: #721c24; }
+    .badge.clt       { background: #d1ecf1; color: #0c5460; }
+    .badge.pj        { background: #e2d9f3; color: #432874; }
+    .badge.dot::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ===== PAGINAÇÃO ===== */
+    .paginacao {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-top: 1px solid var(--cinza-borda);
+      font-size: 13px; color: var(--texto-leve);
+    }
+    .paginacao-btns { display: flex; gap: 6px; }
+    .paginacao-btns button {
+      width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--cinza-borda);
+      background: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center;
+    }
+    .paginacao-btns button.ativo { background: var(--verde-med); color: #fff; border-color: var(--verde-med); }
+    .paginacao-btns button:hover:not(.ativo):not(:disabled) { background: var(--cinza); }
+    .paginacao-btns button:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5);
+      display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+    }
+    .modal {
+      background: #fff; border-radius: 12px; width: 100%; max-width: 680px;
+      max-height: 90vh; display: flex; flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+    .modal-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--cinza-borda);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-titulo { font-size: 17px; font-weight: 700; color: var(--texto); }
+    .modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+    .modal-footer {
+      padding: 16px 24px; border-top: 1px solid var(--cinza-borda);
+      display: flex; justify-content: flex-end; gap: 10px;
+    }
+    .btn-fechar {
+      width: 30px; height: 30px; border-radius: 6px; border: none;
+      background: var(--cinza); font-size: 18px; display: flex;
+      align-items: center; justify-content: center; color: var(--texto-leve);
+    }
+    .btn-fechar:hover { background: var(--cinza-borda); }
+
+    /* ===== FORMULÁRIO ===== */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid.cols-1 { grid-template-columns: 1fr; }
+    .form-grupo { display: flex; flex-direction: column; gap: 5px; }
+    .form-grupo.span-2 { grid-column: span 2; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--texto-leve); text-transform: uppercase; letter-spacing: .04em; }
+    .form-label .obrig { color: var(--danger); }
+    .form-input, .form-select, .form-textarea {
+      padding: 9px 12px; border: 1px solid var(--cinza-borda); border-radius: 6px;
+      font-size: 13px; color: var(--texto); background: #fff; outline: none; width: 100%;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--verde-med); box-shadow: 0 0 0 3px rgba(30,132,73,.1); }
+    .form-textarea { resize: vertical; min-height: 70px; }
+    .form-section { margin-bottom: 20px; }
+    .form-section-titulo {
+      font-size: 12px; font-weight: 700; color: var(--verde); text-transform: uppercase;
+      letter-spacing: .06em; margin-bottom: 12px; padding-bottom: 6px;
+      border-bottom: 2px solid var(--verde-claro);
+    }
+
+    /* ===== DETALHE ===== */
+    .detalhe-header {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+      padding: 20px; background: var(--verde-bg); border-radius: 10px;
+    }
+    .detalhe-avatar { width: 64px; height: 64px; border-radius: 50%; font-size: 24px; }
+    .detalhe-nome { font-size: 20px; font-weight: 700; }
+    .detalhe-cargo { font-size: 14px; color: var(--texto-leve); }
+    .detalhe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .detalhe-item { padding: 12px 16px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--cinza-borda); }
+    .detalhe-item-label { font-size: 11px; font-weight: 600; color: var(--texto-leve); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+    .detalhe-item-valor { font-size: 14px; font-weight: 500; color: var(--texto); }
+    .historico-item {
+      padding: 12px 16px; border-left: 3px solid var(--verde-med);
+      background: #f8fafc; border-radius: 0 8px 8px 0; margin-bottom: 8px;
+    }
+    .historico-data { font-size: 11px; color: var(--texto-leve); }
+    .historico-valor { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+    .historico-motivo { font-size: 12px; color: var(--texto-leve); font-style: italic; }
+    .seta { font-size: 12px; color: var(--texto-leve); }
+
+    /* ===== LOADING / VAZIO ===== */
+    .loading { display: flex; align-items: center; justify-content: center; padding: 60px; }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--cinza-borda); border-top-color: var(--verde-med); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .vazio { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px; color: var(--texto-leve); gap: 12px; }
+    .vazio .icon { font-size: 48px; }
+    .vazio p { font-size: 15px; }
+
+    /* ===== TOAST ===== */
+    .toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast {
+      padding: 12px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15); max-width: 360px;
+      animation: slideIn .2s ease;
+    }
+    .toast.sucesso { background: #155724; color: #fff; }
+    .toast.erro    { background: #721c24; color: #fff; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== LOGIN ===== */
+    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0d4f1e 0%, #1e8449 100%); }
+    .login-card { background: #fff; border-radius: 16px; padding: 40px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+    .login-logo { text-align: center; margin-bottom: 28px; }
+    .login-logo .icon { font-size: 48px; }
+    .login-logo h1 { font-size: 22px; font-weight: 800; color: var(--verde); margin-top: 8px; }
+    .login-logo p { font-size: 13px; color: var(--texto-leve); }
+    .login-grupo { margin-bottom: 16px; }
+    .login-label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-leve); margin-bottom: 5px; text-transform: uppercase; }
+    .login-input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--cinza-borda); border-radius: 8px; font-size: 14px; outline: none; }
+    .login-input:focus { border-color: var(--verde-med); }
+    .login-btn { width: 100%; padding: 11px; background: var(--verde-med); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; margin-top: 8px; }
+    .login-btn:hover { background: var(--verde); }
+    .login-erro { background: #f8d7da; color: #721c24; border-radius: 6px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+// ============================================================
+// CONFIG
+// ============================================================
+const API = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api';
+
+// ============================================================
+// HELPERS
+// ============================================================
+function formatarMoeda(v) {
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
+}
+function formatarData(d) {
+  if (!d) return '—';
+  return new Date(d + 'T00:00:00').toLocaleDateString('pt-BR');
+}
+function iniciais(nome) {
+  return nome?.split(' ').slice(0,2).map(n => n[0]).join('').toUpperCase() || '?';
+}
+function corAvatar(nome) {
+  const cores = ['#1e8449','#2980b9','#8e44ad','#e67e22','#c0392b','#16a085','#2c3e50'];
+  let h = 0; for (let c of (nome || '')) h = c.charCodeAt(0) + h * 31;
+  return cores[Math.abs(h) % cores.length];
+}
+
+// ============================================================
+// API HELPERS
+// ============================================================
+async function apiFetch(path, opts = {}) {
+  const token = localStorage.getItem('erp_token');
+  const res = await fetch(API + path, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: 'Bearer ' + token } : {}),
+    },
+    ...opts,
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.erro || 'Erro desconhecido');
+  return data;
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let _setToasts = null;
+function Toast({ toasts }) {
+  return (
+    <div className="toast-wrap">
+      {toasts.map(t => <div key={t.id} className={`toast ${t.tipo}`}>{t.msg}</div>)}
+    </div>
+  );
+}
+function useToast() {
+  const [toasts, setToasts] = useState([]);
+  _setToasts = setToasts;
+  return toasts;
+}
+function toast(msg, tipo = 'sucesso') {
+  if (!_setToasts) return;
+  const id = Date.now();
+  _setToasts(prev => [...prev, { id, msg, tipo }]);
+  setTimeout(() => _setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+function Login({ onLogin }) {
+  const [email, setEmail]   = useState('');
+  const [senha, setSenha]   = useState('');
+  const [erro, setErro]     = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setErro(''); setLoading(true);
+    try {
+      // DEMO: aceita qualquer login (remova em produção e use a API real)
+      if (email && senha) {
+        const usuario = { nome: 'Administrador', cargo: 'CEO / Presidente', perfil: 'admin' };
+        localStorage.setItem('erp_token', 'demo_token');
+        localStorage.setItem('erp_usuario', JSON.stringify(usuario));
+        onLogin(usuario);
+      } else {
+        setErro('Preencha e-mail e senha.');
+      }
+    } catch (err) {
+      setErro(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="login-wrap">
+      <div className="login-card">
+        <div className="login-logo">
+          <div className="icon">⚽</div>
+          <h1>ERP SAF</h1>
+          <p>Sistema de Gestão — SAF</p>
+        </div>
+        {erro && <div className="login-erro">⚠️ {erro}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="login-grupo">
+            <label className="login-label">E-mail corporativo</label>
+            <input className="login-input" type="email" value={email}
+              onChange={e => setEmail(e.target.value)} placeholder="seu@saf.com.br" required />
+          </div>
+          <div className="login-grupo">
+            <label className="login-label">Senha</label>
+            <input className="login-input" type="password" value={senha}
+              onChange={e => setSenha(e.target.value)} placeholder="••••••••" required />
+          </div>
+          <button className="login-btn" type="submit" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar no Sistema'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// BADGE STATUS / TIPO
+// ============================================================
+function BadgeStatus({ status }) {
+  const mapa = { ativo: '● Ativo', ferias: '● Férias', afastado: '● Afastado', desligado: '● Desligado' };
+  return <span className={`badge ${status}`}>{mapa[status] || status}</span>;
+}
+function BadgeTipo({ tipo }) {
+  return <span className={`badge ${tipo.toLowerCase()}`}>{tipo}</span>;
+}
+
+// ============================================================
+// MODAL FORMULÁRIO (Novo / Editar)
+// ============================================================
+function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFechar }) {
+  const editando = !!funcionario?.id;
+  const [form, setForm] = useState({
+    nome_completo: '', cpf: '', rg: '', data_nascimento: '',
+    email: '', email_corporativo: '', telefone: '',
+    cargo: '', departamento_id: '', tipo_contrato: 'CLT',
+    salario: '', data_admissao: '', gestor_id: '',
+    cnpj: '', razao_social: '', status: 'ativo', observacoes: '',
+    ...(funcionario || {}),
+    salario: funcionario?.salario || '',
+    departamento_id: funcionario?.departamento_id || '',
+    gestor_id: funcionario?.gestor_id || '',
+  });
+  const [salvando, setSalvando] = useState(false);
+  const [motivo, setMotivo]     = useState('');
+
+  function set(campo, val) { setForm(f => ({ ...f, [campo]: val })); }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSalvando(true);
+    try {
+      const payload = { ...form, salario: parseFloat(form.salario), motivo_alteracao_salario: motivo };
+      await onSalvar(payload, editando);
+      toast(editando ? 'Funcionário atualizado com sucesso!' : 'Funcionário cadastrado com sucesso!');
+      onFechar();
+    } catch (err) {
+      toast(err.message, 'erro');
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  const salarioMudou = editando && parseFloat(form.salario) !== parseFloat(funcionario.salario);
+
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onFechar()}>
+      <div className="modal">
+        <div className="modal-header">
+          <span className="modal-titulo">{editando ? '✏️ Editar Funcionário' : '➕ Novo Funcionário'}</span>
+          <button className="btn-fechar" onClick={onFechar}>×</button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            {/* Dados Pessoais */}
+            <div className="form-section">
+              <div className="form-section-titulo">Dados Pessoais</div>
+              <div className="form-grid">
+                <div className="form-grupo span-2">
+                  <label className="form-label">Nome completo <span className="obrig">*</span></label>
+                  <input className="form-input" value={form.nome_completo} required
+                    onChange={e => set('nome_completo', e.target.value)} />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">CPF</label>
+                  <input className="form-input" value={form.cpf || ''} placeholder="000.000.000-00"
+                    onChange={e => set('cpf', e.target.value)} />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Data de Nascimento</label>
+                  <input className="form-input" type="date" value={form.data_nascimento || ''}
+                    onChange={e => set('data_nascimento', e.target.value)} />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">E-mail pessoal</label>
+                  <input className="form-input" type="email" value={form.email || ''}
+                    onChange={e => set('email', e.target.value)} />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Telefone</label>
+                  <input className="form-input" value={form.telefone || ''} placeholder="(11) 99999-0000"
+                    onChange={e => set('telefone', e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            {/* Dados Profissionais */}
+            <div className="form-section">
+              <div className="form-section-titulo">Dados Profissionais</div>
+              <div className="form-grid">
+                <div className="form-grupo">
+                  <label className="form-label">Cargo <span className="obrig">*</span></label>
+                  <input className="form-input" value={form.cargo} required
+                    onChange={e => set('cargo', e.target.value)} />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Departamento <span className="obrig">*</span></label>
+                  <select className="form-select" value={form.departamento_id} required
+                    onChange={e => set('departamento_id', e.target.value)}>
+                    <option value="">Selecione...</option>
+                    {departamentos.map(d => <option key={d.id} value={d.id}>{d.nome}</option>)}
+                  </select>
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Tipo de Contrato <span className="obrig">*</span></label>
+                  <select className="form-select" value={form.tipo_contrato} required
+                    onChange={e => set('tipo_contrato', e.target.value)}>
+                    <option value="CLT">CLT</option>
+                    <option value="PJ">PJ</option>
+                  </select>
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">
+                    {form.tipo_contrato === 'PJ' ? 'Valor mensal (R$)' : 'Salário (R$)'} <span className="obrig">*</span>
+                  </label>
+                  <input className="form-input" type="number" step="0.01" min="0" value={form.salario} required
+                    onChange={e => set('salario', e.target.value)} />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Data de Admissão <span className="obrig">*</span></label>
+                  <input className="form-input" type="date" value={form.data_admissao} required
+                    onChange={e => set('data_admissao', e.target.value)} />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Gestor Direto</label>
+                  <select className="form-select" value={form.gestor_id || ''}
+                    onChange={e => set('gestor_id', e.target.value)}>
+                    <option value="">Sem gestor</option>
+                    {gestores.filter(g => g.id !== funcionario?.id).map(g =>
+                      <option key={g.id} value={g.id}>{g.nome_completo} — {g.cargo}</option>
+                    )}
+                  </select>
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">E-mail corporativo</label>
+                  <input className="form-input" type="email" value={form.email_corporativo || ''}
+                    onChange={e => set('email_corporativo', e.target.value)} />
+                </div>
+                {editando && (
+                  <div className="form-grupo">
+                    <label className="form-label">Status</label>
+                    <select className="form-select" value={form.status}
+                      onChange={e => set('status', e.target.value)}>
+                      <option value="ativo">Ativo</option>
+                      <option value="ferias">Férias</option>
+                      <option value="afastado">Afastado</option>
+                      <option value="desligado">Desligado</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Dados PJ */}
+            {form.tipo_contrato === 'PJ' && (
+              <div className="form-section">
+                <div className="form-section-titulo">Dados PJ</div>
+                <div className="form-grid">
+                  <div className="form-grupo">
+                    <label className="form-label">CNPJ <span className="obrig">*</span></label>
+                    <input className="form-input" value={form.cnpj || ''} placeholder="00.000.000/0001-00"
+                      onChange={e => set('cnpj', e.target.value)} required={form.tipo_contrato === 'PJ'} />
+                  </div>
+                  <div className="form-grupo">
+                    <label className="form-label">Razão Social</label>
+                    <input className="form-input" value={form.razao_social || ''}
+                      onChange={e => set('razao_social', e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Motivo de alteração de salário */}
+            {salarioMudou && (
+              <div className="form-section">
+                <div className="form-section-titulo" style={{color:'var(--warning)'}}>Alteração de Salário</div>
+                <div style={{background:'#fff3cd',padding:'12px',borderRadius:'8px',marginBottom:'12px',fontSize:'13px'}}>
+                  ⚠️ Salário anterior: <strong>{formatarMoeda(funcionario.salario)}</strong> → Novo: <strong>{formatarMoeda(form.salario)}</strong>
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Motivo da alteração <span className="obrig">*</span></label>
+                  <input className="form-input" value={motivo} required
+                    placeholder="Ex: Promoção, reajuste anual, mudança de cargo..."
+                    onChange={e => setMotivo(e.target.value)} />
+                </div>
+              </div>
+            )}
+
+            {/* Observações */}
+            <div className="form-section">
+              <div className="form-section-titulo">Observações</div>
+              <div className="form-grupo">
+                <textarea className="form-textarea" value={form.observacoes || ''}
+                  placeholder="Informações adicionais relevantes..."
+                     onChange={e => set('observacoes', e.target.value)} />
+              </div>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={onFechar}>Cancelar</button>
+            <button type="submit" className="btn btn-primary" disabled={salvando}>
+              {salvando ? 'Salvando...' : (editando ? '💾 Salvar alterações' : '➕ Cadastrar funcionário')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// MODAL DETALHE
+// ============================================================
+function ModalDetalhe({ funcionario, onFechar, onEditar }) {
+  if (!funcionario) return null;
+  const cor = corAvatar(funcionario.nome_completo);
+
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onFechar()}>
+      <div className="modal" style={{maxWidth:720}}>
+        <div className="modal-header">
+          <span className="modal-titulo">👤 Perfil do Funcionário</span>
+          <div style={{display:'flex',gap:8}}>
+            <button className="btn btn-secondary btn-sm" onClick={onEditar}>✏️ Editar</button>
+            <button className="btn-fechar" onClick={onFechar}>×</button>
+          </div>
+        </div>
+        <div className="modal-body">
+          <div className="detalhe-header">
+            <div className="avatar detalhe-avatar" style={{background:cor}}>
+              {iniciais(funcionario.nome_completo)}
+            </div>
+            <div>
+              <div className="detalhe-nome">{funcionario.nome_completo}</div>
+              <div className="detalhe-cargo">{funcionario.cargo} · {funcionario.departamento}</div>
+              <div style={{marginTop:8,display:'flex',gap:8}}>
+                <BadgeStatus status={funcionario.status} />
+                <BadgeTipo tipo={funcionario.tipo_contrato} />
+              </div>
+            </div>
+          </div>
+
+          <div className="detalhe-grid" style={{marginBottom:16}}>
+            {[
+              ['CPF', funcionario.cpf || '—'],
+              ['Telefone', funcionario.telefone || '—'],
+              ['E-mail pessoal', funcionario.email || '—'],
+              ['E-mail corporativo', funcionario.email_corporativo || '—'],
+              ['Data de admissão', formatarData(funcionario.data_admissao)],
+              ['Tempo de casa', funcionario.anos_casa != null ? `${funcionario.anos_casa} ano(s)` : '—'],
+              ['Salário / Valor PJ', formatarMoeda(funcionario.salario)],
+              ['Gestor direto', funcionario.gestor_nome || '—'],
+              ...(funcionario.tipo_contrato === 'PJ' ? [
+                ['CNPJ', funcionario.cnpj || '—'],
+                ['Razão Social', funcionario.razao_social || '—'],
+              ] : []),
+            ].map(([label, val]) => (
+              <div className="detalhe-item" key={label}>
+                <div className="detalhe-item-label">{label}</div>
+                <div className="detalhe-item-valor">{val}</div>
+              </div>
+            ))}
+          </div>
+
+          {funcionario.observacoes && (
+            <div className="detalhe-item" style={{marginBottom:16,gridColumn:'span 2'}}>
+              <div className="detalhe-item-label">Observações</div>
+              <div className="detalhe-item-valor">{funcionario.observacoes}</div>
+            </div>
+          )}
+
+          {/* Histórico de salários */}
+          {funcionario.historico_salarios?.length > 0 && (
+            <div>
+              <div className="form-section-titulo" style={{marginBottom:12}}>Histórico de Salários</div>
+              {funcionario.historico_salarios.map(h => (
+                <div className="historico-item" key={h.id}>
+                  <div className="historico-data">{formatarData(h.data_alteracao)} · {h.registrado_por_nome || 'Sistema'}</div>
+                  <div className="historico-valor">
+                    {h.salario_anterior && <><span style={{textDecoration:'line-through',color:'#95a5a6'}}>{formatarMoeda(h.salario_anterior)}</span><span className="seta">→</span></>}
+                    <strong style={{color:'var(--verde)'}}>
+                      {formatarMoeda(h.salario_novo)}
+                    </strong>
+                  </div>
+                  {h.motivo && <div className="historico-motivo">{h.motivo}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// DADOS DE DEMONSTRAÇÃO (substitua por chamadas reais à API)
+// ============================================================
+const DEMO_DEPARTAMENTOS = [
+  {id:1,nome:'Futebol Profissional'},{id:2,nome:'Futebol de Base'},
+  {id:3,nome:'Financeiro'},{id:4,nome:'Administrativo'},
+  {id:5,nome:'Marketing e Comercial'},{id:6,nome:'Jurídico'},
+  {id:7,nome:'Médico e Fisioterapia'},{id:8,nome:'TI e Análise de Dados'},
+  {id:9,nome:'Segurança'},
+];
+
+const DEMO_FUNCIONARIOS = [
+  {id:1,nome_completo:'Carlos Eduardo Mendes',cargo:'CEO / Presidente',departamento:'Administrativo',departamento_id:4,tipo_contrato:'CLT',salario:45000,data_admissao:'2022-01-01',status:'ativo',email:'carlos.mendes@gmail.com',email_corporativo:'ceo@saf.com.br',telefone:'(11) 99999-0001',gestor_id:null,gestor_nome:null,anos_casa:4,historico_salarios:[{id:1,salario_anterior:null,salario_novo:45000,data_alteracao:'2022-01-01',motivo:'Admissão',registrado_por_nome:'Sistema'}]},
+  {id:2,nome_completo:'Fernanda Lima Costa',cargo:'Diretora Financeira',departamento:'Financeiro',departamento_id:3,tipo_contrato:'CLT',salario:35000,data_admissao:'2022-01-01',status:'ativo',email:'fernanda.lima@gmail.com',email_corporativo:'financeiro@saf.com.br',telefone:'(11) 99999-0002',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:4,historico_salarios:[]},
+  {id:3,nome_completo:'Roberto Alves Neto',cargo:'Diretor de Futebol',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'CLT',salario:38000,data_admissao:'2022-02-01',status:'ativo',email:'roberto.alves@gmail.com',email_corporativo:'dof@saf.com.br',telefone:'(11) 99999-0003',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:4,historico_salarios:[]},
+  {id:4,nome_completo:'Marcelo Santos',cargo:'Técnico Principal',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:25000,data_admissao:'2023-01-10',status:'ativo',email:'marcelo.tecnico@gmail.com',email_corporativo:'tecnico@saf.com.br',telefone:'(11) 99999-0004',cnpj:'12.345.678/0001-90',razao_social:'Marcelo Santos Consultoria Esportiva ME',gestor_id:3,gestor_nome:'Roberto Alves Neto',anos_casa:3,historico_salarios:[]},
+  {id:5,nome_completo:'André Oliveira',cargo:'Assistente Técnico',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:12000,data_admissao:'2023-01-10',status:'ativo',email:'andre.assistente@gmail.com',email_corporativo:'assistente@saf.com.br',telefone:'(11) 99999-0005',cnpj:'98.765.432/0001-10',razao_social:'André Oliveira Treinamento ME',gestor_id:4,gestor_nome:'Marcelo Santos',anos_casa:3,historico_salarios:[]},
+  {id:6,nome_completo:'Paulo Ferreira',cargo:'Preparador Físico',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:10000,data_admissao:'2023-01-10',status:'ativo',email:'paulo.prep@gmail.com',email_corporativo:'prep.fisico@saf.com.br',telefone:'(11) 99999-0006',cnpj:'11.222.333/0001-44',razao_social:'Paulo Ferreira Fitness ME',gestor_id:4,gestor_nome:'Marcelo Santos',anos_casa:3,historico_salarios:[]},
+  {id:7,nome_completo:'Dra. Juliana Pires',cargo:'Médica do Clube',departamento:'Médico e Fisioterapia',departamento_id:7,tipo_contrato:'CLT',salario:18000,data_admissao:'2022-06-01',status:'ativo',email:'juliana.medica@gmail.com',email_corporativo:'medica@saf.com.br',telefone:'(11) 99999-0008',gestor_id:3,gestor_nome:'Roberto Alves Neto',anos_casa:3,historico_salarios:[]},
+  {id:8,nome_completo:'Bruno Carvalho',cargo:'Fisioterapeuta',departamento:'Médico e Fisioterapia',departamento_id:7,tipo_contrato:'CLT',salario:8500,data_admissao:'2022-06-01',status:'ferias',email:'bruno.fisio@gmail.com',email_corporativo:'fisio@saf.com.br',telefone:'(11) 99999-0009',gestor_id:7,gestor_nome:'Dra. Juliana Pires',anos_casa:3,historico_salarios:[]},
+  {id:9,nome_completo:'Mariana Souza',cargo:'Analista Financeiro Sênior',departamento:'Financeiro',departamento_id:3,tipo_contrato:'CLT',salario:9500,data_admissao:'2022-03-01',status:'ativo',email:'mariana.souza@gmail.com',email_corporativo:'controller@saf.com.br',telefone:'(11) 99999-0010',gestor_id:2,gestor_nome:'Fernanda Lima Costa',anos_casa:4,historico_salarios:[{id:2,salario_anterior:8000,salario_novo:9500,data_alteracao:'2024-01-01',motivo:'Promoção para Sênior',registrado_por_nome:'Fernanda Lima Costa'}]},
+  {id:10,nome_completo:'Camila Torres',cargo:'Gerente de Marketing',departamento:'Marketing e Comercial',departamento_id:5,tipo_contrato:'CLT',salario:11000,data_admissao:'2022-08-01',status:'ativo',email:'camila.torres@gmail.com',email_corporativo:'marketing@saf.com.br',telefone:'(11) 99999-0012',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:3,historico_salarios:[]},
+  {id:11,nome_completo:'Diego Monteiro',cargo:'Analista de TI',departamento:'TI e Análise de Dados',departamento_id:8,tipo_contrato:'PJ',salario:9000,data_admissao:'2022-09-01',status:'ativo',email:'diego.ti@gmail.com',email_corporativo:'ti@saf.com.br',telefone:'(11) 99999-0014',cnpj:'55.444.333/0001-22',razao_social:'Diego Monteiro Tech ME',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:3,historico_salarios:[]},
+  {id:12,nome_completo:'Rafael Cunha',cargo:'Analista Financeiro Júnior',departamento:'Financeiro',departamento_id:3,tipo_contrato:'CLT',salario:5500,data_admissao:'2023-04-01',status:'afastado',email:'rafael.cunha@gmail.com',email_corporativo:'financeiro2@saf.com.br',telefone:'(11) 99999-0011',gestor_id:9,gestor_nome:'Mariana Souza',anos_casa:2,historico_salarios:[{id:3,salario_anterior:4500,salario_novo:5500,data_alteracao:'2024-07-01',motivo:'Reajuste anual',registrado_por_nome:'Fernanda Lima Costa'}]},
+];
+
+const DEMO_RESUMO = {
+  total: 12, ativos: 10, ferias: 1, afastados: 1, desligados: 0,
+  clt: 8, pj: 4, folha_mensal: 196500,
+  por_departamento: [
+    {departamento:'Futebol Profissional',total:4,folha:59000},
+    {departamento:'Financeiro',total:3,folha:50000},
+    {departamento:'Administrativo',total:1,folha:45000},
+    {departamento:'Médico e Fisioterapia',total:2,folha:26500},
+    {departamento:'Marketing e Comercial',total:1,folha:11000},
+    {departamento:'TI e Análise de Dados',total:1,folha:9000},
+  ],
+};
+
+// ============================================================
+// MÓDULO FUNCIONÁRIOS
+// ============================================================
+function ModuloFuncionarios({ usuario }) {
+  const [funcionarios, setFuncionarios]   = useState(DEMO_FUNCIONARIOS);
+  const [resumo, setResumo]               = useState(DEMO_RESUMO);
+  const [departamentos]                   = useState(DEMO_DEPARTAMENTOS);
+  const [busca, setBusca]                 = useState('');
+  const [filtroDept, setFiltroDept]       = useState('');
+  const [filtroTipo, setFiltroTipo]       = useState('');
+  const [filtroStatus, setFiltroStatus]   = useState('');
+  const [pagina, setPagina]               = useState(1);
+  const [modalForm, setModalForm]         = useState(null);   // null | {} | funcionario
+  const [modalDetalhe, setModalDetalhe]   = useState(null);
+  const LIMITE = 10;
+
+  // Filtragem local (demo — em produção envia query params para a API)
+  const filtrados = funcionarios.filter(f => {
+    const ok_busca = !busca || f.nome_completo.toLowerCase().includes(busca.toLowerCase()) ||
+                     f.cargo.toLowerCase().includes(busca.toLowerCase());
+    const ok_dept  = !filtroDept || f.departamento_id == filtroDept;
+    const ok_tipo  = !filtroTipo || f.tipo_contrato === filtroTipo;
+    const ok_status= !filtroStatus || f.status === filtroStatus;
+    return ok_busca && ok_dept && ok_tipo && ok_status;
+  });
+
+  const totalPags = Math.ceil(filtrados.length / LIMITE);
+  const paginados = filtrados.slice((pagina-1)*LIMITE, pagina*LIMITE);
+
+  function abrirNovo() { setModalForm({}); }
+  function abrirEditar(f) { setModalForm(f); setModalDetalhe(null); }
+
+  function salvar(payload, editando) {
+    if (editando) {
+      setFuncionarios(prev => prev.map(f => f.id === payload.id ? { ...f, ...payload } : f));
+    } else {
+      const novo = { ...payload, id: Date.now(), departamento: departamentos.find(d=>d.id==payload.departamento_id)?.nome || '', historico_salarios: [], anos_casa: 0 };
+      setFuncionarios(prev => [...prev, novo]);
+      setResumo(r => ({ ...r, total: r.total + 1, ativos: r.ativos + 1 }));
+    }
+  }
+
+  return (
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <div className="page-titulo">👥 Funcionários e Comissão Técnica</div>
+          <div className="page-sub">Gestão completa do quadro de pessoal da SAF</div>
+        </div>
+        <button className="btn btn-primary" onClick={abrirNovo}>
+          ➕ Novo Funcionário
+        </button>
+      </div>
+
+      {/* CARDS RESUMO */}
+      <div className="cards-resumo">
+        <div className="card-resumo verde">
+          <div className="icon">👥</div>
+          <div><div className="valor">{resumo.ativos}</div><div className="label">Ativos</div></div>
+        </div>
+        <div className="card-resumo azul">
+          <div className="icon">📄</div>
+          <div>
+            <div className="valor">{resumo.clt} CLT · {resumo.pj} PJ</div>
+            <div className="label">Tipos de Contrato</div>
+          </div>
+        </div>
+        <div className="card-resumo laranja">
+          <div className="icon">🏖️</div>
+          <div><div className="valor">{resumo.ferias + resumo.afastados}</div><div className="label">Férias / Afastados</div></div>
+        </div>
+        <div className="card-resumo verde">
+          <div className="icon">💰</div>
+          <div><div className="valor" style={{fontSize:18}}>{formatarMoeda(resumo.folha_mensal)}</div><div className="label">Folha Mensal</div></div>
+        </div>
+      </div>
+
+      {/* FILTROS */}
+      <div className="filtros">
+        <input type="search" placeholder="🔍 Buscar por nome, cargo ou CPF..."
+          value={busca} onChange={e => { setBusca(e.target.value); setPagina(1); }} />
+        <select value={filtroDept} onChange={e => { setFiltroDept(e.target.value); setPagina(1); }}>
+          <option value="">Todos os departamentos</option>
+          {departamentos.map(d => <option key={d.id} value={d.id}>{d.nome}</option>)}
+        </select>
+        <select value={filtroTipo} onChange={e => { setFiltroTipo(e.target.value); setPagina(1); }}>
+          <option value="">CLT e PJ</option>
+          <option value="CLT">Somente CLT</option>
+          <option value="PJ">Somente PJ</option>
+        </select>
+        <select value={filtroStatus} onChange={e => { setFiltroStatus(e.target.value); setPagina(1); }}>
+          <option value="">Todos os status</option>
+          <option value="ativo">Ativo</option>
+          <option value="ferias">Férias</option>
+          <option value="afastado">Afastado</option>
+          <option value="desligado">Desligado</option>
+        </select>
+        {(busca || filtroDept || filtroTipo || filtroStatus) && (
+          <button className="btn btn-secondary btn-sm" onClick={() => { setBusca(''); setFiltroDept(''); setFiltroTipo(''); setFiltroStatus(''); }}>
+            ✕ Limpar filtros
+          </button>
+        )}
+        <span style={{marginLeft:'auto',fontSize:13,color:'var(--texto-leve)'}}>
+          {filtrados.length} funcionário(s)
+        </span>
+      </div>
+
+      {/* TABELA */}
+      <div className="tabela-wrap">
+        {paginados.length === 0 ? (
+          <div className="vazio"><div className="icon">🔍</div><p>Nenhum funcionário encontrado com os filtros aplicados.</p></div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Funcionário</th>
+                <th>Cargo</th>
+                <th>Departamento</th>
+                <th>Contrato</th>
+                <th>Admissão</th>
+                <th>Salário</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginados.map(f => (
+                <tr key={f.id} onClick={() => setModalDetalhe(f)} style={{cursor:'pointer'}}>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:10}}>
+                      <div className="avatar" style={{background:corAvatar(f.nome_completo)}}>
+                        {iniciais(f.nome_completo)}
+                      </div>
+                      <div>
+                        <div style={{fontWeight:600}}>{f.nome_completo}</div>
+                        <div style={{fontSize:11,color:'var(--texto-leve)'}}>{f.email_corporativo || f.email || '—'}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style={{color:'var(--texto-leve)'}}>{f.cargo}</td>
+                  <td>{f.departamento}</td>
+                  <td><BadgeTipo tipo={f.tipo_contrato} /></td>
+                  <td style={{whiteSpace:'nowrap'}}>{formatarData(f.data_admissao)}</td>
+                  <td style={{fontWeight:600,whiteSpace:'nowrap'}}>{formatarMoeda(f.salario)}</td>
+                  <td><BadgeStatus status={f.status} /></td>
+                  <td onClick={e => e.stopPropagation()}>
+                    <button className="btn btn-secondary btn-sm btn-icon" title="Editar"
+                      onClick={() => abrirEditar(f)}>✏️</button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
+
+        {/* PAGINAÇÃO */}
+        {totalPags > 1 && (
+          <div className="paginacao">
+            <span>Mostrando {((pagina-1)*LIMITE+1}–{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
+            <div className="paginacao-btns">
+              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>‹</button>
+              {Array.from({length:totalPags},(_,i)=>i+1).map(p =>
+                <button key={p} className={pagina===p?'ativo':''} onClick={()=>setPagina(p)}>{p}</button>
+              )}
+              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>›</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MODAIS */}
+      {modalForm !== null && (
+        <ModalFuncionario
+          funcionario={modalForm.id ? modalForm : null}
+          departamentos={departamentos}
+          gestores={funcionarios}
+          onSalvar={salvar}
+          onFechar={() => setModalForm(null)}
+        />
+      )}
+      {modalDetalhe && (
+        <ModalDetalhe
+          funcionario={modalDetalhe}
+          onFechar={() => setModalDetalhe(null)}
+          onEditar={() => abrirEditar(modalDetalhe)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// APP PRINCIPAL
+// ============================================================
+function App() {
+  const [usuario, settatus</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginados.map(f => (
+                <tr key={f.id} onClick={() => setModalDetalhe(f)} style={{cursor:'pointer'}}>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:10}}>
+                      <div className="avatar" style={{background:corAvatar(f.nome_completo)}}>
+                        {iniciais(f.nome_completo)}
+                      </div>
+                      <div>
+                        <div style={{fontWeight:600}}>{f.nome_completo}</div>
+                        <div style={{fontSize:11,color:'var(--texto-leve)'}}>{f.email_corporativo || f.email || '—'}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style={{color:'var(--texto-leve)'}}>{f.cargo}</td>
+                  <td>{f.departamento}</td>
+                  <td><BadgeTipo tipo={f.tipo_contrato} /></td>
+                  <td style={{whiteSpace:'nowrap'}}>{formatarData(f.data_admissao)}</td>
+                  <td style={{fontWeight:600,whiteSpace:'nowrap'}}>{formatarMoeda(f.salario)}</td>
+                  <td><BadgeStatus status={f.status} /></td>
+                  <td onClick={e => e.stopPropagation()}>
+                    <button className="btn btn-secondary btn-sm btn-icon" title="Editar"
+                      onClick={() => abrirEditar(f)}>✏️</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {/* PAGINAÇÃO */}
+        {totalPags > 1 && (
+          <div className="paginacao">
+            <span>Mostrando {(pagina-1)*LIMITE+1}–{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
+            <div className="paginacao-btns">
+              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>‹</button>
+              {Array.from({length:totalPags},(_,i)=>i+1).map(p =>
+                <button key={p} className={pagina===p?'ativo':''} onClick={()=>setPagina(p)}>{p}</button>
+              )}
+              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>›</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MODAIS */}
+      {modalForm !== null && (
+        <ModalFuncionario
+          funcionario={modalForm.id ? modalForm : null}
+          departamentos={departamentos}
+          gestores={funcionarios}
+          onSalvar={salvar}
+          onFechar={() => setModalForm(null)}
+        />
+      )}
+      {modalDetalhe && (
+        <ModalDetalhe
+          funcionario={modalDetalhe}
+          onFechar={() => setModalDetalhe(null)}
+          onEditar={() => abrirEditar(modalDetalhe)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// APP PRINCIPAL
+// ============================================================
+function App() {
+  const [usuario, set  </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {/* PAGINAÇÃO */}
+        {totalPags > 1 && (
+          <div className="paginacao">
+            <span>Mostrando {(pagina-1)*LIMITE+1}–{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
+            <div className="paginacao-btns">
+              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>‹</button>
+              {Array.from({length:totalPags},(_,i)=>i+1).map(p =>
+                <button key={p} className={pagina===p?'ativo':''} onClick={()=>setPagina(p)}>{p}</button>
+              )}
+              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>›</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MODAIS */}
+      {modalForm !== null && (
+        <ModalFuncionario
+          funcionario={modalForm.id ? modalForm : null}
+          departamentos={departamentos}
+          gestores={funcionarios}
+          onSalvar={salvar}
+          onFechar={() => setModalForm(null)}
+        />
+      )}
+      {modalDetalhe && (
+        <ModalDetalhe
+          funcionario={modalDetalhe}
+          onFechar={() => setModalDetalhe(null)}
+          onEditar={() => abrirEditar(modalDetalhe)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// APP PRINCIPAL
+// ============================================================
+function App() {
+  const [usuario, setUsuario] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('erp_usuario')); } catch { return null; }
+  });
+  const [pagina, setPagina] = useState('funcionarios');
+  const toasts = useToast();
+
+  function logout() {
+    localStorage.removeItem('erp_token');
+    localStorage.removeItem('erp_usuario');
+    setUsuario(null);
+  }
+
+  if (!usuario) return <Login onLogin={u => setUsuario(u)} />;
+
+  const navItems = [
+    { id:'funcionarios', icon:'👥', label:'Funcionários' },
+    { id:'financeiro',   icon:'💰', label:'Financeiro',   disabled:true },
+    { id:'pedidos',      icon:'🛒', label:'Pedidos de Compra', disabled:true },
+    { id:'atletas',      icon:'⚽', label:'Contratos de Atletas', disabled:true },
+    { id:'investidores', icon:'📈', label:'Investidores',  disabled:true },
+    { id:'metas',        icon:'🎯', label:'Metas',         disabled:true },
+    { id:'relatorios',   icon:'📊', label:'Relatórios',    disabled:true },
+  ];
+
+  return (
+    <div className="layout">
+      {/* SIDEBAR */}
+      <aside className="sidebar">
+        <div className="sidebar-logo">
+          <div className="icon">⚽</div>
+          <div>
+            <div className="title">ERP SAF</div>
+            <div className="sub">Sistema de Gestão</div>
+          </div>
+        </div>
+        <nav className="sidebar-nav">
+          <div className="nav-label">Módulos</div>
+          {navItems.map(item => (
+            <div key={item.id}
+              className={`nav-item ${pagina===item.id?'ativo':''} ${item.disabled?'':''}` }
+              style={item.disabled ? {opacity:.45,cursor:'not-allowed'} : {cursor:'pointer'}}
+              onClick={() => !item.disabled && setPagina(item.id)}
+              title={item.disabled ? 'Em breve' : ''}
+            >
+              <span className="icon">{item.icon}</span>
+              <span>{item.label}</span>
+              {item.disabled && <span style={{marginLeft:'auto',fontSize:10,opacity:.7}}>em breve</span>}
+            </div>
+          ))}
+        </nav>
+        <div className="sidebar-footer">
+          <div className="usuario-info">
+            <div className="usuario-avatar">{iniciais(usuario.nome)}</div>
+            <div style={{flex:1,minWidth:0}}>
+              <div className="usuario-nome" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{usuario.nome}</div>
+              <div className="usuario-cargo">{usuario.cargo || usuario.perfil}</div>
+            </div>
+            <button onClick={logout} title="Sair" style={{background:'none',border:'none',color:'rgba(255,255,255,.6)',fontSize:16,cursor:'pointer'}}>⏻</button>
+          </div>
+        </div>
+      </aside>
+
+      {/* CONTEÚDO */}
+      <main classNama="main">
+        <div className="topbar">
+          <span className="topbar-title">
+            {navItems.find(n=>n.id===pagina)?.icon} {navItems.find(n=>n.id===pagina)?.label}
+          </span>
+          <div className="topbar-actions">
+            <span style={{fontSize:13,color:'var(--texto-leve)'}}>
+              {new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+            </span>
+          </div>
+        </div>
+        {pagina === 'funcionarios' && <ModuloFuncionarios usuario={usuario} />}
+      </main>
+
+      <Toast toasts={toasts} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
