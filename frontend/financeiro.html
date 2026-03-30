@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP SAF — Financeiro</title>
+  <script src="config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; }
+    button { cursor: pointer; font-family: inherit; }
+    input, select, textarea { font-family: inherit; }
+
+    :root {
+      --verde:       #155724;
+      --verde-med:   #1e8449;
+      --verde-claro: #d4edda;
+      --verde-bg:    #e8f5e9;
+      --cinza:       #f8fafc;
+      --cinza-borda: #e2e8f0;
+      --texto:       #2d3748;
+      --texto-leve:  #718096;
+      --danger:      #c0392b;
+      --warning:     #e67e22;
+      --info:        #2980b9;
+      --receita:     #1e8449;
+      --despesa:     #c0392b;
+      --previsto:    #e67e22;
+      --sombra:      0 1px 3px rgba(0,0,0,.12);
+      --sombra-md:   0 4px 6px rgba(0,0,0,.07);
+    }
+
+    .layout { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar { width: 240px; min-height: 100vh; background: var(--verde); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
+    .sidebar-logo { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,.15); display: flex; align-items: center; gap: 10px; }
+    .sidebar-logo .icon { font-size: 28px; }
+    .sidebar-logo .title { color: #fff; font-size: 14px; font-weight: 700; line-height: 1.3; }
+    .sidebar-logo .sub { color: rgba(255,255,255,.7); font-size: 11px; }
+    .sidebar-nav { flex: 1; padding: 12px 0; }
+    .nav-label { color: rgba(255,255,255,.5); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 12px 16px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: rgba(255,255,255,.8); font-size: 13px; text-decoration: none; transition: all .15s; border-left: 3px solid transparent; cursor: pointer; }
+    .nav-item:hover { background: rgba(255,255,255,.1); color: #fff; }
+    .nav-item.ativo { background: rgba(255,255,255,.15); color: #fff; border-left-color: #fff; font-weight: 600; }
+    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,.15); }
+    .usuario-info { display: flex; align-items: center; gap: 8px; }
+    .usuario-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; }
+    .usuario-nome { color: #fff; font-size: 12px; font-weight: 600; }
+    .usuario-cargo { color: rgba(255,255,255,.6); font-size: 11px; }
+
+    /* MAIN */
+    .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
+    .topbar { background: #fff; border-bottom: 1px solid var(--cinza-borda); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--sombra); position: sticky; top: 0; z-index: 50; }
+    .topbar-title { font-size: 18px; font-weight: 700; color: var(--texto); }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; transition: all .15s; line-height: 1; }
+    .btn-primary { background: var(--verde-med); color: #fff; }
+    .btn-primary:hover { background: var(--verde); }
+    .btn-receita { background: #d4edda; color: #155724; }
+    .btn-receita:hover { background: #c3e6cb; }
+    .btn-despesa { background: #f8d7da; color: #721c24; }
+    .btn-despesa:hover { background: #f5c6cb; }
+    .btn-secondary { background: #fff; color: var(--texto); border: 1px solid var(--cinza-borda); }
+    .btn-secondary:hover { background: var(--cinza); }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-link { background: none; border: none; color: var(--verde-med); font-size: 13px; padding: 4px; text-decoration: underline; }
+
+    /* PAGE */
+    .page { padding: 24px; flex: 1; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .page-titulo { font-size: 22px; font-weight: 700; color: var(--texto); }
+    .page-sub { font-size: 13px; color: var(--texto-leve); margin-top: 2px; }
+    .page-header-actions { display: flex; gap: 10px; }
+
+    /* CARDS RESUMO */
+    .cards-resumo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    .card { background: #fff; border-radius: 10px; padding: 18px 20px; box-shadow: var(--sombra); }
+    .card-kpi { display: flex; align-items: flex-start; justify-content: space-between; }
+    .card-kpi .icon { font-size: 28px; }
+    .card-kpi .valor { font-size: 22px; font-weight: 800; line-height: 1.2; }
+    .card-kpi .label { font-size: 12px; color: var(--texto-leve); font-weight: 500; margin-top: 2px; }
+    .card-kpi .variacao { font-size: 11px; margin-top: 4px; font-weight: 600; }
+    .positivo { color: var(--receita); }
+    .negativo { color: var(--despesa); }
+    .card.borda-verde  { border-left: 4px solid var(--receita); }
+    .card.borda-vermelho { border-left: 4px solid var(--despesa); }
+    .card.borda-azul   { border-left: 4px solid var(--info); }
+    .card.borda-laranja { border-left: 4px solid var(--warning); }
+
+    /* GRÁFICO DE BARRAS */
+    .grafico-wrap { background: #fff; border-radius: 10px; padding: 20px; box-shadow: var(--sombra); margin-bottom: 20px; }
+    .grafico-titulo { font-size: 15px; font-weight: 700; color: var(--texto); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+    .grafico-legenda { display: flex; gap: 16px; font-size: 12px; }
+    .legenda-item { display: flex; align-items: center; gap: 5px; }
+    .legenda-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .barras { display: flex; gap: 12px; align-items: flex-end; height: 180px; }
+    .barra-grupo { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .barra-container { display: flex; gap: 3px; align-items: flex-end; width: 100%; height: 160px; }
+    .barra { border-radius: 4px 4px 0 0; flex: 1; min-width: 0; transition: opacity .2s; position: relative; }
+    .barra:hover { opacity: .8; }
+    .barra-receita { background: #1e8449; }
+    .barra-despesa { background: #c0392b; }
+    .barra-label { font-size: 10px; color: var(--texto-leve); text-align: center; white-space: nowrap; }
+    .barra-valor { font-size: 9px; color: #fff; text-align: center; padding: 2px; word-break: break-all; }
+    .saldo-linha { display: flex; gap: 12px; margin-top: 8px; }
+    .saldo-mes { flex: 1; text-align: center; font-size: 11px; font-weight: 700; padding: 3px; border-radius: 4px; }
+    .saldo-positivo { background: #d4edda; color: #155724; }
+    .saldo-negativo { background: #f8d7da; color: #721c24; }
+
+    /* FILTROS */
+    .filtros { background: #fff; border-radius: 10px; padding: 14px 18px; box-shadow: var(--sombra); margin-bottom: 16px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .filtros input, .filtros select { padding: 7px 11px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 13px; color: var(--texto); background: #fff; outline: none; }
+    .filtros input:focus, .filtros select:focus { border-color: var(--verde-med); }
+    .filtros input[type=search] { width: 220px; }
+    .filtros input[type=date]   { width: 145px; }
+    .filtros select { min-width: 140px; }
+    .filtro-tipo-btns { display: flex; gap: 4px; }
+    .filtro-tipo-btn { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--cinza-borda); font-size: 12px; font-weight: 600; background: #fff; color: var(--texto-leve); }
+    .filtro-tipo-btn.ativo-receita { background: #d4edda; color: #155724; border-color: #1e8449; }
+    .filtro-tipo-btn.ativo-despesa { background: #f8d7da; color: #721c24; border-color: #c0392b; }
+    .filtro-tipo-btn.ativo-todos   { background: var(--cinza); color: var(--texto); border-color: var(--cinza-borda); }
+
+    /* TABELA */
+    .tabela-wrap { background: #fff; border-radius: 10px; box-shadow: var(--sombra); overflow: hidden; }
+    .tabela-header { padding: 14px 18px; border-bottom: 1px solid var(--cinza-borda); display: flex; align-items: center; justify-content: space-between; }
+    .tabela-header-titulo { font-size: 14px; font-weight: 700; color: var(--texto); }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #f7f9fc; }
+    th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--texto-leve); border-bottom: 1px solid var(--cinza-borda); white-space: nowrap; }
+    td { padding: 12px 14px; font-size: 13px; color: var(--texto); border-bottom: 1px solid #f0f4f8; vertical-align: middle; }
+    tr:hover td { background: #fafbff; }
+    tr:last-child td { border-bottom: none; }
+    .valor-receita { color: var(--receita); font-weight: 700; }
+    .valor-despesa { color: var(--despesa); font-weight: 700; }
+
+    /* BADGES */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .badge-realizado { background: #d4edda; color: #155724; }
+    .badge-previsto  { background: #fff3cd; color: #856404; }
+    .badge-cancelado { background: #e2e3e5; color: #495057; text-decoration: line-through; }
+    .cat-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+    /* PAGINAÇÃO */
+    .paginacao { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid var(--cinza-borda); font-size: 13px; color: var(--texto-leve); }
+    .paginacao-btns { display: flex; gap: 5px; }
+    .paginacao-btns button { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--cinza-borda); background: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+    .paginacao-btns button.ativo { background: var(--verde-med); color: #fff; border-color: var(--verde-med); }
+    .paginacao-btns button:hover:not(.ativo):not(:disabled) { background: var(--cinza); }
+    .paginacao-btns button:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal { background: #fff; border-radius: 12px; width: 100%; max-width: 620px; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+    .modal-header { padding: 18px 22px; border-bottom: 1px solid var(--cinza-borda); display: flex; align-items: center; justify-content: space-between; }
+    .modal-titulo { font-size: 16px; font-weight: 700; color: var(--texto); }
+    .modal-body { padding: 18px 22px; overflow-y: auto; flex: 1; }
+    .modal-footer { padding: 14px 22px; border-top: 1px solid var(--cinza-borda); display: flex; justify-content: flex-end; gap: 10px; }
+    .btn-fechar { width: 28px; height: 28px; border-radius: 6px; border: none; background: #f0f0f0; font-size: 16px; display: flex; align-items: center; justify-content: center; color: #888; }
+    .btn-fechar:hover { background: #ddd; }
+
+    /* FORM */
+    .tipo-selector { display: flex; gap: 10px; margin-bottom: 18px; }
+    .tipo-btn { flex: 1; padding: 14px; border-radius: 8px; border: 2px solid var(--cinza-borda); background: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s; }
+    .tipo-btn.sel-receita { border-color: #1e8449; background: #d4edda; color: #155724; }
+    .tipo-btn.sel-despesa { border-color: #c0392b; background: #f8d7da; color: #721c24; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grupo { display: flex; flex-direction: column; gap: 5px; }
+    .form-grupo.span-2 { grid-column: span 2; }
+    .form-label { font-size: 11px; font-weight: 700; color: var(--texto-leve); text-transform: uppercase; letter-spacing: .04em; }
+    .form-label .obrig { color: var(--danger); }
+    .form-input, .form-select, .form-textarea { padding: 9px 12px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 13px; color: var(--texto); outline: none; width: 100%; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--verde-med); box-shadow: 0 0 0 3px rgba(30,132,73,.1); }
+    .form-textarea { resize: vertical; min-height: 70px; }
+    .form-section-titulo { font-size: 11px; font-weight: 700; color: var(--verde); text-transform: uppercase; letter-spacing: .06em; margin: 16px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #d4edda; }
+
+    /* LOADING / EMPTY */
+    .loading { display: flex; align-items: center; justify-content: center; padding: 50px; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--cinza-borda); border-top-color: var(--verde-med); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .vazio { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px; color: var(--texto-leve); gap: 10px; }
+    .vazio .icon { font-size: 44px; }
+
+    /* TOAST */
+    .toast-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast { padding: 11px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,.15); max-width: 340px; animation: slideIn .2s ease; }
+    .toast.sucesso { background: #155724; color: #fff; }
+    .toast.erro    { background: #721c24; color: #fff; }
+    @keyframes slideIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+    /* LOGIN */
+    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0d4f1e 0%, #1e8449 100%); }
+    .login-card { background: #fff; border-radius: 16px; padding: 40px; width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+    .login-logo { text-align: center; margin-bottom: 28px; }
+    .login-logo h1 { font-size: 22px; font-weight: 800; color: var(--verde); margin-top: 8px; }
+    .login-logo p { font-size: 13px; color: var(--texto-leve); }
+    .login-grupo { margin-bottom: 14px; }
+    .login-label { display: block; font-size: 11px; font-weight: 700; color: var(--texto-leve); margin-bottom: 5px; text-transform: uppercase; }
+    .login-input { width: 100%; padding: 9px 13px; border: 1.5px solid var(--cinza-borda); border-radius: 7px; font-size: 14px; outline: none; }
+    .login-input:focus { border-color: var(--verde-med); }
+    .login-btn { width: 100%; padding: 11px; background: var(--verde-med); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; margin-top: 6px; }
+    .login-btn:hover { background: var(--verde); }
+    .login-erro { background: #f8d7da; color: #721c24; border-radius: 6px; padding: 9px 12px; font-size: 13px; margin-bottom: 12px; }
+
+    /* DETALHE MODAL */
+    .detalhe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .detalhe-item { padding: 10px 14px; background: #f8fafc; border-radius: 7px; border: 1px solid var(--cinza-borda); }
+    .detalhe-item-label { font-size: 10px; font-weight: 700; color: var(--texto-leve); text-transform: uppercase; margin-bottom: 3px; }
+    .detalhe-item-valor { font-size: 14px; font-weight: 500; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+const API = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api';
+
+// ── helpers ──────────────────────────────────────────────────
+function fmtMoeda(v) { return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v||0); }
+function fmtData(d)  { if(!d)return'—'; return new Date(d+'T00:00:00').toLocaleDateString('pt-BR'); }
+function iniciais(n) { return (n||'?').split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase(); }
+
+async function apiFetch(path, opts={}) {
+  const token = localStorage.getItem('erp_token');
+  const res = await fetch(API+path,{
+    headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},
+    ...opts, body:opts.body?JSON.stringify(opts.body):undefined,
+  });
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.erro||'Erro desconhecido');
+  return data;
+}
+
+let _setToasts=null;
+function Toast({toasts}){ return <div className="toast-wrap">{toasts.map(t=><div key={t.id} className={`toast ${t.tipo}`}>{t.msg}</div>)}</div>; }
+function useToast(){ const [toasts,setToasts]=useState([]); _setToasts=setToasts; return toasts; }
+function toast(msg,tipo='sucesso'){ if(!_setToasts)return; const id=Date.now(); _setToasts(p=>[...p,{id,msg,tipo}]); setTimeout(()=>_setToasts(p=>p.filter(t=>t.id!==id)),4000); }
+
+// ── Login ────────────────────────────────────────────────────
+function Login({onLogin}){
+  const [email,setEmail]=useState('');
+  const [senha,setSenha]=useState('');
+  const [erro,setErro]=useState('');
+  const [loading,setLoading]=useState(false);
+  async function submit(e){ e.preventDefault(); setErro(''); setLoading(true);
+    try{
+      if(email&&senha){
+        const u={nome:'Administrador',cargo:'CEO',perfil:'admin'};
+        localStorage.setItem('erp_token','demo_token');
+        localStorage.setItem('erp_usuario',JSON.stringify(u));
+        onLogin(u);
+      } else setErro('Preencha e-mail e senha.');
+    }catch(err){setErro(err.message);}finally{setLoading(false);}
+  }
+  return <div className="login-wrap"><div className="login-card">
+    <div className="login-logo"><div style={{fontSize:48}}>⚽</div><h1>ERP SAF</h1><p>Módulo Financeiro</p></div>
+    {erro&&<div className="login-erro">⚠️ {erro}</div>}
+    <form onSubmit={submit}>
+      <div className="login-grupo"><label className="login-label">E-mail</label><input className="login-input" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></div>
+      <div className="login-grupo"><label className="login-label">Senha</label><input className="login-input" type="password" value={senha} onChange={e=>setSenha(e.target.value)} required/></div>
+      <button className="login-btn" disabled={loading}>{loading?'Entrando...':'Entrar'}</button>
+    </form>
+  </div></div>;
+}
+
+// ── Gráfico de barras simples ───────────────────────────────
+function GraficoFluxo({dados}){
+  if(!dados.length) return null;
+  const maxVal = Math.max(...dados.flatMap(d=>[d.receitas,d.despesas]),1);
+  const pct = v => Math.max(4, Math.round((v/maxVal)*140));
+  const fmtK = v => v>=1000000 ? (v/1000000).toFixed(1)+'M' : v>=1000 ? (v/1000).toFixed(0)+'k' : v.toFixed(0);
+  return(
+    <div className="grafico-wrap">
+      <div className="grafico-titulo">
+        Fluxo de Caixa — Últimos 6 Meses
+        <div className="grafico-legenda">
+          <span className="legenda-item"><span className="legenda-dot" style={{background:'#1e8449'}}/> Receitas</span>
+          <span className="legenda-item"><span className="legenda-dot" style={{background:'#c0392b'}}/> Despesas</span>
+        </div>
+      </div>
+      <div className="barras">
+        {dados.map(d=>(
+          <div className="barra-grupo" key={d.mes}>
+            <div className="barra-container">
+              <div className="barra barra-receita" style={{height:pct(d.receitas)+'px'}} title={fmtMoeda(d.receitas)}>
+                <div className="barra-valor">{fmtK(d.receitas)}</div>
+              </div>
+              <div className="barra barra-despesa" style={{height:pct(d.despesas)+'px'}} title={fmtMoeda(d.despesas)}>
+                <div className="barra-valor">{fmtK(d.despesas)}</div>
+              </div>
+            </div>
+            <div className="barra-label">{d.label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="saldo-linha">
+        {dados.map(d=>(
+          <div key={d.mes} className={`saldo-mes ${d.saldo>=0?'saldo-positivo':'saldo-negativo'}`}>
+            {d.saldo>=0?'+':''}{fmtK(d.saldo)}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Dados DEMO ───────────────────────────────────────────────
+const DEMO_CATEGORIAS = [
+  {id:1,nome:'Patrocínio',tipo:'receita',icone:'🏷️',cor:'#1e8449'},
+  {id:2,nome:'Bilheteria',tipo:'receita',icone:'🎟️',cor:'#2980b9'},
+  {id:3,nome:'Direitos de TV',tipo:'receita',icone:'📺',cor:'#8e44ad'},
+  {id:4,nome:'Transferência de Atleta',tipo:'receita',icone:'⚽',cor:'#e67e22'},
+  {id:5,nome:'Aporte de Investidor',tipo:'receita',icone:'📈',cor:'#27ae60'},
+  {id:6,nome:'Loja / Licenciamento',tipo:'receita',icone:'👕',cor:'#16a085'},
+  {id:7,nome:'Prêmios e Bônus',tipo:'receita',icone:'🏆',cor:'#f39c12'},
+  {id:9,nome:'Salários CLT',tipo:'despesa',icone:'👔',cor:'#c0392b'},
+  {id:10,nome:'Contratos PJ',tipo:'despesa',icone:'📋',cor:'#e74c3c'},
+  {id:11,nome:'Encargos e Impostos',tipo:'despesa',icone:'🏛️',cor:'#922b21'},
+  {id:12,nome:'Compras e Equipamentos',tipo:'despesa',icone:'🛒',cor:'#e67e22'},
+  {id:13,nome:'Viagens e Hospedagem',tipo:'despesa',icone:'✈️',cor:'#d35400'},
+  {id:14,nome:'Aluguel e Infraestrutura',tipo:'despesa',icone:'🏟️',cor:'#7d6608'},
+  {id:15,nome:'Saúde e Medicina',tipo:'despesa',icone:'🏥',cor:'#1a5276'},
+  {id:16,nome:'Marketing e Comunicação',tipo:'despesa',icone:'📢',cor:'#6c3483'},
+];
+
+const DEMO_CENTROS = [{id:1,nome:'Futebol Profissional'},{id:2,nome:'Futebol de Base'},{id:3,nome:'Administrativo'},{id:4,nome:'Marketing'},{id:5,nome:'Médico e Fisioterapia'},{id:6,nome:'Infraestrutura'},{id:7,nome:'Diretoria'}];
+const DEMO_CONTAS  = [{id:1,nome:'Conta Corrente Principal'},{id:2,nome:'Conta Poupança Reserva'},{id:3,nome:'Caixa Físico CT'}];
+
+const DEMO_LANCAMENTOS = [
+  {id:1,  tipo:'receita', descricao:'Patrocínio máster – Empresa ABC',     valor:120000, categoria:'Patrocínio',          categoria_icone:'🏷️',categoria_cor:'#1e8449',status:'realizado',data_competencia:'2026-03-01',data_pagamento:'2026-03-03',centro_custo:'Diretoria'},
+  {id:2,  tipo:'receita', descricao:'Bilheteria – 1ª rodada Campeonato',   valor:31000,  categoria:'Bilheteria',           categoria_icone:'🎟️',categoria_cor:'#2980b9',status:'realizado',data_competencia:'2026-03-08',data_pagamento:'2026-03-08',centro_custo:'Futebol Profissional'},
+  {id:3,  tipo:'receita', descricao:'Cota direitos de TV – Março',         valor:45000,  categoria:'Direitos de TV',       categoria_icone:'📺',categoria_cor:'#8e44ad',status:'previsto', data_competencia:'2026-03-15',data_pagamento:null,         centro_custo:'Diretoria'},
+  {id:4,  tipo:'receita', descricao:'Loja oficial – vendas março',         valor:8200,   categoria:'Loja / Licenciamento', categoria_icone:'👕',categoria_cor:'#16a085',status:'previsto', data_competencia:'2026-03-20',data_pagamento:null,         centro_custo:'Marketing'},
+  {id:5,  tipo:'despesa', descricao:'Folha de pagamento CLT – Março',      valor:198000, categoria:'Salários CLT',         categoria_icone:'👔',categoria_cor:'#c0392b',status:'previsto', data_competencia:'2026-03-31',data_pagamento:null,         centro_custo:'Administrativo'},
+  {id:6,  tipo:'despesa', descricao:'Contratos PJ comissão técnica',       valor:56000,  categoria:'Contratos PJ',         categoria_icone:'📋',categoria_cor:'#e74c3c',status:'previsto', data_competencia:'2026-03-31',data_pagamento:null,         centro_custo:'Futebol Profissional'},
+  {id:7,  tipo:'despesa', descricao:'Aluguel e manutenção CT – Março',     valor:18000,  categoria:'Aluguel e Infraestrutura',categoria_icone:'🏟️',categoria_cor:'#7d6608',status:'realizado',data_competencia:'2026-03-05',data_pagamento:'2026-03-05',centro_custo:'Infraestrutura'},
+  {id:8,  tipo:'despesa', descricao:'Encargos FGTS e INSS – Março',        valor:42000,  categoria:'Encargos e Impostos',  categoria_icone:'🏛️',categoria_cor:'#922b21',status:'previsto', data_competencia:'2026-03-20',data_pagamento:null,         centro_custo:'Administrativo'},
+  {id:9,  tipo:'despesa', descricao:'Uniforme 1º time – temporada 2026',   valor:35000,  categoria:'Compras e Equipamentos',categoria_icone:'🛒',categoria_cor:'#e67e22',status:'realizado',data_competencia:'2026-03-10',data_pagamento:'2026-03-12',centro_custo:'Futebol Profissional'},
+  {id:10, tipo:'despesa', descricao:'Marketing redes sociais – Março',     valor:5500,   categoria:'Marketing e Comunicação',categoria_icone:'📢',categoria_cor:'#6c3483',status:'realizado',data_competencia:'2026-03-01',data_pagamento:'2026-03-01',centro_custo:'Marketing'},
+  {id:11, tipo:'receita', descricao:'Aporte investidor – Fundo Alpha',     valor:350000, categoria:'Aporte de Investidor', categoria_icone:'📈',categoria_cor:'#27ae60',status:'realizado',data_competencia:'2026-01-10',data_pagamento:'2026-01-10',centro_custo:'Diretoria'},
+  {id:12, tipo:'despesa', descricao:'Viagem pré-temporada – Chapecó',      valor:14500,  categoria:'Viagens e Hospedagem', categoria_icone:'✈️',categoria_cor:'#d35400',status:'realizado',data_competencia:'2026-02-10',data_pagamento:'2026-02-12',centro_custo:'Futebol Profissional'},
+];
+
+const DEMO_FLUXO = [
+  {mes:'2025-10',label:'Out/25',receitas:193500,despesas:288000,saldo:-94500},
+  {mes:'2025-11',label:'Nov/25',receitas:216800,despesas:285700,saldo:-68900},
+  {mes:'2025-12',label:'Dez/25',receitas:195000,despesas:369000,saldo:-174000},
+  {mes:'2026-01',label:'Jan/26',receitas:515000,despesas:286000,saldo:229000},
+  {mes:'2026-02',label:'Fev/26',receitas:180000,despesas:291300,saldo:-111300},
+  {mes:'2026-03',label:'Mar/26',receitas:204200,despesas:354500,saldo:-150300},
+];
+
+const DEMO_RESUMO = {
+  saldo: 482000,
+  mes_atual:   { receitas:204200, despesas:354500, receitas_realizado:151000, despesas_realizado:58500, saldo:-150300, qtd_previsto:5 },
+  mes_anterior:{ receitas:180000, despesas:291300, saldo:-111300 },
+  proximos_30_dias:{ a_pagar:{qtd:4,total:314000}, a_receber:{qtd:2,total:53200} },
+};
+
+// ── Modal Lançamento ─────────────────────────────────────────
+function ModalLancamento({lancamento, categorias, centros, contas, onSalvar, onFechar}){
+  const editando = !!lancamento?.id;
+  const [tipo, setTipo] = useState(lancamento?.tipo||'despesa');
+  const [form, setForm] = useState({
+    descricao:'', valor:'', categoria_id:'', centro_custo_id:'',
+    conta_bancaria_id:'1', data_competencia:'', data_pagamento:'',
+    status:'previsto', observacoes:'', recorrente:false,
+    ...(lancamento||{}),
+    valor: lancamento?.valor||'',
+    categoria_id: lancamento?.categoria_id||'',
+  });
+  const [salvando, setSalvando]=useState(false);
+  function set(k,v){ setForm(f=>({...f,[k]:v})); }
+
+  const catsFiltradas = categorias.filter(c=>c.tipo===tipo);
+
+  async function submit(e){
+    e.preventDefault(); setSalvando(true);
+    try{
+      await onSalvar({...form, tipo, valor:parseFloat(form.valor)}, editando);
+      toast(editando?'Lançamento atualizado!':'Lançamento criado com sucesso!');
+      onFechar();
+    }catch(err){ toast(err.message,'erro'); }
+    finally{ setSalvando(false); }
+  }
+
+  return(
+    <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onFechar()}>
+      <div className="modal">
+        <div className="modal-header">
+          <span className="modal-titulo">{editando?'✏️ Editar Lançamento':'➕ Novo Lançamento'}</span>
+          <button className="btn-fechar" onClick={onFechar}>×</button>
+        </div>
+        <form onSubmit={submit}>
+          <div className="modal-body">
+            {/* Tipo */}
+            {!editando&&(
+              <div className="tipo-selector">
+                <button type="button" className={`tipo-btn ${tipo==='receita'?'sel-receita':''}`} onClick={()=>{setTipo('receita'); set('categoria_id','');}}>
+                  ⬆️ Receita
+                </button>
+                <button type="button" className={`tipo-btn ${tipo==='despesa'?'sel-despesa':''}`} onClick={()=>{setTipo('despesa'); set('categoria_id','');}}>
+                  ⬇️ Despesa
+                </button>
+              </div>
+            )}
+
+            <div className="form-grid">
+              <div className="form-grupo span-2">
+                <label className="form-label">Descrição <span className="obrig">*</span></label>
+                <input className="form-input" value={form.descricao} required onChange={e=>set('descricao',e.target.value)} placeholder="Ex: Patrocínio máster – Empresa ABC"/>
+              </div>
+              <div className="form-grupo">
+                <label className="form-label">Valor (R$) <span className="obrig">*</span></label>
+                <input className="form-input" type="number" step="0.01" min="0.01" value={form.valor} required onChange={e=>set('valor',e.target.value)} placeholder="0,00"/>
+              </div>
+              <div className="form-grupo">
+                <label className="form-label">Categoria <span className="obrig">*</span></label>
+                <select className="form-select" value={form.categoria_id} required onChange={e=>set('categoria_id',e.target.value)}>
+                  <option value="">Selecione...</option>
+                  {catsFiltradas.map(c=><option key={c.id} value={c.id}>{c.icone} {c.nome}</option>)}
+                </select>
+              </div>
+              <div className="form-grupo">
+                <label className="form-label">Data de Competência <span className="obrig">*</span></label>
+                <input className="form-input" type="date" value={form.data_competencia} required onChange={e=>set('data_competencia',e.target.value)}/>
+              </div>
+              <div className="form-grupo">
+                <label className="form-label">Data de Pagamento</label>
+                <input className="form-input" type="date" value={form.data_pagamento||''} onChange={e=>set('data_pagamento',e.target.value)}/>
+              </div>
+              <div className="form-grupo">
+                <label className="form-label">Status</label>
+                <select className="form-select" value={form.status} onChange={e=>set('status',e.target.value)}>
+                  <option value="previsto">Previsto</option>
+                  <option value="realizado">Realizado</option>
+                </select>
+              </div>
+              <div className="form-grupo">
+                <label className="form-label">Centro de Custo</label>
+                <select className="form-select" value={form.centro_custo_id||''} onChange={e=>set('centro_custo_id',e.target.value)}>
+                  <option value="">Sem centro de custo</option>
+                  {centros.map(c=><option key={c.id} value={c.id}>{c.nome}</option>)}
+                </select>
+              </div>
+              <div className="form-grupo">
+                <label className="form-label">Conta Bancária</label>
+                <select className="form-select" value={form.conta_bancaria_id||''} onChange={e=>set('conta_bancaria_id',e.target.value)}>
+                  <option value="">Não especificada</option>
+                  {contas.map(c=><option key={c.id} value={c.id}>{c.nome}</option>)}
+                </select>
+              </div>
+              <div className="form-grupo span-2">
+                <label className="form-label">Observações</label>
+                <textarea className="form-textarea" value={form.observacoes||''} onChange={e=>set('observacoes',e.target.value)} placeholder="Notas, rk�erências, número de NF..."/>
+              </div>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={onFechar}>Cancelar</button>
+            <button type="submit" className={`btn ${tipo==='receita'?'btn-receita':'btn-despesa'}`} disabled={salvando}>
+              {salvando?'Salvando...':(editando?'💾 Salvar':'➕ Lançar '+tipo)}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── Modal Detalhe ─────────────────────────────────────────────
+function ModalDetalhe({lanc, onFechar, onEditar, onRealizar}){
+  if(!lanc) return null;
+  const isR = lanc.tipo==='receita';
+  return(
+    <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onFechar()}>
+      <div className="modal">
+        <div className="modal-header">
+          <div style={{display:'flex',alignItems:'center',gap:10}}>
+            <span style={{fontSize:24}}>{lanc.categoria_icone}</span>
+            <div>
+              <div className="modal-titulo">{lanc.descricao}</div>
+              <div style={{fontSize:12,color:'var(--texto-leve)',marginTop:2}}>{lanc.categoria}</div>
+            </div>
+          </div>
+          <button className="btn-fechar" onClick={onFechar}>×</button>
+        </div>
+        <div className="modal-body">
+          <div style={{textAlign:'center',padding:'16px 0 20px'}}>
+            <div style={{fontSize:36,fontWeight:800,color:isR?'var(--receita)':'var(--despesa)'}}>
+              {isR?'+':'-'}{fmtMoeda(lanc.valor)}
+            </div>
+            <div style={{display:'flex',justifyContent:'center',gap:8,marginTop:8}}>
+              <span className={`badge ${lanc.status==='realizado'?'badge-realizado':lanc.status==='previsto'?'badge-previsto':'badge-cancelado'}`}>
+                {lanc.status==='realizado'?'✅':'⏳'} {lanc.status.charAt(0).toUpperCase()+lanc.status.slice(1)}
+              </span>
+              <span className="badge" style={{background:isR?'#d4edda':'#f8d7da',color:isR?'#155724':'#721c24'}}>
+                {isR?'⬆️ Receita':'⬇️ Despesa'}
+              </span>
+            </div>
+          </div>
+          <div className="detalhe-grid">
+            {[
+              ['Competência',    fmtData(lanc.data_competencia)],
+              ['Pagamento',      fmtData(lanc.data_pagamento)],
+              ['Centro de Custo',lanc.centro_custo||'—'],
+              ['Conta Bancária', lanc.conta_bancaria||'—'],
+            ].map(([l,v])=>(
+              <div className="detalhe-item" key={l}>
+                <div className="detalhe-item-label">{l}</div>
+                <div className="detalhe-item-valor">{v}</div>
+              </div>
+            ))}
+            {lanc.observacoes&&(
+              <div className="detalhe-item" style={{gridColumn:'span 2'}}>
+                <div className="detalhe-item-label">Observações</div>
+                <div className="detalhe-item-valor" style={{fontSize:13}}>{lanc.observacoes}</div>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="modal-footer">
+          {lanc.status==='previsto'&&(
+            <button className="btn btn-primary btn-sm" onClick={()=>onRealizar(lanc)}>✅ Confirmar realizado</button>
+          )}
+          <button className="btn btn-secondary btn-sm" onClick={()=>onEditar(lanc)}>✏️ Editar</button>
+          <button className="btn btn-secondary btn-sm" onClick={onFechar}>Fechar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Módulo Financeiro ─────────────────────────────────────────
+function ModuloFinanceiro(){
+  const [lancamentos, setLancamentos] = useState(DEMO_LANCAMENTOS);
+  const [resumo]    = useState(DEMO_RESUMO);
+  const [fluxo]     = useState(DEMO_FLUXO);
+  const [categorias]= useState(DEMO_CATEGORIAS);
+  const [centros]   = useState(DEMO_CENTROS);
+  const [contas]    = useState(DEMO_CONTAS);
+
+  const [filtroTipo,   setFiltroTipo]   = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
+  const [filtroCat,    setFiltroCat]    = useState('');
+  const [busca,        setBusca]        = useState('');
+  const [pagina,       setPagina]       = useState(1);
+  const [modalForm,    setModalForm]    = useState(null);
+  const [modalDetalhe, setModalDetalhe] = useState(null);
+  const LIMITE = 10;
+
+  const filtrados = lancamentos.filter(l=>{
+    const okBusca  = !busca        || l.descricao.toLowerCase().includes(busca.toLowerCase());
+    const okTipo   = !filtroTipo   || l.tipo===filtroTipo;
+    const okStatus = !filtroStatus || l.status===filtroStatus;
+    const okCat    = !filtroCat    || l.categoria===categorias.find(c=>c.id==filtroCat)?.nome;
+    return okBusca&&okTipo&&okStatus&&okCat;
+  }).sort((a,b)=>b.data_competencia.localeCompare(a.data_competencia));
+
+  const totalPags = Math.ceil(filtrados.length/LIMITE);
+  const paginados = filtrados.slice((pagina-1)*LIMITE, pagina*LIMITE);
+
+  function salvar(payload, editando){
+    const cat = categorias.find(c=>c.id==payload.categoria_id)||{};
+    if(editando){
+      setLancamentos(prev=>prev.map(l=>l.id===payload.id?{...l,...payload,categoria:cat.nome,categoria_icone:cat.icone,categoria_cor:cat.cor}:l));
+    } else {
+      const novo={...payload,id:Date.now(),categoria:cat.nome,categoria_icone:cat.icone,categoria_cor:cat.cor,centro_custo:centros.find(c=>c.id==payload.centro_custo_id)?.nome||'',conta_bancaria:contas.find(c=>c.id==payload.conta_bancaria_id)?.nome||''};
+      setLancamentos(prev=>[novo,...prev]);
+    }
+  }
+
+  function realizarLancamento(lanc){
+    setLancamentos(prev=>prev.map(l=>l.id===lanc.id?{...l,status:'realizado',data_pagamento:new Date().toISOString().slice(0,10)}:l));
+    setModalDetalhe(null);
+    toast('Lançamento confirmado como realizado!');
+  }
+
+  const varReceitas = resumo.mes_atual.receitas - resumo.mes_anterior.receitas;
+  const varDespesas = resumo.mes_atual.despesas - resumo.mes_anterior.despesas;
+  const pct = (v,ref) => ref===0?0:((v-ref)/ref*100).toFixed(1);
+
+  return(
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <div className="page-titulo">💰 Financeiro</div>
+          <div className="page-sub">Fluxo de caixa, receitas e despesas da SAF</div>
+        </div>
+        <div className="page-header-actions">
+          <button className="btn btn-receita" onClick={()=>setModalForm({tipo:'receita'})}>⬆️ Nova Receita</button>
+          <button className="btn btn-despesa" onClick={()=>setModalForm({tipo:'despesa'})}>⬇️ Nova Despesa</button>
+        </div>
+      </div>
+
+      {/* CARDS KPI */}
+      <div className="cards-resumo">
+        <div className="card borda-azul">
+          <div className="card-kpi">
+            <div><div className="label">Saldo Acumulado</div><div className="valor" style={{color:'var(--info)'}}>{fmtMoeda(resumo.saldo)}</div></div>
+            <div className="icon">🏦</div>
+          </div>
+        </div>
+        <div className="card borda-verde">
+          <div className="card-kpi">
+            <div>
+              <div className="label">Receitas — Março</div>
+              <div className="valor positivo">{fmtMoeda(resumo.mes_atual.receitas)}</div>
+              <div className={`variacao ${varReceitas>=0?'positivo':'negativo'}`}>
+                {varReceitas>=0?'▲':'▼'} {Math.abs(pct(resumo.mes_atual.receitas,resumo.mes_anterior.receitas))}% vs mês anterior
+              </div>
+            </div>
+            <div className="icon">⬆️</div>
+          </div>
+        </div>
+        <div className="card borda-vermelho">
+          <div className="card-kpi">
+            <div>
+              <div className="label">Despesas — Março</div>
+              <div className="valor negativo">{fmtMoeda(resumo.mes_atual.despesas)}</div>
+              <div className={`variacao ${varDespesas<=0?'positivo':'negativo'}`}>
+                {varDespesas>0?'▲':'▼'} {Math.abs(pct(resumo.mes_atual.despesas,resumo.mes_anterior.despesas))}% vs mês anterior
+              </div>
+            </div>
+            <div className="icon">⬇️</div>
+          </div>
+        </div>
+        <div className="card borda-laranja">
+          <div className="card-kpi">
+            <div>
+              <div className="label">A vencer em 30 dias</div>
+              <div className="valor" style={{color:'var(--warning)',fontSize:18}}>{resumo.proximos_30_dias.qtd_previsto||resumo.proximos_30_dias.a_pagar.qtd+resumo.proximos_30_dias.a_receber.qtd} lançamentos</div>
+              <div style={{fontSize:12,color:'var(--texto-leve)',marginTop:4}}>
+                Pagar: {fmtMoeda(resumo.proximos_30_dias.a_pagar.total)}
+              </div>
+            </div>
+            <div className="icon">⚠️</div>
+          </div>
+        </div>
+      </div>
+
+      {/* GRÁFICO */}
+      <GraficoFluxo dados={fluxo}/>
+
+      {/* FILTROS */}
+      <div className="filtros">
+        <input type="search" placeholder="🔍 Buscar lançamento..." value={busca} onChange={e=>{setBusca(e.target.value);setPagina(1);}}/>
+        <div className="filtro-tipo-btns">
+          {[['','Todos','ativo-todos'],['receita','⬆️ Receitas','ativo-receita'],['despesa','⬇️ Despesas','ativo-despesa']].map(([v,l,cls])=>(
+            <button key={v} className={`filtro-tipo-btn ${filtroTipo===v?cls:''}`} onClick={()=>{setFiltroTipo(v);setPagina(1);}}>{l}</button>
+          ))}
+        </div>
+        <select value={filtroStatus} onChange={e=>{setFiltroStatus(e.target.value);setPagina(1);}}>
+          <option value="">Todos os status</option>
+          <option value="realizado">✅ Realizado</option>
+          <option value="previsto">⏳ Previsto</option>
+          <option value="cancelado">❌ Cancelado</option>
+        </select>
+        {(busca||filtroTipo||filtroStatus)&&(
+          <button className="btn btn-secondary btn-sm" onClick={()=>{setBusca('');setFiltroTipo('');setFiltroStatus('');setPagina(1);}}>✕ Limpar</button>
+        )}
+        <span style={{marginLeft:'auto',fontSize:13,color:'var(--texto-leve)'}}>{filtrados.length} lançamento(s)</span>
+      </div>
+
+      {/* TABELA */}
+      <div className="tabela-wrap">
+        <div className="tabela-header">
+          <div className="tabela-header-titulo">Lançamentos</div>
+          <div style={{fontSize:12,color:'var(--texto-leve)'}}>
+            Realizado no mês: <strong style={{color:'#1e8449'}}>{fmtMoeda(resumo.mes_atual.receitas_realizado)}</strong> receitas · <strong style={{color:'#c0392b'}}>{fmtMoeda(resumo.mes_atual.despesas_realizado)}</strong> despesas
+          </div>
+        </div>
+        {paginados.length===0?(
+          <div className="vazio"><div className="icon">🔍</div><p>Nenhum lançamento encontrado.</p></div>
+        ):(
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Centro de Custo</th>
+                <th>Status</th>
+                <th style={{textAlign:'right'}}>Valor</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginados.map(l=>(
+                <tr key={l.id} onClick={()=>setModalDetalhe(l)} style={{cursor:'pointer'}}>
+                  <td style={{whiteSpace:'nowrap',color:'var(--texto-leve)'}}>{fmtData(l.data_competencia)}</td>
+                  <td style={{maxWidth:260}}>
+                    <div style={{fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.descricao}</div>
+                  </td>
+                  <td>
+                    <span className="cat-badge" style={{background:l.categoria_cor+'22',color:l.categoria_cor}}>
+                      {l.categoria_icone} {l.categoria}
+                    </span>
+                  </td>
+                  <td style={{color:'var(--texto-leve)',fontSize:12}}>{l.centro_custo||'—'}</td>
+                  <td>
+                    <span className={`badge ${l.status==='realizado'?'badge-realizado':l.status==='previsto'?'badge-previsto':'badge-cancelado'}`}>
+                      {l.status==='realizado'?'✅':l.status==='previsto'?'⏳':'❌'} {l.status.charAt(0).toUpperCase()+l.status.slice(1)}
+                    </span>
+                  </td>
+                  <td style={{textAlign:'right',whiteSpace:'nowrap'}} className={l.tipo==='receita'?'valor-receita':'valor-despesa'}>
+                    {l.tipo==='receita'?'+':'-'}{fmtMoeda(l.valor)}
+                  </td>
+                  <td onClick={e=>e.stopPropagation()}>
+                    <button className="btn btn-secondary btn-sm" onClick={()=>{setModalForm(l); setModalDetalhe(null);}}>✏️</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        {totalPags>1&&(
+          <div className="paginacao">
+            <span>Mostrando {(pagina-1)*LIMITE+1}–{Math.min(pagina*LIMITE,filtrados.length)} de {filtrados.length}</span>
+            <div className="paginacao-btns">
+              <button onClick={()=>setPagina(p=>p-1)} disabled={pagina===1}>‹</button>
+              {Array.from({length:totalPags},(_,i)=>i+1).map(p=><button key={p} className={pagina===p?'ativo':''} onClick={()=>setPagina(p)}>{p}</button>)}
+              <button onClick={()=>setPagina(p=>p+1)} disabled={pagina===totalPags}>›</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MODAIS */}
+      {modalForm!==null&&(
+        <ModalLancamento
+          lancamento={modalForm.id?modalForm:null}
+          categorias={categorias} centros={centros} contas={contas}
+          onSalvar={salvar} onFechar={()=>setModalForm(null)}
+        />
+      )}
+      {modalDetalhe&&(
+        <ModalDetalhe
+          lanc={modalDetalhe}
+          onFechar={()=>setModalDetalhe(null)}
+          onEditar={l=>{setModalForm(l);setModalDetalhe(null);}}
+          onRealizar={realizarLancamento}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── App ──────────────────────────────────────────────────────
+function App(){
+  const [usuario,setUsuario]=useState(()=>{try{return JSON.parse(localStorage.getItem('erp_usuario'));}catch{return null;}});
+  const [pagina,setPagina]=useState('financeiro');
+  const toasts=useToast();
+
+  function logout(){ localStorage.removeItem('erp_token'); localStorage.removeItem('erp_usuario'); setUsuario(null); }
+  if(!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
+
+  const navItems=[
+    {id:'funcionarios',icon:'👥',label:'Funcionários',href:'index.html'},
+    {id:'financeiro',  icon:'💰',label:'Financeiro'},
+    {id:'pedidos',     icon:'🛒',label:'Pedidos de Compra',disabled:true},
+    {id:'atletas',     icon:'⚽',label:'Contratos de Atletas',disabled:true},
+    {id:'investidores',icon:'📈',label:'Investidores',disabled:true},
+    {id:'metas',       icon:'🎯',label:'Metas',disabled:true},
+    {id:'relatorios',  icon:'📊',label:'Relatórios',disabled:true},
+  ];
+
+  return(
+    <div className="layout">
+      <aside className="sidebar">
+        <div className="sidebar-logo">
+          <div className="icon">⚽</div>
+          <div><div className="title">ERP SAF</div><div className="sub">Sistema de Gestão</div></div>
+        </div>
+        <nav className="sidebar-nav">
+          <div className="nav-label">Módulos</div>
+          {navItems.map(item=>(
+            <div key={item.id}
+              className={`nav-item ${pagina===item.id?'ativo':''}`}
+              style={item.disabled?{opacity:.45,cursor:'not-allowed'}:{cursor:'pointer'}}
+              onClick={()=>{
+                if(item.disabled)return;
+                if(item.href){window.location.href=item.href;}
+                else setPagina(item.id);
+              }}
+              title={item.disabled?'Em breve':''}
+            >
+              <span className="icon">{item.icon}</span>
+              <span>{item.label}</span>
+              {item.disabled&&<span style={{marginLeft:'auto',fontSize:10,opacity:.7}}>em breve</span>}
+            </div>
+          ))}
+        </nav>
+        <div className="sidebar-footer">
+          <div className="usuario-info">
+            <div className="usuario-avatar">{iniciais(usuario.nome)}</div>
+            <div style={{flex:1,minWidth:0}}>
+              <div className="usuario-nome" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{usuario.nome}</div>
+              <div className="usuario-cargo">{usuario.cargo||usuario.perfil}</div>
+            </div>
+            <button onClick={logout} title="Sair" style={{background:'none',border:'none',color:'rgba(255,255,255,.6)',fontSize:16,cursor:'pointer'}}>⏻</button>
+          </div>
+        </div>
+      </aside>
+      <main className="main">
+        <div className="topbar">
+          <span className="topbar-title">💰 Financeiro</span>
+          <span style={{fontSize:13,color:'var(--texto-leve)'}}>{new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</span>
+        </div>
+        {pagina==='financeiro'&&<ModuloFinanceiro/>}
+      </main>
+      <Toast toasts={toasts}/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
