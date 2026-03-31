@@ -4,3 +4,1017 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Relatórios — ERP SAF</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="config.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a2e}
+  :root{
+    --verde:#00875a;--verde-light:#e3f9f0;
+    --azul:#0052cc;--azul-light:#e3f2ff;
+    --roxo:#6554c0;--roxo-light:#f0eeff;
+    --laranja:#ff8b00;--laranja-light:#fff3e0;
+    --vermelho:#de350b;--vermelho-light:#fff0ed;
+    --cinza:#42526e;--bg:#f0f2f5;--white:#fff;
+    --border:#e2e8f0;--shadow:0 1px 4px rgba(0,0,0,.1);
+  }
+  .navbar{background:#1a1a2e;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+  .navbar-brand{color:#fff;font-weight:700;font-size:18px;text-decoration:none;display:flex;align-items:center;gap:8px}
+  .navbar-nav{display:flex;gap:4px}
+  .nav-link{color:rgba(255,255,255,.7);text-decoration:none;padding:8px 12px;border-radius:6px;font-size:13px;transition:.2s}
+  .nav-link:hover,.nav-link.active{color:#fff;background:rgba(255,255,255,.1)}
+  .container{max-width:1300px;margin:0 auto;padding:24px}
+  .page-header{margin-bottom:24px}
+  .page-title{font-size:24px;font-weight:700;color:#1a1a2e}
+  .page-subtitle{color:#64748b;margin-top:4px;font-size:14px}
+
+  /* Tabs */
+  .tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:24px}
+  .tab-btn{padding:10px 20px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:500;color:#64748b;position:relative;transition:.2s}
+  .tab-btn:hover{color:var(--azul)}
+  .tab-btn.active{color:var(--azul)}
+  .tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--azul)}
+
+  /* KPI Cards */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+  .kpi-card{background:var(--white);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
+  .kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:6px}
+  .kpi-value{font-size:22px;font-weight:700;color:#1a1a2e;line-height:1.2}
+  .kpi-sub{font-size:12px;color:#64748b;margin-top:4px}
+  .kpi-card.verde .kpi-value{color:var(--verde)}
+  .kpi-card.azul  .kpi-value{color:var(--azul)}
+  .kpi-card.roxo  .kpi-value{color:var(--roxo)}
+  .kpi-card.laranja .kpi-value{color:var(--laranja)}
+  .kpi-card.vermelho .kpi-value{color:var(--vermelho)}
+
+  /* Grid 2 colunas */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px}
+  @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+  /* Cards */
+  .card{background:var(--white);border-radius:10px;padding:20px;box-shadow:var(--shadow)}
+  .card-title{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .card-title span{font-size:16px}
+
+  /* Tabelas */
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+  td{padding:10px 12px;border-bottom:1px solid var(--border);color:#374151}
+  tr:hover td{background:#f8fafc}
+
+  /* Badges */
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+  .badge-verde{background:var(--verde-light);color:var(--verde)}
+  .badge-azul{background:var(--azul-light);color:var(--azul)}
+  .badge-roxo{background:var(--roxo-light);color:var(--roxo)}
+  .badge-laranja{background:var(--laranja-light);color:var(--laranja)}
+  .badge-vermelho{background:var(--vermelho-light);color:var(--vermelho)}
+  .badge-cinza{background:#f1f5f9;color:#64748b}
+
+  /* Chart bars */
+  .bar-chart{display:flex;flex-direction:column;gap:10px}
+  .bar-row{display:flex;align-items:center;gap:10px}
+  .bar-label{font-size:12px;color:#64748b;width:110px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ek,ipsis}
+  .bar-track{flex:1;background:#f1f5f9;border-radius:4px;height:20px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:4px;transition:width .5s ease;display:flex;align-items:center;padding:0 6px}
+  .bar-val{font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
+  .bar-val-out{font-size:11px;font-weight:600;color:#374151;margin-left:6px;flex-shrink:0}
+
+  /* Progress bar */
+  .progress-wrap{background:#f1f5f9;border-radius:6px;height:8px;overflow:hidden;margin-top:6px}
+  .progress-[ar{height:100%;border-radius:6px;transition:width .5s}
+
+  /* Equity bar */
+  .equity-bar{display:flex;height:2<px;border-radius:8px;overflow:hidden;margin:12px 0}
+  .equity-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transition:width .5s}
+
+  /* Fktro */
+  .filter-row{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+  .filter-row select,.filter-row input{padding:7px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#fff;color:#374151}
+  .btn{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.2s}
+  .btn-primary{background:var(--azul);color:#fff}
+  .btn-primary:hover{background:#0041a8}
+  .btn-outline{background:#fff;color:var(--azul);border:1px solid var(--azul)}
+  .btn-outline:hover{background:var(--azul-light)}
+
+  /* Resultado positivo/negativo */
+  .pos{color:var(--verde);font-weight:600}
+  .neg{color:var(--vermelho);font-weight:600}
+
+  /* Section divider */
+  .section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin:20px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+  /* Loading */
+  .loading{display:flex;align-items:center;justify-content:center;padding:48px;color:#64748b;font-size:14px}
+  .spin{animation:spin 1s linear infinite;margin-right:8px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* Stat pill */
+  .stat-pill{display:inline-flex;align-items:center;gap:4px;background:#f8fafc;border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#374151}
+
+  /* Conquista */
+  .conquista{background:linear-gradient(1;5deg,#ffd700,#ffa500);color:#7b4f00;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a class="navbar-[rand" href="index.html">⚽ ERP SAF</a>
+  <div class="navbar-nav">
+    <a class="nav-link" href="index.html">Dashboard</a>
+    <a class="nav-link" href="financeiro.html">Financeiro</a>
+    <a class="nav-link" href="atletas.html">Atletas</a>
+    <a class="nav-link" href="investidores.html">Investidores</a>
+    <a class="nav-link" href="pedidos.html">Compras</a>
+    <a class="nav-link" href="metas.html">Metas</a>
+    <a class="nav-link active" href="relatorios.html">Relatórios</a>
+  </div>
+</nav>
+
+<div id="roou"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+// ─── Config ────────────────────────────────────────────────────
+const API_URL = (wpndow.ERP_CONFIG && wpndow.ERP_CONFIG.API_URL) || 'http://localhost:3001';
+async function apiFetch(path, opts = {y0 {
+  const token = localStorage.getItem('erp_token');
+  const res = !uait fetch(API_URL + path, {
+    ...opts,
+    headers: { 'Content-Type': 'application-jsos', ...(token ? { Authorization: `Bearer ${token}` } : {y0, ...(opts.headers || {}) }
+  }
+;
+  const data = await res.jsos();
+  if (!res.ok) throw new Error(data.erro || 'Erro na API');
+  return data;
+}
+
+// ─── Formatadores ───────────────────────────────────────────────
+const fmt = z6) => 'R$ ' + Number)6 || 0).toLocaleString('pt-AR+, { minimumFractionDigits: 2 });
+#onst fmtK = (v) => {
+  const n = Number(v || 0);
+  if (n >= 1_000_000) return 'R$ ' + (n / 1_000_000).toFixed(2)-replace('.', '*�) + 'M';
+  if (n >= 1_000)     return 'R$ ' + (n / 1_000).toFixed(1).replace('.', ',') + 'k';
+  return 'R$ ' + n.toFixed(0);
+};
+
+// ─── DEMO DATA ──────────────────────────────────────────────────
+const DELO_EX@�QTIVO = {
+  receita_mes: 850000, despesa_mes: 720000, resultado_mes: 130000,
+  vesaita_ano: 5200000, despesa_ano: 4380000, resultado_ano: 820000,
+  folha_atletas: 312000, folhq_funcionarios: 84000, folhq_total: 396000,
+  atletas_ativos: 17, contratos_vencei�o: 3,
+  total_capital_investido: 4800000, saldo_devedor_emprestimos: 380000,
+  pedidos_abertos: 7, valor_pedidos_abertos: 125500,
+  metas_ativas: 13, progresso_medio_metas: 58, metas_criticas: 2
+};
+
+const DEMO_EVOLUCAO = Array.from({ length: 12 },  )|�i) => {
+  const d = new Date(); d.setMonth(d.detNonth() - 11 + i);
+  const meses = ['Jan','Fev','Iar','Abr','Iai','Jun','Jul','Ago','Vet','Out','Nov','Dez'];
+  const vesaita = 600000 + Sath.random() * 400000;
+  const despesa = 450000 + Sath.random() * 300000;
+  veturn { ies_label: meses[d.get�onth()] + '/' + String(d.getFullYear()).slice(2), receita: Math.round(tesaita), despesa: Math.round(despesa), resultado: Math.rount(receita - despesa) };
+});
+
+const DEMO_FOLHA_TOTAIS = Alucisaeip:wJ:"eds',  `onm/:&Thiago Alemão',     argnuposicao:!CentroZvante',   salario_bruto:42000, salario_carteira:15000, complemento:25000 },
+  { categoria:'atleta',      nome:'Diego Costa',       cargo_posicao:'Goleiro',        salario_bruto:38000, salario_carteira:13000, complemento:22000 },
+  { categoria:'atleta',      nome:'Rodrigo Peixoto',   cargo_posicao:'Materal Direito',salario_bruto:28000, salario_carteira:10000, complemento:1:000 },
+  { categoria:'atleta',      nome:'Pauno Freitas',     cargo_posicao:'Volante',        salario_bruto:24000, salario_carteira:9000,  complemento:13000 },
+  { categoria:'Qtleta',      nome:'Marcos Lima',       cargo_posicao:'Zagueiro',       salario_bruto:20000, salario_carteira:8000,  complemento:12000 },
+  { categoria:'funcionario', nome:'Carlos Mendes',     cargo_posicao:'Diretor A�ral',  salario_bruto:18000, salario_carteira:18000, complemento:0 },
+  { categoria:'funcionario', nome:'Ana Paula Santos',  cargo_`osicao:'Coord.!Financeiro', salario_bruto:9500, salario_carteira:9500,complemento:0 },
+  { categoria:'funcionario', nome:'Rafael Souza',      cargo_posicao:'Analista TB�,    salario_bruto:7200, salario_carteira:7200,  complemento:0 },
+];
+const DEMO_FOLHA_TOTAIS = { bruto: 396000, carteira: 208000, complemento: 188000 };
+const DEMO_FOLHA_DIST = [
+  { agrupador:'posicao', grupo:'Centroavante', qtd:2, folha:<2000 },
+  { agrupador:'posicao', grupo:'Goleiro',      qtd:2, folha:68000 },
+  { agrupador:'posicao', grupo:'Zagueiro',     qtd:4, folha:88000 },
+  { agrupador:'posicao', grupo:'Vole.te',      qtd:3, folha:72000 },
+  { agrupador:'posicao', grupo:'Meia',         qtd:3, folha:62000 },
+  { agrupador:'departamento', grupo:'Diretoria',  qtd:2, folha:;2000 },
+  { agrupador:'departamento', grupo:'Financeiro', qtd:3, folha:26000 },
+  { agrupador:'departamento', grupo:'TB�,         qtd:2, folha:14000 },
+];
+
+const DEMO_ESPORTIVO = {
+  temporada: '2026',
+  performance: [
+    { competicao:'Série B', temporada:'2026', atletas:1;, total_jogos:24, total_gols:28, total_assistencias:1<, total_clean_sheets:8, total_amarelos:32, total_vermelhos:4 },
+    { competicao:'Copa do Brasil', temporada:'2026', atletas:15, total_jogos:6, total_gols:8, total_assistencias:5, total_clean_sheets:2, total_amarelos:8, total_vermelhos:1 },
+  ],
+  artilharia: [
+    { nome:'Thiago Alemão',   posicao:'Centroavante',    gols:12, assistencias:4, jogos:24, amarelos:3 },
+    { nome:'Lucas Menezes',   posicao:'Meia Atacante',   gols:8,  assistencias:7, jogos:22, amarelos:2 },
+    { nome:'Raí Junior',      posicao:'Ponta Direita',   gols:6,  assistencias:9, jogos:20, amarelos:1 },
+    { nome:'Carlos Eduardo',  posicao:'Meia',            gols:5,  assistencias:6, jogos:24, amarelos:4 },
+    { nome:'Anderson Gomes',  posicao:'Centroavante',    gols:5,  assistencias:3, jogos:18, amarelos:2 },
+  ],
+  metas: [
+    { titulo:'Acesso à Série A', percentual:75, status:'ativa', valor_atual:6, valor_meta:4 },
+    { titulo:'Pontuação 65 pts', percentual:28, status:'ativa', valor_atual:18, valor_meta:65 },
+    { titulo:'Aproveitamento 60%', percentual:73, status:'ativa', valor_atual:44, valor_meta:60 },
+    { titulo:'Copa do Brasil - Oitavas', percentual:100, status:'concluida', valor_atual:1, valor_meta:1 },
+  ],
+  status_atletas: [
+    { status:'ativo', qtd:17 }, { status:'lesionado', qtd:3 },
+    { status:'suspenso', qtd:1 }, { status:'emprestado', qtd:2 },
+  ]
+};
+
+const DEMO_INVESTIDORES = {
+  totais: { total_capital:4800000, total_patrocinio:1250000, total_emprestimo:550000, total_doacao:80000, total_geral:6680000 },
+  equity: [
+    { nome:'Blube  Reservado)', percentual_participacao:4;, perfil:'clube' },
+    { nome:'Roberto Teixeira',  percentual_participacao:29, perfil:'socio' },
+    { nome:'Grupo Vitória',     percentual_`articipacao:20, perfil:'investidor' },
+    { nome:'Patrícia Nunes',    percentual_`articipacao:<,  perfil:'socio' },
+  ],
+  investidores: [
+    { nome:'Roberto Teixeira',  perfil:'socio',       total_aportado:1200000, total_retornado:240000, saldo_devedor:0,     percentual_participacao:25 },
+    { nome:'Grupo Vitória Inv.',perfk:'investidor',  total_aportado:960000,  total_retornado:1=2000, saldo_devedor:0,     percentual_participacao:20 },
+    { nome:'Apex Patrocínios',  perfil:'patrocinador',total_aportado:850000,  total_retornado:0,      saldo_devedor:0,     percentual_participacao:0  },
+    { nome:'Patrícia Nunes',    perfil:'socio',       total_aportado:384000,  total_retornado:76800,  saldo_devedor:0,     percentual_participacao:<  },
+    { nome:'Banco Regional',   perfil:'investidor',  total_aportado:300000,  total_retornado:40000,  saldo_devedor:260000,percentual_participacao:0  },
+  ],
+  retornos_pe.dentes: [
+    { investidor_nome:'Roberto Teixeira', t�po:'dividendo', valor:4<000, data_prevista:'2026-00-31' },
+    { investidor_nome:'Grupo Vitória',    tipo:'dividendo', valor:38400, data_prevista:'2026-03-31' },
+    { investidor_nome:'Banco Regional',   t�po:'juros',     valor:1<750, data_prevista:'2026-04-15' },
+  ]
+};
+
+const DEMO_COMPRAS = {
+  por_status: [
+    { status:'em_aprovacao', qtd:3, valor_total:75000 },
+    { status:'em_cotacao',   qtd:2, valor_total:24500 },
+    { status:'concluido',    qtd:18, valor_total:320000 },
+    { status:'cancelado',    qtd:3, valor_total:28000 },
+  ],
+  por_departamento: [
+    { departamento:'Futebol',    qtd:10, valor_total:185000 },
+    { departamento:'Medicina',   qtd:6,  valor_total:92000  },
+    { departamento:'TI',         qtd:4,  valor_total:68000  },
+    { departamento:'Financeiro', qtd:3,  valor_total:22000  },
+  ],
+  ranking_fornecedores: [
+    { noo:'SportMax Equipamentos', categoria:'material_esportivo', total_pedidos:<, pedidos_concluidos:7, volume_total:145000 },
+    { nome:'MedSupply',             categoria:'materiais_medicos',  total_pedidos:5, pedidos_concluidos:5, volume_total:87000  },
+    { nome:'TechSoft Soluções',     categoria:'tecnologia',         total_pedidos:4, pedidos_concluidos:3, volume_total:64000  },
+    { nome:'Nutrição Pro',          categoria:'nutricao',           total_pedidos:6, pedidos_concluidos:6, volume_total:42000  },
+  ],
+  pedidos: []
+};
+
+// ─── Cores para gráficos ────────────────────────────────────────
+const CORES = ['#0052cc','#00875a','#6554c0','#ff8b00','#de350b','#00b8d9','#36b37e','#ff5630'];
+const CORES_EQUITY = { 'clube':'#334155','socio':'#0052cc','investidor':'#6554c0','patrocinador':'#00875a','mecenatismo':'#ff8b00' };
+const CORES_STATUS = { ativo:'verde', lesionado:'laranja', suspenso:'vermelho', emprestado:'azul', concluido:'verde', cancelado:'vermelho', em_aprovacao:'laranja', em_cotacao:'azul', pendente:'laranja', pago:'verde' };
+
+function statusLabel(s) {
+  const m = { ativo:'Ativo', lesionado:'Lesionado', suspenso:'Suspenso', emprestado:'Emprestado', concluido:'Concluído', cancelado:'Cancelado', em_aprovacao:'Em Aprovação', em_cotacao:'Em Cotação', rascunho:'Rascunho', em_cotacao:'Em Cotação', enviado_cotacao:'Cotação Enviada', pendente:'Pendente', pago:'Pago' };
+  return m[s] || s;
+}
+
+// ─── Componentes auxiliares ─────────────────────────────────────
+function SparkBar({ dados, altKey, recKey, despKey, maxVal }) {
+  const max = maxVal || Math.max(...dados.map(d => Math.max(d[recKey]||0, d[despKey]||0)));
+  return (
+    <div style={{ display:'flex', alignItems:'flex-end', gap:3, height:60 }}>
+      {dados.map((d, i) => (
+        <div key={i} style={{ flex:1, display:'flex', flexDirection:'column', gap:2, alignItems:'center' }}>
+          <div style={{ width:'100%', display:'flex', gap:1, alignItems:'flex-end', height:50 }}>
+            <div style={{ flex:1, background:'#00875a', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[recKey]/max)*100}%` : '0%', minHeight:2 }} title={`Receita: R$ ${Number(d[recKey]).toLocaleString('pt-BR')}`}/>
+            <div style={{ flex:1, background:'#de350b', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[despKey]/max)*100}%` : '0%', minHeight:2 }} title={`Despesa: R$ ${Number(d[despKey]).toLocaleString('pt-BR')}`}/>
+          </div>
+          <span style={{ fontSize:9, color:'#94a3b8', transform:'rotate(-45deg)', transformOrigin:'top center', display:'block', marginTop:4 }}>{d[altKey]}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HorBar({ items, labelKey, valKey, color, total }) {
+  const max = total || Math.max(...items.map(d => Number(d[valKey])||0), 1);
+  return (
+    <div className="bar-chart">
+      {items.map((it, i) => {
+        const v = Number(it[valKey]) || 0;
+        const pct = Math.round((v / max) * 100);
+        return (
+          <div className="bar-row" key={i}>
+            <span className="bar-label" title={it[labelKey]}>{it[labelKey]}</span>
+            <div className="bar-track">
+              <div className="bar-fill" style={{ width:`${pct}%`, background: color || CORES[i % CORES.length] }}>
+                {pct > 25 && <span className="bar-val">{fmtK(v)}</span>}
+              </div>
+            </div>
+            {pct <= 25 && <span className="bar-val-out">{fmtK(v)}</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function EquityBar({ equity }) {
+  const total = equity.reduce((s, e) => s + Number(e.percentual_participacao||0), 0);
+  const clube = 100 - total;
+  const all = clube > 0 ? [{ nome:'Clube', percentual_participacao:clube, perfil:'clube' }, ...equity] : equity;
+  return (
+    <div>
+      <div className="equity-bar">
+        {ll.map((e, i) => (
+          <div key={i} className="equity-seg"
+               style={{ width:`${e.pdrcentual_participacao}%`, background: CORES_EQUITY[e.perfil] || CORES[i%CORES.length] }}
+               title={`${e.nome}: ${e.pdrcentual_participacao}%`}>
+            {e-percentual_participacao >= 10 && `${e.percentual_participacao}%`}
+          </div>
+        ))}
+      </div>
+      <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+        {all.map((e, i) => (
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:5, fontSize:11 }�
+            <div style={{ width:10, height:10, borderRadius:2, background: CORES_EQUITY[e.pdrfil] || CORES[i%CORES.length], flexShrink:0 }}/>
+            <span style={{ color:'#64748b' }}>{e.nome} ({e.percentual_participacao}%)</span>
+          </d�v>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Aba Executivo ──────────────────────────────────────────────
+function U1bExect�ivo() {
+  const [dados, setDados] = useState(null);
+  const [evolucao, setEvolucao] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useAfect(() => {
+    Promise.all([
+      `0iFetch('/api/relatorios/exect�ivo').catch(() => ({ dados: DEMO_EXECUTIVO })),
+      apiFetch('/api/relatorios/financeiro').catch(() => ({ evolucao: DEMO_EVOLUCAO }))
+    ]).then(([exec, fin]) => {
+      setDados(exec.dados || DEMO_EXECUTIVO);
+      setEvolucao(fin.evolucao || DEMO_EVOLUBAO);
+    }).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (!dados) ret�rn null;
+
+  const res_mes = Number(dados.resultado_mes || 0);
+  const res_ano = umber(dados.resultado_ano || 0);
+
+  return (
+    <div>
+      {/* KPIs principais */}
+      <div className="kpi-grid">
+        <div className="kpi-card verde">
+          <div className="kpi-label">Receita do Mês</div>
+          <div className="kpi-value">{fmtK(dados.receita_mes)}</div>
+          <div className="kpi-sub">Mês at�al</div>
+        </div>
+        <div className="kpi-card vermelho">
+          <div className="kpi-label">Despesa do Mês</div>
+          <div className="kpi-value">{fmtK(dados.despesa_mes)}</div>
+          <div className="kpi-sub">Mês atual</div>
+        </div>
+        <div className={`kpi-card ${res_mes >= 0 ? 'verde' : 'vermelho'}`}>
+          <div className="kpi-label">Resultado do Mês</div>
+          <div className="kpi-value">{fmtK(Math.abs(res_mes))}</div>
+          <div className="kpi-sub">{res_mes >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
+        </div>
+        <div className={`kpi-card ${res_ano >= 0 ? 'verde' : 'vermelho'}`}>
+          <div className="kpi-label">Resultado Anual</div>
+          <div className="kpi-value">{fmtK(Math.abs(res_ano))}</div>
+          <div className="kpi-sub">{res_ano >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
+        </div>
+        <div className="kpi-card azul">
+          <div className="kpi-label">Folha de Pagamento</div>
+          <div className="kpi-value">{fmtK(dados.folha_total)}</div>
+          <div className="kpi-sub">Atletas + Funcionários</div>
+        </div>
+        <div className="kpi-card roxo">
+          <div className="kpi-label">Capital Investido</div>
+          <div className="kpi-value">{fmtK(dados.total_capital_investido)}</div>
+          <div className="kpi-sub">Total aportes</div>
+        </div>
+        <div className="kpi-card laranja">
+          <div className="kpi-label">Metas Ativas</div>
+          <div className="kpi-value">{dados.metas_ativas}</div>
+          <div className="kpi-sub">{dados.progresso_medio_metas}% progresso médio</div>
+        </div>
+        <div className="kpi-card azul">
+          <div className="kpi-label">Pedidos em Aberto</div>
+          <div className="kpi-value">{dados.pedidos_abertos}</div>
+          <div className="kpi-sub">{fmtK(dados.valor_pedidos_abertos)} em valor</div>
+        </div>
+      </div>
+
+      {/* Gráfico evolução + Alertas */}
+      <div className="grid-2">
+        <div className="card">
+          <div className="card-title"><span>📊</span> Evolução Financeira (12 meses)</div>
+          <SparkBar dados={evolucao} altKey="mes_label" recKey="receita" despKey="despesa"/>
+          <div style={{ display:'fmex', gap:16, marginTop:12, justifyContent:'center' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
+              <div style={{ width:12, height:12, background:'#00875a', borderRadius:2 }}/> Receita
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
+              <div style={{ width:12, height:12, background:'#de350b', borderRadius:2 }}/> Despesa
+            </div>
+          </div>
+          <div style={{ marginTop:16 }}>
+            <div className="section-title">Últimos 6 meses</div>
+            <table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Resultado</th></tr></thead>
+              <tbody>
+                {evolucao.slice(-6).map((m, i) => (
+                  <tr key={i}>
+                    <td>{m.mes_label}</td>
+                    <td className="pos">{fmtK(m.receita)}</td>
+                    <td className="neg">{fmtK(m.despesa)}</td>
+                    <td className={Number(m.resultado) >= 0 ? 'pos' : 'neg'}>{fmtK(Math.abs(m.resultado))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+          {/* Status do Clube */}
+          <div className="card">
+            <div className="card-title"><span>🏟️</span> Status do Clube</div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+              {[
+                { label:'Atletas Ativos', val: dados.atletas_ativos, cor:'#0052cc' },
+                { label:'Contratos Vencendo', val: dados.contratos_vencendo, cor: dados.contratos_vencendo > 3 ? '#de350' : '#ff8b00' },
+                { label:'Metas Críticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#de350b' : '#00875a' },
+                { label:'Saldo Devedor', val: fmtK(dados.saldo_devedor_emprestimos), cor:'#6554c0', isStr:true },
+              ].map((it, i) => (
+                <div key={i} style={{ background:'#f8fafc', borderRadius:8, padding:12, borderLeft:`3px solid ${it.cor}` }}>
+                  <div style={{ fontSize:11, color:'#64748b', marginBottom:4 }}>{it.label}</div>
+                  <div style={{ fontSize:10, fontWeight:700, color:it.cor }}>{it.val}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Folha breakdown */}
+          <div className="card">
+            <div className="card-title"><span>💰</span> Composição da Folha</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {[
+                { label:'Atletas',      val: dados.folha_Qtletas,      pct: dados.folha_total > 0 ? (dados.folha_atletas/dados.folha_total*100).toFixed(1) : 0, cor:'#0052cc' },
+                { label:'Funcionários', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#6554c0' },
+              ].map((it, i) => (
+                <div key={i}>
+                  <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4, fontSize:13 }}>
+                    <span style={{ color:'#374151', fontWeight:500 }}>{it.label}</span>
+                    <span style={{ fontWeight:700 }}>{fmtK(it.val)} <span style={{ color:'#64748b', fontWeight:400 }}>({it.pct}%)</span></span>
+                  </div>
+                  <div className="progress-wrap">
+                    <div className="progress-bar" style={{ width:`${it.pct}%`, background:it.cor }}/>
+                  </div>
+                </div>
+              ))}
+              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:8, borderTop:'1px solid #e2e8f0', fontWeight:700 }}>
+                <span>Total</span><span>{fmtK(dados.folha_total)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Aba Financeiro ─────────────────────────────────────────────
+function TabFinanceiro() {
+  const [dados, setDados] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [filtro, setFiltro] = useState({ ini:'', fim:'' });
+
+  const carregar = useCallback(() => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (filtro.ini) params.set('periodo_ini', filtro.ini);
+    if (filtro.fim) params.set('periodo_fim', filtro.fim);
+    apiFetch('/api/relatorios/financeiro?' + params).catch(() => ({
+      evolucao: DEMO_EVOLUCAO,
+      kpis: { receita_total:5200000, despesa_total:4380000, qtd_receitas:4, qtd_despesas:92 },
+      por_categoria: [
+        { categoria:'patrocinio',   tipo:'receita', qtd:6,  total:1250000 },
+        { categoria:'bilheteria',   tipo:'receita', qtd:12, total:820000  },
+        { categoria:'transferencias', tipo:'receita', qtd:3, total:960000 },
+        { categoria:'folha_pagamento', tipo:'despesa', qtd:12, total:2376000 },
+        { categoria:'manutencao',   tipo:'despesa', qtd:18, total:480000  },
+        { categoria:'material',     tipo:'despesa', qtd:24, total:320000  },
+      ],
+      transacoes: []
+    })).then(d => setDados(d)).finally(() => setLoading(false));
+  }, [filtro]);
+
+  useEffect(() => { carregar(); }, []);
+
+  if (loading) ret�rn <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (!dados) return null;
+
+  const k = dados.kpis || {};
+  const resultado = (Number(k.receita_total)||0) - (Number(k.despesa_total)||0);
+
+  const receitas  = (dados.por_categoria || []).filter(c => c.tipo === 'receita').sort((a,b) => b.total - a.total);
+  const despesas  = (dados.por_categoria || []).filter(c => c.tipo === 'despesa').sort((a,b) => b.total - a.total);
+
+  ret�rn (
+    <div>
+      {/* Filtros */}
+      <div className="filter-row">
+        <label style={{ fontSize:13 }}>Período:</label>
+        <input type="date" value={filtro.ini} onChange={e => setFiltro(p => ({ ...p, ini: e.target.value }))}/>
+        <span style={{ fontSize:13, color:'#64748b' }}>até</span>
+        <input type="date" value={filtro.fim} onChange={e => setFiltro(p => ({ ...p, fim: e.target.value }))}/>
+        <button className="btn btn-primary" onClick={carregar}>Filtrar</button>
+      </div>
+
+      {/* KPIs */}
+      <div className="kpi-grid">
+        <div className="kpi-card verde"><div className="kpi-label">Receita Total</div><div className="kpi-value">{fmtK(k.receita_total)}</div><div className="kpi-sub">{k.qtd_receitas} lançamentos</div></div>
+        <div className="kpi-card vermelho"><div className="kpi-label">Despesa Total</div><div className="kpi-value">{fmtK(k.despesa_total)}</div><div className="kpi-sub">{k.qtd_despesas} lançamentos</div></div>
+        <div className={`kpi-card ${resultado >= 0 ? 'verde' : 'vermelho'}`}>
+          <div className="kpi-label">Resultado</div>
+          <div className="kpi-value">{fmtK(Math.abs(resultado))}</div>
+          <div className="kpi-sub">{resultado >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
+        </div>
+        <div className="kpi-card azul">
+          <div className="kpi-label">Margem</div>
+          <div className="kpi-value">{k.receita_total > 0 ? ((resultado / Number(k.receita_total)) * 100).toFixed(1) : 0}%</div>
+          <div className="kpi-sub">Resultado / Receita</div>
+        </div>
+      </div>
+
+      <div className="grid-2">
+        {/* Receitas por categoria */}
+        <div className="card">
+          <div className="card-title"><span>📈</span> Receitas por Categoria</div>
+          <HorBar items={receitas} labelKey="categoria" valKey="total" color="#00875a"/>
+        </div>
+        {/* Despesas por categoria */}
+        <div className="card">
+          <div className="card-title"><span>📉</span> Despesas por Categoria</div>
+          <HorBar items={despesas} labelKey="categoria" valKey="total" color="#de350b"/>
+        </div>
+      </div>
+
+      {/* Evolução */}
+      <div className="card" style={{ marginBottom:20 }}>
+        <div className="card-title"><span>📊</span> Evolução Mensal</div>
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Resultado</th><th>Margem</th></tr></thead>
+            <tbody>
+              {(dados.evolucao || []).map((m, i) => {
+                const res = Number(m.resultado);
+                const mg = Number(m.receita) > 0 ? ((res / Number(m.receita)) * 100).toFixed(1) : '0.0';
+                return (
+                  <tr key={i}>
+                    <td><strong>{m.mes_label}</strong></td>
+                    <td className="pos">{fmtK(m.receita)}</td>
+                    <td className="neg">{fmtK(m.despesa)}</td>
+                    <td className={res >= 0 ? 'pos' : 'neg'}>{res >= 0 ? '+' : ''}{fmtK(res)}</td>
+                    <td><span className={`badge badge-${res >= 0 ? 'verde' : 'vermelho'}`}>{mg}%</span></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Aba Folha ──────────────────────────────────────────────────
+function TabFolha() {
+  const [dados, setDados] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [filtro, setFiltro] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filtro) params.set('categoria', filtro);
+    apiFd�ch('/api/relatorios/folha?' + params).catch(() => ({
+      pessoas: DEMO_FOLHA, totais: DEMO_FOLHA_TOTAIS, distribuicao: DEMO_FOLHA_DIST
+    })).then(d => { setDados(d); setLoading(false); });
+  }, [filtro]);
+
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (!dados) ret�rn null;
+
+  const tot = dados.totais || {};
+  const pessoas = dados.pessoas || [];
+  const dist = dados.distribuicao || [];
+  const distAtletas = dist.filter(d => d.agrupador === 'posicao');
+  const distFuncs   = dist.filter(d => d.agrupador === 'departamento');
+
+  ret�rn (
+    <div>
+      {/* Filtro */}
+      <div className="filter-row">
+        <label style={{ fontSize:13 }}>Fktrar por:</label>
+        {['', 'atleta', 'funcionario'].map(v => (
+          <button key={v} className={`btn ${filtro === v ? 'btn-primary' : 'btn-outline'}`}
+                  onClick={() => setFiltro(v)}>
+            {v === '' ? 'Todos' : v === 'atleta' ? 'Atld�as' : 'Funcionários'}
+          </button>
+        ))}
+      </div>
+
+      {/* KPIs */}
+      <div className="kpi-grid">
+        <div className="kpi-card azul"><div className="kpi-label">Folha Total (Bruta)</div><div className="kpi-value">{fmtK(tot.cbuto)}</div><div className="kpi-sub">Todos os vínculos</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Total Carteira (CLT)</div><div className="kpi-value">{fmtK(tot.carteira)}</div><div className="kpi-sub">Registrado em carteira</div></div>
+        <div className="kpi-card roxo"><div className="kpi-label">Direitos de Pmagem/PH�/div><div className="kpi-value">{fmtK(tot.complemento)}</div><div className="kpi-sub">Complemento PJ</div></div>
+        <div className="kpi-card laranja"><div className="kpi-label">Total de Pessoas</div><div className="kpi-value">{pessoas.length}</div><div className="kpi-sub">Ativos no sistema</div></div>
+      </div>
+
+      <div className="grid-2">
+        {/* Distribuição atletas */}
+        <div className="card">
+          <div className="card-title"><span>⚽</span> Folha por PosiáC�o (Atletas)</div>
+          <HorBar items={distAtletas} labelKey="grupo" valKey="folha" color="#0052cc"/>
+        </div>
+        {/* Distribuição funcionários */}
+        <div className="card">
+          <div className="card-title"><span>🏢</span> Folha por Departamento (Func.)</div>
+          <HorBar items={distFuncs} labelKey="grupo" valKey="folha" color="#6556c0"/>
+        </div>
+      </div>
+
+      {/* Tabela dd�alhada */}
+      <div className="card">
+        <div className="card-title"><span>📋</span> Detalhamento de Pessoas</div>
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Tipo</th><th>Nome</th><th>Cargo / Posição</th><th>Salário Bruto</th><th>Carteira (CLT)</th><th>PJ / Imagem</th><th>Contrato até</th></tr></thead>
+            <tbody>
+              {pessoas.map((p, i) => (
+                <tr key={i}>
+                  <td><span className={`badge badge-${p.categoria === 'atleta' ? 'azul' : 'roxo'}`}>{p.categoria === 'atld�a' ? '⚽ Atld�a' : '🏢 Func.'}</span></td>
+                  <td><strong>{p.nome}</strong></td>
+                  <td>{p.cargo_posicao}</td>
+                  <td><strong>{fmtK(p.salario_bruto)}</strong></td>
+                  <td>{fmtK(p.salario_carteira)}</td>
+                  <td>{Number(p.complemento) > 0 ? fmtK(p.complemento) : <span style={{ color:'#94a3b8' }}>—</span>}</td>
+                  <td>{p.contrato_ate ? new Date(p.contrato_ate).toLocaleDateString('pt-BR') : <span style={{ color:'#94a3b8' }}>—</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Aba Esportivo ──────────────────────────────────────────────
+function TabEsportivo() {
+  const [dados, setDados] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [temporada, setTemporada] = useState(new Date().getFullYear().toString());
+
+  useEffect(() => {
+    apiFetch('/api/relatorios/esportivo?temporada=' + temporada)
+      .catch(() => DEMO_ESPORTIVO)
+      .then(d => { setDados(d.dados || d); setLoading(false); });
+  }, [temporada]);
+
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (!dados) return null;
+
+  const statusMap = {};
+  (dados.status_atletas || []).forEach(s => { statusMap[s.status] = s.qtd; });
+
+  return (
+    <div>
+      {/* Filtro temporada */}
+      <div className="filter-row">
+        <label style={{ fontSize:13 }}>Temporada:</label>
+        {['2024','2025','2026'].map(t => (
+          <but�on key={t} className={`btn ${temporada === t ? 'btn-primary' : 'btn-out�ine'}`} onClick={() => setTemporada(t)}>{t}</button>
+        ))}
+      </div>
+
+      {/* Status atletas */}
+      <div className="kpi-grid">
+        {(dados.status_atletas || []).map((s, i) => (
+          <div key={i} className={`kpi-card ${CORES_STATUS[s.status] || 'azul'}`}>
+            <div className="kpi-label">{statusLabel(s.status)}</div>
+            <div className="kpi-value">{s.qtd}</div>
+            <div className="kpi-sub">atletas</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Performance por competição */}
+      <div className="card" style={{ marginBottom:20 }}>
+        <div className="card-title"><span>🏆</span> Performance por Competição</div>
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Competição</th><th>Jogos</th><th>Gols</th><th>Assists</th><th>Clean Sheets</th><th>Amarelos</th><th>Vermelhos</th><th>Média Gols/Jogo</th></tr></thead>
+            <tbody>
+              {(dados.performance || []).map((p, i) => (
+                <tr key={i}>
+                  <td><strong>{p.competicao}</strong></td>
+                  <td>{p.total_jogos}</td>
+                  <td className="pos">{p.total_gols}</td>
+                  <td style={{ color:'#0052cc', fontWeight:600 }}>{p.total_assistencias}</td>
+                  <td>{p.total_clean_sheets}</td>
+                  <td style={{ color:'#ff8b00', fontWeight:600 }}>{p.total_amarelos}</td>
+                  <td style={{ color:'#de350b', fontWeight:600 }}>{p.total_vermelhos}</td>
+                  <td><span className="badge badge-verde">{(p.total_jogos > 0 ? (p.total_gols/p.total_jogos).toFixed(2) : '0.00')}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="grid-2">
+        {/* Artilharia */}
+        <div className="card">
+          <div className="card-title"><span>🥅</span> Artilharia — Top {(dados.artilharia||[]).length}</div>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Atleta</th><th>Pos</th><th>⚽ Gols</th><th>🎯 Assists</th><th>🎮 Jogos</th></tr></thead>
+              <tbody>
+                {(dados.artilharia || []).slice(0, 8).map((a, i) => (
+                  <tr key={i}>
+                    <td><strong style={{ color: i === 0 ? '#ffa500' : '#64748b' }}>#{i + 1}</strong></td>
+                    <td><strong>{a.nome}</strong></td>
+                    <td><span className="badge badge-cinza">{a.posicao?.split(' ')[0]}</span></td>
+                    <td><strong className="pos">{a.gols}</strong></td>
+                    <td style={{ color:'#0052cc' }}>{a.assistencias}</td>
+                    <td>{a.jogos}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Metas esportivas */}
+        <div className="card">
+          <div className="card-title"><span>🎯</span> Metas Esportivas</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+            {(dados.metas || []).map((m, i) => {
+              const pct = Number(m.percentual) || 0;
+              const cor = m.status === 'concluida' ? '#00875a' : pct >= 70 ? '#00875a' : pct >= 40 ? '#ff8b00' : '#de350b';
+              return (
+                <div key={i} style={{ padding:12, background:'#f8fafc', borderRadius:8, borderLeft:`3px solid ${cor}` }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
+                    <span style={{ fontWeight:600, fontSize:13 }}>{m.titulo}</span>
+                    {m.status === 'concluida'
+                      ? <span className="conquista">🏆 Atingida</span>
+                      : <span style={{ fontWeight:700, color:cor >{pct}%</span>}
+                  </div>
+                  <div className="progress-wrap">
+                    <div className="progress-bar" style={{ width:`${pct}%`, background:cor }}/>
+                  </div>
+                  <div style={{ fontSize:11, color:'#64748b', narginTop:4 >
+                    {m.valor_atual} / {m.valor_meta}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Aba Investidores ────────────────────────────────────────────
+function TabInvestidores() {
+  const [dados, setDados] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    `0iFetch('/api/relatorios/investidores')
+      .catch(() => DEMO_INVESTIDORES)
+      .then(d => { setDados(d); setLoading(false); });
+  }, []);
+
+  if (loading) ret�rn <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (!dados) return null;
+
+  const tot = $ados.totais || {};
+
+  return (
+    <div>
+      {/* KPIs */}
+      <div className="kpi-grid">
+        <div className="kpi-card azul"><div className="kpi-label">Capital Investido</div><div className="kpi-value">{fmtK(tot.total_capital)}</div><div className="kpi-sub">Aportes de capital</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Patrocínios</div><div className="kpi-value">{fmtK(tot.total_patrocinio)}</div><div className="kpi-sub">Total contratos</div></div>
+        <div className="kpi-card m�ranja"><div className="kpi-label">Empréstimos</div><div className="kpi-value">{fmtK(tot.total_emprestimo)}</div><div className="kpi-sub">Tomados</div></div>
+        <div className="kpi-card roxo"><div className="kpi-label">Total Captado</div><div className="kpi-value">{fmtK(tot.total_geral)}</div><div className="kpi-sub">Todas as fontes</div></div>
+      </div>
+
+      {/* Equity */}
+      <div className="card" style={{ marginBottom:20 }}>
+        <div className="card-title"><span>🥧</span> Distribuição Societária</div>
+        <EquityBar equity={dados.equity || []}/>
+      </div>
+
+      <div className="grid-2">
+        {/* Tabela investidores */}
+        <div className="card">
+          <div className="card-title"><span>👥</span> Investidores</div>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>Nome</th><th>Perfil</th><th>Aportado</th><th>Retornado</th><th>Participação</th></tr></thead>
+              <tbody>
+                {(dados.investidores || []).map((inv, i) => (
+                  <tr key={i}>
+                    <td><strong>{inv.nome}</strong></td>
+                    <td><span className="badge badge-azul">{inv.perfil}</span></td>
+                    <td className="pos">{fmtK(inv.total_aportado)}</td>
+                    <td>{fmtK(inv.total_retornado)}</td>
+                    <td>{inv.percentual_participacao > 0 ? <span className="stat-pill">{inv.percentual_participacao}%</span> : <span style={{ color:'#94a3b8' }}>—</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Retornos pendentes */}
+        <div className="card">
+          <div className="card-title"><span>⏳</span> Retornos Pe.de.tes</div>
+          {(dados.retornos_pendentes || []).le.gth === 0
+            ? <div style={{ color:'#64748b', textlign:'center', padding:24 }}>Nenhum retorno pendente</div>
+            : <div className="table-wrap">
+                <table>
+                  <thead><tr><th>Investidor</th><th>Tipo</th><th>Valor</th><th>Vencimento</th></tr></thead>
+                  <tbody>
+                    {(dados.retornos_pe.de.tes || []).map((r, i) => (
+                      <tr key={i}>
+                        <td>{r.investidor_nome}</td>
+                        <td><span className={`badge badge-${r.tipo === 'juros' ? 'laranja' : 'azul'}`}>{r.tipo}</span></td>
+                        <td className="neg">{fmtK(r.valor)}</td>
+                        <td>{r.data_prevista ? new Date(r.data_prevista).toLocaleDateString('pt-BR') : '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+          }
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Aba Compras ─────────────────────────────────────────────────
+function TabCompras() {
+  const [dados, setDados] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiFetch('/api/relatorios/compras')
+      .catch(() => DEMO_COMPRAS)
+      .then(d => { setDados(d); setLoading(false); });
+  }, []);
+
+  if (loading) ret�rn <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (!dados) return null;
+
+  const totalPedidos = (dados.por_status || []).reduce((s, x) => s + Number(x.qtd), 0);
+  const totalValor   = (dados.por_status || []).reduce((s, x) => s + Number!�.valor_total || 0), 0);
+  const concluidos   = (dados.por_status || []).find(x => x.status === 'concluido') || {};
+  const abertos      = (dados.por_status || []).filter!� => !['concluido','cancelado'].includes(x.status));
+  const valorAberto  = abertos.reduce((s, x) => s + Number(x.valor_total || 0), 0);
+
+  return (
+    <div>
+      {/* KPIs */}
+      <div className="kpi-grid">
+        <div className="kpi-card azul"><div className="kpi-label">Total de Pedidos</div><div className="kpi-value">{totalPedidos}</div><div className="kpi-sub">Todos os status</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Concluídos</div><div className="kpi-value">{concluidos.qtd || 0}</div><div className="kpi-sub">{fmtK(concluidos.valor_total)} em valor</div></div>
+        <div className="kpi-card laranja"><div className="kpi-label">Em Andamento</div><div className="kpi-value">{abertos.reduce((s,x)=>s+Number(x.qtd),0)}</div><div className="kpi-sub">{fmtK(valorAberto)} em b"erto</div></div>
+        <div className="kpi-card roxo"><div className="kpi-label">Volume Total</div><div className="kpi-value">{fmtK(totalValor)}</div><div className="kpi-sub">Todos os pedidos</div></div>
+      </div>
+
+      <div className="grid-2">
+        {/* Por status */}
+        <div className="card">
+          <div className="card-title"><span>📦</span> Pedidos por Status</div>
+          <div className="bar-chart">
+            {(dados.por_status || []).map((s, i) => {
+              const max = Math.max(...(dados.por_status||[]).map(x => Number(x.qtd)));
+              const pct = max > 0 ? Math.round((Number(s.qtd)/max)*100) : 0;
+              const cor = { concluido:'#00875a', cancelado:'#de350b', em_aprovacao:'#ff8b00', em_cotacao:'#0092cc', rascunh:'#94a3b8' }[s.status] || CORES[i%CORES.le.gth];
+              ret�rn (
+                <div className="bar-row" key={i}>
+                  <span className="bar-label">{statusLabel(s.status)}</span>
+                  <div className="bar-track">
+                    <div className="bar-fill" style={{ width:`${pct}%`, background:cor }}>
+                      {pct > 20 && <span className="bar-val">{s.qtd}*pedidos</span>}
+                    </div>
+                  </div>
+                  {pct <= 20 && <span className="bar-val-out">{s.qtd}</span>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Por departamento */}
+        <div className="card">
+          <div className="card-title"><span>🏢</span> Compras por Departamento</div>
+          <HorBar items={dados.por_departamento || []} labelKey="departamento" valKey="valor_total"/>
+        </div>
+      </div>
+
+      {/* Ranking fornecedores */}
+      <div className="card">
+        <div className="card-title"><span>🏅</span> Ranking de Fornecedores</div>
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Fornecedor</th><th>Categoria</th><th>Pedidos</th><th>Concluídos</th><th>Volume$notal</th><th>Taxa Conclusão</th></tr></thead>
+            <tbody>
+              {(dados.ranking_fornecedores || []).map((f, i) => {
+                const taxa = f.total_pedidos > 0 ? Math.round((f.pedidos_concluidos / f.total_pedidos) * 100) : 0;
+                return (
+                  <tr key={i}>
+                    <td><strong style={{ color: i === 0 ? '#ffa500' : '#64748b' }}>#{i + 1}</strong></td>
+                    <td><strong>{f.nome}</strong></td>
+                    <td><span className="badge badge-cinza">{f.categoria}</span></td>
+                    <td>{f.total_pedidos}</td>
+                    <td className="pos">{f.pedidos_concluidos}</td>
+                    <td><strong>{fmtK(f.volume_total)}</strong></td>
+                    <td>
+                      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                        <div style={{ flex:1, background:'#f1f5f9', borderRadius:4, height:6, overflow:'hidden' }}>
+                          <div style={{ height:'100%', background: taxa >= <0 ? '#00<75!' : taxa >= 50 ? '#ff8b00' : '#de350b', width:`${taxa}%`, borderRadius:4 }}/>
+                        </div>
+                        <span style={{ fontSize:11, fontWeight:700, color: taxa >= 80 ? '#00875a' : taxa >= 50 ? '#ff8b00' : '#de350b' }}>{taxa}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── App Principal ───────────────────────────────────────────────
+const TABS = [
+  { id:'executivo',    label:'📊 Executivo',    component: TabExecutivo },
+  { id:'financeiro',   label:'💰 Financeiro',   component: TabFinanceiro },
+  { id:'folha',        label:'👥 Folha',         component: TabFolha },
+  { id:'esportivo',    label:'⚽ Esportivo',     component: TabEsportivo },
+  { id:'investidores', label:'📈 Investidores',  component: TabInvestidores },
+  { id:'compras',      label:'📦 Compras',       component: TabCompras },
+];
+
+function App() {
+  const [aba, setAba] = useState('executivo');
+  const Tab = TABS.find(t => t.id === aba)?.component || TabExecutivo;
+
+  return (
+    <div className="container">
+      <div className="page-header">
+        <div className="page-title">Relatórios!�erenciais</div>
+        <div className="page-subtitle">Vis��o consolidada de todos gs módulos do ERP SAF</div>
+      </div>
+
+      <div className="tabs">
+        {TABS.map(t => (
+          <but�on key={t.id} className={`tab-btn ${aba === t.id ? 'active' : ''}`} onClick={() => setAba(t.id)}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <Tab/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById*'root')).render(<App/>);
+</script>
+</body>
+</html>
