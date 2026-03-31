@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Metas — ERP SAF</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex;min-height:100vh}
+.sidebar{width:220px;background:#0f172a;color:#94a3b8;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#fff;border-bottom:1px solid #1e293b}
+.sidebar-logo span{color:#f59e0b}
+.sidebar nav{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s}
+.nav-item:hover{background:#1e293b;color:#e2e8f0}
+.nav-item.active{background:#1d4ed8;color:#fff}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{padding:14px 16px;border-top:1px solid #1e293b}
+.user-chip{display:flex;align-items:center;gap:8px}
+.ua{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:18px;font-weight:700;color:#0f172a}
+.topbar-sub{font-size:12px;color:#64748b;margin-top:2px}
+.content{padding:24px 28px;flex:1}
+.btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
+.btn-primary{background:#1d4ed8;color:#fff}.btn-primary:hover{background:#1e40af}
+.btn-outline{background:#fff;color:#475569;border:1px solid #e2e8f0}.btn-outline:hover{background:#f8fafc}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-ghost{background:transparent;color:#64748b;border:none;font-size:13px;cursor:pointer;padding:4px 8px}
+.btn-success{background:#16a34a;color:#fff}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi-card{background:#fff;border-radius:12px;padding:14px 18px;border:1px solid #e2e8f0}
+.kpi-label{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kpi-value{font-size:24px;font-weight:800;margin:5px 0 2px;color:#0f172a}
+.kpi-sub{font-size:11px;color:#94a3b8}
+.kpi-card.ok .kpi-value{color:#16a34a}
+.kpi-card.alerta .kpi-value{color:#d97706}
+.kpi-card.urgente .kpi-value{color:#dc2626}
+
+/* FILTERS */
+.filters-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#475569;transition:.15s}
+.filter-btn.active{border-color:transparent}
+.filter-btn.tipo-esportiva.active{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
+.filter-btn.tipo-financeira.active{background:#dcfce7;color:#16a34a;border-color:#bbf7d0}
+.filter-btn.tipo-institucional.active{background:#f3e8ff;color:#7c3aed;border-color:#ddd6fe}
+.filter-btn.tipo-all.active{background:#0f172a;color:#fff;border-color:#0f172a}
+.search-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;width:200px;outline:none}
+.search-input:focus{border-color:#1d4ed8}
+select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill-alta{background:#fee2e2;color:#dc2626}
+.pill-media{background:#fef9c3;color:#a16207}
+.pill-baixa{background:#f1f5f9;color:#64748b}
+.pill-ativa{background:#dbeafe;color:#1d4ed8}
+.pill-concluida{background:#dcfce7;color:#16a34a}
+.pill-nao_atingida{background:#fee2e2;color:#dc2626}
+.pill-cancelada{background:#f1f5f9;color:#94a3b8}
+.tipo-badge-esportiva{background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.tipo-badge-financeira{background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.tipo-badge-institucional{background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+
+/* META CARD */
+.metas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.meta-card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;padding:18px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.meta-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px}
+.meta-card.esportiva::before{background:#1d4ed8}
+.meta-card.financeira::before{background:#16a34a}
+.meta-card.institucional::before{background:#7c3aed}
+.meta-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09)}
+.meta-card.concluida{opacity:.85;background:#f0fdf4}
+.meta-card.nao_atingida{opacity:.8;background:#fff5f5}
+.meta-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px}
+.meta-titulo{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;flex:1}
+.meta-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+
+/* BARRA DE PROGRESSO */
+.progrest-wrap{margin-bottom:12px}
+.progress-info{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.progress-valores{font-size:12.5px;color:#475569}
+.progress-pct{font-size:18px;font-weight:800}
+.progress-bar{height:10px;background:#f1f5f9;border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;border-radius:100px;transition:width .6s ease}
+.pct-low{color:#dc2626}
+.pct-mid{color:#d97706}
+.pct-high{color:#16a34a}
+.fill-low{background:linear-gradient(90deg,#fca5a5,#dc2626)}
+.fill-mid{background:linear-gradient(90deg,#fcd34d,#d97706)}
+.fill-high{background:linear-gradient(90deg,#86efac,#16a34a)}
+.fill-done{background:linear-gradient(90deg,#34d399,#059669)}
+
+/* META FOOTER */
+.meta-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9;font-size:12px;color:#94a3b8}
+.dias-badge{padding:3px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.dias-ok{background:#dcfce7;color:#16a34a}
+.dias-warning{background:#fef9c3;color:#a16207}
+.dias-urgent{background:#fee2e2;color:#dc2626}
+.dias-vencido{background:#f1f5f9;color:#64748b}
+
+/* CONQUISTA BANNER */
+.conquista-banner{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:3px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+.modal-header{padding:20px 24px;border-bottom:1px solid #e2e8f0;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10}
+.modal-body{padding:24px}
+.modal-footer{padding:14px 24px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
+.close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;margin-top:2px}
+.close-btn:hover{color:#0f172a}
+.detail-section{margin-bottom:20px}
+.detail-section h3{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.detail-item label{display:block;font-size:10.5px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.detail-item span{font-size:14px;font-weight:600;color:#0f172a}
+
+/* ATUALIZAR PROGRESSO */
+.update-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:18px}
+.update-box h4{font-size:13px;font-weight:700;color:#1d4ed8;margin-bottom:10px}
+
+/* TIMELINE */
+.timeline{list-style:none}
+.tl-item{display:flex;gap:10px;padding-bottom:14px;position:relative}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:10px;top:22px;bottom:0;width:2px;background:#f1f5f9}
+.tl-dot{width:22px;height:22px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px;color:#1d4ed8;font-weight:800}
+.tl-dot.up{background:#dcfce7;color:#16a34a}
+.tl-dot.down{background:#fee2e2;color:#dc2626}
+.tl-acao{font-size:13px;font-weight:600;color:#0f172a}
+.tl-desc{font-size:12px;color:#64748b;margin-top:1px}
+.tl-data{font-size:11px;color:#94a3b8;margin-top:2px}
+.tl-delta{font-size:11.5px;font-weight:700;margin-top:2px}
+.tl-delta.pos{color:#16a34a}
+.tl-delta.neg{color:#dc2626}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
+.form-group input,.form-group select,.form-group textarea{padding:8px 11px;border:1px solid #e2e8f0;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit}
+.form-group input:focus,.form-group select:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+.form-group textarea{resize:vertical;min-height:60px}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;width:100%}
+.login-card{background:#fff;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo h2{font-size:22px;font-weight:800;color:#0f172a;margin-top:10px}
+.login-err{background:#fee2e2;color:#dc2626;border-radius:8px;padding:10px;font-size:13px;margin-bottom:14px}
+.empty-state{text-align:center;padding:50px 20px;color:#94a3b8}
+.empty-icon{font-size:44px;margin-bottom:10px}
+
+/* NOVA META MODAL */
+.nova-meta-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px}
+.nova-meta-modal{background:#fff;border-radius:16px;width:100%;max-width:660px;max-height:88vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+const API_URL = (window.ERP_CONFIG || {}).API_URL || 'http://localhost:3001/api';
+
+// ============================================================
+// DEMO DATA
+// ============================================================
+const DEMO_RESUMO = { total:16, ativas:14, concluidas:1, nao_atingidas:0, esportivas_ativas:8, financeiras_ativas:5, progresso_medio:57.4, criticas:2 };
+
+const DEMO_METAS = [
+    { id:1,  titulo:'Acesso à Série A 2027',           tipo:'esportiva',    categoria:'classificacao', prioridade:'alta',  status:'ativa',    valor_meta:4,         valor_atual:6,        unidade:'posição',   sentido:'abaixo', percentual:33,  data_inicio:'2026-04-12', data_fim:'2026-11-29', dias_restantes:253, temporada:'2026', descricao:'Terminar a Série B 2026 entre os 4 primeiros.', observacoes:'28 rodadas ainda pela frente.', atleta_nome:null, responsavel_nome:'Administrador', qtd_atualizacoes:2 },
+    { id:2,  titulo:'Atingir 65 pontos na Série B',    tipo:'esportiva',    categoria:'pontuacao',    prioridade:'alta',  status:'ativa',    valor_meta:65,        valor_atual:18,       unidade:'pontos',    sentido:'acima',  percentual:28,  data_inicio:'2026-04-12', data_fim:'2026-11-29', dias_restantes:253, temporada:'2026', descricao:'Acumular pelo menos 65 pontos na Série B.', observacoes:'10 rodadas disputadas. Média: 1,8 pts/jogo.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:3 },
+    { id:11, titulo:'Receita total de R$ 12M em 2026', tipo:'financeira',   categoria:'receita',      prioridade:'alta',  status:'ativa',    valor_meta:12000000,  valor_atual:4800000,  unidade:'R$',        sentido:'acima',  percentual:40,  data_inicio:'2026-01-01', data_fim:'2026-12-31', dias_restantes:285, temporada:'2026', descricao:'Meta de receita total no ano.', observacoes:'40% em 3 meses. Ritmo adequado.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:3 },
+    { id:7,  titulo:'Alemão: 20 gols na temporada',    tipo:'esportiva',    categoria:'artilheiro',   prioridade:'alta',  status:'ativa',    valor_meta:20,        valor_atual:12,       unidade:'gols',      sentido:'acima',  percentual:60,  data_inicio:'2026-01-01', data_fim:'2026-11-29', dias_restantes:253, temporada:'2026', descricao:'Alexandre "Alemão" atingir 20 gols.', observacoes:'12 gols em 13 jogos!', atleta_nome:'Alexandre Costa Prado', responsavel_nome:null, qtd_atualizacoes:3 },
+    { id:12, titulo:'Captar R$ 1,5M em patrocínios',   tipo:'financeira',   categoria:'patrocinio',   prioridade:'alta',  status:'ativa',    valor_meta:1500000,   valor_atual:860000,   unidade:'R$',        sentido:'acima',  percentual:57,  data_inicio:'2026-01-01', data_fim:'2026-12-31', dias_restantes:285, temporada:'2026', descricao:'Fechar novos contratos de patrocínio.', observacoes:'Faltam R$640k.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:3 },
+    { id:6,  titulo:'Mínimo de 12 clean sheets',       tipo:'esportiva',    categoria:'clean_sheets', prioridade:'media', status:'ativa',    valor_meta:12,        valor_atual:8,        unidade:'clean sheets',sentido:'acima', percentual:67,  data_inicio:'2026-01-01', data_fim:'2026-11-29', dias_restantes:253, temporada:'2026', descricao:'12 jogos sem sofrer gol.', observacoes:'Ricardo tem 8 em 13. Ritmo excelente!', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:13, titulo:'Folha de atletas abaixo R$380k',  tipo:'financeira',   categoria:'folha_limite', prioridade:'alta',  status:'ativa',    valor_meta:380000,    valor_atual:312000,   unidade:'R$/mês',    sentido:'abaixo', percentual:82,  data_inicio:'2026-01-01', data_fim:'2026-12-31', dias_restantes:285, temporada:'2026', descricao:'Manter folha dentro do orçamento.', observacoes:'Meta cumprida com folga atualmente.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:3,  titulo:'Aproveitamento mínimo de 60%',    tipo:'esportiva',    categoria:'aproveitamento',prioridade:'media', status:'ativa',   valor_meta:60,        valor_atual:60,       unidade:'%',         sentido:'acima',  percentual:100, data_inicio:'2026-04-12', data_fim:'2026-11-29', dias_restantes:253, temporada:'2026', descricao:'Manter aproveitamento acima de 60%.', observacoes:'6V 0E 4D = 60%.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:3 },
+    { id:4,  titulo:'Mínimo de 20 vitórias na Série B',tipo:'esportiva',    categoria:'vitorias',     prioridade:'media', status:'ativa',    valor_meta:20,        valor_atual:6,        unidade:'vitórias',  sentido:'acima',  percentual:30,  data_inicio:'2026-04-12', data_fim:'2026-11-29', dias_restantes:253, temporada:'2026', descricao:'Vencer pelo menos 20 jogos.', observacoes:null, atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:5,  titulo:'Sofrer menos de 30 gols',         tipo:'esportiva',    categoria:'gols_sofridos',prioridade:'media', status:'ativa',    valor_meta:30,        valor_atual:12,       unidade:'gols sofridos',sentido:'abaixo',percentual:60, data_inicio:'2026-04-12', data_fim:'2026-11-29', dias_restantes:253, temporada:'2026', descricao:'Defesa sólida com menos de 30 gols sofridos.', observacoes:'10 rodadas: 12 gols. Projeção preocupa.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:14, titulo:'Reduzir custos operacionais 10%', tipo:'financeira',   categoria:'reducao_custos',prioridade:'media', status:'ativa',   valor_meta:10,        valor_atual:6,        unidade:'%',         sentido:'acima',  percentual:60,  data_inicio:'2026-01-01', data_fim:'2026-12-31', dias_restantes:285, temporada:'2026', descricao:'Reduzir despesas operacionais em 10%.', observacoes:'6% atingido até março.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:15, titulo:'Captar R$1M em novos aportes',    tipo:'financeira',   categoria:'captacao',     prioridade:'alta',  status:'ativa',    valor_meta:1000000,   valor_atual:700000,   unidade:'R$',        sentido:'acima',  percentual:70,  data_inicio:'2026-01-01', data_fim:'2026-12-31', dias_restantes:285, temporada:'2026', descricao:'Atrair novos sócios investidores.', observacoes:'Grupo Vitória aportou R$700k.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:8,  titulo:'Avançar às quartas da Copa Brasil',tipo:'esportiva',   categoria:'titulo',       prioridade:'media', status:'concluida',valor_meta:1,         valor_atual:1,        unidade:'fase',      sentido:'acima',  percentual:100, data_inicio:'2026-01-01', data_fim:'2026-08-31', dias_restantes:163, temporada:'2026', descricao:'Chegar às quartas de final.', observacoes:'Já avançamos para as oitavas!', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:9,  titulo:'Promover 2 atletas da base',       tipo:'institucional',categoria:'formacao',     prioridade:'media', status:'ativa',    valor_meta:2,         valor_atual:1,        unidade:'atletas',   sentido:'acima',  percentual:50,  data_inicio:'2026-01-01', data_fim:'2026-12-31', dias_restantes:285, temporada:'2026', descricao:'Revelar atletas das categorias de base.', observacoes:'Lukinha promovido. Mateuzinho em observação.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:10, titulo:'Média de 8.000 torcedores/jogo',  tipo:'institucional',categoria:'publico',      prioridade:'baixa', status:'ativa',    valor_meta:8000,      valor_atual:6800,     unidade:'torcedores',sentido:'acima',  percentual:85,  data_inicio:'2026-04-12', data_fim:'2026-11-29', dias_restantes:253, temporada:'2026', descricao:'Média acima de 8.000 pagantes.', observacoes:'Média atual: 6.800 (+15% vs 2025).', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+    { id:16, titulo:'Resultado operacional positivo',  tipo:'financeira',   categoria:'lucro',        prioridade:'alta',  status:'ativa',    valor_meta:1,         valor_atual:1,        unidade:'superávit', sentido:'acima',  percentual:100, data_inicio:'2026-01-01', data_fim:'2026-12-31', dias_restantes:285, temporada:'2026', descricao:'Fechar 2026 com superávit operacional.', observacoes:'Projeção positiva se houver acesso.', atleta_nome:null, responsavel_nome:null, qtd_atualizacoes:0 },
+];
+
+const DEMO_HIST = {
+    7: [
+        { id:3, valor_anterior:8, valor_novo:12, descricao:'Março — 4 gols na Série B. Total: 12 gols!', created_at:'2026-03-30T18:00:00Z', usuario_nome:'Admin' },
+        { id:2, valor_anterior:4, valor_novo:8,  descricao:'Fevereiro — 4 gols na Copa do Brasil', created_at:'2026-02-28T18:00:00Z', usuario_nome:'Admin' },
+        { id:1, valor_anterior:0, valor_novo:4,  descricao:'Fevereiro — 4 gols na Série B', created_at:'2026-02-15T18:00:00Z', usuario_nome:'Admin' },
+    ]
+};
+
+// ============================================================
+// HELPERS
+// ============================================================
+let TOKEN = localStorage.getItem('erp_token');
+let USUARIO = null;
+try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
+
+async function apiFetch(path, options={}) {
+    try {
+ �2     const headers={'Content-Type':'application/json'};
+        if(TOKEN) headers['Authorization']='Bearer '+TOKEN;
+        const res = await fetch(API_URL+path,{...options,headers});
+        if(res.status===401){TOKEN=null;localStorage.removeItem('erp_token');window.location.reload();}
+        return await res.json();
+    } catch(e){return null;}
+}
+
+function fmt(v){if(!v&&v!==0)return '—';return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2});}
+function fmtNum(v,u=''){if(v===null||v===undefined)return '—';if(u==='R$')return fmt(v);return Number(v).toLocaleString('pt-BR')+(u?' '+u:'');}
+function fmtData(d){if(!d)return '—';return new Date(d)(d.length===10?'T00:00:00':'')).toLocaleDateString('pt-BR');}
+function fmtDataHora(d){if(!d)return '—';return new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function initials(n){return(n||'?').split(' ').filter(Boolean).map(x=>x[0]).slice(0,2).join('').toUpperCase();}
+
+function getPctClass(pct){return pct>=80?'pct-high':pct>=50?'pct-mid':'pct-low';}
+function getFillClass(pct,status){if(status==='concluida')return 'fill-done';return pct>=80?'fill-high':pct>=50?'fill-mid':'fill-low';}
+function getDiasClass(d){if(d<0)return 'dias-vencido';if(d<30)return 'dias-urgent';if(d<90)return 'dias-warning';return 'dias-ok';}
+
+const CATEGORIA_ICON = {
+    classificacao:'🏆',pontuacao:'📊',vitorias:'✅',gols_marcados:'⚽',
+    gols_sofridos:'🥅',clean_sheets:'🧤',aproveitamento:'📈',artilheiro:'👑',titulo:'🏅',
+    receita:'💰',reducao_custos:'✂️',patrocinio:'🎽',folha_limite:'💼',lucro:'📈',captacao:'💼',
+    formacao:'🌱',publico:'👥',custom:'🎯'
+};
+
+const TIPO_LABEL = {esportiva:'Esportiva', financeira:'Financeira', institucional:'Institucional'};
+
+// ============================================================
+// LOGIN
+// ============================================================
+function Login({onLogin}) {
+    const [u,setU]=useState('admin'),[s,setS]=useState('admin123'),[err,setErr]=useState(''),[l,setL]=useState(false);
+    async function submit(e){
+        e.preventDefault();setL(true);setErr('');
+        const d=await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({usuario:u,senha:s})});
+        setL(false);
+        if(d?.token){TOKEN=d.token;USUARIO=d.usuario;localStorage.setItem('erp_token',TOKEN);localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(d.usuario);}
+        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(USUARIO);}
+        else setErr('Usuário ou senha incorretos.');
+    }
+    return <div className="login-wrap"><div className="login-card">
+        <div className="login-logo"><div style={{fontSize:40}}>🏟️</div><h2>ERP SAF</h2><p>Metas Esportivas e Financeiras</p></div>
+        {err&&<div className="login-err">{err}</div>}
+        <form onSubmit={submit}>
+            <div className="form-group" style={{marginBottom:12}}><label>Usuário</label><input value={u} onChange={e=>setU(e.target.value)} required/></div>
+            <div className="form-group" style={{marginBottom:20}}><label>Senha</label><input type="password" value={s} onChange={e=>setS(e.target.value)} required/></div>
+            <button type="submit" className="btn btn-primary" style={{width:'100%',padding:11}} disabled={l}>{l?'Entrando...':'Entrar'}</button>
+        </form>
+        <div style={{textAlign:'center',marginTop:16,fontSize:12,color:'#94a3b8'}}>Demo: admin / admin123</div>
+    </div></div>;
+}
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+function Sidebar({usuario,onLogout}){
+    const ini=initials(usuario?.nome||'U');
+    return <div className="sidebar">
+        <div className="sidebar-logo">🏟️ ERP <span>SAF</span></div>
+        <nav>
+            <div className="nav-item" onClick={()=>window.location.href='index.html'}><span className="icon">👥</span> Funcionários</div>
+            <div className="nav-item" onClick={()=>window.location.href='financeiro.html'}><span className="icon">💰</span+ Financeiro</div>
+            <div className="nav-item" onClick={()=>window.location.href='pedidos.html'}><span className="icon">𕛒</rpan> Pedidos de Compra</div>
+            <div className="nav-item" onClick={()=>window.location.href='atletas.html'}><span className="icon">⚽</span> Atletas</div+
+            <div className="nav-item" onClick={()=>window.location.href='investidores.html'}><span className="icon">💼</span> Investidores</div>
+            <div className="nav-item active"><span className="icon">🎯</span> Metas</div>
+            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">📊</span> Relatórios</div>
+        </nav>
+    0   <div className="sidebar-footer">
+            <div className="user-chip"><div className="ua">{ini}</div>
+                <div><div style={{fontSize:12,color:'#e2e8f0',fontWeight:600}}>{usuario?.nome}</div+<div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
+            </div>
+            <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>Sair →</button>
+        </div>
+    </div>;
+}
+
+// ============================================================
+// MODAL DETALHE DA META
+// ============================================================
+function ModalMeta({meta, onClose, onAtualizar}){
+    const [detalhe,setDetalhe]=useState(null);
+    const [novoValor,setNovoValor]=useState('');
+    const [novoDesc,setNovoDesc]=useState('');
+    const [saving,setSaving]=useState(false);
+    const [sucesso,setSucesso]=useState('');
+
+    useEffect(()=>{
+        async function buscar(){
+            const d=await apiFetch('/metas/'+meta.id);
+            if(d?.id) setDetalhe(d);
+            else setDetalhe({...meta, historico: DEMO_HIST[meta.id]||[]});
+        }
+        buscar();
+    },[meta.id]);
+
+    async function atualizar(){
+        if(!novoValor) return;
+        setSaving(true);
+        const d=await apiFetch('/metas/'+meta.id+'/atualizar',{method:'PATCH',body:JSON.stringify({valor_novo:parseFloat(novoValor),descricao:novoDesc})});
+        setSaving(false);
+        if(d){
+            setSucesso(d.mensagem||'Atualizado!');
+            setNovoValor(''); setNovoDesc('');
+            onAtualizar();
+            const d2=await apiFetch('/metas/'+meta.id);
+            if(d2?.id) setDetalhe(d2);
+            else setDetalhe(prev=>({...prev, valor_atual:parseFloat(novoValor), historico:[{id:Date.now(),valor_anterior:prev.valor_atual,valor_novo:parseFloat(novoValor),descricao:novoDesc,created_at:new Date().toISOString(),usuario_nome:'Você'},...(prev.historico||[])]}));
+   ,        setTimeout(()=>setSucesso(''),3000);
+        }
+    }
+
+    const d = detalhe||meta;
+    const pct = d.percentual||0;
+    const fmtValor = (v)=>{
+        if(d.unidade==='R$'||d.unidade?.startsWith('R$')) return fmt(v);
+        return Number(v||0).toLocaleString('pt-BR')+' '+(d.unidade||'');
+    };
+
+    return <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+        <div className="modal">
+            <div className="modal-header">
+                <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,flexWrap:'wrap'}}>
+    0                   <span style={{fontSize:20}}>{CATEGORIA_ICON[d.categoria]||'🎯'}</span>
+                        <span className={'tipo-badge-'+d.tipo}>{TIPO_LABEL[d.tipo]}</span>
+   ,                    <span className={'pill pill-'+d.prioridade}>{d.prioridade}</span>
+                        <span className={'pill pill-'+d.status}>{d.status.replace('_',' ')}</span>
+                    </div>
+                    <h2 style={{fontSize:17,fontWeight:800,color:'#0f172a',lineHeight:1.3}}>{d.titulo}</h2>
+                    {d.atleta_nome && <div style={{fontSize:12,color:'#64748b',marginTop:3}}>⚽ {d.atleta_nome}{d.atleta_guerra?' "'+d.atleta_guerra+'"':''}</div>}
+ �              </div>
+                <button className="close-btn" onClick={onClose}>✕</button>
+            </div>
+            <div className="modal-body">
+
+                {sucesso && <div style={{background:'#dcfce7',border:'1px solid #86efac',borderRadius:8,padding:'10px 14px',color:'#16a34a',fontWeight:700,marginBottom:14,fontSize:13}}>{sucesso}</div>}
+
+                {/* BARRA DE PROGRESSO GRANDE */}
+                <div style={{background:'#f8fafc',borderRadius:12,padding:'16px 18px',marginBottom:20}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
+                        <div style={{fontSize:13,color:'#475569',fontWeight:600}}>
+                            {d.sentido==='abaixo'?'Atual:':'Progresso:'} <strong>{fmtValor(d.valor_atual)}</strong> de <strong>{fmtValor(d.valor_meta)}</strong>
+                        </div>
+                        <div style={{fontSize:28,fontWeight:900}} className={getPctClass(pct)}>{pct}%</div>
+                    </div>
+    0               <div style={{height:14,background:'#e2e8f0',borderRadius:100,overflow:'hidden'}}>
+                        <div className={getFillClass(pct,d.status)} style={{width:pct+'%',height:'100%',borderRadius:100,transition:'width .8s ease'}}/>
+                    </div>
+    0               <div style={{display:'flex',justifyContent:'space-between',marginTop:8,fontSize:11.5,color:'#94a3b8'}}>
+                        <span>📅 {fmtData(d.data_inicio)} → {fmtData(d.data_fim)}</span>
+                        {d.dias_restantes>0
+                            ? <span className={'dias-badge '+ getDiasClass(d.dias_restantes)}>{d.dias_restantes} dias restantes</span>
+                            : <span className="dias-badge dias-vencido">Prazo encerrado</span>}
+                    </div>
+                </div>
+
+    0           {/* ATUALIZAR PROGRESSO */}
+                {d.status==='ativa' && <div className="update-box">
+                    <h4>📝 Atualizar Progresso</h4>
+                    <div style={{display:'grid',gridTemplateColumns:'1fr 2fr',gap:10}}>
+                        <div className="form-group">
+                            <label>Novo valor ({d.unidade||''})</label>
+                            <input type="number" step="any" value={novoValor} onChange={e=>setNovoValor(e.target.value)} placeholder={String(d.valor_atual)}/>
+                        </div>
+                        <div className="form-group">
+                            <label>Descrição (opcional)</label>
+                            <input value={novoDesc} onChange={e=>setNovoDesc(e.target.value)} placeholder="Ex: Rodada 11 — vitória 2x0"/>
+                        </div>
+                    </div>
+                    <button className="btn btn-primary btn-sm" style={{marginTop:10}} onClick={atualizar} disabled={saving||!novoValor}>
+                        {saving?'Salvando...':'💾 Salvar Atualização'}
+                    </button>
+                </div>}
+
+                {/* DADOS */}
+                <div className="detail-section">
+                    <h3>Informações</h3>
+                    <div className="detail-grid">
+                        <div className="detail-item"><label>Temporada</label><span>{d.temporada}</span></div>
+                        <div className="detail-item"><label>Categoria</label><span>{CATEGORIA_ICON[d.categoria]} {d.categoria?.replace(/_/g,' ')}</span></div>
+                        <div className="detail-item"><label>Responsável</label><span>{d.responsavel_nome||'—'}</span></div>
+                    </div>
+                    {d.descricao && <div style={{marginTop:12,padding:'10px 12px',background:'#f8fafc',borderRadius:8,fontSize:13,color:'#475569',lineHeight:1.6}}>{d.descricao}</div>}
+                    {d.observacoes && <div style={{marginTop:8,padding:'8px 12px',background:'#fffbeb',borderRadius:8,fontSize:12.5,color:'#92400e',border:'1px solid #fde68a'}}>💡 {d.observacoes}</div>}
+                </div>
+
+                {/* HISTÓRICO */}
+                <div className="detail-section">
+                    <h3>📅 Histórico de Atualizações ({detalhe?.historico?.length||0})</h3>
+                    {!detalhe?.historico?.length
+                        ? <div style={{color:'#94a3b8',fontSize:13,padding:'12px 0'}}>Nenhuma atualização registrada ainda.</div>
+                        : <ul className="t�meline">
+                            {detalhe.historico.map(h=>{
+                                const delta = (h.valor_novo||0)-(h.valor_anterior||0);
+                                const isUp = d.sentido==='abaixo' ? delta<0 : delta>0;
+                                return <li key={h.id} className="tl-item">
+                                    <div className={'tl-dot '+(isUp?'up':'down')}>{isUp?'↑':'↓'}</div>
+                                    <div style={{flex:1}}>
+                                        <div className="tl-acao">{fmtValor(h.valor_anterior)} → <strong>{fmtValor(h.valor_novo)}</strong>{h.usuario_nome?' · '+h.usuario_nome:''}</div>
+                                        {h.descricao && <div className="tl-desc">{h.descricao}</div>}
+                                        <div className="tl-data">{fmtDataHora(h.created_at)}</div>
+                                        {delta!==0 && <div className={'tl-delta '+(isUp?'pos':'neg')}>{isUp?'+':''}{fmtValor(delta)}</div>}
+                                    </div>
+                                </li>;
+                            })}
+                        </ul>
+                    }
+                </div>
+            </div>
+            <div className="modal-footer">
+                <button className="btn btn-outline" onClick={onClose}>Fechar</button>
+            </div>
+        </div>
+    </div>;
+}
+
+// ============================================================
+// MÓDULO PRINCIPAL
+// ============================================================
+function ModuloMetas({usuario}){
+    const [metas,setMetas]=useState([]);
+ �  const [resumo,setResumo]=useState(DEMO_RESUMO);
+    const [loading,setLoading]=useState(true);
+    const [filtroTipo,setFiltroTipo]=useState('');
+ �  const [filtroStatus,setFiltroStatus]=useState('ativa');
+    const [busca,setBusca]=useState('');
+    const [detalhe,setDetalhe]=useState(null);
+    const [showNova,setShowNova]=useState(false);
+    const [novaMeta,setNovaMeta]=useState({titulo:'',tipo:'esportiva',categoria:'vitorias',prioridade:'media',valor_meta:'',unidade:'',sentido:'acima',data_fim:'',descricao:''});
+
+    const carregar=useCallback(async()=>{
+        setLoading(true);
+        const params=new URLSearchParams({temporada:'2026'});
+        if(filtroTipo) params.set('tipo',filtroTipo);
+        if(filtroStatus) params.set('status',filtroStatus);
+        if(busca) params.set('busca',busca);
+
+        const [listData,resumoData]=await Promise.all([
+            apiFetch('/metas?'+params.toString()),
+            apiFetch('/metas/resumo?temporada=2026')
+        ]);
+
+    0   if(Array.isArray(listData)){ setMetas(listData); }
+ �      else {
+    �0      let f=DEMO_METAS;
+            if(filtroTipo) f=f.filter(m=>m.tipo===filtroTipo);
+            if(filtroStatus) f=f.filter(m=>m.status===filtroStatus);
+            if(busca) f=f.filter(m=>m.titulo.toLowerCase().includes(busca.toLowerCase()));
+            setMetas(f);
+        }
+        if(resumoData?.total) setResumo(resumoData);
+        setLoading(false);
+    },[filtroTipo,filtroStatus,busca]);
+
+    useEffect(()=>{carregar();},[carregar]);
+
+    async function salvarNovaMeta(){
+        if(!novaMeta.titulo||!novaMeta.valor_meta||!novaMeta.data_fim){alert('Preencha título, valor da meta e prazo final');return;}
+        const d=await apiFetch('/metas',{method:'POST',body:JSON.stringify(novaMeta)});
+        setShowNova(false);
+        carregar();
+    }
+
+    // Agrupa por tipo para exibição organizada
+    const grupos = [
+        { tipo:'esportiva',    label:'🏆 Metas Esportivas',    metas: metas.filter(m=>m.tipo==='esportiva') },
+        { tipo:'financeira',   label:'💰 Metas Financeiras',   metas: metas.filter(m=>m.tipo==='financeira') },
+        { tipo:'institucional',label:'🌱 Metas Institucionais',metas: metas.filter(m=>m.tipo==='institucional') },
+    ].filter(g=>(filtroTipo?g.tipo===filtroTipo:true) && g.metas.length>0);
+
+    const CATEGORIAS_POR_TIPO = {
+        esportiva:['classificacao','pontuacao','vitorias','gols_marcados','gols_sofridos','clean_sheets','aproveitamento','artilheiro','titulo'],
+        financeira:['receita','reducao_custos','patrocinio','folha_limite','lucro','captacao'],
+        institucional:['formacao','publico','custom']
+    };
+
+    return <>
+        <div className="topbar">
+            <div><h1>🎯 Metas Esportivas e Financeiras</h1><div className="topbar-sub">Temporada 2026 — acompanhe o progresso de cada objetivo</div></div>
+            <button className="btn btn-primary" onClick={()=>setShowNova(true)}>+ Nova Meta</button>
+        </div>
+        <div className="content">
+            {/* KPIs */}
+            <div className="kpi-grid">
+                <div className="kpi-card">
+                    <div className="kpi-label">Metas Ativas</div>
+                    <div className="kpi-value">{resumo.ativas}</div>
+                    <div className="kpi-sub">{resumo.esportivas_ativas} esportivas · {resumo.financeiras_ativas} financeiras</div>
+                </div>
+                <div className="kpi-card ok">
+                    <div className="kpi-label">Progresso Médio</div>
+                    <div className="kpi-value">{resumo.progresso_medio}%</div>
+                    <div className="kpi-sub">das metas ativas</div>
+                </div>
+                <div className="kpi-card ok">
+                    <div className="kpi-label">Concluídas</div>
+                    <div className="kpi-value">{resumo.concluidas}</div>
+                    <div className="kpi-sub">metas atingidas</div>
+                </div>
+                <div className="kpi-card urgente">
+                    <div className="kpi-label">Críticas</div>
+                    <div className="kpi-value">{resumo.criticas}</div>
+                    <div className="kpi-sub">alta prioridade &lt; 50%</div>
+                </div>
+                <div className="kpi-card alerta">
+                   <din className="kpi-label">Não Atingidas</div>
+                     <div className="kpi-value">{resumo.nao_atingidas}</div>
+                    <div className="kpi-sub">prazo encerrado</div>
+                </div>
+            </div>
+
+            {/* FILTROS */}
+            <div className="filters-row">
+                <button className={'filter-btn tipo-all'+(filtroTipo===''?' active':'')} onClick={()=>setFiltroTipo('')}>Todas</button>
+                <button className={'filter-btn tipo-esportiva'+(filtroTipo==='esportiva'?' active':'')} onClick={()=>setFiltroTipo('esportiva')}>🏆 Esportivas</button>
+                <button className={'filter-btn tipo-financeira'+(filtroTipo==='financeira'?' active':'')} onClick={()=>setFiltroTipo('financeira')}>💰 Financeiras</button>
+                <button className={'filter-btn tipo-institucional'+(filtroTipo==='institucional'?' active':'')} onClick={()=>setFiltroTipo('institucional')}>🌱 Institucionais</button>
+                <div style={{width:1,background:'#e2e8f0',height:30,margin:'0 4px'}}/>
+                <select className="filter-sel" value={filtroStatus} onChange={e=>setFiltroStatus(e.target.value)}>
+                    <option value="">Todos os status</option>
+                    <option value="ativa">Ativas</option>
+                    <option value="concluida">Concluídas</option>
+                    <option value="nao_atingida">Não atingidas</option>
+                </select>
+                <input className="search-input" placeholder="Buscar meta..." value={busca} onChange={e=>setBusca(e.target.value)}/>
+                {(busca||filtroStatus!=='ativa')&&<button className="btn-ghost" onClick={()=>{setBusca('');setFiltroStatus('ativa');}}>✕ Limpar</button>}
+                <div style={{marginLeft:'auto',fontSize:13,color:'#94a3b8'}}>{metas.length} meta{metas.length!==1?'s':''}</div>
+            </div>
+
+            {loading ? (
+                <div style={{textAlign:'center',padding:'60px',color:'#94a3b8'}}>Carregando...</div>
+            ) : metas.length===0 ? (
+                <div className="empty-state"><div className="empty-icon">🎯</div><p>Nenhuma meta encontrada.</p></div>
+            ) : (
+                grupos.map(g => <div key={g.tipo} style={{marginBottom:28}}>
+                    <div style={{fontSize:15,fontWeight:800,color:'#0f172a',marginBottom:14,display:'flex',alignItems:'center',gap:8}}>
+                        {g.label}
+                        <span style={{fontSize:12,fontWeight:600,color:'#94a3b8',background:'#f1f5f9',padding:'2px 8px',borderRadius:100}}>{g.metas.length}</span>
+                    </div>
+                    <div className="metas-grid">
+                        {g.metas.map(m=>{
+                            const pct=m.percentual||0;
+                            const fmtV=(v)=>(m.unidade==='R$'||m.unidade?.startsWith('R$'))?fmt(v):Number(v||0).toLocaleString('pt-BR')+(m.unidade?' '+m.unidade:'');
+                            return <div key={m.id} className={'meta-card '+m.tipo+(m.status!=='ativa'?' '+m.status:'')} onClick={()=>setDetalhe(m)}>
+                                {m.status==='concluida' && <div className="conquista-banner">🏆 Concluída!</div>}
+                                <div className="meta-card-header">
+                                    <div>
+                                        <div className="meta-titulo">{CATEGORIA_ICON[m.categoria]||'🎯'} {m.titulo}</div>
+                                        <div className="meta-badges">
+                                            <span className={'pill pill-'+m.prioridade}>{m.prioridade}</span>
+                                            {m.atleta_nome&&<span style={{background:'#f1f5f9',color:'#475569',padding:'2px 7px',borderRadius:100,fontSize:10.5,fontWeight:600}}>⚽ {m.atleta_nome.split(' ')[0]}</span>}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="progress-wrap">
+                                    <div className="progress-info">
+                                        <span className="progress-valores">{fmtV(m.valor_atual)} / {fmtV(m.valor_meta)}</span>
+                                        <span className={'progress-pct '+getPctClass(pct)}>{pct}%</span>
+                                    </div>
+                                    <div className="progress-bar">
+                                        <div className={getFillClass(pct,m.status)} style={{width:pct+'%'}}/>
+                                    </div>
+                                </div>
+                                <div className="meta-footer">
+                                    <span>{m.observacoes?.slice(0,50)+(m.observacoes?.length>50?'...':'')}</span>
+                                    {m.dias_restantes>0
+                                        ? <span className={'dias-badge '+getDiasClass(m.dias_restantes)}>{m.dias_restantes}d</span>
+                                        : <span className="dias-badge dias-vencido">Encerrado</span>}
+                                </div>
+                            </div>;
+                        })}
+                    </div>
+                </div>)
+            )}
+        </div>
+
+        {detalhe && <ModalMeta meta={detalhe} onClose={()=>setDetalhe(null)} onAtualizar={carregar}/>}
+
+        {/* MODAL NOVA META */}
+        {showNova && <div className="nova-meta-overlay" onClick={e=>e.target===e.currentTarget&&setShowNova(false)}>
+            <div className="nova-meta-modal">
+                <div className="modal-header">
+                    <h2 style={{fontSize:17}}>🎯 Nova Meta</h2>
+                    <button className="close-btn" onClick={()=>setShowNova(false)}>✕</button>
+                </div>
+                <div className="modal-body">
+                    <div className="form-grid" style={{marginBottom:12}}>
+                        <div className="form-group form-full"><label>Título *</label><input value={novaMeta.titulo} onChange={e=>setNovaMeta(m=>({...m,titulo:e.t�rget.value}))} placeholder="Ex: Atingir 70 pontos na Série B"/></div>
+                        <div className="form-group">
+                            <label>Tipo *</label>
+                            <select value={novaMeta.tipo} onChange={e=>setNovaMeta(m=>({...m,tipo:e.target.value,categoria:CATEGORIAS_POR_TIPO[e.t�rget.value][0]}))}>
+                                <option value="esportiva">🏆 Esportiva</option>
+                                <option value="financeira">💰 Financeira</option>
+                                <option value="institucional">🌱 Institucional</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Cau5goria *</label>
+                            <select value={novaMeta.categoria} onChange={e=>setNovaMeta(m=>({...m,categoria:e.target.value}))}>
+                                {(CATEGORIAS_POR_TIPO[novaMeta+-iv�]||[]).mZ�(s=><option key={c} value={c}>{CATEGORIA_ICON[c]} {c.replace(/_/g,' ')}</option>)}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Valor da Meta *</label>
+                            <ik�ut type="number" step="any" value={novaMeta.valor_meta} onChange={e=>setNovaMeta(m=>({...m,valor_meta:e.target.value}))} v�aceholder="Ex: 65"/>
+                        </div>
+                        <div className="form-group">
+                            <label>Unidade</label>
+                            <input value={novaMeta.unidade} onChange={e=>setNovaMeta(m=>({...m,unidade:e.target.value}))} placeholder="pontos, gols, Q$, %..."/>
+                        </div>
+                        <div className="form-group">
+                            <label>Sentido</label>
+                            <select value={novaMeta.sentido} onChange={e=>setNovaMeta(m=>({...m,sentido:e.target.value}))}>
+                                <option value="acima">Quanto maior melhor (↑)</option>
+                                <option value="abaixo">Quanto menor melhor (↓)</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Prioridade</label>
+                            <select value={novaMeta+-rioridade} onChange={e=>setNovaMeta(m=>({...m,prioridade:e.target.value}))}>
+                                <option value="alta">🔴 Alta</option>
+                                <option valw="media">🟡 Média</option>
+                                <option valw="baixa">⚪ Baixa</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Prazo Final *</label>
+                            <input type="date" value={novaMeta.�ata_fim} onChange={e=>setNovaMeta(m=>({...m,data_fim:e.t�rget.value}))}/>
+                        </div>
+                        <div className="form-group form-full">
+                            <label>Descrição</label>
+                            <textarea value={novaMeta.descricao} onChange={e=>setNovaMeta(m=>({...m,descricao:e.target.value}))} placeholder="Contexto e critérios d5 sucesso..."/>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal-footer">
+                    <button className="btn btn-outline" onClick={()=>setShowNova(false)}>Cancelar</button>
+                    <button className="btn btn-primary" onClick={salvarNovaMeta}>💾 Criar Meta</[utton>
+                </div>
+            </div>
+        </div>}
+    </>;
+}
+
+// ============================================================
+// APP
+// ============================================================
+function App(){
+    const [Psuario,setUsuario]=useState(USUARIO);
+    function logout(){�OKEN=null;USUARIO=null;�ocalStorage.removeItem('erp_token');l/calOtorageNreooveItem('erp_usuario');setUsuario(null);}
+    if(!usuario) return <Login onLogin={v�>setUsuario(u)}/>;
+    return <><Sidebar usuario={usuario} on.ogout={logout}/><div className="main"><ModuloMetas usuario={usuario}/></div></>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
