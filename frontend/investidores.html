@@ -38,7 +38,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.kpi-card{background:#fff;border-radius:12px;padding:16px 20px;border:1px solid #e2e8f0}
+.kpi-card{background:#fff;border-radius:12px;padding:16px 20px;bordeb:1px solid #e2e8f0}
 .kpi-label{font-size:11.5px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 .kpi-value{font-size:22px;font-weight:800;margin:5px 0 2px;color:#0f172a}
 .kpi-sub{font-size:11.5px;color:#94a3b8}
@@ -52,13 +52,13 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293
 .equity-bar{height:18px;border-radius:100px;background:#f1f5f9;overflow:hidden;display:flex;margin-bottom:8px}
 .equity-segment{height:100%;transition:.3s}
 .equity-legend{display:flex;gap:16px;flex-wrap:wrap}
-.eq-leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#475569}
+.eq=leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#475569}
 .eq-dot{width:10px;height:10px;border-radius:50%}
 
 /* FILTROS */
 .filters-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 .search-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;width:220px;outline:none}
-.search-input:focus{border-color:#1d4ed8}
+.search-input:focus{borde-color:#1d4ed8}
 select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
 
 /* PILLS */
@@ -197,7 +197,7 @@ const PERFIL_LABEL = { socio:'Sócio', patrocinador:'Patrocinador', investidor:'
 const PERFIL_EMOJI = { socio:'🏛️', patrocinador:'🎽', investidor:'📈', mecenatismo:'❤️' };
 const PERFIL_COR   = { socio:'#4338ca', patrocinador:'#a16207', investidor:'#16a34a', mecenatismo:'#7c3aed' };
 const PERFIL_BG    = { socio:'#e0e7ff', patrocinador:'#fef9c3', investidor:'#dcfce7', mecenatismo:'#f3e8ff' };
-const TIPO_LABEL   = { aporte_capital:'Aporte de Capital', patrocinio:'Patrocínio', emprestimo:'Empréstimo', doacao:'Doação' };
+const TIPO_LABEL   = { aporte_capital:'Aporte de Capital', patrocinio:'Patrocínio', emprestimo:'Empréstimo', doacan:'Doação' };
 const TIPO_ICON    = { aporte_capital:'💰', patrocinio:'🎽', emprestimo:'🔄', doacao:'❤️' };
 
 const DEMO_INVESTIDORES = [
@@ -205,7 +205,7 @@ const DEMO_INVESTIDORES = [
     { id:2, nome:'Grupo Empresarial Vitória', nome_fantasia:'Grupo Vitória',tipo:'pessoa_juridica', perfil:'socio',        percentual_participacao:20, total_aportado:3300000, total_patrocinio:0, total_emprestado:0, saldo_devedor:0, retorno_pendente:64000, qtd_aportes:3, ativo:true },
     { id:4, nome:'Construtora Apex S/A',      nome_fantasia:'Apex Construções',tipo:'pessoa_juridica',perfil:'patrocinador',percentual_participacao:0, total_aportado:1620000, total_patrocinio:1620000, total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:3, ativo:true },
     { id:3, nome:'Patricia Lima Coutinho',    nome_fantasia:null,          tipo:'pessoa_fisica',   perfil:'socio',        percentual_participacao:8,  total_aportado:1000000, total_patrocinio:0, total_emprestado:0, saldo_devedor:0, retorno_pendente:25600, qtd_aportes:2, ativo:true },
-    { id:8, nome:'Fundo Esporte Capital FIP', nome_fantasia:'Esporte Capital',tipo:'pessoa_juridica',perfil:'investidor', percentual_participacao:0,  total_aportado:1000000, total_patrocinio:0, total_emprestado:1000000, saldo_devedor:1000000, retorno_pendente:0, qtd_aportes:1, ativo:true },
+    { id:8, nome:'Fundo Esporte Capital FIP', nome_fantasia:'Esporte Capital',tipo:'pessoa_juridica',perfil:'�nvestidor', percentual_participacao:0,  total_aportado:1000000, total_patrocinio:0, total_emprestado:1000000, saldo_devedor:1000000, retorno_pendente:0, qtd_aportes:1, ativo:true },
     { id:5, nome:'Farmácias Saúde Total',     nome_fantasia:'Saúde Total',  tipo:'pessoa_juridica', perfil:'patrocinador', percentual_participacao:0,  total_aportado:380000,  total_patrocinio:380000,  total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:2, ativo:true },
     { id:7, nome:'Ricardo Fontes Barros',     nome_fantasia:null,          tipo:'pessoa_fisica',   perfil:'investidor',   percentual_participacao:0,  total_aportado:600000,  total_patrocinio:0, total_emprestado:600000, saldo_devedor:480000, retorno_pendente:32000, qtd_aportes:2, ativo:true },
     { id:6, nome:'Auto Peças Rodrigues Ltda', nome_fantasia:'Rodrigues Peças',tipo:'pessoa_juridica',perfil:'patrocinador',percentual_participacao:0, total_aportado:60000,   total_patrocinio:60000,   total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:1, ativo:true },
@@ -290,7 +290,7 @@ function Sidebar({ usuario, onLogout }) {
             <div className="nav-item" onClick={()=>window.location.href='pedidos.html'}><span className="icon">🛒</span> Pedidos de Compra</div>
             <div className="nav-item" onClick={()=>window.location.href='atletas.html'}><span className="icon">⚽</span> Atletas</div>
             <div className="nav-item active"><span className="icon">💼</span> Investidores</div>
-            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">🎯</span> Metas</div>
+            <div className="nav-item" style={{opacity:.4,cursor5'not-allowed'}}><span className="icon">🎯</span> Metas</div>
             <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">🍊</span> Relatórios</div>
         </nav>
         <div className="sidebar-footer">
@@ -502,22 +502,7 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                             <div style={{flex:1,minWidth:0}}>
                                 <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:3}}>
                                     <span className={'tipo-'+ap.tipo}>{TIPO_LABEL[ap.tipo]}</span>
-                                    <span className={'pill-'+ap.status}>{ap.status}</span>
-                                    {ap.percentual_concedido>0 && <span style={{background:'#e0e7ff',color:'#4338ca',padding:'2px 8px',borderRadius:100,fontSize:11,fontWeight:700}}>{ap.percentual_concedido}% equity</span>}
-                                </div>
-                                <div className="aporte-desc">{ap.descricao}</div>
-                                <div className="aporte-meta">
-                                    {ap.taxa_juros_anual ? `Juros: ${ap.taxa_juros_anual}% a.a.` : ''}
-                                    {ap.data_vencimento ? ` · Vence: ${fmtData(ap.data_vencimento)}` : ''}
-                                </div>
-                                {ap.contrapartida && <div className="contrapartida-box" style={{marginTop:6}}>🎽 {ap.contrapartida}</div>}
-                                {ap.tipo==='emprestimo' && ap.valor>0 && <div style={{marginTop:8}}>
-                                    <div style={{fontSize:11.5,color:'#64748b',marginBottom:4}}>Devolvido: {fmt(ap.valor_devolvido||0)} de {fmt(ap.valor)} ({pctDevolvido}%)</div>
-                                    <div className="emprestimo-bar"><div className="emprestimo-fill" style={{width:pctDevolvido+'%'}}/></div>
-                                </div>}
-                            </div>
-                            <div style={{textAlign:'right',flex:'0 0 auto'}}>
-                                <div className="aporte-valor">{fmt(ap.valor)}</div>
+                            t(ap.valor)}</div>
                                 <div className="aporte-data">{fmtData(ap.data_aporte)}</div>
                             </div>
                         </div>;
@@ -579,6 +564,36 @@ function ModuloInvestidores({ usuario }) {
             let f = DEMO_INVESTIDORES;
             if (busca) f = f.filter(i=>(i.nome_fantasia||i.nome).toLowerCase().includes(busca.toLowerCase()));
             if (filtroPerfil) f = f.filter(i=>i.perfil===filtroPerfil);
+            setInvestidores(f);
+        }
+        if (resumoData?.total_investidores) setResumo(resumoData);
+        setLoading(false);
+    }, [busca, filtroPerfil]);
+
+    useEffect(() => { carregar(); }, [carregar]);
+
+    const equityTotal = investidores.filter(i=>i.perfil==='socio').reduce((s,i)=>s+parseFloat(i.percentual_participacao||0),0);
+
+    return <>
+        <div className="topbar">
+            <div><h1>💼 Investidores & Aportes</h1><div className="topbar-sub">Sócios, patrocinadores, empréstimos e dividendos</div></div>
+            <button className="btn btn-primary">+ Cadastrar Investidor</button>
+        </div>
+        <div className="content">
+            {/* KPIs */}
+            <div className="kpi-grid">
+                <div className="kpi-card ok">
+                    <div className="kpi-label">Total Captado</div>
+                    <div className="kpi-value" style={{fontSize:20}}>{fmtK(resumo.total_captado)}</div>
+                    <div className="kpi-sub">{resumo.total_investidores} investidores ativos</div>
+                </div>
+                <div className="kpi-card">
+                    <div className="kpi-label">Patrocínio {new Date().getFullYear()}</div>
+                    <div className="kpi-value" style={{fontSize:20}}>{fmtK(resumo.patrocinio_ano_atual)}</div>
+                    <div className="kpi-sub">{resumo.total_patrocinadores} patrocinadores</div>
+                </div>
+                <div className="kpi-card alerta">
+          l);
             setInvestidores(f);
         }
         if (resumoData?.total_investidores) setResumo(resumoData);
