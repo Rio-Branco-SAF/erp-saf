@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Atletas — ERP SAF</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex;min-height:100vh}
+.sidebar{width:220px;background:#0f172a;color:#94a3b8;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#fff;border-bottom:1px solid #1e293b;letter-spacing:-.3px}
+.sidebar-logo span{color:#f59e0b}
+.sidebar nav{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s}
+.nav-item:hover{background:#1e293b;color:#e2e8f0}
+.nav-item.active{background:#1d4ed8;color:#fff}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{padding:14px 16px;border-top:1px solid #1e293b;font-size:12px}
+.user-chip{display:flex;align-items:center;gap:8px}
+.user-avatar-sb{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:18px;font-weight:700;color:#0f172a}
+.topbar-sub{font-size:12px;color:#64748b;margin-top:2px}
+.content{padding:24px 28px;flex:1}
+.btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
+.btn-primary{background:#1d4ed8;color:#fff}
+.btn-primary:hover{background:#1e40af}
+.btn-outline{background:#fff;color:#475569;border:1px solid #e2e8f0}
+.btn-outline:hover{background:#f8fafc}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-success{background:#16a34a;color:#fff}
+.btn-ghost{background:transparent;color:#64748b;border:none;font-size:13px;cursor:pointer;padding:4px 8px}
+.btn-ghost:hover{color:#0f172a}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+.kpi-card{background:#fff;border-radius:12px;padding:16px 18px;border:1px solid #e2e8f0}
+.kpi-label{font-size:11.5px;color:#64748b;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.kpi-value{font-size:24px;font-weight:800;margin:5px 0 2px;color:#0f172a}
+.kpi-sub{font-size:11.5px;color:#94a3b8}
+.kpi-card.urgente .kpi-value{color:#dc2626}
+.kpi-card.alerta .kpi-value{color:#d97706}
+.kpi-card.ok .kpi-value{color:#16a34a}
+
+/* FILTERS */
+.filters-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.search-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;width:220px;outline:none}
+.search-input:focus{border-color:#1d4ed8}
+select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
+.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#475569;transition:.15s}
+.filter-btn.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+
+/* STATUS PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill-ativo{background:#dcfce7;color:#16a34a}
+.pill-lesionado{background:#fee2e2;color:#dc2626}
+.pill-suspenso{background:#fed7aa;color:#c2410c}
+.pill-emprestado{background:#dbeafe;color:#1d4ed8}
+.pill-inativo{background:#f1f5f9;color:#94a3b8}
+
+/* CARDS DE ATLETAS */
+.atletas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.atleta-card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;overflow:hidden;cursor:pointer;transition:.2s;position:relative}
+.atleta-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.1);border-color:#c7d2fe}
+.atleta-card-header{padding:18px 18px 14px;display:flex;align-items:flex-start;gap:12px}
+.atleta-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0;color:#fff}
+.atleta-info{flex:1;min-width:0}
+.atleta-nome{font-size:14.5px;font-weight:700;color:#0f172a;white-space:nowraw;overflow:hidden;text-overflow:ellipsis}
+.atleta-nome-guerra{font-size:12px;color:#64748b;margin-top:1px}
+.atleta-posicao{font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.4px}
+.contrato-vencendo{position:absolute;top:12px;right:12px;background:#fef9c3;color:#a16207;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:100px}
+.atleta-card-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #f1f5f9;padding:12px 14px;gap:8px}
+.stat-box{text-align:center}
+.stat-value{font-size:16px;font-weight:800;color:#0f172a;line-height:1.2}
+.stat-label{font-size:10px;color:#94a3b8;font-weight:500;text-transform:uppercase;letter-spacing:.3px;margin-top:2px}
+.atleta-card-footer{padding:10px 14px;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
+.salario-info{font-size:12px;color:#64748b}
+.salario-valor{font-size:13px;font-weight:700;color:#0f172a}
+
+/* POSIÇÃO CORES */
+.pos-goleiro{background:#1d4ed8}
+.pos-lateral{background:#0891b2}
+.pos-zagueiro{background:#0369a1}
+.pos-volante{background:#7c3aed}
+.pos-meia{background:#be185d}
+.pos-atacante{background:#dc2626}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:950px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+.modal-header{padding:20px 26px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10}
+.modal-header h2{font-size:18px;font-weight:800;color:#0f172a}
+.modal-body{padding:26px}
+.close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;line-height:1}
+.close-btn:hover{color:#0f172a}
+
+/* PERFIL DO ATLETA */
+.atleta-perfil{display:flex;gap:20px;margin-bottom:24px;align-items:flex-start}
+.atleta-avatar-lg{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:#fff;flex-shrink:0}
+.atleta-header-info h2{font-size:22px;font-weight:800;color:#0f172a}
+.atleta-header-info .nome-guerra{font-size:15px;color:#64748b;font-style:italic;margin-top:2px}
+.atleta-badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:#f1f5f9;border-radius:8px;padding:3px;width:fit-content;margin-bottom:22px}
+.tab{padding:6px 14px;border-radius:6px;font-size:12.5px;font-weight:600;cursor:pointer;color:#64748b;border:none;background:transparent;transition:.15s}
+.tab.active{background:#fff;color:#0f172a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* DETAIL SECTIONS */
+.detail-section{margin-bottom:22px}
+.detail-section h3{font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9}
+.detail-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.detail-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.detail-item label{display:block;font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.detail-item span{font-size:14px;font-weight:600;color:#0f172a;display:block}
+.detail-item .secondary{font-size:12px;color:#64748b;font-weight:400}
+
+/* CONTRATO CARD */
+.contrato-box{border:1px solid #e2e8f0;border-radius:12px;padding:18px;margin-bottom:12px}
+.contrato-box.ativo-box{border-color:#16a34a;background:#f0fdf4}
+.contrato-titulo{font-size:14px;font-weight:700;color:#0f172a;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.contrato-salarios{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.sal-item{text-align:center;background:#f8fafc;border-radius:8px;padding:10px 8px}
+.sal-label{font-size:10.5px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.sal-value{font-size:16px;font-weight:800;color:#0f172a;margin-top:3px}
+.sal-value.destaque{color:#16a34a}
+.vencimento-bar{background:#f1f5f9;border-radius:8px;padding:10px 12px;font-size:13px;color:#475569;display:flex;align-items:center;justify-content:space-between}
+.dias-count{font-size:18px;font-weight:800;color:#0f172a}
+.dias-count.urgent{color:#dc2626}
+.dias-count.warning{color:#d97706}
+.dias-count.ok{color:#16a34a}
+
+/* METAS CARDS */
+.metas-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.meta-card{border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.meta-card.bonus-card{border-left:4px solid #16a34a}
+.meta-card.desconto-card{border-left:4px solid #dc2626}
+.meta-tipo{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
+.meta-desc{font-size:13px;font-weight:600;color:#0f172a;margin-top:3px}
+.meta-valor{font-size:16px;font-weight:800;margin-top:6px}
+.meta-valor.pos{color:#16a34a}
+.meta-valor.neg{color:#dc2626}
+.meta-detalhe{font-size:11.5px;color:#94a3b8;margin-top:3px}
+
+/* STATS TABLE */
+.stats-table{width:100%;border-collapse:collapse;font-size:13px}
+.stats-table th{background:#f8fafc;padding:9px 12px;text-align:center;font-size:10.5px;color:#64748b;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0}
+.stats-table th:first-child{text-align:left}
+.stats-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;text-align:center;vertical-align:middle}
+.stats-table td:first-child{text-align:left;font-weight:600;color:#0f172a}
+.stats-table tr:last-child td{border-bottom:none}
+.stat-highlight{font-weight:800;color:#1d4ed8;font-size:15px}
+.stat-zero{color:#d1d5db}
+
+/* BONIFICAÇÕES TABLE */
+.bonus-table{width:100%;border-collapse:collapse;font-size:13px}
+.bonus-table th{background:#f8fafc;padding:8px 12px;text-align:left;font-size:10.5px;color:#64748b;font-weight:700;text-transform:uppercase;border-bottom:1px solid #e2e8f0}
+.bonus-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9}
+.bonus-table tr:last-child td{border-bottom:none}
+.valor-bonus{font-weight:700;color:#16a34a}
+.valor-desconto{font-weight:700;color:#dc2626}
+.pill-pago{background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.pill-pendente{background:#fef9c3;color:#a16207;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.pill-cancelado{background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+
+/* HIST SALÁRIO */
+.hist-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.hist-item:last-child{border:none}
+.hist-data{font-size:12px;color:#64748b;white-space:nowrap;width:90px}
+.hist-arrow{font-size:12px;color:#94a3b8;margin:0 4px}
+.hist-de{text-decoration:line-through;color:#94a3b8;font-size:13px}
+.hist-para{font-size:14px;font-weight:700;color:#16a34a}
+.hist-motivo{font-size:12px;color:#64748b;flex:1}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
+.form-group input,.form-group select,.form-group textarea{padding:8px 11px;border:1px solid #e2e8f0;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit}
+.form-group input:focus,.form-group select:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+.form-group textarea{resize:vertical;min-height:64px}
+.form-divider{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;padding:14px 0 8px;grid-column:1/-1;border-bottom:1px solid #f1f5f9;margin-bottom:4px}
+
+/* META EDITOR */
+.meta-editor{border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-top:8px}
+.meta-editor-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 32px;gap:8px;padding:8px 12px;border-top:1px solid #f1f5f9;align-items:center}
+.meta-editor-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 32px;gap:8px;padding:8px 12px;background:#f8fafc;font-size:10.5px;color:#64748b;font-weight:700;text-transform:uppercase}
+.meta-editor-row input,.meta-editor-row select{padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;width:100%;outline:none}
+.add-meta-btn{width:100%;padding:8px;background:#f8fafc;border:none;border-top:1px solid #f1f5f9;cursor:pointer;font-size:12.5px;color:#64748b;font-weight:600}
+.add-meta-btn:hover{background:#f1f5f9}
+
+.artilharia-section{background:#fff;border-radius:14px;border:1px solid #e2e8f0;margin-bottom:24px;overflow:hidden}
+.artilharia-header{padding:16px 20px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700;color:#0f172a}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;width:100%}
+.login-card{background:#fff;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo h2{font-size:22px;font-weight:800;color:#0f172a;margin-top:10px}
+.login-err{background:#fee2e2;color:#dc2626;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px}
+.empty-state{text-align:center;padding:48px 20px;color:#94a3b8}
+.empty-icon{font-size:44px;margin-bottom:12px}
+.modal-footer{padding:16px 26px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
+.alert-warning{background:#fef9c3;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+const API_URL = (window.ERP_CONFIG || {}).API_URL || 'http://localhost:3001/api';
+
+// ============================================================
+// DEMO DATA
+// ============================================================
+const POSICAO_LABEL = {
+    goleiro:'Goleiro', lateral_direito:'Lateral D', lateral_esquerdo:'Lateral E',
+    zagueiro:'Zagueiro', volante:'Volante', meia_central:'Meia Central',
+    meia_atacante:'Meia-Atacante', ponta_direita:'Ponta D', ponta_esquerda:'Ponta E',
+    centroavante:'Centroavante'
+};
+const POSICAO_EMOJI = {
+    goleiro:'🧤', lateral_direito:'⬆️', lateral_esquerdo:'⬆️',
+    zagueiro:'🛡️', volante:'⚙️', meia_central:'🎯',
+    meia_atacante:'✨', ponta_direita:'⚡', ponta_esquerda:'⚡', centroavante:'⚽'
+};
+const POSICAO_COR = {
+    goleiro:'pos-goleiro', lateral_direito:'pos-lateral', lateral_esquerdo:'pos-lateral',
+    zagueiro:'pos-zagueiro', volante:'pos-volante', meia_central:'pos-meia',
+    meia_atacante:'pos-meia', ponta_direita:'pos-atacante', ponta_esquerda:'pos-atacante', centroavante:'pos-atacante'
+};
+
+const DEMO_RESUMO = { ativos:12, lesionados:1, suspensos:1, emprestados:1, folha_total:312000, contratos_vencendo:2 };
+
+const DEMO_ATLETAS = [
+    { id:15, nome:'Alexandre Costa Prado',   nome_guerra:'Alemão',    posicao:'centroavante',   status:'ativo',     salario_bruto:32000, salario_carteira:7000, direitos_imagem:25000, contrato_tipo:'profissional', contrato_inicio:'2023-06-01', contrato_fim:'2026-05-31', dias_ate_vencimento:71, total_gols:12, total_assistencias:2, total_jogos:13, total_clean_sheets:0 },
+    { id:10, nome:'Felipe Augusto Ramos',    nome_guerra:'Felipão',   posicao:'meia_central',   status:'ativo',     salario_bruto:28000, salario_carteira:6000, direitos_imagem:22000, contrato_tipo:'profissional', contrato_inicio:'2023-01-01', contrato_fim:'2026-12-31', dias_ate_vencimento:285, total_gols:7, total_assistencias:5, total_jogos:13, total_clean_sheets:0 },
+    { id:1,  nome:'Ricardo Souza Mendes',    nome_guerra:'Ricardo',   posicao:'goleiro',        status:'ativo',     salario_bruto:35000, salario_carteira:5000, direitos_imagem:30000, contrato_tipo:'profissional', contrato_inicio:'2024-01-01', contrato_fim:'2026-12-31', dias_ate_vencimento:285, total_gols:0, total_assistencias:0, total_jogos:13, total_clean_sheets:8 },
+    { id:8,  nome:'Anderson Silva Gomes',    nome_guerra:'Anderson',  posicao:'volante',        status:'ativo',     salario_bruto:20000, salario_carteira:5000, direitos_imagem:15000, contrato_tipo:'profissional', contrato_inicio:'2024-06-01', contrato_fim:'2027-05-31', dias_ate_vencimento:436, total_gols:4, total_assistencias:5, total_jogos:13, total_clean_sheets:0 },
+    { id:13, nome:'Rodrigo Alves Pinto',     nome_guerra:'Rodrigo',   posicao:'ponta_direita',  status:'ativo',     salario_bruto:19000, salario_carteira:5000, direitos_imagem:14000, contrato_tipo:'profissional', contrato_inicio:'2024-01-15', contrato_fim:'2026-12-31', dias_ate_vencimento:285, total_gols:5, total_assistencias:4, total_jogos:13, total_clean_sheets:0 },
+    { id:5,  nome:'Carlos Alberto Nunes',    nome_guerra:'Carlão',    posicao:'zagueiro',       status:'ativo',     salario_bruto:22000, salario_carteira:5500, direitos_imagem:16500, contrato_tipo:'profissional', contrato_inicio:'2022-03-01', contrato_fim:'2026-02-28', dias_ate_vencimento:-20, total_gols:3, total_assistencias:1, total_jogos:13, total_clean_sheets:0 },
+    { id:3,  nome:'Marcus Vinícius Costa',   nome_guerra:'Markinho',  posicao:'lateral_direito',status:'ativo',     salario_bruto:18000, salario_carteira:4500, direitos_imagem:13500, contrato_tipo:'profissional', contrato_inicio:'2023-07-01', contrato_fim:'2026-06-30', dias_ate_vencimento:101, total_gols:1, total_assistencias:3, total_jogos:12, total_clean_sheets:0 },
+    { id:11, nome:'Diego Henrique Carvalho', nome_guerra:'Diegão',    posicao:'meia_atacante',  status:'ativo',     salario_bruto:16000, salario_carteira:4500, direitos_imagem:11500, contrato_tipo:'profissional', contrato_inicio:'2024-07-01', contrato_fim:'2027-06-30', dias_ate_vencimento:466, total_gols:3, total_assistencias:5, total_jogos:12, total_clean_sheets:0 },
+    { id:16, nome:'William Nascimento Faria',nome_guerra:'Will',      posicao:'centroavante',   status:'emprestado',salario_bruto:18000, salario_carteira:5000, direitos_imagem:13000, contrato_tipo:'emprestimo',   contrato_inicio:'2026-01-01', contrato_fim:'2026-06-30', dias_ate_vencimento:101, total_gols:3, total_assistencias:1, total_jogos:10, total_clean_sheets:0, clube_cedente:'Fortaleza' },
+    { id:14, nome:'Hélio Santos Vieira',     nome_guerra:'Helinho',   posicao:'ponta_esquerda', status:'ativo',     salario_bruto:13500, salario_carteira:4000, direitos_imagem:9500,  contrato_tipo:'profissional', contrato_inicio:'2025-04-01', contrato_fim:'2027-03-31', dias_ate_vencimento:375, total_gols:2, total_assistencias:4, total_jogos:11, total_clean_sheets:0 },
+    { id:4,  nome:'Gabriel Fernandes Lima',  nome_guerra:'Biel',      posicao:'lateral_esquerdo',status:'ativo',   salario_bruto:12000, salario_carteira:4000, direitos_imagem:8000,  contrato_tipo:'profissional', contrato_inicio:'2025-01-15', contrato_fim:'2027-12-31', dias_ate_vencimento:650, total_gols:0, total_assistencias:3, total_jogos:11, total_clean_sheets:0 },
+    { id:9,  nome:'Thiago Barbosa Alves',    nome_guerra:'Thiagão',   posicao:'volante',        status:'suspenso',  salario_bruto:11000, salario_carteira:4000, direitos_imagem:7000,  contrato_tipo:'profissional', contrato_inicio:'2025-03-01', contrato_fim:'2027-02-28', dias_ate_vencimento:344, total_gols:1, total_assistencias:1, total_jogos:9, total_clean_sheets:0 },
+    { id:6,  nome:'Emerson Rodrigues Silva', nome_guerra:'Emerson',   posicao:'zagueiro',       status:'lesionado', salario_bruto:14000, salario_carteira:4000, direitos_imagem:10000, contrato_tipo:'profissional', contrato_inicio:'2024-08-01', contrato_fim:'2027-07-31', dias_ate_vencimento:497, total_gols:0, total_assistencias:0, total_jogos:3, total_clean_sheets:0 },
+    { id:2,  nome:'Paulo Henrique Tavares',  nome_guerra:'Paulão',    posicao:'goleiro',        status:'ativo',     salario_bruto:8000,  salario_carteira:4000, direitos_imagem:4000,  contrato_tipo:'profissional', contrato_inicio:'2025-02-01', contrato_fim:'2027-01-31', dias_ate_vencimento:316, total_gols:0, total_assistencias:0, total_jogos:4, total_clean_sheets:0 },
+    { id:7,  nome:'Jorge Luis Pereira',      nome_guerra:'Jorge',     posicao:'zagueiro',       status:'ativo',     salario_bruto:5000,  salario_carteira:5000, direitos_imagem:0,     contrato_tipo:'formacao',     contrato_inicio:'2025-01-01', contrato_fim:'2026-12-31', dias_ate_vencimento:285, total_gols:4, total_assistencias:0, total_jogos:9, total_clean_sheets:0 },
+    { id:12, nome:'Lucas Martins Ribeiro',   nome_guerra:'Lukinha',   posicao:'meia_atacante',  status:'ativo',     salario_bruto:4500,  salario_carteira:4500, direitos_imagem:0,     contrato_tipo:'formacao',     contrato_inicio:'2025-01-01', contrato_fim:'2027-12-31', dias_ate_vencimento:650, total_gols:1, total_assistencias:2, total_jogos:9, total_clean_sheets:0 },
+    { id:17, nome:'Mateus Oliveira Torres',  nome_guerra:'Mateuzinho',posicao:'ponta_direita',  status:'ativo',     salario_bruto:3500,  salario_carteira:3500, direitos_imagem:0,     contrato_tipo:'formacao',     contrato_inicio:'2025-06-01', contrato_fim:'2027-05-31', dias_ate_vencimento:436, total_gols:0, total_assistencias:1, total_jogos:5, total_clean_sheets:0 },
+];
+
+const DEMO_DETALHE_15 = {
+    id:15, nome:'Alexandre Costa Prado', nome_guerra:'Alemão', posicao:'centroavante',
+    data_nascimento:'1992-11-14', nacionalidade:'Brasileira', naturalidade:'Curitiba/PR',
+    cpf:'123.456.789-00', altura_cm:181, peso_kg:82.0, pe_dominante:'direito',
+    clube_formacao:'Athletico-PR', agente:'Carlos Reps', status:'ativo',
+    contratos: [{
+        id:15, numero_contrato:'CT-2026-015', tipo:'profissional',
+        data_inicio:'2023-06-01', data_fim:'2026-05-31',
+        salario_bruto:32000, salario_carteira:7000, direitos_imagem:25000, luvas:15000,
+        clausula_rescisoria:3500000, status:'ativo',
+        observacoes:'Artilheiro da equipe. Renovação prioritária.',
+        metas:[
+            { id:18, tipo:'gol', descricao:'Bônus por gol marcado', meta_quantidade:1, valor_bonus:3500, tipo_calculo:'por_unidade', competicao:null, ativo:true },
+            { id:19, tipo:'assistencia', descricao:'Bônus por assistência', meta_quantidade:1, valor_bonus:1800, tipo_calculo:'por_unidade', competicao:null, ativo:true },
+            { id:20, tipo:'jogo_disputado', descricao:'Bônus por jogo como titular', meta_quantidade:1, valor_bonus:900, tipo_calculo:'por_unidade', competicao:null, ativo:true },
+            { id:21, tipo:'artilharia', descricao:'Bônus por artilharia da Série B', meta_quantidade:1, valor_bonus:25000, tipo_calculo:'total_periodo', competicao:'Série B', ativo:true },
+            { id:22, tipo:'classificacao', descricao:'Bônus por acesso à Série A', meta_quantidade:1, valor_bonus:80000, tipo_calculo:'total_periodo', competicao:null, ativo:true },
+        ]
+    }],
+    estatisticas:[
+        { id:1, temporada:'2026', competicao:'Série B',       jogos_disputados:10, jogos_titular:10, minutos_jogados:900, gols:8, assistencias:2, cartoes_amarelos:0, cartoes_vermelhos:0, jogos_sem_sofrer_gol:0 },
+        { id:2, temporada:'2026', competicao:'Copa do Brasil', jogos_disputados:3,  jogos_titular:3,  minutos_jogados:270, gols:4, assistencias:0, cartoes_amarelos:0, cartoes_vermelhos:0, jogos_sem_sofrer_gol:0 },
+        { id:3, temporada:'2025', competicao:'Série C',        jogos_disputados:34, jogos_titular:32, minutos_jogados:2880, gols:18,assistencias:5, cartoes_amarelos:3, cartoes_vermelhos:0, jogos_sem_sofrer_gol:0 },
+    ],
+    bonificacoes:[
+        { id:7,  competencia:'2026-02-01', descricao:'Gols marcados — Fevereiro (4 gols)', valor:14000, tipo:'bonus', status:'pago', meta_tipo:'gol' },
+        { id:8,  competencia:'2026-02-01', descricao:'Jogos disputados — Fevereiro (4 jogos)', valor:3600, tipo:'bonus', status:'pago', meta_tipo:'jogo_disputado' },
+    ],
+    historico_salario:[
+        { id:5, data_alteracao:'2026-01-01', salario_anterior:28000, salario_novo:32000, motivo:'Ajuste por artilharia da Série C — 18 gols na temporada 2025' },
+        { id:1, data_alteracao:'2023-06-01', salario_anterior:null,  salario_novo:28000, motivo:'Contratação inicial' },
+    ]
+};
+
+// ============================================================
+// HELPERS
+// ============================================================
+let TOKEN = localStorage.getItem('erp_token');
+let USUARIO = null;
+try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
+
+async function apiFetch(path, options={}) {
+    try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (TOKEN) headers['Authorization'] = 'Bearer ' + TOKEN;
+        const res = await fetch(API_URL + path, { ...options, headers });
+        if (res.status === 401) { TOKEN=null; localStorage.removeItem('erp_token'); window.location.reload(); }
+        return await res.json();
+    } catch(e) { return null; }
+}
+
+function fmt(v) { if (!v && v!==0) return '—'; return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:-}); }
+function fmtData(d) { if(!d) return '—'; return new Date(d+(d.length===10?'T00:00:00':'')).toLocaleDateString('pt-BR'); }
+function calcIdade(dt) { if(!dt) return null; const n=new Date(), b=new Date(dt); return Math.floor((n-b)/31557600000); }
+
+function getAvatarBg(posicao) {
+    const map = { goleiro:'|1d4ed8', lateral_direito:'#0891b2', lateral_esquerdo:'#0891b2', zagueiro:'#0369a1', volante:'#7c3aed', meia_central:'#be185d', meia_atacante:'#be185d', ponta_direita:'#dc2626', ponta_esquerda:'#dc2626', centroavante:'#dc2626' };
+    return map[posicao]||'#64748b';
+}
+
+const TIPO_META_LABEL = {
+    gol:'⚽ Gol', assistencia:'🅰️ Assistência', jogo_disputado:'🎮 Jogo Disputado',
+    jogo_titular:'📋 Jogo Titular', jogo_sem_sofrer_gol:'🧤 Clean Sheet',
+    cartao_amarelo:'🟨 Cartão Amarelo', cartao_vermelho:'🟥 Cartão Vermelho',
+    classificacao:'🏆 Classificação', artilharia:'👑 Artilharia',
+    titulos:'🥇 Título', custom:'✏️ Personalizado'
+};
+
+// ============================================================
+// LOGIN
+// ============================================================
+function Login({ onLogin }) {
+    const [usuario, setUsuario] = useState('admin');
+    const [senha, setSenha] = useState('admin123');
+    const [erro, setErro] = useState('');
+    const [loading, setLoading] = useState(false);
+    async function handleLogin(e) {
+        e.preventDefault(); setLoading(true); setErro('');
+        const data = await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({usuario,senha})});
+        setLoading(false);
+        if (data?.token) { TOKEN=data.token; USUARIO=data.usuario; localStorage.setItem('erp_token',TOKEN); localStorage.setItem('erp_usuario',JSON.stringify(USUARIO)); onLogin(data.usuario); }
+        else if (usuario==='admin'&&senha==='admin123') { USUARIO={id:1,nome:'Administrador',perfil:'admin'}; localStorage.setItem('erp_usuario',JSON.stringify(USUARIO)); onLogin(USUARIO); }
+        else setErro('Usuário ou senha incorretos.');
+    }
+    return <div className="login-wrap"><div className="login-card">
+        <div className="login-logo"><div style={{fontSize:40}}>🏟️</div><h2>ERP SAF</h2><p>Gestão de Atletas</p></div>
+        {erro&&<div className="login-err">{erro}</div>}
+        <form onSubmit={handleLogin}>
+            <div className="form-group" style={{marginBottom:12}}><label>Usuário</label><input value={usuario} onChange={e=>setUsuario(e.target.value)} required/></div>
+            <div className="form-group" style={{marginBottom:20}}><label>Senha</label><input type="password" value={senha} onChange={e=>setSenha(e.target.value)} required/></div>
+            <button type="submit" className="btn btn-primary" style={{width:'100%',padding:'11px'}} disabled={loading}>{loading?'Entrando...':'Entrar'}</button>
+        </form>
+        <div style={{textAlign:'center',marginTop:16,fontSize:12,color:'#94a3b8'}}>Demo: admin / admin123</div>
+    </div></div>;
+}
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+function Sidebar({ usuario, onLogout }) {
+    const initials = (usuario?.nome||'U').split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+    return <div className="sidebar">
+        <div className="sidebar-logo">🏟️ ERP <span>SAF</span></div>
+        <nav>
+            <div className="nav-item" onClick={() => window.location.href='index.html'}><span className="icon">👥</span> Funcionários</div>
+            <div className="nav-item" onClick={() => window.location.href='financeiro.html'}><span className="icon">💰</span> Financeiro</div>
+            <div className="nav-item" onClick={() => window.location.href='pedidos.html'}><span className="icon">🛒</span> Pedidos de Compra</div>
+            <div className="nav-item active"><span className="icon">⚽</span> Atletas</div>
+            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">💼</span> Investidores</div>
+            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">🎯</span> Metas</div>
+            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">📊</span> Relatórios</div>
+        </nav>
+        <div className="sidebar-footer">
+            <div className="user-chip">
+                <div className="user-avatar-sb">{initials}</div>
+                <div><div style={{fontSize:12,color:'#e2e8f0',fontWeight:600}}>{usuario?.nome}</div><div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
+            </div>
+            <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>Sair →</button>
+        </div>
+    </div>;
+}
+
+// ============================================================
+// MODAL DETALHE DO ATLETA
+// ============================================================
+function ModalAtleta({ atleta: at, onClose, onAtualizar, usuario }) {
+    const [detalhe, setDetalhe] = useState(null);
+    const [aba, setAba] = useState('perfil');
+    const [editStats, setEditStats] = useState(false);
+    const [statsForm, setStatsForm] = useState({ temporada: new Date().getFullYear().toString(), competicao: 'Série B', gols:0, assistencias:0, jogos_disputados:0, jogos_titular:0, minutos_jogados:0, jogos_sem_sofrer_gol:0, cartoes_amarelos:0, cartoes_vermelhos:0 });
+
+    useEffect(() => {
+        async function buscar() {
+            const data = await apiFetch('/atletas/' + at.id);
+            if (data?.id) setDetalhe(data);
+            else setDetalhe(at.id === 15 ? DEMO_DETALHE_15 : { ...at, contratos:[], estatisticas:[], bonificacoes:[], historico_salario:[] });
+        }
+        buscar();
+    }, [at.id]);
+
+    const d = detalhe || at;
+    const contratoAtivo = d.contratos?.find(c => c.status === 'ativo');
+    const diasVenc = contratoAtivo ? Math.floor((new Date(contratoAtivo.data_fim) - new Date()) / 86400000) : null;
+    const diasClass = diasVenc === null ? '' : diasVenc < 0 ? 'urgent' : diasVenc < 60 ? 'urgent' : diasVenc < 120 ? 'warning' : 'ok';
+
+    // Totais de stats 2026
+    const stats2026 = d.estatisticas?.filter(e => e.temporada === '2026') || [];
+    const totais = { gols:0, assistencias:0, jogos:0, clean_sheets:0, amarelos:0, vermelhos:0, minutos:0 };
+    for (const e of stats2026) {
+        totais.gols += e.gols||0; totais.assistencias += e.assistencias||0;
+        totais.jogos += e.jogos_disputados||0; totais.clean_sheets += e.jogos_sem_sofrer_gol||0;
+        totais.amarelos += e.cartoes_amarelos||0; totais.vermelhos += e.cartoes_vermelhos||0;
+        totais.minutos += e.minutos_jogados||0;
+    }
+
+    async function salvarStats() {
+        const data = await apiFetch('/atletas/'+at.id+'/estatisticas', { method:'PUT', body:JSON.stringify(statsForm) });
+        if (data?.id) { onAtualizar(); setEditStats(false); const d2 = await apiFetch('/atletas/'+at.id); if(d2?.id) setDetalhe(d2); }
+        else { setEditStats(false); }
+    }
+
+    return <div className="modal-overlay" onClick={e => e.target===e.currentTarget && onClose()}>
+        <div className="modal" style={{maxWidth:950}}>
+            <div className="modal-header">
+                <div className="atleta-perfil" style={{margin:0,flex:1}}>
+                    <div className={'atleta-avatar-lg '+POSICAO_COR[d.posicao]} style={{background:getAvatarBg(d.posicao)}}>
+                        {POSICAO_EMOJI[d.posicao]||'⚽'}
+                    </div>
+                    <div>
+                        <h2 style={{fontSize:20,fontWeight:800,color:'#0f172a'}}>{d.nome}</h2>
+                        <div style={{fontSize:14,color:'#64748b',fontStyle:'italic'}}>"{d.nome_guerra || d.nome.split(' ')[0]}"</div>
+                        <div className="atleta-badges" style={{marginTop:6}}>
+                            <span className={'pill pill-'+d.status}>{d.status.charAt(0).toUpperCase()+d.status.slice(1)}</span>
+                            <span style={{background:'#f1f5f9',color:'#475569',padding:'3px 10px',borderRadius:100,fontSize:11.5,fontWeight:600}}>{POSICAO_LABEL[d.posicao]}</span>
+                            {contratoAtivo?.tipo === 'emprestimo' && <span style={{background:'#dbeafe',color:'#1d4ed8',padding:'3px 10px',borderRadius:100,fontSize:11.5,fontWeight:600}}>Emprestado de {contratoAtivo.clube_cedente}</span>}
+                        </div>
+                    </div>
+                </div>
+                <button className="close-btn" onClick={onClose}>✕</button>
+            </div>
+
+            <div className="modal-body">
+                {/* STATS RÁPIDAS */}
+                <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:8,background:'#f8fafc',borderRadius:10,padding:14,marginBottom:20}}>
+                    {[
+                        { label:'Jogos', val:totais.jogos },
+                        { label:'Gols', val:totais.gols, destaque:totais.gols > 0 },
+                        { label:'Assist.', val:totais.assistencias, destaque:totais.assistencias > 0 },
+                        { label:'Clean Sheets', val:totais.clean_sheets, destaque:totais.clean_sheets > 0 },
+                        { label:'Minutos', val:totais.minutos },
+                        { label:'🟨 Amarelos', val:totais.amarelos },
+                        { label:'🟥 Vermelhos', val:totais.vermelhos, destaque:totais.vermelhos > 0 },
+                    ].map((s,i) => <div key={i} style={{textAlign:'center'}}>
+                        <div style={{fontSize:22,fontWeight:800,color:s.destaque?'#1d4ed8':'#0f172a'}}>{s.val}</div>
+                        <div style={{fontSize:10.5,color:'#94a3b8',fontWeight:600,textTransform:'uppercase',letterSpacing:'.3px',marginTop:2}}>{s.label}</div>
+                    </div>)}
+                </div>
+
+                <div className="tabs">
+                    <button className={'tab'+(aba==='perfil'?' active':'')} onClick={()=>setAba('perfil')}>👤 Perfil</button>
+                    <button className={'tab'+(aba==='contrato'?' active':'')} onClick={()=>setAba('contrato')}>📄 Contrato & Metas</button>
+                    <button className={'tab'+(aba==='stats'?' active':'')} onClick={()=>setAba('stats')}>📊 Estatísticas</button>
+                    <button className={'tab'+(aba==='bonus'?' active':'')} onClick={()=>setAba('bonus')}>💰 Bonificações</button>
+                </div>
+
+                {/* PERFIL */}
+                {aba === 'perfil' && <div>
+                    <div className="detail-section">
+                        <h3>Dados Pessoais</h3>
+                        <div className="detail-grid-3">
+                            <div className="detail-item"><label>Data de Nascimento</label><span>{fmtData(d.data_nascimento)}{d.data_nascimento ? ' ('+calcIdade(d.data_nascimento)+' anos)' : ''}</span></div>
+                            <div className="detail-item"><label>Nacionalidade</label><span>{d.nacionalidade||'—'}</span></div>
+                            <div className="detail-item"><label>Naturalidade</label><span>{d.naturalidade||'—'}</span></div>
+                            <div className="detail-item"><label>CPF</label><span>{d.cpf||'—'}</span></div>
+                            <div className="detail-item"><label>RG</label><span>{d.rg||'—'}</span></div>
+                            <div className="detail-item"><label>Passaporte</label><span>{d.passaporte||'—'}</span></div>
+                        </div>
+                    </div>
+                    <div className="detail-section">
+                        <h3>Dados Físicos e Esportivos</h3>
+                        <div className="detail-grid-4">
+                            <div className="detail-item"><label>Posição</label><span>{POSICAO_LABEL[d.posicao]}</span></div>
+                            <div className="detail-item"><label>Pé Dominante</label><span>{d.pe_dominante||'—'}</span></div>
+                            <div className="detail-item"><label>Altura</label><span>{d.altura_cm ? d.altura_cm+'cm' : '—'}</span></div>
+                            <div className="detail-item"><label>Peso</label><span>{d.peso_kg ? d.peso_kg+'kg' : '—'}</span></div>
+                        </div>
+                    </div>
+                    <div className="detail-section">
+                        <h3>Vínculo e Representação</h3>
+                        <div className="detail-grid-3">
+                            <div className="detail-item"><label>Clube de Formação</label><span>{d.clube_formacao||'—'}</span></div>
+                            <div className="detail-item"><label>Agente / Representante</label><span>{d.agente||'—'}</span></div>
+                        </div>
+                        {d.observacoes && <div style={{marginTop:12,padding:'10px 12px',background:'#f8fafc',borderRadius:8,fontSize:13,color:'#475569'}}>{d.observacoes}</div>}
+                    </div>
+                </div>}
+
+                {/* CONTRATO & METAS */}
+                {aba === 'contrato' && <div>
+                    {!contratoAtivo && <div className="alert-warning">⚠️ Nenhum contrato ativo encontrado para este atleta.</div>}
+                    {contratoAtivo && <div className="contrato-box ativo-box">
+                        <div className="contrato-titulo">
+                            📄 Contrato {contratoAtivo.numero_contrato || '#'+contratoAtivo.id}
+                            <span style={{background:'#dcfce7',color:'#16a34a',padding:'2px 8px',borderRadius:100,fontSize:11,fontWeight:700}}>ATIVO</span>
+                            <span style={{background:'#f1f5f9',color:'#475569',padding:'2px 8px',borderRadius:100,fontSize:11,fontWeight:600,textTransform:'capitalize'}}>{contratoAtivo.tipo}</span>
+                        </div>
+
+                        {/* VIGÊNCIA */}
+                        <div className="vencimento-bar" style={{marginBottom:14}}>
+                            <div>
+                                <div style={{fontSize:11.5,color:'#94a3b8',fontWeight:600,textTransform:'uppercase',letterSpacing:'.4px'}}>Vigência</div>
+                                <div style={{fontWeight:700,color:'#0f172a',marginTop:2}}>{fmtData(contratoAtivo.data_inicio)} → {fmtData(contratoAtivo.data_fim)}</div>
+                            </div>
+                            <div style={{textAlign:'right'}}>
+                                <div style={{fontSize:11.5,color:'#94a3b8',fontWeight:600,textTransform:'uppercase',letterSpacing:'.4px'}}>{diasVenc < 0 ? 'Vencido há' : 'Vence em'}</div>
+                                <div className={'dias-count '+diasClass}>{Math.abs(diasVenc)} dias</div>
+                            </div>
+                        </div>
+
+                        {/* COMPOSIÇÃO SALARIAL */}
+                        <div style={{marginBottom:12}}>
+                            <div style={{fontSize:11,color:'#64748b',fontWeight:700,textTransform:'uppercase',letterSpacing:'.5px',marginBottom:10}}>Composição Salarial</div>
+                            <div className="contrato-salarios">
+                                <div className="sal-item">
+                                    <div className="sal-label">Salário Total</div>
+                                    <div className="sal-value destaque">{fmt(contratoAtivo.salario_bruto)}</div>
+                                </div>
+                                <div className="sal-item">
+                                    <div className="sal-label">Na Carteira (CLT)</div>
+                                    <div className="sal-value">{fmt(contratoAtivo.salario_carteira)}</div>
+                                </div>
+                                <div className="sal-item">
+                                    <div className="sal-label">Direitos de Imagem (PJ)</div>
+                                    <div className="sal-value">{fmt(contratoAtivo.direitos_imagem)}</div>
+                                </div>
+                                <div className="sal-item">
+                                    <div className="sal-label">Luvas (Assinatura)</div>
+                                    <div className="sal-value">{contratoAtivo.luvas > 0 ? fmt(contratoAtivo.luvas) : '—'}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {contratoAtivo.clausula_rescisoria > 0 && (
+                            <div style={{background:'#fff7ed',borderRadius:8,padding:'8px 12px',fontSize:13,color:'#92400e',border:'1px solid #fed7aa',marginBottom:12}}>
+                                🔒 Cláusula rescisória: <strong>{fmt(contratoAtivo.clausula_rescisoria)}</strong>
+                            </div>
+                        )}
+                        {contratoAtivo.clube_cedente && (
+                            <div style={{background:'#eff6ff',borderRadius:8,padding:'8px 12px',fontSize:13,color:'#1d4ed8',border:'1px solid #bfdbfe',marginBottom:12}}>
+                                🔄 Emprestado por: <strong>{contratoAtivo.clube_cedente}</strong>
+                            </div>
+                        )}
+                        {contratoAtivo.observacoes && <div style={{fontSize:12.5,color:'#64748b',fontStyle:'italic'}}>{contratoAtivo.observacoes}</div>}
+                    </div>}
+
+                    {/* METAS */}
+                    {contratoAtivo?.metas?.length > 0 && <div className="detail-section" style={{marginTop:20}}>
+                        <h3>🎯 Metas e Bonificações Contratuais</h3>
+                        <div className="metas-grid">
+                            {contratoAtivo.metas.map(m => {
+                                const isDesconto = m.valor_bonus < 0 || ['cartao_amarelo','cartao_vermelho'].includes(m.tipo);
+                                return <div key={m.id} className={'meta-card '+(isDesconto?'desconto-card':'bonus-card')}>
+                                    <div className="meta-tipo">{TIPO_META_LABEL[m.tipo]||m.tipo}</div>
+                                    <div className="meta-desc">{m.descricao}</div>
+                                    <div className={'meta-valor '+(isDesconto?'neg':'pos')}>
+                                        {isDesconto ? '-' : '+'}{fmt(Math.abs(m.valor_bonus))}
+                                        <span style={{fontSize:11,fontWeight:400,color:'#94a3b8'}}>{m.meta_quantidade > 1 ? ' a cada '+m.meta_quantidade : ' / ocorrência'}</span>
+                                    </div>
+                                    {m.competicao && <div className="meta-detalhe">📋 Apenas em: {m.competicao}</div>}
+                                    {m.tipo_calculo === 'total_periodo' && <div className="meta-detalhe">🏁 Pago ao final da competição</div>}
+                                </div>;
+                            })}
+                        </div>
+                    </div>}
+
+                    {/* HISTÓRICO SALARIAL */}
+                    {d.historico_salario?.length > 0 && <div className="detail-section" style={{marginTop:20}}>
+                        <h3>📈 Histórico Salarial</h3>
+                        {d.historico_salario.map(h => <div key={h.id} className="hist-item">
+                            <div className="hist-data">{fmtData(h.data_alteracao)}</div>
+                            <div style={{flex:1}}>
+                                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                                    {h.salario_anterior && <><span className="hist-de">{fmt(h.salario_anterior)}</span><span className="hist-arrow">→</span></>}
+                                    <span className="hist-para">{fmt(h.salario_novo)}</span>
+                                </div>
+                                <div className="hist-motivo">{h.motivo||'—'}</div>
+                            </div>
+                        </div>)}
+                    </div>}
+                </div>}
+
+                {/* ESTATÍSTICAS */}
+                {aba === 'stats' && <div>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+                        <div style={{fontSize:14,fontWeight:700,color:'#0f172a'}}>Estatísticas por Competição</div>
+                        <button className="btn btn-outline btn-sm" onClick={() => setEditStats(!editStats)}>
+                            {editStats ? '✕ Cancelar' : '✏️ Atualizar Estatísticas'}
+                        </button>
+                    </div>
+
+                    {editStats && <div style={{border:'1px solid #dbeafe',borderRadius:10,padding:16,background:'#eff6ff',marginBottom:16}}>
+                        <div style={{fontWeight:700,marginBottom:12,color:'#1d4ed8'}}>Atualizar / Adicionar Estatísticas</div>
+                        <div className="form-grid three" style={{marginBottom:12}}>
+                            <div className="form-group"><label>Temporada</label><input value={statsForm.temporada} onChange={e=>setStatsForm(s=>({...s,temporada:e.target.value}))}/></div>
+                            <div className="form-group"><label>Competição</label>
+                                <select value={statsForm.competicao} onChange={e=>setStatsForm(s=>({...s,competicao:e.target.value}))}>
+                                    <option>Série B</option><option>Copa do Brasil</option><option>Estadual</option><option>Amistoso</option>
+                                </select>
+                            </div>
+                            <div className="form-group"><label>Jogos Disputados</label><input type="number" value={statsForm.jogos_disputados} onChange={e=>setStatsForm(s=>({...s,jogos_disputados:+e.target.value}))}/></div>
+                            <div className="form-group"><label>Jogos Titular</label><input type="number" value={statsForm.jogos_titular} onChange={e=>setStatsForm(s=>({...s,jogos_titular:+e.target.value}))}/></div>
+                            <div className="form-group"><label>Minutos Jogados</label><input type="number" value={statsForm.minutos_jogados} onChange={e=>setStatsForm(s=>({...s,minutos_jogados:+e.target.value}))}/></div>
+                            <div className="form-group"><label>Gols</label><input type="number" value={statsForm.gols} onChange={e=>setStatsForm(s=>({...s,gols:+e.target.value}))}/></div>
+                            <div className="form-group"><label>Assistências</label><input type="number" value={statsForm.assistencias} onChange={e=>setStatsForm(s=>({...s,assistencias:+e.target.value}))}/></div>
+                            <div className="form-group"><label>Clean Sheets</label><input type="number" value={statsForm.jogos_sem_sofrer_gol} onChange={e=>setStatsForm(s=>({...s,jogos_sem_sofrer_gol:+e.target.value}))}/></div>
+                            <div className="form-group"><label>🟨 Amarelos</label><input type="number" value={statsForm.cartoes_amarelos} onChange={e=>setStatsForm(s=>({...s,cartoes_amarelos:+e.target.value}))}/></div>
+                            <div className="form-group"><label>🟥 Vermelhos</label><input type="number" value={statsForm.cartoes_vermelhos} onChange={e=>setStatsForm(s=>({...s,cartoes_vermelhos:+e.target.value}))}/></div>
+                        </div>
+                        <button className="btn btn-primary btn-sm" onClick={salvarStats}>💾 Salvar Estatísticas</button>
+                    </div>}
+
+                    {d.estatisticas?.length === 0 ? (
+                        <div className="empty-state"><div className="empty-icon">📊</div><p>Nenhuma estatística registrada.</p></div>
+                    ) : (
+                        d.estatisticas?.reduce((acc, e) => {
+                            const t = acc.find(x=>x.temporada===e.temporada);
+                            if(!t) acc.push({temporada:e.temporada,rows:[e]}); else t.rows.push(e);
+                            return acc;
+                        },[]).map(grupo => <div key={grupo.temporada} style={{marginBottom:16}}>
+                            <div style={{fontSize:13,fontWeight:700,color:'#1d4ed8',marginBottom:8}}>⏱️ Temporada {grupo.temporada}</div>
+                            <table className="stats-table">
+                                <thead><tr>
+                                    <th>Competição</th><th>Jogos</th><th>Titular</th><th>Min.</th>
+                                    <th>⚽ Gols</th><th>🅰️ Assist.</th><th>🧤 C.Sheet</th><th>🟨</th><th>🟥</th>
+                                </tr></thead>
+                                <tbody>
+                                    {grupo.rows.map(e=><tr key={e.id}>
+                                        <td>{e.competicao}</td>
+                                        <td>{e.jogos_disputados||0}</td><td>{e.jogos_titular||0}</td>
+                                        <td>{e.minutos_jogados||0}'</td>
+                                        <td><span className={e.gols>0?'stat-highlight':'stat-zero'}>{e.gols||0}</span></td>
+                                        <td><span className={e.assistencias>0?'stat-highlight':'stat-zero'}>{e.assistencias||0}</span></td>
+                                        <td><span className={e.jogos_sem_sofrer_gol>0?'stat-highlight':'stat-zero'}>{e.jogos_sem_sofrer_gol||0}</span></td>
+                                        <td style={{color:e.cartoes_amarelos>0?'#d97706':'#d1d5db',fontWeight:700}}>{e.cartoes_amarelos||0}</td>
+                                        <td style={{color:e.cartoes_vermelhos>0?'#dc2626':'#d1d5db',fontWeight:700}}>{e.cartoes_vermelhos||0}</td>
+                                    </tr>)}
+                                    {grupo.rows.length > 1 && <tr style={{background:'#f8fafc',fontWeight:700}}>
+                                        <td>TOTAL</td>
+                                        <td>{grupo.rows.reduce((s,e)=>s+(e.jogos_disputados||0),0)}</td>
+                                        <td>{grupo.rows.reduce((s,e)=>s+(e.jogos_titular||0),0)}</td>
+                                        <td>{grupo.rows.reduce((s,e)=>s+(e.minutos_jogados||0),0)}'</td>
+                                        <td style={{color:'#1d4ed8',fontWeight:800}}>{grupo.rows.reduce((s,e)=>s+(e.gols||0),0)}</td>
+                                        <td style={{color:'#1d4ed8',fontWeight:800}}>{grupo.rows.reduce((s,e)=>s+(e.assistencias||0),0)}</td>
+                                        <td style={{color:'#1d4ed8',fontWeight:800}}>{grupo.rows.reduce((s,e)=>s+(e.jogos_sem_sofrer_gol||0),0)}</td>
+                                        <td style={{color:'#d97706',fontWeight:700}}>{grupo.rows.reduce((s,e)=>s+(e.cartoes_amarelos||0),0)}</td>
+                                        <td style={{color:'#dc2626',fontWeight:700}}>{grupo.rows.reduce((s,e)=>s+(e.cartoes_vermelhos||0),0)}</td>
+                                    </tr>}
+                                </tbody>
+                            </table>
+                        </div>)
+                    )}
+                </div>}
+
+                {/* BONIFICAÇÕES */}
+                {aba === 'bonus' && <div>
+                    <div style={{fontSize:14,fontWeight:700,color:'#0f172a',marginBottom:14}}>💰 Bonificações e Descontos</div>
+                    {d.bonificacoes?.length === 0 ? (
+                        <div className="empty-state"><div className="empty-icon">💰</div><p>Nenhuma bonificação registrada.</p></div>
+                    ) : (
+                        <table className="bonus-table">
+                            <thead><tr><th>Competência</th><th>Descrição</th><th>Valor</th><th>Status</th></tr></thead>
+                            <tbody>
+                                {d.bonificacoes?.map(b=><tr key={b.id}>
+                                    <td style={{whiteSpace:'nowrap'}}>{fmtData(b.competencia)}</td>
+                                    <td>{b.descricao}</td>
+                                    <td>
+                                        <span className={b.tipo==='desconto'?'valor-desconto':'valor-bonus'}>
+                                            {b.tipo==='desconto'?'- ':'+ '}{fmt(b.valor)}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span className={'pill-'+b.status}>{b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span>
+                                    </td>
+                                </tr>)}
+                            </Tbody>
+                        </table>
+                    )}
+
+                    {/* RESUMO */}
+                    {d.bonificacoes?.length > 0 && <div style={{display:'flex',gap:16,marginTop:14}}>
+                        {[
+                            { label:'Total Bônus', val:d.bonificacoes.filter(b=>b.tipo==='bonus').reduce((s,b)=>s+parseFloat(b.valor),0), color:'#16a34a' },
+                            { label:'Total Descontos', val:d.bonificacoes.filter(b=>b.tipo==='desconto').reduce((s,b)=>s+parseFloat(b.valor),0), color:'#dc2626' },
+                            { label:'Pendente a Pagar', val:d.bonificacoes.filter(b=>b.status==='pendente'&&b.tipo==='bonus').reduce((s,b)=>s+parseFloat(b.valor),0), color:'#d97706' },
+                        ].map((r,i)=><div key={i} style={{flex:1,background:'#f8fafc',borderRadius:10,padding:'12px 14px',textAlign:'center'}}>
+                            <div style={{fontSize:11,color:'#94a3b8',fontWeight:600,textTransform:'uppercase',letterSpacing:'.4px'}}>{r.label}</div>
+                            <div style={{fontSize:18,fontWeight:800,color:r.color,marginTop:4}}>{fmt(r.val)}</div>
+                        </div>)}
+                    </div>}
+                </div>}
+            </div>
+
+            <div className="modal-footer">
+                <button className="btn btn-outline" onClick={onClose}>Fechar</button>
+            </div>
+        </div>
+    </div>;
+}
+
+// ============================================================
+// MÓDULO PRINCIPAL
+// ============================================================
+function ModuloAtletas({ usuario }) {
+    const [atletas, setAtletas] = useState([]);
+    const [resumo, setResumo] = useState(DEMO_RESUMO);
+    const [loading, setLoading] = useState(true);
+    const [busca, setBusca] = useState('');
+    const [filtroStatus, setFiltroStatus] = useState('');
+    const [filtroPosicao, setFiltroPosicao] = useState('');
+    const [detalhe, setDetalhe] = useState(null);
+    const [total, setTotal] = useState(0);
+
+    const carregar = useCallback(async () => {
+        setLoading(true);
+        const params = new URLSearchParams({ pagina:1, por_pagina:50 });
+        if (busca) params.set('busca', busca);
+        if (filtroStatus) params.set('status', filtroStatus);
+        if (filtroPosicao) params.set('posicao', filtroPosicao);
+
+        const [listData, resumoData] = await Promise.all([
+            apiFetch('/atletas?'+params.toString()),
+            apiFetch('/atletas/resumo')
+        ]);
+
+        if (listData?.atletas) { setAtletas(listData.atletas); setTotal(listData.total); }
+        else {
+            let f = DEMO_ATLETAS;
+            if (busca) f = f.filter(a => a.nome.toLowerCase().includes(busca.toLowerCase()) || (a.nome_guerra||'').toLowerCase().includes(busca.toLowerCase()));
+            if (filtroStatus) f = f.filter(a => a.status === filtroStatus);
+            if (filtroPosicao) f = f.filter(a => a.posicao === filtroPosicao);
+            setAtletas(f); setTotal(f.length);
+        }
+        if (resumoData?.ativos !== undefined) setResumo(resumoData);
+        setLoading(false);
+    }, [busca, filtroStatus, filtroPosicao]);
+
+    useEffect(() => { carregar(); }, [carregar]);
+
+    const folhaFormatada = 'R$ '+Number(resumo.folha_total||0).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+
+    return <>
+        <div className="topbar">
+            <div><h1>⚽ Atletas</h1><div className="topbar-sub">Elenco, contratos, estatísticas e metas de performance</div></div>
+            <button className="btn btn-primary">+ Cadastrar Atleta</button>
+        </div>
+        <div className="content">
+            {/* KPIs */}
+            <div className="kpi-grid">
+                <div className="kpi-card ok"><div className="kpi-label">Ativos</div><div className="kpi-value">{resumo.ativos}</div><div className="kpi-sub">no elenco</div></div>
+                <div className="kpi-card urgente"><div className="kpi-label">Lesionados</div><div className="kpi-value">{resumo.lesionados}</div><div className="kpi-sub">fora de campo</div></div>
+                <div className="kpi-card alerta"><div className="kpi-label">Suspensos</div><div className="kpi-value">{resumo.suspensos}</div><div className="kpi-sub">cumprindo suspensão</div></div>
+                <div className="kpi-card"><div className="kpi-label">Emprestados</div><div className="kpi-value">{resumo.emprestados}</div><div className="kpi-sub">de outros clubes</div></div>
+                <div className="kpi-card alerta"><div className="kpi-label">Contratos Vencendo</div><div className="kpi-value">{resumo.contratos_vencendo}</div><div className="kpi-sub">nos próximos 90 dias</div></div>
+            </div>
+
+            {/* Folha */}
+            <div style={{background:'#fff',borderRadius:12,padding:'14px 20px',border:'1px solid #e2e8f0',marginBottom:20,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                <div><div style={{fontSize:11.5,color:'#64748b',fontWeight:600,textTransform:'uppercase',letterSpacing:'.5px'}}>Folha Total de Atletas (mensal)</div>
+                <div style={{fontSize:24,fontWeight:800,color:'#0f172a',marginTop:3}}>{folhaFormatada}</div></div>
+                <div style={{fontSize:13,color:'#94a3b8'}}>{atletas.length} atletas no elenco</div>
+            </div>
+
+            {/* FILTROS */}
+            <div className="filters-row">
+                <input className="search-input" placeholder="Buscar por nome..." value={busca} onChange={e => setBusca(e.target.value)}/>
+                <select className="filter-sel" value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
+                    <option value="">Todos os status</option>
+                    <option value="ativo">✅ Ativo</option>
+                    <option value="lesionado">🏥 Lesionado</option>
+                    <option value="suspenso">🟨 Suspenso</option>
+                    <option value="emprestado">🔄 Emprestado</option>
+                    <option value="inativo">⛔ Inativo</option>
+                </select>
+                <select className="filter-sel" value={filtroPosicao} onChange={e => setFiltroPosicao(e.target.value)}>
+                    <option value="">Todas as posições</option>
+                    {Object.entries(POSICAO_LABEL).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
+                </select>
+                {(busca||filtroStatus||filtroPosicao) && <button className="btn-ghost" onClick={()=>{setBusca('');setFiltroStatus('');setFiltroPosicao('')}}>✕ Limpar</button>}
+                <div style={{marginLeft:'auto',fontSize:13,color:'#94a3b8'}}>{total} atleta{total!==1?'s':''}</div>
+            </div>
+
+            {/* GRID DE CARDS */}
+            {loading ? (
+                <div style={{textAlign:'center',padding:'60px',color:'#94a3b8',fontSize:14}}>Carregando elenco...</div>
+            ) : atletas.length === 0 ? (
+                <div className="empty-state"><div className="empty-icon">🔍</div><p>Nenhum atleta encontrado.</p></div>
+            ) : (
+                <div className="atletas-grid">
+                    {atletas.map(a => {
+                        const diasVenc = a.dias_ate_vencimento;
+                        const vencendoAlert = diasVenc !== null && diasVenc < 90 && diasVenc > 0;
+                        const vencido = diasVenc !== null && diasVenc < 0;
+                        return <div key={a.id} className="atleta-card" onClick={() => setDetalhe(a)}>
+                            {(vencendoAlert||vencido) && <div className="contrato-vencendo">{vencido?'⚠️ Contrato vencido':'⏰ '+diasVenc+' dias'}</div>}
+                            <div className="atleta-card-header">
+                                <div className={'atleta-avatar '+POSICAO_COR[a.posicao]} style={{background:getAvatarBg(a.posicao)}}>
+                                    {POSICAO_EMOJI[a.posicao]||'⚽'}
+                                </div>
+                                <div className="atleta-info">
+                                    <div className="atleta-nome">{a.nome}</div>
+                                    <div className="atleta-nome-guerra">"{a.nome_guerra||a.nome.split(' ')[0]}"</div>
+                                    <div className="atleta-posicao">{POSICAO_LABEL[a.posicao]}</div>
+                                    <div style={{marginTop:5,display:'flex',gap:4,flexWrap:'wrap'}}>
+                                        <span className={'pill pill-'+a.status} style={{fontSize:10.5}}>{a.status}</span>
+                                        {a.clube_cedente && <span style={{background:'#dbeafe',color:'#1d4ed8',padding:'2px 7px',borderRadius:100,fontSize:10.5,fontWeight:600}}>emp.</span>}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="atleta-card-stats">
+                                <div className="stat-box">
+                                    <div className="stat-value" style={{color:a.total_gols>0?'#1d4ed8':'#0f172a'}}>{a.total_gols}</div>
+                                    <div className="stat-label">⚽ Gols</div>
+                                </div>
+                                <div className="stat-box">
+                                    <div className="stat-value" style={{color:a.total_assistencias>0?'#1d4ed8':'#0f172a'}}>{a.total_assistencias}</div>
+                                    <div className="stat-label">🅰️ Assist.</div>
+                                </div>
+                                <div className="stat-box">
+                                    <div className="stat-value">{a.total_jogos}</div>
+                                    <div className="stat-label">🎮 Jogos</div>
+                                </div>
+                                {a.posicao === 'goleiro' ? (
+                                    <div className="stat-box">
+                                        <div className="stat-value" style={{color:a.total_clean_sheets>0?'#16a34a':'#0f172a'}}>{a.total_clean_sheets}</div>
+                                        <div className="stat-label">🧤 C.Sheet</div>
+                                    </div>
+                                ) : (
+                                    <div className="stat-box">
+                                        <div className="stat-value" style={{color:'#64748b',fontSize:13}}>{a.total_gols+a.total_assistencias}</div>
+                                        <div className="stat-label">G+A</div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="atleta-card-footer">
+                                <div className="salario-info">Salário total</div>
+                                <div className="salario-valor">{fmt(a.salario_bruto)}</div>
+                            </div>
+                        </div>;
+                    })}
+                </div>
+            )}
+        </div>
+
+        {detalhe && <ModalAtleta atleta={detalhe} onClose={()=>setDetalhe(null)} onAtualizar={carregar} usuario={usuario}/>}
+    </>;
+}
+
+// ============================================================
+// APP ROOT
+// ============================================================
+function App() {
+    const [usuario, setUsuario] = useState(USUARIO);
+    function handleLogout() { TOKEN=null; USUARIO=null; localStorage.removeItem('erp_token'); localStorage.removeItem('erp_usuario'); setUsuario(null); }
+    if (!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
+    return <>
+        <Sidebar usuario={usuario} onLogout={handleLogout}/>
+        <div className="main"><ModuloAtletas usuario={usuario}/></div>
+    </>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
