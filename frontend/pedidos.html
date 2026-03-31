@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pedidos de Compra — ERP SAF</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:#0f172a;color:#94a3b8;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#fff;border-bottom:1px solid #1e293b;letter-spacing:-.3px}
+.sidebar-logo span{color:#f59e0b}
+.sidebar nav{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s;border-radius:0}
+.nav-item:hover{background:#1e293b;color:#e2e8f0}
+.nav-item.active{background:#1d4ed8;color:#fff}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{padding:14px 16px;border-top:1px solid #1e293b;font-size:12px}
+.user-chip{display:flex;align-items:center;gap:8px}
+.user-avatar{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:18px;font-weight:700;color:#0f172a}
+.topbar-sub{font-size:12px;color:#64748b;margin-top:2px}
+.content{padding:24px 28px;flex:1}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:#fff;border-radius:12px;padding:18px 20px;border:1px solid #e2e8f0}
+.kpi-label{font-size:12px;color:#64748b;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.kpi-value{font-size:26px;font-weight:800;margin:6px 0 2px;color:#0f172a}
+.kpi-sub{font-size:12px;color:#94a3b8}
+.kpi-card.urgente .kpi-value{color:#dc2626}
+.kpi-card.alerta .kpi-value{color:#d97706}
+.kpi-card.ok .kpi-value{color:#16a34a}
+
+/* FILTERS */
+.filters-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
+.btn-primary{background:#1d4ed8;color:#fff}
+.btn-primary:hover{background:#1e40af}
+.btn-outline{background:#fff;color:#475569;border:1px solid #e2e8f0}
+.btn-outline:hover{background:#f8fafc}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-success{background:#16a34a;color:#fff}
+.btn-success:hover{background:#15803d}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-warning{background:#d97706;color:#fff}
+.btn-warning:hover{background:#b45309}
+.btn-ghost{background:transparent;color:#64748b;border:none;font-size:13px;cursor:pointer;padding:4px 8px}
+.btn-ghost:hover{color:#0f172a}
+.search-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;width:220px;outline:none}
+.search-input:focus{border-color:#1d4ed8}
+select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
+
+/* STATUS PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill-rascunho{background:#f1f5f9;color:#64748b}
+.pill-aguardando_cotacao{background:#fef9c3;color:#a16207}
+.pill-em_cotacao{background:#dbeafe;color:#1d4ed8}
+.pill-aguardando_aprovacao{background:#fed7aa;color:#c2410c}
+.pill-aprovado{background:#dcfce7;color:#16a34a}
+.pill-rejeitado{background:#fee2e2;color:#dc2626}
+.pill-em_compra{background:#e0e7ff;color:#4338ca}
+.pill-concluido{background:#d1fae5;color:#065f46}
+.pill-cancelado{background:#f1f5f9;color:#94a3b8}
+
+.prio-urgente{color:#dc2626;font-weight:700;font-size:12px}
+.prio-alta{color:#d97706;font-weight:700;font-size:12px}
+.prio-normal{color:#64748b;font-size:12px}
+.prio-baixa{color:#94a3b8;font-size:12px}
+
+/* TABLE */
+.table-wrap{background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:#f8fafc}
+th{text-align:left;padding:11px 16px;font-size:11.5px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #e2e8f0}
+td{padding:12px 16px;font-size:13.5px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8fafc}
+.pedido-numero{font-family:monospace;font-size:12px;color:#64748b;font-weight:600}
+.pedido-titulo{font-weight:600;color:#0f172a;max-width:260px}
+.pedido-titulo small{display:block;font-size:11.5px;color:#94a3b8;font-weight:400;margin-top:1px}
+.valor-cell{font-weight:700;color:#0f172a;white-space:nowrap}
+.cotacoes-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#e2e8f0;font-size:11px;font-weight:700;color:#475569}
+.cotacoes-badge.tem{background:#dbeafe;color:#1d4ed8}
+.action-btn{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:#f1f5f9;color:#475569;transition:.15s}
+.action-btn:hover{background:#e2e8f0;color:#0f172a}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-top:1px solid #f1f5f9}
+.pagination-info{font-size:12.5px;color:#64748b}
+.pagination-btns{display:flex;gap:6px}
+.page-btn{padding:6px 12px;border:1px solid #e2e8f0;background:#fff;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;color:#475569}
+.page-btn.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.page-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:860px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+.modal-header{padding:20px 24px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10}
+.modal-header h2{font-size:17px;font-weight:700;color:#0f172a}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
+.close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8;line-height:1}
+.close-btn:hover{color:#0f172a}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
+.form-group input,.form-group select,.form-group textarea{padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(29,78,216,.1)}
+.form-group textarea{resize:vertical;min-height:72px}
+
+/* DETAIL MODAL */
+.detail-section{margin-bottom:24px}
+.detail-section h3{font-size:13px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.detail-item label{display:block;font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.detail-item span{font-size:14px;font-weight:600;color:#0f172a}
+
+/* ITEMS TABLE */
+.items-table{width:100%;border-collapse:collapse;font-size:13px}
+.items-table th{background:#f8fafc;padding:8px 12px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e2e8f0}
+.items-table td{padding:8px 12px;border-bottom:1px solid #f1f5f9}
+.items-table tr:last-child td{border-bottom:none}
+.items-table .total-row td{font-weight:700;background:#f8fafc;color:#0f172a}
+
+/* COTAÇÃO CARD */
+.cotacao-card{border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:10px;position:relative}
+.cotacao-card.selecionada{border-color:#16a34a;background:#f0fdf4}
+.cotacao-card.rejeitada{opacity:.6}
+.cotacao-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.cotacao-fornecedor{font-weight:700;color:#0f172a;font-size:14px}
+.cotacao-valor{font-size:18px;font-weight:800;color:#0f172a}
+.cotacao-meta{font-size:12px;color:#64748b;margin-top:2px}
+.badge-selecionada{position:absolute;top:10px;right:10px;background:#16a34a;color:#fff;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700}
+
+/* TIMELINE */
+.timeline{list-style:none}
+.timeline-item{display:flex;gap:12px;padding-bottom:14px;position:relative}
+.timeline-item:not(:last-child)::before{content:'';position:absolute;left:11px;top:22px;bottom:0;width:2px;background:#f1f5f9}
+.timeline-dot{width:22px;height:22px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px}
+.timeline-dot.criou{background:#dbeafe;color:#1d4ed8}
+.timeline-dot.aprovou{background:#dcfce7;color:#16a34a}
+.timeline-dot.rejeitou{background:#fee2e2;color:#dc2626}
+.timeline-dot.concluiu{background:#d1fae5;color:#065f46}
+.timeline-content{flex:1}
+.timeline-acao{font-size:13px;font-weight:600;color:#0f172a;text-transform:capitalize}
+.timeline-desc{font-size:12px;color:#64748b;margin-top:1px}
+.timeline-data{font-size:11px;color:#94a3b8;margin-top:2px}
+
+/* FLUXO STEPS */
+.fluxo{display:flex;align-items:center;gap:0;margin-bottom:24px;padding:16px;background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow-x:auto}
+.fluxo-step{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 14px;border-radius:8px;min-width:100px;cursor:default}
+.fluxo-step.ativo{background:#dbeafe}
+.fluxo-step.concluido-step{background:#dcfce7}
+.fluxo-step .step-icon{font-size:20px}
+.fluxo-step .step-label{font-size:10.5px;font-weight:600;color:#64748b;text-align:center}
+.fluxo-step.ativo .step-label{color:#1d4ed8}
+.fluxo-step.concluido-step .step-label{color:#16a34a}
+.fluxo-arrow{color:#cbd5e1;font-size:16px;flex-shrink:0}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;width:100%}
+.login-card{background:#fff;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo h2{font-size:22px;font-weight:800;color:#0f172a;margin-top:10px}
+.login-logo p{font-size:14px;color:#64748b;margin-top:4px}
+.login-err{background:#fee2e2;color:#dc2626;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px}
+.empty-state{text-align:center;padding:60px 20px;color:#94a3b8}
+.empty-state .empty-icon{font-size:48px;margin-bottom:12px}
+.empty-state p{font-size:14px}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:#f1f5f9;border-radius:8px;padding:3px;width:fit-content;margin-bottom:20px}
+.tab{padding:6px 14px;border-radius:6px;font-size:12.5px;font-weight:600;cursor:pointer;color:#64748b;border:none;background:transparent;transition:.15s}
+.tab.active{background:#fff;color:#0f172a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+.section-divider{border:none;border-top:1px solid #f1f5f9;margin:16px 0}
+
+/* ITENS EDITOR */
+.itens-editor{border:1px solid #e2e8f0;border-radius:8px;overflow:hidden}
+.itens-editor-header{display:grid;grid-template-columns:3fr 1fr 1fr 1fr 36px;gap:8px;padding:8px 12px;background:#f8fafc;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase}
+.item-row{display:grid;grid-template-columns:3fr 1fr 1fr 1fr 36px;gap:8px;padding:8px 12px;border-top:1px solid #f1f5f9;align-items:center}
+.item-row input{padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:12.5px;width:100%;outline:none}
+.item-row input:focus{border-color:#1d4ed8}
+.add-item-btn{padding:8px 12px;width:100%;background:#f8fafc;border:none;border-top:1px solid #f1f5f9;cursor:pointer;font-size:12.5px;color:#64748b;font-weight:600;text-align:center}
+.add-item-btn:hover{background:#f1f5f9;color:#0f172a}
+.remove-item-btn{background:none;border:none;cursor:pointer;color:#94a3b8;font-size:16px;line-height:1}
+.remove-item-btn:hover{color:#dc2626}
+
+.alert-box{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px}
+.alert-warning{background:#fef9c3;border:1px solid #fde68a;color:#92400e}
+.alert-danger{background:#fee2e2;border:1px solid #fecaca;color:#991b1b}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+// ============================================================
+// CONFIG
+// ============================================================
+const API_URL = (window.ERP_CONFIG || {}).API_URL || 'http://localhost:3001/api';
+
+// ============================================================
+// DEMO DATA
+// ============================================================
+const DEMO_RESUMO = {
+    em_aberto: 5,
+    aguardando_aprovacao: 1,
+    em_cotacao: 2,
+    concluidos_mes: 1,
+    valor_gasto_mes: 42800,
+    valor_em_aberto: 100700
+};
+
+const DEMO_PEDIDOS = [
+    {
+        id: 3, numero: 'PC-2026-003', titulo: 'Serviço de Fisioterapia — Contrato Mensal',
+        status: 'aguardando_aprovacao', prioridade: 'alta',
+        solicitante_nome: 'Carlos Silva', departamento_nome: 'Futebol',
+        data_necessidade: '2026-03-01', valor_estimado: 18000, valor_aprovado: null, valor_final: null,
+        total_cotacoes: 3, created_at: '2026-02-10T10:00:00Z', centro_custo_nome: 'Futebol Profissional'
+    },
+    {
+        id: 4, numero: 'PC-2026-004', titulo: 'Transporte para Jogo Fora — Abril',
+        status: 'em_cotacao', prioridade: 'normal',
+        solicitante_nome: 'Ana Lima', departamento_nome: 'Futebol',
+        data_necessidade: '2026-03-25', valor_estimado: 12000, valor_aprovado: null, valor_final: null,
+        total_cotacoes: 1, created_at: '2026-03-08T14:00:00Z', centro_custo_nome: 'Futebol Profissional'
+    },
+    {
+        id: 2, numero: 'PC-2026-002', titulo: 'Equipamentos de Academia — Renovação',
+        status: 'em_compra', prioridade: 'normal',
+        solicitante_nome: 'Carlos Silva', departamento_nome: 'Futebol',
+        data_necessidade: '2026-02-28', valor_estimado: 36500, valor_aprovado: 36500, valor_final: null,
+        total_cotacoes: 2, created_at: '2026-01-15T10:00:00Z', centro_custo_nome: 'Futebol Profissional'
+    },
+    {
+        id: 5, numero: 'PC-2026-005', titulo: 'Material de Escritório — Trimestre Q2',
+        status: 'aguardando_cotacao', prioridade: 'baixa',
+        solicitante_nome: 'Maria Santos', departamento_nome: 'Administração',
+        data_necessidade: '2026-04-10', valor_estimado: 3500, valor_aprovado: null, valor_final: null,
+        total_cotacoes: 0, created_at: '2026-03-15T09:00:00Z', centro_custo_nome: 'Administração Geral'
+    },
+    {
+        id: 6, numero: 'PC-2026-006', titulo: 'Software de Análise de Desempenho — Atletas',
+        status: 'rascunho', prioridade: 'normal',
+        solicitante_nome: 'João Técnico', departamento_nome: 'Futebol',
+        data_necessidade: '2026-04-30', valor_estimado: 28000, valor_aprovado: null, valor_final: null,
+        total_cotacoes: 0, created_at: '2026-03-18T11:00:00Z', centro_custo_nome: 'Futebol Profissional'
+    },
+    {
+        id: 1, numero: 'PC-2026-001', titulo: 'Compra de Uniformes — Temporada 2026',
+        status: 'concluido', prioridade: 'alta',
+        solicitante_nome: 'Carlos Silva', departamento_nome: 'Futebol',
+        data_necessidade: '2026-01-15', valor_estimado: 45000, valor_aprovado: 43500, valor_final: 42800,
+        total_cotacoes: 2, created_at: '2025-12-01T10:00:00Z', centro_custo_nome: 'Futebol Profissional'
+    },
+    {
+        id: 7, numero: 'PC-2026-007', titulo: 'Cadeiras VIP — Reforma do Camarote',
+        status: 'rejeitado', prioridade: 'baixa',
+        solicitante_nome: 'Diretor Geral', departamento_nome: 'Diretoria',
+        data_necessidade: '2026-02-15', valor_estimado: 22000, valor_aprovado: null, valor_final: null,
+        total_cotacoes: 0, created_at: '2026-01-20T10:00:00Z', centro_custo_nome: 'Administração Geral'
+    },
+    {
+        id: 8, numero: 'PC-2026-008', titulo: 'Campanha de Marketing — Redes Sociais',
+        status: 'cancelado', prioridade: 'normal',
+        solicitante_nome: 'Ana Lima', departamento_nome: 'Marketing',
+        data_necessidade: '2026-02-01', valor_estimado: 9500, valor_aprovado: null, valor_final: null,
+        total_cotacoes: 0, created_at: '2026-01-25T10:00:00Z', centro_custo_nome: 'Marketing'
+    },
+];
+
+const DEMO_DETALHE = {
+    3: {
+        id: 3, numero: 'PC-2026-003', titulo: 'Serviço de Fisioterapia — Contrato Mensal',
+        descricao: 'Contratação de empresa de fisioterapia para atendimento diário ao elenco. Estimativa de 3 fisioterapeutas por período.',
+        status: 'aguardando_aprovacao', prioridade: 'alta',
+        solicitante_nome: 'Carlos Silva', departamento_nome: 'Futebol',
+        aprovador_nome: null, categoria_nome: 'Material Esportivo',
+        centro_custo_nome: 'Futebol Profissional',
+        data_necessidade: '2026-03-01',
+        valor_estimado: 18000, valor_aprovado: null, valor_final: null,
+        motivo_rejeicao: null,
+        itens: [
+            { id: 10, descricao: 'Fisioterapeuta período matutino (mensal)', quantidade: 2, unidade: 'vaga', valor_unitario_estimado: 6000 },
+            { id: 11, descricao: 'Fisioterapeuta período vespertino (mensal)', quantidade: 1, unidade: 'vaga', valor_unitario_estimado: 5500 },
+            { id: 12, descricao: 'Materiais consumíveis mensais', quantidade: 1, unidade: 'kit', valor_unitario_estimado: 800 },
+        ],
+        cotacoes: [
+            {
+                id: 5, status: 'selecionada', fornecedor_nome: 'MedSport Clínica',
+                numero_cotacao: 'MS-2026-0078', data_cotacao: '2026-02-14',
+                validade_cotacao: '2026-03-14', prazo_entrega: 3,
+                valor_total: 17200, condicoes_pagamento: 'Mensal',
+                observacoes: 'Proposta com 3 fisios + materiais. SELECIONADA.',
+                itens: []
+            },
+            {
+                id: 6, status: 'recebida', fornecedor_nome: 'MedSport Clínica',
+                numero_cotacao: 'MS-2026-0079', data_cotacao: '2026-02-15',
+                validade_cotacao: '2026-03-15', prazo_entrega: 3,
+                valor_total: 18500, condicoes_pagamento: 'Mensal',
+                observacoes: 'Proposta alternativa com 2 fisios sênior.',
+                itens: []
+            },
+            {
+                id: 7, status: 'recebida', fornecedor_nome: 'Profissional Autônomo',
+                numero_cotacao: 'INDEP-2026-01', data_cotacao: '2026-02-16',
+                validade_cotacao: '2026-03-16', prazo_entrega: 1,
+                valor_total: 15000, condicoes_pagamento: 'Mensal',
+                observacoes: 'Menor custo, porém sem CNPJ.',
+                itens: []
+            }
+        ],
+        historico: [
+            { id: 1, acao: 'criou', descricao: 'Pedido criado. Início do campeonato exige fisioterapia diária.', usuario_nome: 'Carlos Silva', created_at: '2026-02-10T10:00:00Z' },
+            { id: 2, acao: 'enviou_cotacao', descricao: '3 cotações coletadas.', usuario_nome: 'Carlos Silva', created_at: '2026-02-14T14:00:00Z' },
+            { id: 3, acao: 'selecionou', descricao: 'MedSport selecionada: R$ 17.200,00/mês.', usuario_nome: 'Carlos Silva', created_at: '2026-02-17T09:00:00Z' },
+            { id: 4, acao: 'enviou_aprovacao', descricao: 'Aguardando aprovação da diretoria.', usuario_nome: 'Carlos Silva', created_at: '2026-02-17T09:05:00Z' },
+        ]
+    }
+};
+
+const DEMO_FORNECEDORES = [
+    { id: 1, nome: 'SportMax Equipamentos', categoria: 'Material Esportivo' },
+    { id: 2, nome: 'Nutrição Total', categoria: 'Alimentação' },
+    { id: 3, nome: 'MedSport Clínica', categoria: 'Saúde e Medicina' },
+    { id: 4, nome: 'TechField Sistemas', categoria: 'Tecnologia' },
+    { id: 5, nome: 'TransportesFut Ltda', categoria: 'Transporte' },
+    { id: 6, nome: 'Gráfica Campeão', categoria: 'Marketing' },
+    { id: 7, nome: 'Hotel Central', categoria: 'Hospedagem' },
+    { id: 8, nome: 'Manutenção Expert', categoria: 'Manutenção' },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+let TOKEN = localStorage.getItem('erp_token');
+let USUARIO = null;
+try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
+
+async function apiFetch(path, options = {}) {
+    try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (TOKEN) headers['Authorization'] = 'Bearer ' + TOKEN;
+        const res = await fetch(API_URL + path, { ...options, headers });
+        if (res.status === 401) { TOKEN = null; localStorage.removeItem('erp_token'); window.location.reload(); }
+        return await res.json();
+    } catch(e) {
+        return null;
+    }
+}
+
+function fmt(valor) {
+    if (!valor && valor !== 0) return '—';
+    return 'R$ ' + Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+}
+
+function fmtData(d) {
+    if (!d) return '—';
+    return new Date(d + (d.length === 10 ? 'T00:00:00' : '')).toLocaleDateString('pt-BR');
+}
+
+function fmtDataHora(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+const STATUS_LABEL = {
+    rascunho: 'Rascunho',
+    aguardando_cotacao: 'Aguard. Cotação',
+    em_cotacao: 'Em Cotação',
+    aguardando_aprovacao: 'Aguard. Aprovação',
+    aprovado: 'Aprovado',
+    rejeitado: 'Rejeitado',
+    em_compra: 'Em Compra',
+    concluido: 'Concluído',
+    cancelado: 'Cancelado',
+};
+
+const PRIO_LABEL = { urgente: '🔴 Urgente', alta: '🟠 Alta', normal: '🔵 Normal', baixa: '⚪ Baixa' };
+const PRIO_CLASS = { urgente:'prio-urgente', alta:'prio-alta', normal:'prio-normal', baixa:'prio-baixa' };
+
+const FLUXO_STEPS = [
+    { key: 'rascunho', label: 'Rascunho', icon: '✏️' },
+    { key: 'aguardando_cotacao', label: 'Aguard. Cotação', icon: '📋' },
+    { key: 'em_cotacao', label: 'Em Cotação', icon: '💬' },
+    { key: 'aguardando_aprovacao', label: 'Aguard. Aprovação', icon: '⏳' },
+    { key: 'aprovado', label: 'Aprovado', icon: '✅' },
+    { key: 'em_compra', label: 'Em Compra', icon: '🛒' },
+    { key: 'concluido', label: 'Concluído', icon: '🏁' },
+];
+
+function getFluxoIndex(status) {
+    return FLUXO_STEPS.findIndex(s => s.key === status);
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+function Login({ onLogin }) {
+    const [usuario, setUsuario] = useState('admin');
+    const [senha, setSenha] = useState('admin123');
+    const [erro, setErro] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        setLoading(true); setErro('');
+        const data = await apiFetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ usuario, senha })
+        });
+        setLoading(false);
+        if (data && data.token) {
+            TOKEN = data.token;
+            USUARIO = data.usuario;
+            localStorage.setItem('erp_token', TOKEN);
+            localStorage.setItem('erp_usuario', JSON.stringify(USUARIO));
+            onLogin(data.usuario);
+        } else {
+            // DEMO: aceitar admin/admin123 offline
+            if (usuario === 'admin' && senha === 'admin123') {
+                USUARIO = { id: 1, nome: 'Administrador', perfil: 'admin' };
+                localStorage.setItem('erp_usuario', JSON.stringify(USUARIO));
+                onLogin(USUARIO);
+            } else {
+                setErro('Usuário ou senha incorretos.');
+            }
+        }
+    }
+
+    return (
+        <div className="login-wrap">
+            <div className="login-card">
+                <div className="login-logo">
+                    <div style={{fontSize:40}}>🏟️</div>
+                    <h2>ERP SAF</h2>
+                    <p>Pedidos de Compra</p>
+                </div>
+                {erro && <div className="login-err">{erro}</div>}
+                <form onSubmit={handleLogin}>
+                    <div className="form-group" style={{marginBottom:12}}>
+                        <label>Usuário</label>
+                        <input value={usuario} onChange={e => setUsuario(e.target.value)} required/>
+                    </div>
+                    <div className="form-group" style={{marginBottom:20}}>
+                        <label>Senha</label>
+                        <input type="password" value={senha} onChange={e => setSenha(e.target.value)} required/>
+                    </div>
+                    <button type="submit" className="btn btn-primary" style={{width:'100%',padding:'11px'}} disabled={loading}>
+                        {loading ? 'Entrando...' : 'Entrar'}
+                    </button>
+                </form>
+                <div style={{textAlign:'center',marginTop:16,fontSize:12,color:'#94a3b8'}}>
+                    Demo: admin / admin123
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+function Sidebar({ usuario, onLogout }) {
+    const initials = (usuario?.nome || 'U').split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
+    return (
+        <div className="sidebar">
+            <div className="sidebar-logo">🏟️ ERP <span>SAF</span></div>
+            <nav>
+                <div className="nav-item" onClick={() => window.location.href='index.html'}>
+                    <span className="icon">👥</span> Funcionários
+                </div>
+                <div className="nav-item" onClick={() => window.location.href='financeiro.html'}>
+                    <span className="icon">💰</span> Financeiro
+                </div>
+                <div className="nav-item active">
+                    <span className="icon">🛒</span> Pedidos de Compra
+                </div>
+                <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
+                    <span className="icon">⚽</span> Atletas
+                </div>
+                <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
+                    <span className="icon">💼</span> Investidores
+                </div>
+                <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
+                    <span className="icon">🎯</span> Metas
+                </div>
+                <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
+                    <span className="icon">📊</span> Relatórios
+                </div>
+            </nav>
+            <div className="sidebar-footer">
+                <div className="user-chip">
+                    <div className="user-avatar">{initials}</div>
+                    <div>
+                        <div style={{fontSize:12,color:'#e2e8f0',fontWeight:600}}>{usuario?.nome}</div>
+                        <div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div>
+                    </div>
+                </div>
+                <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>
+                    Sair →
+                </button>
+            </div>
+        </div>
+    );
+}
+
+// ============================================================
+// KPI CARDS
+// ============================================================
+function KpiCards({ resumo }) {
+    return (
+        <div className="kpi-grid">
+            <div className="kpi-card">
+                <div className="kpi-label">Em Aberto</div>
+                <div className="kpi-value">{resumo.em_aberto}</div>
+                <div className="kpi-sub">pedidos ativos</div>
+            </div>
+            <div className="kpi-card urgente">
+                <div className="kpi-label">Aguardando Aprovação</div>
+                <div className="kpi-value">{resumo.aguardando_aprovacao}</div>
+                <div className="kpi-sub">precisam de decisão</div>
+            </div>
+            <div className="kpi-card alerta">
+                <div className="kpi-label">Em Cotação</div>
+                <div className="kpi-value">{resumo.em_cotacao}</div>
+                <div className="kpi-sub">coletando propostas</div>
+            </div>
+            <div className="kpi-card ok">
+                <div className="kpi-label">Valor em Aberto</div>
+                <div className="kpi-value" style={{fontSize:18}}>{fmt(resumo.valor_em_aberto)}</div>
+                <div className="kpi-sub">pedidos não concluídos</div>
+            </div>
+        </div>
+    );
+}
+
+// ============================================================
+// MODAL NOVO PEDIDO
+// ============================================================
+function ModalNovoPedido({ onClose, onSalvo }) {
+    const [form, setForm] = useState({ titulo:'', descricao:'', prioridade:'normal', data_necessidade:'', departamento_id:'', centro_custo_id:'', valor_estimado:'', observacoes:'' });
+    const [itens, setItens] = useState([{ descricao:'', quantidade:1, unidade:'un', valor_unitario_estimado:'' }]);
+    const [loading, setLoading] = useState(false);
+
+    function setF(k, v) { setForm(f => ({ ...f, [k]: v })); }
+
+    function addItem() { setItens(i => [...i, { descricao:'', quantidade:1, unidade:'un', valor_unitario_estimado:'' }]); }
+    function removeItem(idx) { setItens(i => i.filter((_, j) => j !== idx)); }
+    function setItem(idx, k, v) { setItens(i => i.map((it, j) => j === idx ? { ...it, [k]: v } : it)); }
+
+    const total = itens.reduce((s, i) => s + (parseFloat(i.quantidade || 0) * parseFloat(i.valor_unitario_estimado || 0)), 0);
+
+    async function handleSalvar() {
+        if (!form.titulo.trim()) { alert('Informe o título do pedido'); return; }
+        if (itens.filter(i => i.descricao.trim()).length === 0) { alert('Adicione pelo menos 1 item'); return; }
+        setLoading(true);
+        const payload = { ...form, itens: itens.filter(i => i.descricao.trim()) };
+        const data = await apiFetch('/pedidos', { method:'POST', body: JSON.stringify(payload) });
+        setLoading(false);
+        if (data && data.id) {
+            onSalvo();
+            onClose();
+        } else {
+            // DEMO: simula sucesso
+            onSalvo();
+            onClose();
+        }
+    }
+
+    return (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+            <div className="modal">
+                <div className="modal-header">
+                    <h2>➕ Novo Pedido de Compra</h2>
+                    <button className="close-btn" onClick={onClose}>✕</button>
+                </div>
+                <div className="modal-body">
+                    <div className="form-grid" style={{marginBottom:14}}>
+                        <div className="form-group form-full">
+                            <label>Título do Pedido *</label>
+                            <input placeholder="Ex: Compra de equipamentos de treino" value={form.titulo} onChange={e => setF('titulo', e.target.value)}/>
+                        </div>
+                        <div className="form-group">
+                            <label>Prioridade</label>
+                            <select value={form.prioridade} onChange={e => setF('prioridade', e.target.value)}>
+                                <option value="baixa">⚪ Baixa</option>
+                                <option value="normal">🔵 Normal</option>
+                                <option value="alta">🟠 Alta</option>
+                                <option value="urgente">🔴 Urgente</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Data de Necessidade</label>
+                            <input type="date" value={form.data_necessidade} onChange={e => setF('data_necessidade', e.target.value)}/>
+                        </div>
+                        <div className="form-group">
+                            <label>Departamento</label>
+                            <select value={form.departamento_id} onChange={e => setF('departamento_id', e.target.value)}>
+                                <option value="">Selecione...</option>
+                                <option value="1">Diretoria</option>
+                                <option value="2">Administração</option>
+                                <option value="3">Futebol / Esporte</option>
+                                <option value="4">Médico</option>
+                                <option value="5">Marketing</option>
+                                <option value="6">Financeiro</option>
+                                <option value="7">RH</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Centro de Custo</label>
+                            <select value={form.centro_custo_id} onChange={e => setF('centro_custo_id', e.target.value)}>
+                                <option value="">Selecione...</option>
+                                <option value="1">Salários e Encargos</option>
+                                <option value="2">Atletas Profissionais</option>
+                                <option value="3">Futebol Profissional</option>
+                                <option value="4">Base / Categorias de Base</option>
+                                <option value="5">Médico e Fisioterapia</option>
+                                <option value="6">Administração Geral</option>
+                                <option value="7">Marketing</option>
+                            </select>
+                        </div>
+                        <div className="form-group form-full">
+                            <label>Descrição / Justificativa</label>
+                            <textarea placeholder="Descreva o motivo do pedido..." value={form.descricao} onChange={e => setF('descricao', e.target.value)}/>
+                        </div>
+                    </div>
+
+                    <div className="detail-section">
+                        <h3>📦 Itens do Pedido</h3>
+                        <div className="itens-editor">
+                            <div className="itens-editor-header">
+                                <span>Item / Descrição</span>
+                                <span>Qtd</span>
+                                <span>Unidade</span>
+                                <span>Valor Unit. (R$)</span>
+                                <span></span>
+                            </div>
+                            {itens.map((item, idx) => (
+                                <div key={idx} className="item-row">
+                                    <input placeholder="Descrição do item" value={item.descricao} onChange={e => setItem(idx,'descricao',e.target.value)}/>
+                                    <input type="number" min="0.01" step="0.01" value={item.quantidade} onChange={e => setItem(idx,'quantidade',e.target.value)}/>
+                                    <input placeholder="un" value={item.unidade} onChange={e => setItem(idx,'unidade',e.target.value)}/>
+                                    <input type="number" min="0" step="0.01" placeholder="0,00" value={item.valor_unitario_estimado} onChange={e => setItem(idx,'valor_unitario_estimado',e.target.value)}/>
+                                    <button className="remove-item-btn" onClick={() => removeItem(idx)}>✕</button>
+                                </div>
+                            ))}
+                            <button className="add-item-btn" onClick={addItem}>+ Adicionar item</button>
+                        </div>
+                        {total > 0 && (
+                            <div style={{textAlign:'right',marginTop:10,fontWeight:700,color:'#0f172a',fontSize:14}}>
+                                Total estimado: {fmt(total)}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className="modal-footer">
+                    <button className="btn btn-outline" onClick={onClose}>Cancelar</button>
+                    <button className="btn btn-primary" onClick={handleSalvar} disabled={loading}>
+                        {loading ? 'Salvando...' : '💾 Salvar como Rascunho'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ============================================================
+// MODAL DETALHE DO PEDIDO
+// ============================================================
+function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
+    const [detalhe, setDetalhe] = useState(null);
+    const [aba, setAba] = useState('detalhes');
+    const [loadingAcao, setLoadingAcao] = useState('');
+    const [showRejeicao, setShowRejeicao] = useState(false);
+    const [motivoRejeicao, setMotivoRejeicao] = useState('');
+    const [showNovaCotacao, setShowNovaCotacao] = useState(false);
+    const [novaCot, setNovaCot] = useState({ fornecedor_id:'', valor_total:'', prazo_entrega:'', condicoes_pagamento:'', validade_cotacao:'', observacoes:'' });
+
+    useEffect(() => {
+        async function buscar() {
+            const data = await apiFetch('/pedidos/' + pedidoLista.id);
+            if (data && data.id) {
+                setDetalhe(data);
+            } else {
+                // DEMO
+                setDetalhe(DEMO_DETALHE[pedidoLista.id] || { ...pedidoLista, itens:[], cotacoes:[], historico:[] });
+            }
+        }
+        buscar();
+    }, [pedidoLista.id]);
+
+    async function acao(endpoint, payload = {}) {
+        setLoadingAcao(endpoint);
+        const data = await apiFetch('/pedidos/' + pedidoLista.id + '/' + endpoint, {
+            method: 'PATCH',
+            body: JSON.stringify(payload)
+        });
+        setLoadingAcao('');
+        if (data) { onAtualizar(); onClose(); }
+        else {
+            // DEMO: simula
+            onAtualizar();
+            onClose();
+        }
+    }
+
+    async function selecionarCotacao(cotId) {
+        setLoadingAcao('sel-' + cotId);
+        const data = await apiFetch('/pedidos/' + pedidoLista.id + '/cotacoes/' + cotId + '/selecionar', { method: 'PATCH' });
+        setLoadingAcao('');
+        const d2 = await apiFetch('/pedidos/' + pedidoLista.id);
+        if (d2 && d2.id) setDetalhe(d2);
+        else { setDetalhe(det => ({ ...det, cotacoes: det.cotacoes.map(c => ({ ...c, status: c.id === cotId ? 'selecionada' : (c.status === 'selecionada' ? 'recebida' : c.status) })) })); }
+        onAtualizar();
+    }
+
+    async function adicionarCotacao() {
+        if (!novaCot.valor_total) { alert('Informe o valor total da cotação'); return; }
+        const data = await apiFetch('/pedidos/' + pedidoLista.id + '/cotacoes', {
+            method: 'POST', body: JSON.stringify(novaCot)
+        });
+        if (data && data.id) {
+            const d2 = await apiFetch('/pedidos/' + pedidoLista.id);
+            if (d2) setDetalhe(d2);
+            setShowNovaCotacao(false);
+            onAtualizar();
+        } else {
+            // DEMO
+            setShowNovaCotacao(false);
+        }
+    }
+
+    const d = detalhe || pedidoLista;
+    const fluxoIdx = getFluxoIndex(d.status);
+    const canAprovar = ['admin','gestor','financeiro'].includes(usuario?.perfil);
+
+    return (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+            <div className="modal" style={{maxWidth:900}}>
+                <div className="modal-header">
+                    <div>
+                        <div style={{fontSize:12,color:'#64748b',marginBottom:4,fontFamily:'monospace'}}>{d.numero}</div>
+                        <h2>{d.titulo}</h2>
+                    </div>
+                    <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                        <span className={'pill pill-' + d.status}>{STATUS_LABEL[d.status]}</span>
+                        <button className="close-btn" onClick={onClose}>✕</button>
+                    </div>
+                </div>
+                <div className="modal-body">
+
+                    {/* FLUXO */}
+                    {!['rejeitado','cancelado'].includes(d.status) && (
+                        <div className="fluxo">
+                            {FLUXO_STEPS.map((step, i) => (
+                                <React.Fragment key={step.key}>
+                                    <div className={'fluxo-step' + (i === fluxoIdx ? ' ativo' : '') + (i < fluxoIdx ? ' concluido-step' : '')}>
+                                        <div className="step-icon">{i < fluxoIdx ? '✅' : step.icon}</div>
+                                        <div className="step-label">{step.label}</div>
+                                    </div>
+                                    {i < FLUXO_STEPS.length - 1 && <div className="fluxo-arrow">›</div>}
+                                </React.Fragment>
+                            ))}
+                        </div>
+                    )}
+                    {d.status === 'rejeitado' && (
+                        <div className="alert-box alert-danger">
+                            ❌ <strong>Pedido Rejeitado</strong>{d.motivo_rejeicao ? ' — ' + d.motivo_rejeicao : ''}
+                        </div>
+                    )}
+
+                    {/* TABS */}
+                    <div className="tabs">
+                        <button className={'tab' + (aba==='detalhes'?' active':'')} onClick={() => setAba('detalhes')}>📋 Detalhes</button>
+                        <button className={'tab' + (aba==='cotacoes'?' active':'')} onClick={() => setAba('cotacoes')}>
+                            💬 Cotações {detalhe?.cotacoes?.length > 0 ? '(' + detalhe.cotacoes.length + ')' : ''}
+                        </button>
+                        <button className={'tab' + (aba==='historico'?' active':'')} onClick={() => setAba('historico')}>📅 Histórico</button>
+                    </div>
+
+                    {/* ABA DETALHES */}
+                    {aba === 'detalhes' && (
+                        <>
+                            <div className="detail-section">
+                                <h3>Informações do Pedido</h3>
+                                <div className="detail-grid">
+                                    <div className="detail-item">
+                                        <label>Solicitante</label>
+                                        <span>{d.solicitante_nome || '—'}</span>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Departamento</label>
+                                        <span>{d.departamento_nome || '—'}</span>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Prioridade</label>
+                                        <span className={PRIO_CLASS[d.prioridade]}>{PRIO_LABEL[d.prioridade]}</span>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Data de Necessidade</label>
+                                        <span>{fmtData(d.data_necessidade)}</span>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Centro de Custo</label>
+                                        <span>{d.centro_custo_nome || '—'}</span>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Categoria</label>
+                                        <span>{d.categoria_nome || '—'}</span>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Valor Estimado</label>
+                                        <span style={{color:'#0f172a'}}>{fmt(d.valor_estimado)}</span>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Valor Aprovado</label>
+                                        <span style={{color:'#16a34a'}}>{fmt(d.valor_aprovado)}</span>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Valor Final</label>
+                                        <span style={{color:'#1d4ed8',fontWeight:700}}>{fmt(d.valor_final)}</span>
+                                    </div>
+                                </div>
+                               {d.descricao && (
+                                    <div style={{marginTop:14,padding:'12px 14px',background:'#f8fafc',borderRadius:8,fontSize:13.5,color:'#475569',lineHeight:1.6}}>
+                                        {d.descricao}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* ITENS */}
+                            {detalhe?.itens?.length > 0 && (
+                                <div className="detail-section">
+                                    <h3>📦 Itens do Pedido</h3>
+                                    <table className="items-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Descrição</th>
+                                                <th>Qtd</th>
+                                                <th>Unid.</th>
+                                                <th style={{textAlign:'right'}}>Valor Unit.</th>
+                                                <th style={{textAlign:'right'}}>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {detalhe.itens.map(item => (
+                                                <tr key={item.id}>
+                                                    <td>{item.descricao}</td>
+                                                    <td>{item.quantidade}</td>
+                                                    <td>{item.unidade}</td>
+                                                    <td style={{textAlign:'right'}}>{fmt(item.valor_unitario_estimado)}</td>
+                                                    <td style={{textAlign:'right',fontWeight:600}}>
+                                                        {item.valor_unitario_estimado ? fmt(item.quantidade * item.valor_unitario_estimado) : '—'}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            <tr className="total-row">
+                                                <td colSpan={4} style={{textAlign:'right'}}>Total Estimado</td>
+                                                <td style={{textAlign:'right'}}>
+                                                    {fmt(detalhe.itens.reduce((s,i) => s + (i.quantidade * (i.valor_unitario_estimado||0)), 0))}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </>
+                    )}
+
+                    {/* ABA COTAÇÕES */}
+                    {aba === 'cotacoes' && (
+                        <div className="detail-section">
+                            <h3>💬 Cotações / Orçamentos</h3>
+                            {detalhe?.cotacoes?.length === 0 && (
+                                <div className="empty-state" style={{padding:'30px 0'}}>
+                                    <div className="empty-icon">📋</div>
+                                    <p>Nenhuma cotação registrada ainda.</p>
+                                </div>
+                            )}
+                            {detalhe?.cotacoes?.map(cot => (
+                                <div key={cot.id} className={'cotacao-card ' + cot.status}>
+                                    {cot.status === 'selecionada' && <div className="badge-selecionada">✅ Selecionada</div>}
+                                    <div className="cotacao-header">
+                                        <div>
+                                            <div className="cotacao-fornecedor">{cot.fornecedor_nome || 'Fornecedor'}</div>
+                                            <div className="cotacao-meta">
+                                                Nº {cot.numero_cotacao || '—'} · {fmtData(cot.data_cotacao)}
+                                                {cot.prazo_entrega ? ' · Entrega: ' + cot.prazo_entrega + ' dias' : ''}
+                                                {cot.condicoes_pagamento ? ' · ' + cot.condicoes_pagamento : ''}
+                                            </div>
+                                        </div>
+                                        <div style={{textAlign:'right'}}>
+                                            <div className="cotacao-valor">{fmt(cot.valor_total)}</div>
+                                            {cot.validade_cotacao && <div style={{fontSize:11,color:'#94a3b8'}}>válida até {fmtData(cot.validade_cotacao)}</div>}
+                                        </div>
+                                    </div>
+                                    {cot.observacoes && <div style={{fontSize:12.5,color:'#64748b',marginBottom:8}}>{cot.observacoes}</div>}
+                                    {cot.status !== 'selecionada' && ['aguardando_cotacao','em_cotacao','aguardando_aprovacao'].includes(d.status) && (
+                                        <button className="btn btn-success btn-sm" onClick={() => selecionarCotacao(cot.id)}
+                                            disabled={loadingAcao === 'sel-' + cot.id}>
+                                            {loadingAcao === 'sel-' + cot.id ? 'Selecionando...' : '✅ Selecionar esta cotação'}
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            {['aguardando_cotacao','em_cotacao'].includes(d.status) && (
+                                <>
+                                    {!showNovaCotacao ? (
+                                        <button className="btn btn-outline" style={{width:'100%',marginTop:8}} onClick={() => setShowNovaCotacao(true)}>
+                                            + Adicionar Cotação
+                                        </button>
+                                    ) : (
+                                        <div style={{border:'1px solid #e2e8f0',borderRadius:10,padding:16,marginTop:10}}>
+                                            <div style={{fontWeight:700,marginBottom:12,color:'#0f172a'}}>Nova Cotação</div>
+                                            <div className="form-grid">
+                                                <div className="form-group">
+                                                    <label>Fornecedor</label>
+                                                    <select value={novaCot.fornecedor_id} onChange={e => setNovaCot(c => ({...c,fornecedor_id:e.target.value}))}>
+                                                        <option value="">Selecione...</option>
+                                                        {DEMO_FORNECEDORES.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
+                                                    </select>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Valor Total (R$) *</label>
+                                                    <input type="number" step="0.01" value={novaCot.valor_total} onChange={e => setNovaCot(c => ({...c,valor_total:e.target.value}))} placeholder="0,00"/>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Prazo de Entrega (dias)</label>
+                                                    <input type="number" value={novaCot.prazo_entrega} onChange={e => setNovaCot(c => ({...c,prazo_entrega:e.target.value}))}/>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Válida até</label>
+                                                    <input type="date" value={novaCot.validade_cotacao} onChange={e => setNovaCot(c => ({...c,validade_cotacao:e.target.value}))}/>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Condições de Pagamento</label>
+                                                    <input placeholder="Ex: 30 dias, À vista..." value={novaCot.condicoes_pagamento} onChange={e => setNovaCot(c => ({...c,condicoes_pagamento:e.target.value}))}/>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Observações</label>
+                                                    <input value={novaCot.observacoes} onChange={e => setNovaCot(c => ({...c,observacoes:e.target.value}))}/>
+                                                </div>
+                                            </div>
+                                            <div style={{display:'flex',gap:8,marginTop:12}}>
+                                                <button className="btn btn-primary btn-sm" onClick={adicionarCotacao}>Salvar Cotação</button>
+                                                <button className="btn btn-outline btn-sm" onClick={() => setShowNovaCotacao(false)}>Cancelar</button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ABA HISTÓRICO */}
+                    {aba === 'historico' && (
+                        <div className="detail-section">
+                            <h3>📅 Histórico de Ações</h3>
+                            {detalhe?.historico?.length === 0 && (
+                                <div className="empty-state" style={{padding:'20px 0'}}><p>Nenhum registro no histórico.</p></div>
+                            )}
+                            <ul className="timeline">
+                                {detalhe?.historico?.map(h => (
+                                    <li key={h.id} className="timeline-item">
+                                        <div className={'timeline-dot ' + h.acao}>{h.acao[0].toUpperCase()}</div>
+                                        <div className="timeline-content">
+                                            <div className="timeline-acao">{h.acao.replace(/_/g,' ')}{h.usuario_nome ? ' · ' + h.usuario_nome : ''}</div>
+                                            {h.descricao && <div className="t�meline-desc">{h.descricao}</div>}
+                                            <div className="t�meline-data">{fmtDataHora(h.created_at)}</div>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    {/* REJEIÇÃO */}
+                    {showRejeicao && (
+                        <div style={{border:'1px solid #fecaca',borderRadius:10,padding:1:,marginTop:10,background:'#fff5f5'}}>
+                            <div style={{fontWeight:700,marginBottom:8,color:'#dc2626'}}>Motivo da Rejeição</div>
+                            <textarea className="form-group" style={{width:'100%',padding:'8px 12px',border:'1px solid #fecaca',borderRadius:8,minHeight:80}}
+                                placeholder="Explique o motivo d1 rejeição..."
+                                value={motivoRejeicao} onChange={e => seu=otivoRejeicao(e.target.value)}/>
+                            <div style={{display:'Vlex',gap:8,marginTop:8}}>
+                                <button className="btn btn-danger btn-sm" onClick={() => acao('rejeitar', { motivo: motivoRejeicao })}>
+                                    Confirmar Rejeição
+                                </button>
+                                <button className="btn btn-outline btn-sm" onClick={() => setShowRejeicao(false)}>Cancelar</button>
+                            </div>
+                        </div>
+                    })
+                </div>
+
+                <div className="modal-footer">
+                    {d.status === 'rascunho' && (
+                        <button className="btn btn-primary" onClick={() => acao('enviar-cotacao')}
+                            disabled={loadingAcao==='enviar-cotacao'}>
+                            📋 Enviar para Cotação
+                        </button>
+                    )}
+                    {['em_cotacao','aguardando_cotacao'].includes(d.status) && detalhe?.cotacoes?.some(c => c.status === 'selecionada') && (
+                        <button className="btn btn-primary" onClick={() => acao('enviar-aprovacao')}
+                            disabled={loadingAcao==='enviar-aprovacao'}>
+                            ⏳ Enviar para Aprovação
+                        </button>
+                    )}
+                    {d.status === 'aguardando_aprovacao' && canAprovar && (
+                        <>
+                            <button className="btn btn-success" onClick={() => acao('aprovar')}
+                                disabled={loadingAcao==='aprovar'}>
+                                ✅ Aprovar Pedido
+                            </button>
+                            <button className="btn btn-danger" onClick={() => setShowRejeicao(true)}>
+                                ❌ Rejeitar
+                            </button>
+                        </>
+                    )}
+                    {['aprovado','em_compra'].includes(d.status) && (
+                        <button className="btn btn-success" onClick={() => acao('concluir')}
+                            disabled={loadingAcao==='concluir'}>
+                            🏁 Marcar como Concluído
+                        </button>
+                    )}
+                    <button className="btn btn-outline" onClick={onClose}>Fechar</button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ============================================================
+// MÓDULO PRINCIPAL
+// ============================================================
+function ModuloPedidos({ usuario }) {
+    const [pedidos, setPedidos] = useState([]);
+    const [resumo, setResumo] = useState(DEMO_RESUMO);
+    const [loading, setLoading] = useState(true);
+    const [busca, setBusca] = useState('');
+    const [filtroStatus, setFiltroStatus] = useState('');
+    const [filtroPrio, setFiltroPrio] = useState('');
+    const [pagina, setPagina] = useState(1);
+    const [total, setTotal] = useState(0);
+    const POR_PAGINA = 10;
+
+    const [modalNovo, setModalNovo] = useState(false);
+    const [modalDetalhe, setModalDetalhe] = useState(null);
+
+    const carregar = useCallback(async () => {
+        setLoading(true);
+        const params = new URLSearchParams({ pagina, por_pagina: POR_PAGINA });
+        if (busca) params.set('busca', busca);
+        if (filtroStatus) params.set('status', filtroStatus);
+        if (filtroPrio) params.set('prioridade', filtroPrio);
+
+        const [dadosRes, resumoRes] = await Promise.all([
+            apiFetch('/pedidos?' + params.toString()),
+            apiFetch('/pedidos/resumo')
+        ]);
+
+        if (dadosRes && dadosRes.pedidos) {
+            setPedidos(dadosRes.pedidos);
+            setTotal(dadosRes.total);
+        } else {
+            // DEMO
+            let filtrados = DEMO_PEDIDOS;
+            if (busca) filtrados = filtrados.filter(p => p.titulo.toLowerCase().includes(busca.toLowerCase()) || p.numero.includes(busca));
+            if (filtroStatus) filtrados = filtrados.filter(p => p.status === filtroStatus);
+            if (filtroPrio) filtrados = filtrados.filter(p => p.prioridade === filtroPrio);
+            setPedidos(filtrados.slice((pagina-1)*POR_PAGINA, pagina*POR_PAGINA));
+            setTotal(filtrados.length);
+        }
+
+        if (resumoRes && resumoRes.em_aberto !== undefined) setResumo(resumoRes);
+        setLoading(false);
+    }, [busca, filtroStatus, filtroPrio, pagina]);
+
+    useEffect(() => { carregar(); }, [carregar]);
+
+    const totalPages = Math.ceil(total / POR_PAGINA);
+
+    return (
+        <>
+            <div className="topbar">
+                <div>
+                    <h1>🛒 Pedidos de Compra</h1>
+                    <div className="topbar-sub">Gestão de requisições, cotações e aprovações</div>
+                </div>
+                <button className="btn btn-primary" onClick={() => setModalNovo(true)}>+ Novo Pedido</button>
+            </div>
+            <div className="content">
+                <KpiCards resumo={resumo}/>
+
+                <div className="filters-row">
+                    <input className="search-input" placeholder="Buscar por título ou número..." value={busca} onChange={e => { setBusca(e.target.value); setPagina(1); }}/>
+                    <select className="filter-sel" value={filtroStatus} onChange={e => { setFiltroStatus(e.target.value); setPagina(1); }}>
+                        <option value="">Todos os status</option>
+                        {Object.entries(STATUS_LABEL).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
+                    </select>
+                    <select className="filter-sel" value={filtroPrio} onChange={e => { setFiltroPrio(e.target.value); setPagina(1); }}>
+                        <option value="">Todas as prioridades</option>
+                        <option value="urgente">🔴 Urgente</option>
+                        <option value="alta">🟠 Alta</option>
+                        <option value="normal">🔵 Normal</option>
+                        <option value="baixa">⚪ Baixa</option>
+                    </select>
+                    {(busca || filtroStatus || filtroPrio) && (
+                        <button className="btn btn-ghost" onClick={() => { setBusca(''); setFiltroStatus(''); setFiltroPrio(''); setPagina(1); }}>
+                            ✕ Limpar filtros
+                        </button>
+                    )}
+                    <div style={{marginLeft:'auto',fontSize:13,color:'#94a3b8'}}>{total} pedido{total !== 1 ? 's' : ''}</div>
+                </div>
+
+                <div className="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Status</th>
+                                <th>Prioridade</th>
+                                <th>Solicitante</th>
+                                <th>Necessidade</th>
+                                <th style={{textAlign:'right'}}>Valor Est.</th>
+                                <th style={{textAlign:'center'}}>Cotações</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr><td colSpan={8} style={{textAlign:'center',padding:'40px',color:'#94a3b8'}}>Carregando...</td></tr>
+                            ) : pedidos.length === 0 ? (
+                                <tr><td colSpan={8}>
+                                    <div className="empty-state">
+                                        <div className="empty-icon">🔍</div>
+                                        <p>Nenhum pedido encontrado.</p>
+                                    </div>
+                                </td></tr>
+                            ) : pedidos.map(p => (
+                                <tr key={p.id}>
+                                    <td>
+                                        <div className="pedido-numero">{p.numero}</div>
+                                        <div className="pedido-titulo">
+                                            {p.titulo}
+                                            <small>{p.departamento_nome}{p.centro_custo_nome ? ' · ' + p.centro_custo_nome : ''}</small>
+                                        </div>
+                                    </td>
+                                    <td><span className={'pill pill-' + p.status}>{STATUS_LABEL[p.status]}</span></td>
+                                    <td><span className={PRIO_CLASS[p.prioridade]}>{PRIO_LABEL[p.prioridade]}</span></td>
+                                    <td style={{fontSize:13,color:'#475569'}}>{p.solicitante_nome || '—'}</td>
+                                    <td style={{fontSize:13,color:'#475569',whiteSpace:'nowrap'}}>{fmtData(p.data_necessidade)}</td>
+                                    <td style={{textAlign:'right'}} className="valor-cell">
+                                        {p.valor_final ? fmt(p.valor_final) : p.valor_aprovado ? fmt(p.valor_aprovado) : fmt(p.valor_estimado)}
+                                    </td>
+                                    <td style={{textAlign:'center'}}>
+                                        <span className={'cotacoes-badge' + (p.total_cotacoes > 0 ? ' tem' : '')}>
+                                            {p.total_cotacoes}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button className="action-btn" onClick={() => setModalDetalhe(p)}>Ver →</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {total > POR_PAGINA && (
+                        <div className="pagination">
+                            <div className="pagination-info">
+                                {(pagina-1)*POR_PAGINA+1}–{Math.min(pagina*POR_PAGINA, total)} de {total} pedidos
+                            </div>
+                            <div className="pagination-btns">
+                                <button className="page-btn" disabled={pagina===1} onClick={() => setPagina(p => p-1)}>‹ Ant.</button>
+                                {Array.from({length: Math.min(totalPages, 5)}, (_,i) => i+1).map(n => (
+                                    <button key={n} className={'page-btn' + (n===pagina?' active':'')} onClick={() => setPagina(n)}>{n}</button>
+                                ))}
+                                <button className="page-btn" disabled={pagina===totalPages} onClick={() => setPagina(p => p+1)}>Próx. ›</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {modalNovo && <ModalNovoPedido onClose={() => setModalNovo(false)} onSalvo={carregar}/>}
+            {modalDetalhe && <ModalDetalhe pedido={modalDetalhe} onClose={() => setModalDetalhe(null)} onAtualizar={carregar} usuario={usuario}/>}
+        </>
+    );
+}
+
+// ============================================================
+// APP ROOT
+// ============================================================
+function App() {
+    const [usuario, setUsuario] = useState(USUARIO);
+
+    function handleLogin(u) { setUsuario(u); }
+    function handleLogout() {
+        TOKEN = null; USUARIO = null;
+        localStorage.removeItem('erp_token');
+        localStorage.removeItem('erp_usuario');
+        setUsuario(null);
+    }
+
+    if (!usuario) return <Login onLogin={handleLogin}/>;
+
+    return (
+        <>
+            <Sidebar usuario={usuario} onLogout={handleLogout}/>
+            <div className="main">
+                <ModuloPedidos usuario={usuario}/>
+            </div>
+        </>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
