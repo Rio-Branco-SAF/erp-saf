@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ERP SAF — Funcionários</title>
-  <!-- Configuração de ambiente (edite config.js para apontar para a API em produção) -->
+  <title>ERP SAF â€” FuncionÃ¡rios</title>
+  <!-- ConfiguraÃ§Ã£o de ambiente (edite config.js para apontar para a API em produÃ§Ã£o) -->
   <script src="config.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
@@ -16,7 +16,7 @@
     button { cursor: pointer; font-family: inherit; }
     input, select, textarea { font-family: inherit; }
 
-    /* ===== VARIÁVEIS ===== */
+    /* ===== VARIÃVEIS ===== */
     :root {
       --verde:       #155724;
       --verde-med:   #1e8449;
@@ -68,7 +68,7 @@
     .usuario-nome { color: #fff; font-size: 12px; font-weight: 600; }
     .usuario-cargo { color: rgba(255,255,255,.6); font-size: 11px; }
 
-    /* ===== CONTEÚDO PRINCIPAL ===== */
+    /* ===== CONTEÃšDO PRINCIPAL ===== */
     .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
     /* ===== HEADER ===== */
@@ -80,7 +80,7 @@
     .topbar-title { font-size: 18px; font-weight: 700; color: var(--texto); }
     .topbar-actions { display: flex; align-items: center; gap: 10px; }
 
-    /* ===== BOTÕES ===== */
+    /* ===== BOTÃ•ES ===== */
     .btn {
       display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
       border-radius: 6px; border: none; font-size: 13px; font-weight: 600;
@@ -95,7 +95,7 @@
     .btn-sm { padding: 5px 10px; font-size: 12px; }
     .btn-icon { padding: 6px 8px; }
 
-    /* ===== PÁGINA ===== */
+    /* ===== PÃGINA ===== */
     .page { padding: 24px; flex: 1; }
     .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .page-titulo { font-size: 22px; font-weight: 700; color: var(--texto); }
@@ -166,7 +166,7 @@
     .badge.pj        { background: #e2d9f3; color: #432874; }
     .badge.dot::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
-    /* ===== PAGINAÇÃO ===== */
+    /* ===== PAGINAÃ‡ÃƒO ===== */
     .paginacao {
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 20px; border-top: 1px solid var(--cinza-borda);
@@ -208,7 +208,7 @@
     }
     .btn-fechar:hover { background: var(--cinza-borda); }
 
-    /* ===== FORMULÁRIO ===== */
+    /* ===== FORMULÃRIO ===== */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-grid.cols-1 { grid-template-columns: 1fr; }
     .form-grupo { display: flex; flex-direction: column; gap: 5px; }
@@ -293,7 +293,7 @@ const { useState, useEffect, useCallback, useRef } = React;
 // ============================================================
 // CONFIG
 // ============================================================
-const API = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api';
+const API = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'https://backend-production-7c51.up.railway.app/api';
 
 // ============================================================
 // HELPERS
@@ -302,7 +302,7 @@ function formatarMoeda(v) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
 }
 function formatarData(d) {
-  if (!d) return '—';
+  if (!d) return 'â€”';
   return new Date(d + 'T00:00:00').toLocaleDateString('pt-BR');
 }
 function iniciais(nome) {
@@ -371,7 +371,7 @@ function Login({ onLogin }) {
     e.preventDefault();
     setErro(''); setLoading(true);
     try {
-      // DEMO: aceita qualquer login (remova em produção e use a API real)
+      // DEMO: aceita qualquer login (remova em produÃ§Ã£o e use a API real)
       if (email && senha) {
       try {
         const res = await fetch(API + '/api/auth/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,senha})});
@@ -381,8 +381,8 @@ function Login({ onLogin }) {
           if(data.refreshToken) localStorage.setItem('erp_refresh', data.refreshToken);
           localStorage.setItem('erp_user', JSON.stringify(data.usuario||data.user||{}));
           onLoginSuccess(data.usuario||data.user||{});
-        } else { setErro(data?.error||'Credenciais inv�lidas'); }
-      } catch(e){ setErro('Erro de conex�o'); }} else {
+        } else { setErro(data?.error||'Credenciais inválidas'); }
+      } catch(e){ setErro('Erro de conexão'); }} else {
         setErro('Preencha e-mail e senha.');
       }
     } catch (err) {
@@ -396,11 +396,11 @@ function Login({ onLogin }) {
     <div className="login-wrap">
       <div className="login-card">
         <div className="login-logo">
-          <div className="icon">⚽</div>
+          <div className="icon">âš½</div>
           <h1>ERP SAF</h1>
-          <p>Sistema de Gestão — SAF</p>
+          <p>Sistema de GestÃ£o â€” SAF</p>
         </div>
-        {erro && <div className="login-erro">⚠️ {erro}</div>}
+        {erro && <div className="login-erro">âš ï¸ {erro}</div>}
         <form onSubmit={handleSubmit}>
           <div className="login-grupo">
             <label className="login-label">E-mail corporativo</label>
@@ -410,7 +410,7 @@ function Login({ onLogin }) {
           <div className="login-grupo">
             <label className="login-label">Senha</label>
             <input className="login-input" type="password" value={senha}
-              onChange={e => setSenha(e.target.value)} placeholder="••••••••" required />
+              onChange={e => setSenha(e.target.value)} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required />
           </div>
           <button className="login-btn" type="submit" disabled={loading}>
             {loading ? 'Entrando...' : 'Entrar no Sistema'}
@@ -425,7 +425,7 @@ function Login({ onLogin }) {
 // BADGE STATUS / TIPO
 // ============================================================
 function BadgeStatus({ status }) {
-  const mapa = { ativo: '● Ativo', ferias: '● Férias', afastado: '● Afastado', desligado: '● Desligado' };
+  const mapa = { ativo: 'â— Ativo', ferias: 'â— FÃ©rias', afastado: 'â— Afastado', desligado: 'â— Desligado' };
   return <span className={`badge ${status}`}>{mapa[status] || status}</span>;
 }
 function BadgeTipo({ tipo }) {
@@ -433,7 +433,7 @@ function BadgeTipo({ tipo }) {
 }
 
 // ============================================================
-// MODAL FORMULÁRIO (Novo / Editar)
+// MODAL FORMULÃRIO (Novo / Editar)
 // ============================================================
 function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFechar }) {
   const editando = !!funcionario?.id;
@@ -459,7 +459,7 @@ function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFe
     try {
       const payload = { ...form, salario: parseFloat(form.salario), motivo_alteracao_salario: motivo };
       await onSalvar(payload, editando);
-      toast(editando ? 'Funcionário atualizado com sucesso!' : 'Funcionário cadastrado com sucesso!');
+      toast(editando ? 'FuncionÃ¡rio atualizado com sucesso!' : 'FuncionÃ¡rio cadastrado com sucesso!');
       onFechar();
     } catch (err) {
       toast(err.message, 'erro');
@@ -474,8 +474,8 @@ function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFe
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onFechar()}>
       <div className="modal">
         <div className="modal-header">
-          <span className="modal-titulo">{editando ? '✏️ Editar Funcionário' : '➕ Novo Funcionário'}</span>
-          <button className="btn-fechar" onClick={onFechar}>×</button>
+          <span className="modal-titulo">{editando ? 'âœï¸ Editar FuncionÃ¡rio' : 'âž• Novo FuncionÃ¡rio'}</span>
+          <button className="btn-fechar" onClick={onFechar}>Ã—</button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
@@ -538,13 +538,13 @@ function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFe
                 </div>
                 <div className="form-grupo">
                   <label className="form-label">
-                    {form.tipo_contrato === 'PJ' ? 'Valor mensal (R$)' : 'Salário (R$)'} <span className="obrig">*</span>
+                    {form.tipo_contrato === 'PJ' ? 'Valor mensal (R$)' : 'SalÃ¡rio (R$)'} <span className="obrig">*</span>
                   </label>
                   <input className="form-input" type="number" step="0.01" min="0" value={form.salario} required
                     onChange={e => set('salario', e.target.value)} />
                 </div>
                 <div className="form-grupo">
-                  <label className="form-label">Data de Admissão <span className="obrig">*</span></label>
+                  <label className="form-label">Data de AdmissÃ£o <span className="obrig">*</span></label>
                   <input className="form-input" type="date" value={form.data_admissao} required
                     onChange={e => set('data_admissao', e.target.value)} />
                 </div>
@@ -554,7 +554,7 @@ function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFe
                     onChange={e => set('gestor_id', e.target.value)}>
                     <option value="">Sem gestor</option>
                     {gestores.filter(g => g.id !== funcionario?.id).map(g =>
-                      <option key={g.id} value={g.id}>{g.nome_completo} — {g.cargo}</option>
+                      <option key={g.id} value={g.id}>{g.nome_completo} â€” {g.cargo}</option>
                     )}
                   </select>
                 </div>
@@ -569,7 +569,7 @@ function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFe
                     <select className="form-select" value={form.status}
                       onChange={e => set('status', e.target.value)}>
                       <option value="ativo">Ativo</option>
-                      <option value="ferias">Férias</option>
+                      <option value="ferias">FÃ©rias</option>
                       <option value="afastado">Afastado</option>
                       <option value="desligado">Desligado</option>
                     </select>
@@ -589,7 +589,7 @@ function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFe
                       onChange={e => set('cnpj', e.target.value)} required={form.tipo_contrato === 'PJ'} />
                   </div>
                   <div className="form-grupo">
-                    <label className="form-label">Razão Social</label>
+                    <label className="form-label">RazÃ£o Social</label>
                     <input className="form-input" value={form.razao_social || ''}
                       onChange={e => set('razao_social', e.target.value)} />
                   </div>
@@ -597,28 +597,28 @@ function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFe
               </div>
             )}
 
-            {/* Motivo de alteração de salário */}
+            {/* Motivo de alteraÃ§Ã£o de salÃ¡rio */}
             {salarioMudou && (
               <div className="form-section">
-                <div className="form-section-titulo" style={{color:'var(--warning)'}}>Alteração de Salário</div>
+                <div className="form-section-titulo" style={{color:'var(--warning)'}}>AlteraÃ§Ã£o de SalÃ¡rio</div>
                 <div style={{background:'#fff3cd',padding:'12px',borderRadius:'8px',marginBottom:'12px',fontSize:'13px'}}>
-                  ⚠️ Salário anterior: <strong>{formatarMoeda(funcionario.salario)}</strong> → Novo: <strong>{formatarMoeda(form.salario)}</strong>
+                  âš ï¸ SalÃ¡rio anterior: <strong>{formatarMoeda(funcionario.salario)}</strong> â†’ Novo: <strong>{formatarMoeda(form.salario)}</strong>
                 </div>
                 <div className="form-grupo">
-                  <label className="form-label">Motivo da alteração <span className="obrig">*</span></label>
+                  <label className="form-label">Motivo da alteraÃ§Ã£o <span className="obrig">*</span></label>
                   <input className="form-input" value={motivo} required
-                    placeholder="Ex: Promoção, reajuste anual, mudança de cargo..."
+                    placeholder="Ex: PromoÃ§Ã£o, reajuste anual, mudanÃ§a de cargo..."
                     onChange={e => setMotivo(e.target.value)} />
                 </div>
               </div>
             )}
 
-            {/* Observações */}
+            {/* ObservaÃ§Ãµes */}
             <div className="form-section">
-              <div className="form-section-titulo">Observações</div>
+              <div className="form-section-titulo">ObservaÃ§Ãµes</div>
               <div className="form-grupo">
                 <textarea className="form-textarea" value={form.observacoes || ''}
-                  placeholder="Informações adicionais relevantes..."
+                  placeholder="InformaÃ§Ãµes adicionais relevantes..."
                      onChange={e => set('observacoes', e.target.value)} />
               </div>
             </div>
@@ -626,7 +626,7 @@ function ModalFuncionario({ funcionario, departamentos, gestores, onSalvar, onFe
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={onFechar}>Cancelar</button>
             <button type="submit" className="btn btn-primary" disabled={salvando}>
-              {salvando ? 'Salvando...' : (editando ? '💾 Salvar alterações' : '➕ Cadastrar funcionário')}
+              {salvando ? 'Salvando...' : (editando ? 'ðŸ’¾ Salvar alteraÃ§Ãµes' : 'âž• Cadastrar funcionÃ¡rio')}
             </button>
           </div>
         </form>
@@ -646,10 +646,10 @@ function ModalDetalhe({ funcionario, onFechar, onEditar }) {
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onFechar()}>
       <div className="modal" style={{maxWidth:720}}>
         <div className="modal-header">
-          <span className="modal-titulo">👤 Perfil do Funcionário</span>
+          <span className="modal-titulo">ðŸ‘¤ Perfil do FuncionÃ¡rio</span>
           <div style={{display:'flex',gap:8}}>
-            <button className="btn btn-secondary btn-sm" onClick={onEditar}>✏️ Editar</button>
-            <button className="btn-fechar" onClick={onFechar}>×</button>
+            <button className="btn btn-secondary btn-sm" onClick={onEditar}>âœï¸ Editar</button>
+            <button className="btn-fechar" onClick={onFechar}>Ã—</button>
           </div>
         </div>
         <div className="modal-body">
@@ -659,7 +659,7 @@ function ModalDetalhe({ funcionario, onFechar, onEditar }) {
             </div>
             <div>
               <div className="detalhe-nome">{funcionario.nome_completo}</div>
-              <div className="detalhe-cargo">{funcionario.cargo} · {funcionario.departamento}</div>
+              <div className="detalhe-cargo">{funcionario.cargo} Â· {funcionario.departamento}</div>
               <div style={{marginTop:8,display:'flex',gap:8}}>
                 <BadgeStatus status={funcionario.status} />
                 <BadgeTipo tipo={funcionario.tipo_contrato} />
@@ -669,17 +669,17 @@ function ModalDetalhe({ funcionario, onFechar, onEditar }) {
 
           <div className="detalhe-grid" style={{marginBottom:16}}>
             {[
-              ['CPF', funcionario.cpf || '—'],
-              ['Telefone', funcionario.telefone || '—'],
-              ['E-mail pessoal', funcionario.email || '—'],
-              ['E-mail corporativo', funcionario.email_corporativo || '—'],
-              ['Data de admissão', formatarData(funcionario.data_admissao)],
-              ['Tempo de casa', funcionario.anos_casa != null ? `${funcionario.anos_casa} ano(s)` : '—'],
-              ['Salário / Valor PJ', formatarMoeda(funcionario.salario)],
-              ['Gestor direto', funcionario.gestor_nome || '—'],
+              ['CPF', funcionario.cpf || 'â€”'],
+              ['Telefone', funcionario.telefone || 'â€”'],
+              ['E-mail pessoal', funcionario.email || 'â€”'],
+              ['E-mail corporativo', funcionario.email_corporativo || 'â€”'],
+              ['Data de admissÃ£o', formatarData(funcionario.data_admissao)],
+              ['Tempo de casa', funcionario.anos_casa != null ? `${funcionario.anos_casa} ano(s)` : 'â€”'],
+              ['SalÃ¡rio / Valor PJ', formatarMoeda(funcionario.salario)],
+              ['Gestor direto', funcionario.gestor_nome || 'â€”'],
               ...(funcionario.tipo_contrato === 'PJ' ? [
-                ['CNPJ', funcionario.cnpj || '—'],
-                ['Razão Social', funcionario.razao_social || '—'],
+                ['CNPJ', funcionario.cnpj || 'â€”'],
+                ['RazÃ£o Social', funcionario.razao_social || 'â€”'],
               ] : []),
             ].map(([label, val]) => (
               <div className="detalhe-item" key={label}>
@@ -691,20 +691,20 @@ function ModalDetalhe({ funcionario, onFechar, onEditar }) {
 
           {funcionario.observacoes && (
             <div className="detalhe-item" style={{marginBottom:16,gridColumn:'span 2'}}>
-              <div className="detalhe-item-label">Observações</div>
+              <div className="detalhe-item-label">ObservaÃ§Ãµes</div>
               <div className="detalhe-item-valor">{funcionario.observacoes}</div>
             </div>
           )}
 
-          {/* Histórico de salários */}
+          {/* HistÃ³rico de salÃ¡rios */}
           {funcionario.historico_salarios?.length > 0 && (
             <div>
-              <div className="form-section-titulo" style={{marginBottom:12}}>Histórico de Salários</div>
+              <div className="form-section-titulo" style={{marginBottom:12}}>HistÃ³rico de SalÃ¡rios</div>
               {funcionario.historico_salarios.map(h => (
                 <div className="historico-item" key={h.id}>
-                  <div className="historico-data">{formatarData(h.data_alteracao)} · {h.registrado_por_nome || 'Sistema'}</div>
+                  <div className="historico-data">{formatarData(h.data_alteracao)} Â· {h.registrado_por_nome || 'Sistema'}</div>
                   <div className="historico-valor">
-                    {h.salario_anterior && <><span style={{textDecoration:'line-through',color:'#95a5a6'}}>{formatarMoeda(h.salario_anterior)}</span><span className="seta">→</span></>}
+                    {h.salario_anterior && <><span style={{textDecoration:'line-through',color:'#95a5a6'}}>{formatarMoeda(h.salario_anterior)}</span><span className="seta">â†’</span></>}
                     <strong style={{color:'var(--verde)'}}>
                       {formatarMoeda(h.salario_novo)}
                     </strong>
@@ -721,29 +721,29 @@ function ModalDetalhe({ funcionario, onFechar, onEditar }) {
 }
 
 // ============================================================
-// DADOS DE DEMONSTRAÇÃO (substitua por chamadas reais à API)
+// DADOS DE DEMONSTRAÃ‡ÃƒO (substitua por chamadas reais Ã  API)
 // ============================================================
 const DEMO_DEPARTAMENTOS = [
   {id:1,nome:'Futebol Profissional'},{id:2,nome:'Futebol de Base'},
   {id:3,nome:'Financeiro'},{id:4,nome:'Administrativo'},
-  {id:5,nome:'Marketing e Comercial'},{id:6,nome:'Jurídico'},
-  {id:7,nome:'Médico e Fisioterapia'},{id:8,nome:'TI e Análise de Dados'},
-  {id:9,nome:'Segurança'},
+  {id:5,nome:'Marketing e Comercial'},{id:6,nome:'JurÃ­dico'},
+  {id:7,nome:'MÃ©dico e Fisioterapia'},{id:8,nome:'TI e AnÃ¡lise de Dados'},
+  {id:9,nome:'SeguranÃ§a'},
 ];
 
 const DEMO_FUNCIONARIOS = [
-  {id:1,nome_completo:'Carlos Eduardo Mendes',cargo:'CEO / Presidente',departamento:'Administrativo',departamento_id:4,tipo_contrato:'CLT',salario:45000,data_admissao:'2022-01-01',status:'ativo',email:'carlos.mendes@gmail.com',email_corporativo:'ceo@saf.com.br',telefone:'(11) 99999-0001',gestor_id:null,gestor_nome:null,anos_casa:4,historico_salarios:[{id:1,salario_anterior:null,salario_novo:45000,data_alteracao:'2022-01-01',motivo:'Admissão',registrado_por_nome:'Sistema'}]},
+  {id:1,nome_completo:'Carlos Eduardo Mendes',cargo:'CEO / Presidente',departamento:'Administrativo',departamento_id:4,tipo_contrato:'CLT',salario:45000,data_admissao:'2022-01-01',status:'ativo',email:'carlos.mendes@gmail.com',email_corporativo:'ceo@saf.com.br',telefone:'(11) 99999-0001',gestor_id:null,gestor_nome:null,anos_casa:4,historico_salarios:[{id:1,salario_anterior:null,salario_novo:45000,data_alteracao:'2022-01-01',motivo:'AdmissÃ£o',registrado_por_nome:'Sistema'}]},
   {id:2,nome_completo:'Fernanda Lima Costa',cargo:'Diretora Financeira',departamento:'Financeiro',departamento_id:3,tipo_contrato:'CLT',salario:35000,data_admissao:'2022-01-01',status:'ativo',email:'fernanda.lima@gmail.com',email_corporativo:'financeiro@saf.com.br',telefone:'(11) 99999-0002',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:4,historico_salarios:[]},
   {id:3,nome_completo:'Roberto Alves Neto',cargo:'Diretor de Futebol',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'CLT',salario:38000,data_admissao:'2022-02-01',status:'ativo',email:'roberto.alves@gmail.com',email_corporativo:'dof@saf.com.br',telefone:'(11) 99999-0003',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:4,historico_salarios:[]},
-  {id:4,nome_completo:'Marcelo Santos',cargo:'Técnico Principal',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:25000,data_admissao:'2023-01-10',status:'ativo',email:'marcelo.tecnico@gmail.com',email_corporativo:'tecnico@saf.com.br',telefone:'(11) 99999-0004',cnpj:'12.345.678/0001-90',razao_social:'Marcelo Santos Consultoria Esportiva ME',gestor_id:3,gestor_nome:'Roberto Alves Neto',anos_casa:3,historico_salarios:[]},
-  {id:5,nome_completo:'André Oliveira',cargo:'Assistente Técnico',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:12000,data_admissao:'2023-01-10',status:'ativo',email:'andre.assistente@gmail.com',email_corporativo:'assistente@saf.com.br',telefone:'(11) 99999-0005',cnpj:'98.765.432/0001-10',razao_social:'André Oliveira Treinamento ME',gestor_id:4,gestor_nome:'Marcelo Santos',anos_casa:3,historico_salarios:[]},
-  {id:6,nome_completo:'Paulo Ferreira',cargo:'Preparador Físico',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:10000,data_admissao:'2023-01-10',status:'ativo',email:'paulo.prep@gmail.com',email_corporativo:'prep.fisico@saf.com.br',telefone:'(11) 99999-0006',cnpj:'11.222.333/0001-44',razao_social:'Paulo Ferreira Fitness ME',gestor_id:4,gestor_nome:'Marcelo Santos',anos_casa:3,historico_salarios:[]},
-  {id:7,nome_completo:'Dra. Juliana Pires',cargo:'Médica do Clube',departamento:'Médico e Fisioterapia',departamento_id:7,tipo_contrato:'CLT',salario:18000,data_admissao:'2022-06-01',status:'ativo',email:'juliana.medica@gmail.com',email_corporativo:'medica@saf.com.br',telefone:'(11) 99999-0008',gestor_id:3,gestor_nome:'Roberto Alves Neto',anos_casa:3,historico_salarios:[]},
-  {id:8,nome_completo:'Bruno Carvalho',cargo:'Fisioterapeuta',departamento:'Médico e Fisioterapia',departamento_id:7,tipo_contrato:'CLT',salario:8500,data_admissao:'2022-06-01',status:'ferias',email:'bruno.fisio@gmail.com',email_corporativo:'fisio@saf.com.br',telefone:'(11) 99999-0009',gestor_id:7,gestor_nome:'Dra. Juliana Pires',anos_casa:3,historico_salarios:[]},
-  {id:9,nome_completo:'Mariana Souza',cargo:'Analista Financeiro Sênior',departamento:'Financeiro',departamento_id:3,tipo_contrato:'CLT',salario:9500,data_admissao:'2022-03-01',status:'ativo',email:'mariana.souza@gmail.com',email_corporativo:'controller@saf.com.br',telefone:'(11) 99999-0010',gestor_id:2,gestor_nome:'Fernanda Lima Costa',anos_casa:4,historico_salarios:[{id:2,salario_anterior:8000,salario_novo:9500,data_alteracao:'2024-01-01',motivo:'Promoção para Sênior',registrado_por_nome:'Fernanda Lima Costa'}]},
+  {id:4,nome_completo:'Marcelo Santos',cargo:'TÃ©cnico Principal',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:25000,data_admissao:'2023-01-10',status:'ativo',email:'marcelo.tecnico@gmail.com',email_corporativo:'tecnico@saf.com.br',telefone:'(11) 99999-0004',cnpj:'12.345.678/0001-90',razao_social:'Marcelo Santos Consultoria Esportiva ME',gestor_id:3,gestor_nome:'Roberto Alves Neto',anos_casa:3,historico_salarios:[]},
+  {id:5,nome_completo:'AndrÃ© Oliveira',cargo:'Assistente TÃ©cnico',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:12000,data_admissao:'2023-01-10',status:'ativo',email:'andre.assistente@gmail.com',email_corporativo:'assistente@saf.com.br',telefone:'(11) 99999-0005',cnpj:'98.765.432/0001-10',razao_social:'AndrÃ© Oliveira Treinamento ME',gestor_id:4,gestor_nome:'Marcelo Santos',anos_casa:3,historico_salarios:[]},
+  {id:6,nome_completo:'Paulo Ferreira',cargo:'Preparador FÃ­sico',departamento:'Futebol Profissional',departamento_id:1,tipo_contrato:'PJ',salario:10000,data_admissao:'2023-01-10',status:'ativo',email:'paulo.prep@gmail.com',email_corporativo:'prep.fisico@saf.com.br',telefone:'(11) 99999-0006',cnpj:'11.222.333/0001-44',razao_social:'Paulo Ferreira Fitness ME',gestor_id:4,gestor_nome:'Marcelo Santos',anos_casa:3,historico_salarios:[]},
+  {id:7,nome_completo:'Dra. Juliana Pires',cargo:'MÃ©dica do Clube',departamento:'MÃ©dico e Fisioterapia',departamento_id:7,tipo_contrato:'CLT',salario:18000,data_admissao:'2022-06-01',status:'ativo',email:'juliana.medica@gmail.com',email_corporativo:'medica@saf.com.br',telefone:'(11) 99999-0008',gestor_id:3,gestor_nome:'Roberto Alves Neto',anos_casa:3,historico_salarios:[]},
+  {id:8,nome_completo:'Bruno Carvalho',cargo:'Fisioterapeuta',departamento:'MÃ©dico e Fisioterapia',departamento_id:7,tipo_contrato:'CLT',salario:8500,data_admissao:'2022-06-01',status:'ferias',email:'bruno.fisio@gmail.com',email_corporativo:'fisio@saf.com.br',telefone:'(11) 99999-0009',gestor_id:7,gestor_nome:'Dra. Juliana Pires',anos_casa:3,historico_salarios:[]},
+  {id:9,nome_completo:'Mariana Souza',cargo:'Analista Financeiro SÃªnior',departamento:'Financeiro',departamento_id:3,tipo_contrato:'CLT',salario:9500,data_admissao:'2022-03-01',status:'ativo',email:'mariana.souza@gmail.com',email_corporativo:'controller@saf.com.br',telefone:'(11) 99999-0010',gestor_id:2,gestor_nome:'Fernanda Lima Costa',anos_casa:4,historico_salarios:[{id:2,salario_anterior:8000,salario_novo:9500,data_alteracao:'2024-01-01',motivo:'PromoÃ§Ã£o para SÃªnior',registrado_por_nome:'Fernanda Lima Costa'}]},
   {id:10,nome_completo:'Camila Torres',cargo:'Gerente de Marketing',departamento:'Marketing e Comercial',departamento_id:5,tipo_contrato:'CLT',salario:11000,data_admissao:'2022-08-01',status:'ativo',email:'camila.torres@gmail.com',email_corporativo:'marketing@saf.com.br',telefone:'(11) 99999-0012',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:3,historico_salarios:[]},
-  {id:11,nome_completo:'Diego Monteiro',cargo:'Analista de TI',departamento:'TI e Análise de Dados',departamento_id:8,tipo_contrato:'PJ',salario:9000,data_admissao:'2022-09-01',status:'ativo',email:'diego.ti@gmail.com',email_corporativo:'ti@saf.com.br',telefone:'(11) 99999-0014',cnpj:'55.444.333/0001-22',razao_social:'Diego Monteiro Tech ME',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:3,historico_salarios:[]},
-  {id:12,nome_completo:'Rafael Cunha',cargo:'Analista Financeiro Júnior',departamento:'Financeiro',departamento_id:3,tipo_contrato:'CLT',salario:5500,data_admissao:'2023-04-01',status:'afastado',email:'rafael.cunha@gmail.com',email_corporativo:'financeiro2@saf.com.br',telefone:'(11) 99999-0011',gestor_id:9,gestor_nome:'Mariana Souza',anos_casa:2,historico_salarios:[{id:3,salario_anterior:4500,salario_novo:5500,data_alteracao:'2024-07-01',motivo:'Reajuste anual',registrado_por_nome:'Fernanda Lima Costa'}]},
+  {id:11,nome_completo:'Diego Monteiro',cargo:'Analista de TI',departamento:'TI e AnÃ¡lise de Dados',departamento_id:8,tipo_contrato:'PJ',salario:9000,data_admissao:'2022-09-01',status:'ativo',email:'diego.ti@gmail.com',email_corporativo:'ti@saf.com.br',telefone:'(11) 99999-0014',cnpj:'55.444.333/0001-22',razao_social:'Diego Monteiro Tech ME',gestor_id:1,gestor_nome:'Carlos Eduardo Mendes',anos_casa:3,historico_salarios:[]},
+  {id:12,nome_completo:'Rafael Cunha',cargo:'Analista Financeiro JÃºnior',departamento:'Financeiro',departamento_id:3,tipo_contrato:'CLT',salario:5500,data_admissao:'2023-04-01',status:'afastado',email:'rafael.cunha@gmail.com',email_corporativo:'financeiro2@saf.com.br',telefone:'(11) 99999-0011',gestor_id:9,gestor_nome:'Mariana Souza',anos_casa:2,historico_salarios:[{id:3,salario_anterior:4500,salario_novo:5500,data_alteracao:'2024-07-01',motivo:'Reajuste anual',registrado_por_nome:'Fernanda Lima Costa'}]},
 ];
 
 const DEMO_RESUMO = {
@@ -753,14 +753,14 @@ const DEMO_RESUMO = {
     {departamento:'Futebol Profissional',total:4,folha:59000},
     {departamento:'Financeiro',total:3,folha:50000},
     {departamento:'Administrativo',total:1,folha:45000},
-    {departamento:'Médico e Fisioterapia',total:2,folha:26500},
+    {departamento:'MÃ©dico e Fisioterapia',total:2,folha:26500},
     {departamento:'Marketing e Comercial',total:1,folha:11000},
-    {departamento:'TI e Análise de Dados',total:1,folha:9000},
+    {departamento:'TI e AnÃ¡lise de Dados',total:1,folha:9000},
   ],
 };
 
 // ============================================================
-// MÓDULO FUNCIONÁRIOS
+// MÃ“DULO FUNCIONÃRIOS
 // ============================================================
 function ModuloFuncionarios({ usuario }) {
   const [funcionarios, setFuncionarios]   = useState(DEMO_FUNCIONARIOS);
@@ -775,7 +775,7 @@ function ModuloFuncionarios({ usuario }) {
   const [modalDetalhe, setModalDetalhe]   = useState(null);
   const LIMITE = 10;
 
-  // Filtragem local (demo — em produção envia query params para a API)
+  // Filtragem local (demo â€” em produÃ§Ã£o envia query params para a API)
   const filtrados = funcionarios.filter(f => {
     const ok_busca = !busca || f.nome_completo.toLowerCase().includes(busca.toLowerCase()) ||
                      f.cargo.toLowerCase().includes(busca.toLowerCase());
@@ -805,40 +805,40 @@ function ModuloFuncionarios({ usuario }) {
     <div className="page">
       <div className="page-header">
         <div>
-          <div className="page-titulo">👥 Funcionários e Comissão Técnica</div>
-          <div className="page-sub">Gestão completa do quadro de pessoal da SAF</div>
+          <div className="page-titulo">ðŸ‘¥ FuncionÃ¡rios e ComissÃ£o TÃ©cnica</div>
+          <div className="page-sub">GestÃ£o completa do quadro de pessoal da SAF</div>
         </div>
         <button className="btn btn-primary" onClick={abrirNovo}>
-          ➕ Novo Funcionário
+          âž• Novo FuncionÃ¡rio
         </button>
       </div>
 
       {/* CARDS RESUMO */}
       <div className="cards-resumo">
         <div className="card-resumo verde">
-          <div className="icon">👥</div>
+          <div className="icon">ðŸ‘¥</div>
           <div><div className="valor">{resumo.ativos}</div><div className="label">Ativos</div></div>
         </div>
         <div className="card-resumo azul">
-          <div className="icon">📄</div>
+          <div className="icon">ðŸ“„</div>
           <div>
-            <div className="valor">{resumo.clt} CLT · {resumo.pj} PJ</div>
+            <div className="valor">{resumo.clt} CLT Â· {resumo.pj} PJ</div>
             <div className="label">Tipos de Contrato</div>
           </div>
         </div>
         <div className="card-resumo laranja">
-          <div className="icon">🏖️</div>
-          <div><div className="valor">{resumo.ferias + resumo.afastados}</div><div className="label">Férias / Afastados</div></div>
+          <div className="icon">ðŸ–ï¸</div>
+          <div><div className="valor">{resumo.ferias + resumo.afastados}</div><div className="label">FÃ©rias / Afastados</div></div>
         </div>
         <div className="card-resumo verde">
-          <div className="icon">💰</div>
+          <div className="icon">ðŸ’°</div>
           <div><div className="valor" style={{fontSize:18}}>{formatarMoeda(resumo.folha_mensal)}</div><div className="label">Folha Mensal</div></div>
         </div>
       </div>
 
       {/* FILTROS */}
       <div className="filtros">
-        <input type="search" placeholder="🔍 Buscar por nome, cargo ou CPF..."
+        <input type="search" placeholder="ðŸ” Buscar por nome, cargo ou CPF..."
           value={busca} onChange={e => { setBusca(e.target.value); setPagina(1); }} />
         <select value={filtroDept} onChange={e => { setFiltroDept(e.target.value); setPagina(1); }}>
           <option value="">Todos os departamentos</option>
@@ -852,34 +852,34 @@ function ModuloFuncionarios({ usuario }) {
         <select value={filtroStatus} onChange={e => { setFiltroStatus(e.target.value); setPagina(1); }}>
           <option value="">Todos os status</option>
           <option value="ativo">Ativo</option>
-          <option value="ferias">Férias</option>
+          <option value="ferias">FÃ©rias</option>
           <option value="afastado">Afastado</option>
           <option value="desligado">Desligado</option>
         </select>
         {(busca || filtroDept || filtroTipo || filtroStatus) && (
           <button className="btn btn-secondary btn-sm" onClick={() => { setBusca(''); setFiltroDept(''); setFiltroTipo(''); setFiltroStatus(''); }}>
-            ✕ Limpar filtros
+            âœ• Limpar filtros
           </button>
         )}
         <span style={{marginLeft:'auto',fontSize:13,color:'var(--texto-leve)'}}>
-          {filtrados.length} funcionário(s)
+          {filtrados.length} funcionÃ¡rio(s)
         </span>
       </div>
 
       {/* TABELA */}
       <div className="tabela-wrap">
         {paginados.length === 0 ? (
-          <div className="vazio"><div className="icon">🔍</div><p>Nenhum funcionário encontrado com os filtros aplicados.</p></div>
+          <div className="vazio"><div className="icon">ðŸ”</div><p>Nenhum funcionÃ¡rio encontrado com os filtros aplicados.</p></div>
         ) : (
           <table>
             <thead>
               <tr>
-                <th>Funcionário</th>
+                <th>FuncionÃ¡rio</th>
                 <th>Cargo</th>
                 <th>Departamento</th>
                 <th>Contrato</th>
-                <th>Admissão</th>
-                <th>Salário</th>
+                <th>AdmissÃ£o</th>
+                <th>SalÃ¡rio</th>
                 <th>Status</th>
                 <th></th>
               </tr>
@@ -894,7 +894,7 @@ function ModuloFuncionarios({ usuario }) {
                       </div>
                       <div>
                         <div style={{fontWeight:600}}>{f.nome_completo}</div>
-                        <div style={{fontSize:11,color:'var(--texto-leve)'}}>{f.email_corporativo || f.email || '—'}</div>
+                        <div style={{fontSize:11,color:'var(--texto-leve)'}}>{f.email_corporativo || f.email || 'â€”'}</div>
                       </div>
                     </div>
                   </td>
@@ -906,7 +906,7 @@ function ModuloFuncionarios({ usuario }) {
                   <td><BadgeStatus status={f.status} /></td>
                   <td onClick={e => e.stopPropagation()}>
                     <button className="btn btn-secondary btn-sm btn-icon" title="Editar"
-                      onClick={() => abrirEditar(f)}>✏️</button>
+                      onClick={() => abrirEditar(f)}>âœï¸</button>
                   </td>
                 </tr>
               )}
@@ -914,16 +914,16 @@ function ModuloFuncionarios({ usuario }) {
           </table>
         )}
 
-        {/* PAGINAÇÃO */}
+        {/* PAGINAÃ‡ÃƒO */}
         {totalPags > 1 && (
           <div className="paginacao">
-            <span>Mostrando {((pagina-1)*LIMITE+1}–{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
+            <span>Mostrando {((pagina-1)*LIMITE+1}â€“{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
             <div className="paginacao-btns">
-              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>‹</button>
+              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>â€¹</button>
               {Array.from({length:totalPags},(_,i)=>i+1).map(p =>
                 <button key={p} className={pagina===p?'ativo':''} onClick={()=>setPagina(p)}>{p}</button>
               )}
-              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>›</button>
+              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>â€º</button>
             </div>
           </div>
         )}
@@ -968,7 +968,7 @@ function App() {
                       </div>
                       <div>
                         <div style={{fontWeight:600}}>{f.nome_completo}</div>
-                        <div style={{fontSize:11,color:'var(--texto-leve)'}}>{f.email_corporativo || f.email || '—'}</div>
+                        <div style={{fontSize:11,color:'var(--texto-leve)'}}>{f.email_corporativo || f.email || 'â€”'}</div>
                       </div>
                     </div>
                   </td>
@@ -980,7 +980,7 @@ function App() {
                   <td><BadgeStatus status={f.status} /></td>
                   <td onClick={e => e.stopPropagation()}>
                     <button className="btn btn-secondary btn-sm btn-icon" title="Editar"
-                      onClick={() => abrirEditar(f)}>✏️</button>
+                      onClick={() => abrirEditar(f)}>âœï¸</button>
                   </td>
                 </tr>
               ))}
@@ -988,16 +988,16 @@ function App() {
           </table>
         )}
 
-        {/* PAGINAÇÃO */}
+        {/* PAGINAÃ‡ÃƒO */}
         {totalPags > 1 && (
           <div className="paginacao">
-            <span>Mostrando {(pagina-1)*LIMITE+1}–{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
+            <span>Mostrando {(pagina-1)*LIMITE+1}â€“{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
             <div className="paginacao-btns">
-              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>‹</button>
+              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>â€¹</button>
               {Array.from({length:totalPags},(_,i)=>i+1).map(p =>
                 <button key={p} className={pagina===p?'ativo':''} onClick={()=>setPagina(p)}>{p}</button>
               )}
-              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>›</button>
+              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>â€º</button>
             </div>
           </div>
         )}
@@ -1034,16 +1034,16 @@ function App() {
           </table>
         )}
 
-        {/* PAGINAÇÃO */}
+        {/* PAGINAÃ‡ÃƒO */}
         {totalPags > 1 && (
           <div className="paginacao">
-            <span>Mostrando {(pagina-1)*LIMITE+1}–{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
+            <span>Mostrando {(pagina-1)*LIMITE+1}â€“{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
             <div className="paginacao-btns">
-              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>‹</button>
+              <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>â€¹</button>
               {Array.from({length:totalPags},(_,i)=>i+1).map(p =>
                 <button key={p} className={pagina===p?'ativo':''} onClick={()=>setPagina(p)}>{p}</button>
               )}
-              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>›</button>
+              <button onClick={() => setPagina(p => p+1)} disabled={pagina === totalPags}>â€º</button>
             </div>
           </div>
         )}
@@ -1085,13 +1085,13 @@ function App() {
   if (!usuario) return <Login onLogin={u => setUsuario(u)} />;
 
   const navItems = [
-    { id:'funcionarios', icon:'👥', label:'Funcionários' },
-    { id:'financeiro',   icon:'💰', label:'Financeiro',   disabled:true },
-    { id:'pedidos',      icon:'🛒', label:'Pedidos de Compra', disabled:true },
-    { id:'atletas',      icon:'⚽', label:'Contratos de Atletas', disabled:true },
-    { id:'investidores', icon:'📈', label:'Investidores',  disabled:true },
-    { id:'metas',        icon:'🎯', label:'Metas',         disabled:true },
-    { id:'relatorios',   icon:'📊', label:'Relatórios',    disabled:true },
+    { id:'funcionarios', icon:'ðŸ‘¥', label:'FuncionÃ¡rios' },
+    { id:'financeiro',   icon:'ðŸ’°', label:'Financeiro',   disabled:true },
+    { id:'pedidos',      icon:'ðŸ›’', label:'Pedidos de Compra', disabled:true },
+    { id:'atletas',      icon:'âš½', label:'Contratos de Atletas', disabled:true },
+    { id:'investidores', icon:'ðŸ“ˆ', label:'Investidores',  disabled:true },
+    { id:'metas',        icon:'ðŸŽ¯', label:'Metas',         disabled:true },
+    { id:'relatorios',   icon:'ðŸ“Š', label:'RelatÃ³rios',    disabled:true },
   ];
 
   return (
@@ -1099,14 +1099,14 @@ function App() {
       {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <div className="icon">⚽</div>
+          <div className="icon">âš½</div>
           <div>
             <div className="title">ERP SAF</div>
-            <div className="sub">Sistema de Gestão</div>
+            <div className="sub">Sistema de GestÃ£o</div>
           </div>
         </div>
         <nav className="sidebar-nav">
-          <div className="nav-label">Módulos</div>
+          <div className="nav-label">MÃ³dulos</div>
           {navItems.map(item => (
             <div key={item.id}
               className={`nav-item ${pagina===item.id?'ativo':''} ${item.disabled?'':''}` }
@@ -1127,12 +1127,12 @@ function App() {
               <div className="usuario-nome" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{usuario.nome}</div>
               <div className="usuario-cargo">{usuario.cargo || usuario.perfil}</div>
             </div>
-            <button onClick={logout} title="Sair" style={{background:'none',border:'none',color:'rgba(255,255,255,.6)',fontSize:16,cursor:'pointer'}}>⏻</button>
+            <button onClick={logout} title="Sair" style={{background:'none',border:'none',color:'rgba(255,255,255,.6)',fontSize:16,cursor:'pointer'}}>â»</button>
           </div>
         </div>
       </aside>
 
-      {/* CONTEÚDO */}
+      {/* CONTEÃšDO */}
       <main classNama="main">
         <div className="topbar">
           <span className="topbar-title">
