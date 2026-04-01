@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pedidos de Compra — ERP SAF</title>
+<title>Pedidos de Compra â€” ERP SAF</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -138,7 +138,7 @@ tr:hover td{background:#f8fafc}
 .items-table tr:last-child td{border-bottom:none}
 .items-table .total-row td{font-weight:700;background:#f8fafc;color:#0f172a}
 
-/* COTAÇÃO CARD */
+/* COTAÃ‡ÃƒO CARD */
 .cotacao-card{border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:10px;position:relative}
 .cotacao-card.selecionada{border-color:#16a34a;background:#f0fdf4}
 .cotacao-card.rejeitada{opacity:.6}
@@ -232,56 +232,56 @@ const DEMO_RESUMO = {
 
 const DEMO_PEDIDOS = [
     {
-        id: 3, numero: 'PC-2026-003', titulo: 'Serviço de Fisioterapia — Contrato Mensal',
+        id: 3, numero: 'PC-2026-003', titulo: 'ServiÃ§o de Fisioterapia â€” Contrato Mensal',
         status: 'aguardando_aprovacao', prioridade: 'alta',
         solicitante_nome: 'Carlos Silva', departamento_nome: 'Futebol',
         data_necessidade: '2026-03-01', valor_estimado: 18000, valor_aprovado: null, valor_final: null,
         total_cotacoes: 3, created_at: '2026-02-10T10:00:00Z', centro_custo_nome: 'Futebol Profissional'
     },
     {
-        id: 4, numero: 'PC-2026-004', titulo: 'Transporte para Jogo Fora — Abril',
+        id: 4, numero: 'PC-2026-004', titulo: 'Transporte para Jogo Fora â€” Abril',
         status: 'em_cotacao', prioridade: 'normal',
         solicitante_nome: 'Ana Lima', departamento_nome: 'Futebol',
         data_necessidade: '2026-03-25', valor_estimado: 12000, valor_aprovado: null, valor_final: null,
         total_cotacoes: 1, created_at: '2026-03-08T14:00:00Z', centro_custo_nome: 'Futebol Profissional'
     },
     {
-        id: 2, numero: 'PC-2026-002', titulo: 'Equipamentos de Academia — Renovação',
+        id: 2, numero: 'PC-2026-002', titulo: 'Equipamentos de Academia â€” RenovaÃ§Ã£o',
         status: 'em_compra', prioridade: 'normal',
         solicitante_nome: 'Carlos Silva', departamento_nome: 'Futebol',
         data_necessidade: '2026-02-28', valor_estimado: 36500, valor_aprovado: 36500, valor_final: null,
         total_cotacoes: 2, created_at: '2026-01-15T10:00:00Z', centro_custo_nome: 'Futebol Profissional'
     },
     {
-        id: 5, numero: 'PC-2026-005', titulo: 'Material de Escritório — Trimestre Q2',
+        id: 5, numero: 'PC-2026-005', titulo: 'Material de EscritÃ³rio â€” Trimestre Q2',
         status: 'aguardando_cotacao', prioridade: 'baixa',
-        solicitante_nome: 'Maria Santos', departamento_nome: 'Administração',
+        solicitante_nome: 'Maria Santos', departamento_nome: 'AdministraÃ§Ã£o',
         data_necessidade: '2026-04-10', valor_estimado: 3500, valor_aprovado: null, valor_final: null,
-        total_cotacoes: 0, created_at: '2026-03-15T09:00:00Z', centro_custo_nome: 'Administração Geral'
+        total_cotacoes: 0, created_at: '2026-03-15T09:00:00Z', centro_custo_nome: 'AdministraÃ§Ã£o Geral'
     },
     {
-        id: 6, numero: 'PC-2026-006', titulo: 'Software de Análise de Desempenho — Atletas',
+        id: 6, numero: 'PC-2026-006', titulo: 'Software de AnÃ¡lise de Desempenho â€” Atletas',
         status: 'rascunho', prioridade: 'normal',
-        solicitante_nome: 'João Técnico', departamento_nome: 'Futebol',
+        solicitante_nome: 'JoÃ£o TÃ©cnico', departamento_nome: 'Futebol',
         data_necessidade: '2026-04-30', valor_estimado: 28000, valor_aprovado: null, valor_final: null,
         total_cotacoes: 0, created_at: '2026-03-18T11:00:00Z', centro_custo_nome: 'Futebol Profissional'
     },
     {
-        id: 1, numero: 'PC-2026-001', titulo: 'Compra de Uniformes — Temporada 2026',
+        id: 1, numero: 'PC-2026-001', titulo: 'Compra de Uniformes â€” Temporada 2026',
         status: 'concluido', prioridade: 'alta',
         solicitante_nome: 'Carlos Silva', departamento_nome: 'Futebol',
         data_necessidade: '2026-01-15', valor_estimado: 45000, valor_aprovado: 43500, valor_final: 42800,
         total_cotacoes: 2, created_at: '2025-12-01T10:00:00Z', centro_custo_nome: 'Futebol Profissional'
     },
     {
-        id: 7, numero: 'PC-2026-007', titulo: 'Cadeiras VIP — Reforma do Camarote',
+        id: 7, numero: 'PC-2026-007', titulo: 'Cadeiras VIP â€” Reforma do Camarote',
         status: 'rejeitado', prioridade: 'baixa',
         solicitante_nome: 'Diretor Geral', departamento_nome: 'Diretoria',
         data_necessidade: '2026-02-15', valor_estimado: 22000, valor_aprovado: null, valor_final: null,
-        total_cotacoes: 0, created_at: '2026-01-20T10:00:00Z', centro_custo_nome: 'Administração Geral'
+        total_cotacoes: 0, created_at: '2026-01-20T10:00:00Z', centro_custo_nome: 'AdministraÃ§Ã£o Geral'
     },
     {
-        id: 8, numero: 'PC-2026-008', titulo: 'Campanha de Marketing — Redes Sociais',
+        id: 8, numero: 'PC-2026-008', titulo: 'Campanha de Marketing â€” Redes Sociais',
         status: 'cancelado', prioridade: 'normal',
         solicitante_nome: 'Ana Lima', departamento_nome: 'Marketing',
         data_necessidade: '2026-02-01', valor_estimado: 9500, valor_aprovado: null, valor_final: null,
@@ -291,8 +291,8 @@ const DEMO_PEDIDOS = [
 
 const DEMO_DETALHE = {
     3: {
-        id: 3, numero: 'PC-2026-003', titulo: 'Serviço de Fisioterapia — Contrato Mensal',
-        descricao: 'Contratação de empresa de fisioterapia para atendimento diário ao elenco. Estimativa de 3 fisioterapeutas por período.',
+        id: 3, numero: 'PC-2026-003', titulo: 'ServiÃ§o de Fisioterapia â€” Contrato Mensal',
+        descricao: 'ContrataÃ§Ã£o de empresa de fisioterapia para atendimento diÃ¡rio ao elenco. Estimativa de 3 fisioterapeutas por perÃ­odo.',
         status: 'aguardando_aprovacao', prioridade: 'alta',
         solicitante_nome: 'Carlos Silva', departamento_nome: 'Futebol',
         aprovador_nome: null, categoria_nome: 'Material Esportivo',
@@ -301,13 +301,13 @@ const DEMO_DETALHE = {
         valor_estimado: 18000, valor_aprovado: null, valor_final: null,
         motivo_rejeicao: null,
         itens: [
-            { id: 10, descricao: 'Fisioterapeuta período matutino (mensal)', quantidade: 2, unidade: 'vaga', valor_unitario_estimado: 6000 },
-            { id: 11, descricao: 'Fisioterapeuta período vespertino (mensal)', quantidade: 1, unidade: 'vaga', valor_unitario_estimado: 5500 },
-            { id: 12, descricao: 'Materiais consumíveis mensais', quantidade: 1, unidade: 'kit', valor_unitario_estimado: 800 },
+            { id: 10, descricao: 'Fisioterapeuta perÃ­odo matutino (mensal)', quantidade: 2, unidade: 'vaga', valor_unitario_estimado: 6000 },
+            { id: 11, descricao: 'Fisioterapeuta perÃ­odo vespertino (mensal)', quantidade: 1, unidade: 'vaga', valor_unitario_estimado: 5500 },
+            { id: 12, descricao: 'Materiais consumÃ­veis mensais', quantidade: 1, unidade: 'kit', valor_unitario_estimado: 800 },
         ],
         cotacoes: [
             {
-                id: 5, status: 'selecionada', fornecedor_nome: 'MedSport Clínica',
+                id: 5, status: 'selecionada', fornecedor_nome: 'MedSport ClÃ­nica',
                 numero_cotacao: 'MS-2026-0078', data_cotacao: '2026-02-14',
                 validade_cotacao: '2026-03-14', prazo_entrega: 3,
                 valor_total: 17200, condicoes_pagamento: 'Mensal',
@@ -315,99 +315,105 @@ const DEMO_DETALHE = {
                 itens: []
             },
             {
-                id: 6, status: 'recebida', fornecedor_nome: 'MedSport Clínica',
+                id: 6, status: 'recebida', fornecedor_nome: 'MedSport ClÃ­nica',
                 numero_cotacao: 'MS-2026-0079', data_cotacao: '2026-02-15',
                 validade_cotacao: '2026-03-15', prazo_entrega: 3,
                 valor_total: 18500, condicoes_pagamento: 'Mensal',
-                observacoes: 'Proposta alternativa com 2 fisios sênior.',
+                observacoes: 'Proposta alternativa com 2 fisios sÃªnior.',
                 itens: []
             },
             {
-                id: 7, status: 'recebida', fornecedor_nome: 'Profissional Autônomo',
+                id: 7, status: 'recebida', fornecedor_nome: 'Profissional AutÃ´nomo',
                 numero_cotacao: 'INDEP-2026-01', data_cotacao: '2026-02-16',
                 validade_cotacao: '2026-03-16', prazo_entrega: 1,
                 valor_total: 15000, condicoes_pagamento: 'Mensal',
-                observacoes: 'Menor custo, porém sem CNPJ.',
+                observacoes: 'Menor custo, porÃ©m sem CNPJ.',
                 itens: []
             }
         ],
         historico: [
-            { id: 1, acao: 'criou', descricao: 'Pedido criado. Início do campeonato exige fisioterapia diária.', usuario_nome: 'Carlos Silva', created_at: '2026-02-10T10:00:00Z' },
-            { id: 2, acao: 'enviou_cotacao', descricao: '3 cotações coletadas.', usuario_nome: 'Carlos Silva', created_at: '2026-02-14T14:00:00Z' },
-            { id: 3, acao: 'selecionou', descricao: 'MedSport selecionada: R$ 17.200,00/mês.', usuario_nome: 'Carlos Silva', created_at: '2026-02-17T09:00:00Z' },
-            { id: 4, acao: 'enviou_aprovacao', descricao: 'Aguardando aprovação da diretoria.', usuario_nome: 'Carlos Silva', created_at: '2026-02-17T09:05:00Z' },
+            { id: 1, acao: 'criou', descricao: 'Pedido criado. InÃ­cio do campeonato exige fisioterapia diÃ¡ria.', usuario_nome: 'Carlos Silva', created_at: '2026-02-10T10:00:00Z' },
+            { id: 2, acao: 'enviou_cotacao', descricao: '3 cotaÃ§Ãµes coletadas.', usuario_nome: 'Carlos Silva', created_at: '2026-02-14T14:00:00Z' },
+            { id: 3, acao: 'selecionou', descricao: 'MedSport selecionada: R$ 17.200,00/mÃªs.', usuario_nome: 'Carlos Silva', created_at: '2026-02-17T09:00:00Z' },
+            { id: 4, acao: 'enviou_aprovacao', descricao: 'Aguardando aprovaÃ§Ã£o da diretoria.', usuario_nome: 'Carlos Silva', created_at: '2026-02-17T09:05:00Z' },
         ]
     }
 };
 
 const DEMO_FORNECEDORES = [
     { id: 1, nome: 'SportMax Equipamentos', categoria: 'Material Esportivo' },
-    { id: 2, nome: 'Nutrição Total', categoria: 'Alimentação' },
-    { id: 3, nome: 'MedSport Clínica', categoria: 'Saúde e Medicina' },
+    { id: 2, nome: 'NutriÃ§Ã£o Total', categoria: 'AlimentaÃ§Ã£o' },
+    { id: 3, nome: 'MedSport ClÃ­nica', categoria: 'SaÃºde e Medicina' },
     { id: 4, nome: 'TechField Sistemas', categoria: 'Tecnologia' },
     { id: 5, nome: 'TransportesFut Ltda', categoria: 'Transporte' },
-    { id: 6, nome: 'Gráfica Campeão', categoria: 'Marketing' },
+    { id: 6, nome: 'GrÃ¡fica CampeÃ£o', categoria: 'Marketing' },
     { id: 7, nome: 'Hotel Central', categoria: 'Hospedagem' },
-    { id: 8, nome: 'Manutenção Expert', categoria: 'Manutenção' },
+    { id: 8, nome: 'ManutenÃ§Ã£o Expert', categoria: 'ManutenÃ§Ã£o' },
 ];
 
 // ============================================================
 // HELPERS
 // ============================================================
-let TOKEN = localStorage.getItem('erp_token');
-let USUARIO = null;
-try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
+const _getAT=()=>localStorage.getItem('erp_access');
+const _getRF=()=>localStorage.getItem('erp_refresh');
+let USUARIO=null;
+try{USUARIO=JSON.parse(localStorage.getItem('erp_user'));}catch(e){}
 
-async function apiFetch(path, options = {}) {
-    try {
-        const headers = { 'Content-Type': 'application/json' };
-        if (TOKEN) headers['Authorization'] = 'Bearer ' + TOKEN;
-        const res = await fetch(API_URL + path, { ...options, headers });
-        if (res.status === 401) { TOKEN = null; localStorage.removeItem('erp_token'); window.location.reload(); }
-        return await res.json();
-    } catch(e) {
-        return null;
-    }
-}
+async function _refreshToken(){
+  try{const rf=_getRF();if(!rf)return false;
+    const r=await fetch(API_URL+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rf})});
+    if(!r.ok)return false;const data=await r.json();
+    if(data.accessToken){localStorage.setItem('erp_access',data.accessToken);if(data.refreshToken)localStorage.setItem('erp_refresh',data.refreshToken);return true;}
+    return false;}catch(e){return false;}}
+
+async function apiFetch(path,options={}){
+  try{let at=_getAT();
+    if(at){try{const p=JSON.parse(atob(at.split('.')[1]));if((p.exp*1000)-Date.now()<30000){await _refreshToken();at=_getAT();}}catch(e){}}
+    const headers={'Content-Type':'application/json'};if(at)headers['Authorization']='Bearer '+at;
+    const res=await fetch(API_URL+path,{...options,headers});
+    if(res.status===401){const ok=await _refreshToken();
+      if(ok){at=_getAT();headers['Authorization']='Bearer '+at;const r2=await fetch(API_URL+path,{...options,headers});if(r2.status===401){localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}return await r2.json();}
+      localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}
+    return await res.json();}catch(e){return null;}}
 
 function fmt(valor) {
-    if (!valor && valor !== 0) return '—';
+    if (!valor && valor !== 0) return 'â€”';
     return 'R$ ' + Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 }
 
 function fmtData(d) {
-    if (!d) return '—';
+    if (!d) return 'â€”';
     return new Date(d + (d.length === 10 ? 'T00:00:00' : '')).toLocaleDateString('pt-BR');
 }
 
 function fmtDataHora(d) {
-    if (!d) return '—';
+    if (!d) return 'â€”';
     return new Date(d).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
 }
 
 const STATUS_LABEL = {
     rascunho: 'Rascunho',
-    aguardando_cotacao: 'Aguard. Cotação',
-    em_cotacao: 'Em Cotação',
-    aguardando_aprovacao: 'Aguard. Aprovação',
+    aguardando_cotacao: 'Aguard. CotaÃ§Ã£o',
+    em_cotacao: 'Em CotaÃ§Ã£o',
+    aguardando_aprovacao: 'Aguard. AprovaÃ§Ã£o',
     aprovado: 'Aprovado',
     rejeitado: 'Rejeitado',
     em_compra: 'Em Compra',
-    concluido: 'Concluído',
+    concluido: 'ConcluÃ­do',
     cancelado: 'Cancelado',
 };
 
-const PRIO_LABEL = { urgente: '🔴 Urgente', alta: '🟠 Alta', normal: '🔵 Normal', baixa: '⚪ Baixa' };
+const PRIO_LABEL = { urgente: 'ðŸ”´ Urgente', alta: 'ðŸŸ  Alta', normal: 'ðŸ”µ Normal', baixa: 'âšª Baixa' };
 const PRIO_CLASS = { urgente:'prio-urgente', alta:'prio-alta', normal:'prio-normal', baixa:'prio-baixa' };
 
 const FLUXO_STEPS = [
-    { key: 'rascunho', label: 'Rascunho', icon: '✏️' },
-    { key: 'aguardando_cotacao', label: 'Aguard. Cotação', icon: '📋' },
-    { key: 'em_cotacao', label: 'Em Cotação', icon: '💬' },
-    { key: 'aguardando_aprovacao', label: 'Aguard. Aprovação', icon: '⏳' },
-    { key: 'aprovado', label: 'Aprovado', icon: '✅' },
-    { key: 'em_compra', label: 'Em Compra', icon: '🛒' },
-    { key: 'concluido', label: 'Concluído', icon: '🏁' },
+    { key: 'rascunho', label: 'Rascunho', icon: 'âœï¸' },
+    { key: 'aguardando_cotacao', label: 'Aguard. CotaÃ§Ã£o', icon: 'ðŸ“‹' },
+    { key: 'em_cotacao', label: 'Em CotaÃ§Ã£o', icon: 'ðŸ’¬' },
+    { key: 'aguardando_aprovacao', label: 'Aguard. AprovaÃ§Ã£o', icon: 'â³' },
+    { key: 'aprovado', label: 'Aprovado', icon: 'âœ…' },
+    { key: 'em_compra', label: 'Em Compra', icon: 'ðŸ›’' },
+    { key: 'concluido', label: 'ConcluÃ­do', icon: 'ðŸ' },
 ];
 
 function getFluxoIndex(status) {
@@ -431,20 +437,19 @@ function Login({ onLogin }) {
             body: JSON.stringify({ usuario, senha })
         });
         setLoading(false);
-        if (data && data.token) {
-            TOKEN = data.token;
-            USUARIO = data.usuario;
-            localStorage.setItem('erp_token', TOKEN);
-            localStorage.setItem('erp_usuario', JSON.stringify(USUARIO));
-            onLogin(data.usuario);
-        } else {
+        if (data && (data.accessToken||data.token)) {
+              localStorage.setItem('erp_access', data.accessToken||data.token);
+              if(data.refreshToken) localStorage.setItem('erp_refresh', data.refreshToken);
+              USUARIO = data.usuario||data.user||{};
+              localStorage.setItem('erp_user', JSON.stringify(USUARIO));
+              setUsuario(USUARIO);} else {
             // DEMO: aceitar admin/admin123 offline
             if (usuario === 'admin' && senha === 'admin123') {
                 USUARIO = { id: 1, nome: 'Administrador', perfil: 'admin' };
-                localStorage.setItem('erp_usuario', JSON.stringify(USUARIO));
+                localStorage.setItem('erp_user', JSON.stringify(USUARIO));
                 onLogin(USUARIO);
             } else {
-                setErro('Usuário ou senha incorretos.');
+                setErro('UsuÃ¡rio ou senha incorretos.');
             }
         }
     }
@@ -453,14 +458,14 @@ function Login({ onLogin }) {
         <div className="login-wrap">
             <div className="login-card">
                 <div className="login-logo">
-                    <div style={{fontSize:40}}>🏟️</div>
+                    <div style={{fontSize:40}}>ðŸŸï¸</div>
                     <h2>ERP SAF</h2>
                     <p>Pedidos de Compra</p>
                 </div>
                 {erro && <div className="login-err">{erro}</div>}
                 <form onSubmit={handleLogin}>
                     <div className="form-group" style={{marginBottom:12}}>
-                        <label>Usuário</label>
+                        <label>UsuÃ¡rio</label>
                         <input value={usuario} onChange={e => setUsuario(e.target.value)} required/>
                     </div>
                     <div className="form-group" style={{marginBottom:20}}>
@@ -486,28 +491,28 @@ function Sidebar({ usuario, onLogout }) {
     const initials = (usuario?.nome || 'U').split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
     return (
         <div className="sidebar">
-            <div className="sidebar-logo">🏟️ ERP <span>SAF</span></div>
+            <div className="sidebar-logo">ðŸŸï¸ ERP <span>SAF</span></div>
             <nav>
                 <div className="nav-item" onClick={() => window.location.href='index.html'}>
-                    <span className="icon">👥</span> Funcionários
+                    <span className="icon">ðŸ‘¥</span> FuncionÃ¡rios
                 </div>
                 <div className="nav-item" onClick={() => window.location.href='financeiro.html'}>
-                    <span className="icon">💰</span> Financeiro
+                    <span className="icon">ðŸ’°</span> Financeiro
                 </div>
                 <div className="nav-item active">
-                    <span className="icon">🛒</span> Pedidos de Compra
+                    <span className="icon">ðŸ›’</span> Pedidos de Compra
                 </div>
                 <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
-                    <span className="icon">⚽</span> Atletas
+                    <span className="icon">âš½</span> Atletas
                 </div>
                 <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
-                    <span className="icon">💼</span> Investidores
+                    <span className="icon">ðŸ’¼</span> Investidores
                 </div>
                 <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
-                    <span className="icon">🎯</span> Metas
+                    <span className="icon">ðŸŽ¯</span> Metas
                 </div>
                 <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
-                    <span className="icon">📊</span> Relatórios
+                    <span className="icon">ðŸ“Š</span> RelatÃ³rios
                 </div>
             </nav>
             <div className="sidebar-footer">
@@ -519,7 +524,7 @@ function Sidebar({ usuario, onLogout }) {
                     </div>
                 </div>
                 <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>
-                    Sair →
+                    Sair â†’
                 </button>
             </div>
         </div>
@@ -538,19 +543,19 @@ function KpiCards({ resumo }) {
                 <div className="kpi-sub">pedidos ativos</div>
             </div>
             <div className="kpi-card urgente">
-                <div className="kpi-label">Aguardando Aprovação</div>
+                <div className="kpi-label">Aguardando AprovaÃ§Ã£o</div>
                 <div className="kpi-value">{resumo.aguardando_aprovacao}</div>
-                <div className="kpi-sub">precisam de decisão</div>
+                <div className="kpi-sub">precisam de decisÃ£o</div>
             </div>
             <div className="kpi-card alerta">
-                <div className="kpi-label">Em Cotação</div>
+                <div className="kpi-label">Em CotaÃ§Ã£o</div>
                 <div className="kpi-value">{resumo.em_cotacao}</div>
                 <div className="kpi-sub">coletando propostas</div>
             </div>
             <div className="kpi-card ok">
                 <div className="kpi-label">Valor em Aberto</div>
                 <div className="kpi-value" style={{fontSize:18}}>{fmt(resumo.valor_em_aberto)}</div>
-                <div className="kpi-sub">pedidos não concluídos</div>
+                <div className="kpi-sub">pedidos nÃ£o concluÃ­dos</div>
             </div>
         </div>
     );
@@ -573,7 +578,7 @@ function ModalNovoPedido({ onClose, onSalvo }) {
     const total = itens.reduce((s, i) => s + (parseFloat(i.quantidade || 0) * parseFloat(i.valor_unitario_estimado || 0)), 0);
 
     async function handleSalvar() {
-        if (!form.titulo.trim()) { alert('Informe o título do pedido'); return; }
+        if (!form.titulo.trim()) { alert('Informe o tÃ­tulo do pedido'); return; }
         if (itens.filter(i => i.descricao.trim()).length === 0) { alert('Adicione pelo menos 1 item'); return; }
         setLoading(true);
         const payload = { ...form, itens: itens.filter(i => i.descricao.trim()) };
@@ -593,22 +598,22 @@ function ModalNovoPedido({ onClose, onSalvo }) {
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
             <div className="modal">
                 <div className="modal-header">
-                    <h2>➕ Novo Pedido de Compra</h2>
-                    <button className="close-btn" onClick={onClose}>✕</button>
+                    <h2>âž• Novo Pedido de Compra</h2>
+                    <button className="close-btn" onClick={onClose}>âœ•</button>
                 </div>
                 <div className="modal-body">
                     <div className="form-grid" style={{marginBottom:14}}>
                         <div className="form-group form-full">
-                            <label>Título do Pedido *</label>
+                            <label>TÃ­tulo do Pedido *</label>
                             <input placeholder="Ex: Compra de equipamentos de treino" value={form.titulo} onChange={e => setF('titulo', e.target.value)}/>
                         </div>
                         <div className="form-group">
                             <label>Prioridade</label>
                             <select value={form.prioridade} onChange={e => setF('prioridade', e.target.value)}>
-                                <option value="baixa">⚪ Baixa</option>
-                                <option value="normal">🔵 Normal</option>
-                                <option value="alta">🟠 Alta</option>
-                                <option value="urgente">🔴 Urgente</option>
+                                <option value="baixa">âšª Baixa</option>
+                                <option value="normal">ðŸ”µ Normal</option>
+                                <option value="alta">ðŸŸ  Alta</option>
+                                <option value="urgente">ðŸ”´ Urgente</option>
                             </select>
                         </div>
                         <div className="form-group">
@@ -620,9 +625,9 @@ function ModalNovoPedido({ onClose, onSalvo }) {
                             <select value={form.departamento_id} onChange={e => setF('departamento_id', e.target.value)}>
                                 <option value="">Selecione...</option>
                                 <option value="1">Diretoria</option>
-                                <option value="2">Administração</option>
+                                <option value="2">AdministraÃ§Ã£o</option>
                                 <option value="3">Futebol / Esporte</option>
-                                <option value="4">Médico</option>
+                                <option value="4">MÃ©dico</option>
                                 <option value="5">Marketing</option>
                                 <option value="6">Financeiro</option>
                                 <option value="7">RH</option>
@@ -632,26 +637,26 @@ function ModalNovoPedido({ onClose, onSalvo }) {
                             <label>Centro de Custo</label>
                             <select value={form.centro_custo_id} onChange={e => setF('centro_custo_id', e.target.value)}>
                                 <option value="">Selecione...</option>
-                                <option value="1">Salários e Encargos</option>
+                                <option value="1">SalÃ¡rios e Encargos</option>
                                 <option value="2">Atletas Profissionais</option>
                                 <option value="3">Futebol Profissional</option>
                                 <option value="4">Base / Categorias de Base</option>
-                                <option value="5">Médico e Fisioterapia</option>
-                                <option value="6">Administração Geral</option>
+                                <option value="5">MÃ©dico e Fisioterapia</option>
+                                <option value="6">AdministraÃ§Ã£o Geral</option>
                                 <option value="7">Marketing</option>
                             </select>
                         </div>
                         <div className="form-group form-full">
-                            <label>Descrição / Justificativa</label>
+                            <label>DescriÃ§Ã£o / Justificativa</label>
                             <textarea placeholder="Descreva o motivo do pedido..." value={form.descricao} onChange={e => setF('descricao', e.target.value)}/>
                         </div>
                     </div>
 
                     <div className="detail-section">
-                        <h3>📦 Itens do Pedido</h3>
+                        <h3>ðŸ“¦ Itens do Pedido</h3>
                         <div className="itens-editor">
                             <div className="itens-editor-header">
-                                <span>Item / Descrição</span>
+                                <span>Item / DescriÃ§Ã£o</span>
                                 <span>Qtd</span>
                                 <span>Unidade</span>
                                 <span>Valor Unit. (R$)</span>
@@ -659,11 +664,11 @@ function ModalNovoPedido({ onClose, onSalvo }) {
                             </div>
                             {itens.map((item, idx) => (
                                 <div key={idx} className="item-row">
-                                    <input placeholder="Descrição do item" value={item.descricao} onChange={e => setItem(idx,'descricao',e.target.value)}/>
+                                    <input placeholder="DescriÃ§Ã£o do item" value={item.descricao} onChange={e => setItem(idx,'descricao',e.target.value)}/>
                                     <input type="number" min="0.01" step="0.01" value={item.quantidade} onChange={e => setItem(idx,'quantidade',e.target.value)}/>
                                     <input placeholder="un" value={item.unidade} onChange={e => setItem(idx,'unidade',e.target.value)}/>
                                     <input type="number" min="0" step="0.01" placeholder="0,00" value={item.valor_unitario_estimado} onChange={e => setItem(idx,'valor_unitario_estimado',e.target.value)}/>
-                                    <button className="remove-item-btn" onClick={() => removeItem(idx)}>✕</button>
+                                    <button className="remove-item-btn" onClick={() => removeItem(idx)}>âœ•</button>
                                 </div>
                             ))}
                             <button className="add-item-btn" onClick={addItem}>+ Adicionar item</button>
@@ -678,7 +683,7 @@ function ModalNovoPedido({ onClose, onSalvo }) {
                 <div className="modal-footer">
                     <button className="btn btn-outline" onClick={onClose}>Cancelar</button>
                     <button className="btn btn-primary" onClick={handleSalvar} disabled={loading}>
-                        {loading ? 'Salvando...' : '💾 Salvar como Rascunho'}
+                        {loading ? 'Salvando...' : 'ðŸ’¾ Salvar como Rascunho'}
                     </button>
                 </div>
             </div>
@@ -737,7 +742,7 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
     }
 
     async function adicionarCotacao() {
-        if (!novaCot.valor_total) { alert('Informe o valor total da cotação'); return; }
+        if (!novaCot.valor_total) { alert('Informe o valor total da cotaÃ§Ã£o'); return; }
         const data = await apiFetch('/pedidos/' + pedidoLista.id + '/cotacoes', {
             method: 'POST', body: JSON.stringify(novaCot)
         });
@@ -766,7 +771,7 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                     </div>
                     <div style={{display:'flex',gap:8,alignItems:'center'}}>
                         <span className={'pill pill-' + d.status}>{STATUS_LABEL[d.status]}</span>
-                        <button className="close-btn" onClick={onClose}>✕</button>
+                        <button className="close-btn" onClick={onClose}>âœ•</button>
                     </div>
                 </div>
                 <div className="modal-body">
@@ -777,42 +782,42 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                             {FLUXO_STEPS.map((step, i) => (
                                 <React.Fragment key={step.key}>
                                     <div className={'fluxo-step' + (i === fluxoIdx ? ' ativo' : '') + (i < fluxoIdx ? ' concluido-step' : '')}>
-                                        <div className="step-icon">{i < fluxoIdx ? '✅' : step.icon}</div>
+                                        <div className="step-icon">{i < fluxoIdx ? 'âœ…' : step.icon}</div>
                                         <div className="step-label">{step.label}</div>
                                     </div>
-                                    {i < FLUXO_STEPS.length - 1 && <div className="fluxo-arrow">›</div>}
+                                    {i < FLUXO_STEPS.length - 1 && <div className="fluxo-arrow">â€º</div>}
                                 </React.Fragment>
                             ))}
                         </div>
                     )}
                     {d.status === 'rejeitado' && (
                         <div className="alert-box alert-danger">
-                            ❌ <strong>Pedido Rejeitado</strong>{d.motivo_rejeicao ? ' — ' + d.motivo_rejeicao : ''}
+                            âŒ <strong>Pedido Rejeitado</strong>{d.motivo_rejeicao ? ' â€” ' + d.motivo_rejeicao : ''}
                         </div>
                     )}
 
                     {/* TABS */}
                     <div className="tabs">
-                        <button className={'tab' + (aba==='detalhes'?' active':'')} onClick={() => setAba('detalhes')}>📋 Detalhes</button>
+                        <button className={'tab' + (aba==='detalhes'?' active':'')} onClick={() => setAba('detalhes')}>ðŸ“‹ Detalhes</button>
                         <button className={'tab' + (aba==='cotacoes'?' active':'')} onClick={() => setAba('cotacoes')}>
-                            💬 Cotações {detalhe?.cotacoes?.length > 0 ? '(' + detalhe.cotacoes.length + ')' : ''}
+                            ðŸ’¬ CotaÃ§Ãµes {detalhe?.cotacoes?.length > 0 ? '(' + detalhe.cotacoes.length + ')' : ''}
                         </button>
-                        <button className={'tab' + (aba==='historico'?' active':'')} onClick={() => setAba('historico')}>📅 Histórico</button>
+                        <button className={'tab' + (aba==='historico'?' active':'')} onClick={() => setAba('historico')}>ðŸ“… HistÃ³rico</button>
                     </div>
 
                     {/* ABA DETALHES */}
                     {aba === 'detalhes' && (
                         <>
                             <div className="detail-section">
-                                <h3>Informações do Pedido</h3>
+                                <h3>InformaÃ§Ãµes do Pedido</h3>
                                 <div className="detail-grid">
                                     <div className="detail-item">
                                         <label>Solicitante</label>
-                                        <span>{d.solicitante_nome || '—'}</span>
+                                        <span>{d.solicitante_nome || 'â€”'}</span>
                                     </div>
                                     <div className="detail-item">
                                         <label>Departamento</label>
-                                        <span>{d.departamento_nome || '—'}</span>
+                                        <span>{d.departamento_nome || 'â€”'}</span>
                                     </div>
                                     <div className="detail-item">
                                         <label>Prioridade</label>
@@ -824,11 +829,11 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                                     </div>
                                     <div className="detail-item">
                                         <label>Centro de Custo</label>
-                                        <span>{d.centro_custo_nome || '—'}</span>
+                                        <span>{d.centro_custo_nome || 'â€”'}</span>
                                     </div>
                                     <div className="detail-item">
                                         <label>Categoria</label>
-                                        <span>{d.categoria_nome || '—'}</span>
+                                        <span>{d.categoria_nome || 'â€”'}</span>
                                     </div>
                                     <div className="detail-item">
                                         <label>Valor Estimado</label>
@@ -853,11 +858,11 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                             {/* ITENS */}
                             {detalhe?.itens?.length > 0 && (
                                 <div className="detail-section">
-                                    <h3>📦 Itens do Pedido</h3>
+                                    <h3>ðŸ“¦ Itens do Pedido</h3>
                                     <table className="items-table">
                                         <thead>
                                             <tr>
-                                                <th>Descrição</th>
+                                                <th>DescriÃ§Ã£o</th>
                                                 <th>Qtd</th>
                                                 <th>Unid.</th>
                                                 <th style={{textAlign:'right'}}>Valor Unit.</th>
@@ -872,7 +877,7 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                                                     <td>{item.unidade}</td>
                                                     <td style={{textAlign:'right'}}>{fmt(item.valor_unitario_estimado)}</td>
                                                     <td style={{textAlign:'right',fontWeight:600}}>
-                                                        {item.valor_unitario_estimado ? fmt(item.quantidade * item.valor_unitario_estimado) : '—'}
+                                                        {item.valor_unitario_estimado ? fmt(item.quantidade * item.valor_unitario_estimado) : 'â€”'}
                                                     </td>
                                                 </tr>
                                             ))}
@@ -889,38 +894,38 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                         </>
                     )}
 
-                    {/* ABA COTAÇÕES */}
+                    {/* ABA COTAÃ‡Ã•ES */}
                     {aba === 'cotacoes' && (
                         <div className="detail-section">
-                            <h3>💬 Cotações / Orçamentos</h3>
+                            <h3>ðŸ’¬ CotaÃ§Ãµes / OrÃ§amentos</h3>
                             {detalhe?.cotacoes?.length === 0 && (
                                 <div className="empty-state" style={{padding:'30px 0'}}>
-                                    <div className="empty-icon">📋</div>
-                                    <p>Nenhuma cotação registrada ainda.</p>
+                                    <div className="empty-icon">ðŸ“‹</div>
+                                    <p>Nenhuma cotaÃ§Ã£o registrada ainda.</p>
                                 </div>
                             )}
                             {detalhe?.cotacoes?.map(cot => (
                                 <div key={cot.id} className={'cotacao-card ' + cot.status}>
-                                    {cot.status === 'selecionada' && <div className="badge-selecionada">✅ Selecionada</div>}
+                                    {cot.status === 'selecionada' && <div className="badge-selecionada">âœ… Selecionada</div>}
                                     <div className="cotacao-header">
                                         <div>
                                             <div className="cotacao-fornecedor">{cot.fornecedor_nome || 'Fornecedor'}</div>
                                             <div className="cotacao-meta">
-                                                Nº {cot.numero_cotacao || '—'} · {fmtData(cot.data_cotacao)}
-                                                {cot.prazo_entrega ? ' · Entrega: ' + cot.prazo_entrega + ' dias' : ''}
-                                                {cot.condicoes_pagamento ? ' · ' + cot.condicoes_pagamento : ''}
+                                                NÂº {cot.numero_cotacao || 'â€”'} Â· {fmtData(cot.data_cotacao)}
+                                                {cot.prazo_entrega ? ' Â· Entrega: ' + cot.prazo_entrega + ' dias' : ''}
+                                                {cot.condicoes_pagamento ? ' Â· ' + cot.condicoes_pagamento : ''}
                                             </div>
                                         </div>
                                         <div style={{textAlign:'right'}}>
                                             <div className="cotacao-valor">{fmt(cot.valor_total)}</div>
-                                            {cot.validade_cotacao && <div style={{fontSize:11,color:'#94a3b8'}}>válida até {fmtData(cot.validade_cotacao)}</div>}
+                                            {cot.validade_cotacao && <div style={{fontSize:11,color:'#94a3b8'}}>vÃ¡lida atÃ© {fmtData(cot.validade_cotacao)}</div>}
                                         </div>
                                     </div>
                                     {cot.observacoes && <div style={{fontSize:12.5,color:'#64748b',marginBottom:8}}>{cot.observacoes}</div>}
                                     {cot.status !== 'selecionada' && ['aguardando_cotacao','em_cotacao','aguardando_aprovacao'].includes(d.status) && (
                                         <button className="btn btn-success btn-sm" onClick={() => selecionarCotacao(cot.id)}
                                             disabled={loadingAcao === 'sel-' + cot.id}>
-                                            {loadingAcao === 'sel-' + cot.id ? 'Selecionando...' : '✅ Selecionar esta cotação'}
+                                            {loadingAcao === 'sel-' + cot.id ? 'Selecionando...' : 'âœ… Selecionar esta cotaÃ§Ã£o'}
                                         </button>
                                     )}
                                 </div>
@@ -929,11 +934,11 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                                 <>
                                     {!showNovaCotacao ? (
                                         <button className="btn btn-outline" style={{width:'100%',marginTop:8}} onClick={() => setShowNovaCotacao(true)}>
-                                            + Adicionar Cotação
+                                            + Adicionar CotaÃ§Ã£o
                                         </button>
                                     ) : (
                                         <div style={{border:'1px solid #e2e8f0',borderRadius:10,padding:16,marginTop:10}}>
-                                            <div style={{fontWeight:700,marginBottom:12,color:'#0f172a'}}>Nova Cotação</div>
+                                            <div style={{fontWeight:700,marginBottom:12,color:'#0f172a'}}>Nova CotaÃ§Ã£o</div>
                                             <div className="form-grid">
                                                 <div className="form-group">
                                                     <label>Fornecedor</label>
@@ -951,20 +956,20 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                                                     <input type="number" value={novaCot.prazo_entrega} onChange={e => setNovaCot(c => ({...c,prazo_entrega:e.target.value}))}/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>Válida até</label>
+                                                    <label>VÃ¡lida atÃ©</label>
                                                     <input type="date" value={novaCot.validade_cotacao} onChange={e => setNovaCot(c => ({...c,validade_cotacao:e.target.value}))}/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>Condições de Pagamento</label>
-                                                    <input placeholder="Ex: 30 dias, À vista..." value={novaCot.condicoes_pagamento} onChange={e => setNovaCot(c => ({...c,condicoes_pagamento:e.target.value}))}/>
+                                                    <label>CondiÃ§Ãµes de Pagamento</label>
+                                                    <input placeholder="Ex: 30 dias, Ã€ vista..." value={novaCot.condicoes_pagamento} onChange={e => setNovaCot(c => ({...c,condicoes_pagamento:e.target.value}))}/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>Observações</label>
+                                                    <label>ObservaÃ§Ãµes</label>
                                                     <input value={novaCot.observacoes} onChange={e => setNovaCot(c => ({...c,observacoes:e.target.value}))}/>
                                                 </div>
                                             </div>
                                             <div style={{display:'flex',gap:8,marginTop:12}}>
-                                                <button className="btn btn-primary btn-sm" onClick={adicionarCotacao}>Salvar Cotação</button>
+                                                <button className="btn btn-primary btn-sm" onClick={adicionarCotacao}>Salvar CotaÃ§Ã£o</button>
                                                 <button className="btn btn-outline btn-sm" onClick={() => setShowNovaCotacao(false)}>Cancelar</button>
                                             </div>
                                         </div>
@@ -974,21 +979,21 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                         </div>
                     )}
 
-                    {/* ABA HISTÓRICO */}
+                    {/* ABA HISTÃ“RICO */}
                     {aba === 'historico' && (
                         <div className="detail-section">
-                            <h3>📅 Histórico de Ações</h3>
+                            <h3>ðŸ“… HistÃ³rico de AÃ§Ãµes</h3>
                             {detalhe?.historico?.length === 0 && (
-                                <div className="empty-state" style={{padding:'20px 0'}}><p>Nenhum registro no histórico.</p></div>
+                                <div className="empty-state" style={{padding:'20px 0'}}><p>Nenhum registro no histÃ³rico.</p></div>
                             )}
                             <ul className="timeline">
                                 {detalhe?.historico?.map(h => (
                                     <li key={h.id} className="timeline-item">
                                         <div className={'timeline-dot ' + h.acao}>{h.acao[0].toUpperCase()}</div>
                                         <div className="timeline-content">
-                                            <div className="timeline-acao">{h.acao.replace(/_/g,' ')}{h.usuario_nome ? ' · ' + h.usuario_nome : ''}</div>
-                                            {h.descricao && <div className="t�meline-desc">{h.descricao}</div>}
-                                            <div className="t�meline-data">{fmtDataHora(h.created_at)}</div>
+                                            <div className="timeline-acao">{h.acao.replace(/_/g,' ')}{h.usuario_nome ? ' Â· ' + h.usuario_nome : ''}</div>
+                                            {h.descricao && <div className="témeline-desc">{h.descricao}</div>}
+                                            <div className="témeline-data">{fmtDataHora(h.created_at)}</div>
                                         </div>
                                     </li>
                                 ))}
@@ -996,16 +1001,16 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                         </div>
                     )}
 
-                    {/* REJEIÇÃO */}
+                    {/* REJEIÃ‡ÃƒO */}
                     {showRejeicao && (
                         <div style={{border:'1px solid #fecaca',borderRadius:10,padding:1:,marginTop:10,background:'#fff5f5'}}>
-                            <div style={{fontWeight:700,marginBottom:8,color:'#dc2626'}}>Motivo da Rejeição</div>
+                            <div style={{fontWeight:700,marginBottom:8,color:'#dc2626'}}>Motivo da RejeiÃ§Ã£o</div>
                             <textarea className="form-group" style={{width:'100%',padding:'8px 12px',border:'1px solid #fecaca',borderRadius:8,minHeight:80}}
-                                placeholder="Explique o motivo d1 rejeição..."
+                                placeholder="Explique o motivo d1 rejeiÃ§Ã£o..."
                                 value={motivoRejeicao} onChange={e => seu=otivoRejeicao(e.target.value)}/>
                             <div style={{display:'Vlex',gap:8,marginTop:8}}>
                                 <button className="btn btn-danger btn-sm" onClick={() => acao('rejeitar', { motivo: motivoRejeicao })}>
-                                    Confirmar Rejeição
+                                    Confirmar RejeiÃ§Ã£o
                                 </button>
                                 <button className="btn btn-outline btn-sm" onClick={() => setShowRejeicao(false)}>Cancelar</button>
                             </div>
@@ -1017,30 +1022,30 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                     {d.status === 'rascunho' && (
                         <button className="btn btn-primary" onClick={() => acao('enviar-cotacao')}
                             disabled={loadingAcao==='enviar-cotacao'}>
-                            📋 Enviar para Cotação
+                            ðŸ“‹ Enviar para CotaÃ§Ã£o
                         </button>
                     )}
                     {['em_cotacao','aguardando_cotacao'].includes(d.status) && detalhe?.cotacoes?.some(c => c.status === 'selecionada') && (
                         <button className="btn btn-primary" onClick={() => acao('enviar-aprovacao')}
                             disabled={loadingAcao==='enviar-aprovacao'}>
-                            ⏳ Enviar para Aprovação
+                            â³ Enviar para AprovaÃ§Ã£o
                         </button>
                     )}
                     {d.status === 'aguardando_aprovacao' && canAprovar && (
                         <>
                             <button className="btn btn-success" onClick={() => acao('aprovar')}
                                 disabled={loadingAcao==='aprovar'}>
-                                ✅ Aprovar Pedido
+                                âœ… Aprovar Pedido
                             </button>
                             <button className="btn btn-danger" onClick={() => setShowRejeicao(true)}>
-                                ❌ Rejeitar
+                                âŒ Rejeitar
                             </button>
                         </>
                     )}
                     {['aprovado','em_compra'].includes(d.status) && (
                         <button className="btn btn-success" onClick={() => acao('concluir')}
                             disabled={loadingAcao==='concluir'}>
-                            🏁 Marcar como Concluído
+                            ðŸ Marcar como ConcluÃ­do
                         </button>
                     )}
                     <button className="btn btn-outline" onClick={onClose}>Fechar</button>
@@ -1051,7 +1056,7 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
 }
 
 // ============================================================
-// MÓDULO PRINCIPAL
+// MÃ“DULO PRINCIPAL
 // ============================================================
 function ModuloPedidos({ usuario }) {
     const [pedidos, setPedidos] = useState([]);
@@ -1104,8 +1109,8 @@ function ModuloPedidos({ usuario }) {
         <>
             <div className="topbar">
                 <div>
-                    <h1>🛒 Pedidos de Compra</h1>
-                    <div className="topbar-sub">Gestão de requisições, cotações e aprovações</div>
+                    <h1>ðŸ›’ Pedidos de Compra</h1>
+                    <div className="topbar-sub">GestÃ£o de requisiÃ§Ãµes, cotaÃ§Ãµes e aprovaÃ§Ãµes</div>
                 </div>
                 <button className="btn btn-primary" onClick={() => setModalNovo(true)}>+ Novo Pedido</button>
             </div>
@@ -1113,21 +1118,21 @@ function ModuloPedidos({ usuario }) {
                 <KpiCards resumo={resumo}/>
 
                 <div className="filters-row">
-                    <input className="search-input" placeholder="Buscar por título ou número..." value={busca} onChange={e => { setBusca(e.target.value); setPagina(1); }}/>
+                    <input className="search-input" placeholder="Buscar por tÃ­tulo ou nÃºmero..." value={busca} onChange={e => { setBusca(e.target.value); setPagina(1); }}/>
                     <select className="filter-sel" value={filtroStatus} onChange={e => { setFiltroStatus(e.target.value); setPagina(1); }}>
                         <option value="">Todos os status</option>
                         {Object.entries(STATUS_LABEL).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
                     </select>
                     <select className="filter-sel" value={filtroPrio} onChange={e => { setFiltroPrio(e.target.value); setPagina(1); }}>
                         <option value="">Todas as prioridades</option>
-                        <option value="urgente">🔴 Urgente</option>
-                        <option value="alta">🟠 Alta</option>
-                        <option value="normal">🔵 Normal</option>
-                        <option value="baixa">⚪ Baixa</option>
+                        <option value="urgente">ðŸ”´ Urgente</option>
+                        <option value="alta">ðŸŸ  Alta</option>
+                        <option value="normal">ðŸ”µ Normal</option>
+                        <option value="baixa">âšª Baixa</option>
                     </select>
                     {(busca || filtroStatus || filtroPrio) && (
                         <button className="btn btn-ghost" onClick={() => { setBusca(''); setFiltroStatus(''); setFiltroPrio(''); setPagina(1); }}>
-                            ✕ Limpar filtros
+                            âœ• Limpar filtros
                         </button>
                     )}
                     <div style={{marginLeft:'auto',fontSize:13,color:'#94a3b8'}}>{total} pedido{total !== 1 ? 's' : ''}</div>
@@ -1143,7 +1148,7 @@ function ModuloPedidos({ usuario }) {
                                 <th>Solicitante</th>
                                 <th>Necessidade</th>
                                 <th style={{textAlign:'right'}}>Valor Est.</th>
-                                <th style={{textAlign:'center'}}>Cotações</th>
+                                <th style={{textAlign:'center'}}>CotaÃ§Ãµes</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -1153,7 +1158,7 @@ function ModuloPedidos({ usuario }) {
                             ) : pedidos.length === 0 ? (
                                 <tr><td colSpan={8}>
                                     <div className="empty-state">
-                                        <div className="empty-icon">🔍</div>
+                                        <div className="empty-icon">ðŸ”</div>
                                         <p>Nenhum pedido encontrado.</p>
                                     </div>
                                 </td></tr>
@@ -1163,12 +1168,12 @@ function ModuloPedidos({ usuario }) {
                                         <div className="pedido-numero">{p.numero}</div>
                                         <div className="pedido-titulo">
                                             {p.titulo}
-                                            <small>{p.departamento_nome}{p.centro_custo_nome ? ' · ' + p.centro_custo_nome : ''}</small>
+                                            <small>{p.departamento_nome}{p.centro_custo_nome ? ' Â· ' + p.centro_custo_nome : ''}</small>
                                         </div>
                                     </td>
                                     <td><span className={'pill pill-' + p.status}>{STATUS_LABEL[p.status]}</span></td>
                                     <td><span className={PRIO_CLASS[p.prioridade]}>{PRIO_LABEL[p.prioridade]}</span></td>
-                                    <td style={{fontSize:13,color:'#475569'}}>{p.solicitante_nome || '—'}</td>
+                                    <td style={{fontSize:13,color:'#475569'}}>{p.solicitante_nome || 'â€”'}</td>
                                     <td style={{fontSize:13,color:'#475569',whiteSpace:'nowrap'}}>{fmtData(p.data_necessidade)}</td>
                                     <td style={{textAlign:'right'}} className="valor-cell">
                                         {p.valor_final ? fmt(p.valor_final) : p.valor_aprovado ? fmt(p.valor_aprovado) : fmt(p.valor_estimado)}
@@ -1179,7 +1184,7 @@ function ModuloPedidos({ usuario }) {
                                         </span>
                                     </td>
                                     <td>
-                                        <button className="action-btn" onClick={() => setModalDetalhe(p)}>Ver →</button>
+                                        <button className="action-btn" onClick={() => setModalDetalhe(p)}>Ver â†’</button>
                                     </td>
                                 </tr>
                             ))}
@@ -1188,14 +1193,14 @@ function ModuloPedidos({ usuario }) {
                     {total > POR_PAGINA && (
                         <div className="pagination">
                             <div className="pagination-info">
-                                {(pagina-1)*POR_PAGINA+1}–{Math.min(pagina*POR_PAGINA, total)} de {total} pedidos
+                                {(pagina-1)*POR_PAGINA+1}â€“{Math.min(pagina*POR_PAGINA, total)} de {total} pedidos
                             </div>
                             <div className="pagination-btns">
-                                <button className="page-btn" disabled={pagina===1} onClick={() => setPagina(p => p-1)}>‹ Ant.</button>
+                                <button className="page-btn" disabled={pagina===1} onClick={() => setPagina(p => p-1)}>â€¹ Ant.</button>
                                 {Array.from({length: Math.min(totalPages, 5)}, (_,i) => i+1).map(n => (
                                     <button key={n} className={'page-btn' + (n===pagina?' active':'')} onClick={() => setPagina(n)}>{n}</button>
                                 ))}
-                                <button className="page-btn" disabled={pagina===totalPages} onClick={() => setPagina(p => p+1)}>Próx. ›</button>
+                                <button className="page-btn" disabled={pagina===totalPages} onClick={() => setPagina(p => p+1)}>PrÃ³x. â€º</button>
                             </div>
                         </div>
                     )}
@@ -1216,10 +1221,12 @@ function App() {
 
     function handleLogin(u) { setUsuario(u); }
     function handleLogout() {
-        TOKEN = null; USUARIO = null;
-        localStorage.removeItem('erp_token');
-        localStorage.removeItem('erp_usuario');
+        USUARIO = null;
+        localStorage.removeItem('erp_access');
+        localStorage.removeItem('erp_refresh');
+        localStorage.removeItem('erp_user');
         setUsuario(null);
+        location.href='/login.html';
     }
 
     if (!usuario) return <Login onLogin={handleLogin}/>;
