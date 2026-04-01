@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP SAF — Login</title>
+  <script src="config.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 400px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .logo-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 8px 24px rgba(59,130,246,0.4);
+    }
+    .logo h1 {
+      color: #f8fafc;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .logo p {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    label {
+      display: block;
+      color: #cbd5e1;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      color: #f1f5f9;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+    input::placeholder { color: #475569; }
+
+    .password-wrap { position: relative; }
+    .toggle-pass {
+      position: absolute; right: 0.75rem; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: #64748b; font-size: 1rem;
+      padding: 0.25rem;
+      transition: color 0.2s;
+    }
+    .toggle-pass:hover { color: #94a3b8; }
+
+    .btn-login {
+      width: 100%;
+      padding: 0.8rem;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 0.5rem;
+    }
+    .btn-login:hover  { opacity: 0.9; }
+    .btn-login:active { transform: scale(0.99); }
+    .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .error-box {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #fca5a5;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .error-box.show { display: block; }
+
+    .info-box {
+      background: rgba(59,130,246,0.12);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #93c5fd;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .info-box.show { display: block; }
+
+    .forgot {
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+    .forgot a {
+      color: #60a5fa;
+      font-size: 0.8rem;
+      text-decoration: none;
+    }
+    .forgot a:hover { text-decoration: underline; }
+
+    .footer-text {
+      text-align: center;
+      color: #475569;
+      font-size: 0.75rem;
+      margin-top: 2rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon">⚽</div>
+      <h1 id="nomeApp">ERP SAF</h1>
+      <p>Sistema de Gestão</p>
+    </div>
+
+    <div class="info-box" id="infoBox"></div>
+    <div class="error-box" id="errBox"></div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" required />
+      </div>
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <div class="password-wrap">
+          <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password" required />
+          <button type="button" class="toggle-pass" id="togglePass" title="Mostrar/ocultar senha">👁</button>
+        </div>
+        <div class="forgot"><a href="#" id="forgotLink">Esqueci minha senha</a></div>
+      </div>
+
+      <button type="submit" class="btn-login" id="btnLogin">Entrar</button>
+    </form>
+
+    <div class="footer-text">ERP SAF &copy; 2025 — Lei 14.193/21</div>
+  </div>
+
+  <script>
+    // ── Config ─────────────────────────────────────────────────
+    const cfg = window.ERP_CONFIG || {};
+    if (cfg.NOME_SAF) document.getElementById('nomeApp').textContent = cfg.NOME_SAF;
+
+    const API = cfg.API_URL || '';
+
+    // ── Se já logado, redireciona para a página de origem ──────
+    const accessToken = localStorage.getItem('erp_access');
+    if (accessToken) {
+      const next = new URLSearchParams(location.search).get('next') || '/index.html';
+      location.href = next;
+    }
+
+    // ── Mensagem de query param (ex: sessão expirada) ──────────
+    const msgParam = new URLSearchParams(location.search).get('msg');
+    if (msgParam) {
+      const ib = document.getElementById('infoBox');
+      ib.textContent = msgParam;
+      ib.classList.add('show');
+    }
+
+    // ── Toggle senha ───────────────────────────────────────────
+    document.getElementById('togglePass').addEventListener('click', () => {
+      const inp = document.getElementById('senha');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    });
+
+    // ── Esqueci a senha ────────────────────────────────────────
+    document.getElementById('forgotLink').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if (!email) { showError('Digite seu e-mail para recuperar a senha.'); return; }
+      try {
+        const r = await fetch(`${API}/api/auth/esqueci-senha`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const d = await r.json();
+        clearError();
+        const ib = document.getElementById('infoBox');
+        ib.textContent = d.message || 'Se o e-mail existir, você receberá as instruções.';
+        ib.classList.add('show');
+      } catch {
+        showError('Erro ao solicitar recuperação. Tente novamente.');
+      }
+    });
+
+    // ── Submit login ───────────────────────────────────────────
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+      if (!email || !senha) { showError('Preencha e-mail e senha.'); return; }
+
+      const btn = document.getElementById('btnLogin');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Entrando…';
+      clearError();
+
+      try {
+        const r = await fetch(`${API}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha })
+        });
+        const data = await r.json();
+
+        if (!r.ok) {
+          showError(data.error || 'Credenciais inválidas.');
+          return;
+        }
+
+        // Salvar tokens
+        localStorage.setItem('erp_access',  data.access_token);
+        localStorage.setItem('erp_refresh', data.refresh_token);
+        localStorage.setItem('erp_user',    JSON.stringify(data.usuario));
+
+        // Redirecionar
+        const next = new URLSearchParams(location.search).get('next') || '/index.html';
+        location.href = next;
+
+      } catch (err) {
+        showError('Erro de conexão com o servidor. Verifique sua internet.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+      }
+    });
+
+    function showError(msg) {
+      const el = document.getElementById('errBox');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+    function clearError() {
+      document.getElementById('errBox').classList.remove('show');
+    }
+  </script>
+</body>
+</html>
