@@ -206,19 +206,27 @@ const DEMO_HIST = {
 // ============================================================
 // HELPERS
 // ============================================================
-let TOKEN = localStorage.getItem('erp_token');
-let USUARIO = null;
-try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
+const _getAT=()=>localStorage.getItem('erp_access');
+const _getRF=()=>localStorage.getItem('erp_refresh');
+let USUARIO=null;
+try{USUARIO=JSON.parse(localStorage.getItem('erp_user'));}catch(e){}
 
-async function apiFetch(path, options={}) {
-    try {
- À2     const headers={'Content-Type':'application/json'};
-        if(TOKEN) headers['Authorization']='Bearer '+TOKEN;
-        const res = await fetch(API_URL+path,{...options,headers});
-        if(res.status===401){TOKEN=null;localStorage.removeItem('erp_token');window.location.reload();}
-        return await res.json();
-    } catch(e){return null;}
-}
+async function _refreshToken(){
+  try{const rf=_getRF();if(!rf)return false;
+    const r=await fetch(API_URL+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rf})});
+    if(!r.ok)return false;const data=await r.json();
+    if(data.accessToken){localStorage.setItem('erp_access',data.accessToken);if(data.refreshToken)localStorage.setItem('erp_refresh',data.refreshToken);return true;}
+    return false;}catch(e){return false;}}
+
+async function apiFetch(path,options={}){
+  try{let at=_getAT();
+    if(at){try{const p=JSON.parse(atob(at.split('.')[1]));if((p.exp*1000)-Date.now()<30000){await _refreshToken();at=_getAT();}}catch(e){}}
+    const headers={'Content-Type':'application/json'};if(at)headers['Authorization']='Bearer '+at;
+    const res=await fetch(API_URL+path,{...options,headers});
+    if(res.status===401){const ok=await _refreshToken();
+      if(ok){at=_getAT();headers['Authorization']='Bearer '+at;const r2=await fetch(API_URL+path,{...options,headers});if(r2.status===401){localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}return await r2.json();}
+      localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}
+    return await res.json();}catch(e){return null;}}
 
 function fmt(v){if(!v&&v!==0)return 'â€”';return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2});}
 function fmtNum(v,u=''){if(v===null||v===undefined)return 'â€”';if(u==='R$')return fmt(v);return Number(v).toLocaleString('pt-BR')+(u?' '+u:'');}
@@ -248,8 +256,8 @@ function Login({onLogin}) {
         e.preventDefault();setL(true);setErr('');
         const d=await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({usuario:u,senha:s})});
         setL(false);
-        if(d?.token){TOKEN=d.token;USUARIO=d.usuario;localStorage.setItem('erp_token',TOKEN);localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(d.usuario);}
-        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(USUARIO);}
+        if(d?.accessToken||d?.token){localStorage.setItem('erp_access',d.accessToken||d.token);if(d.refreshToken)localStorage.setItem('erp_refresh',d.refreshToken);USUARIO=d.usuario||d.user;localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(d.usuario);}
+        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(USUARIO);}
         else setErr('UsuÃ¡rio ou senha incorretos.');
     }
     return <div className="login-wrap"><div className="login-card">
@@ -662,7 +670,7 @@ function ModuloMetas({usuario}){
 // ============================================================
 function App(){
     const [Psuario,setUsuario]=useState(USUARIO);
-    function logout(){µOKEN=null;USUARIO=null;”ocalStorage.removeItem('erp_token');l/calOtorageNreooveItem('erp_usuario');setUsuario(null);}
+    function logout(){USUARIO=null;setUsuario(null);localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';}
     if(!usuario) return <Login onLogin={vÝ>setUsuario(u)}/>;
     return <><Sidebar usuario={usuario} on.ogout={logout}/><div className="main"><ModuloMetas usuario={usuario}/></div></>;
 }
