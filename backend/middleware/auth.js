@@ -1,44 +1,66 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
-// ============================================================
-// Middleware de autenticação JWT
-// Verifica se o token é válido antes de acessar qualquer rota protegida
-// ============================================================
-function autenticar(req, res, next) {
-  const authHeader = req.headers['authorization'];
+const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_in_production';
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ erro: 'Token de autenticação não fornecido.' });
+// ── Middleware principal: exige token de acesso válido ───────────────────────
+function authMW(req, res, next) {
+  const header = req.headers['authorization'] || '';
+  const token  = header.startsWith('Bearer ') ? header.slice(7) : null;
+
+  if (!token) {
+    return res.status(401).json({ error: 'Token não fornecido.' });
   }
 
-  const token = authHeader.split(' ')[1];
-
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.usuario = payload; // { id, email, perfil, funcionario_id }
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    // Rejeitar tokens de refresh ou reset usados como access
+    if (decoded.tipo && decoded.tipo !== 'access') {
+      return res.status(401).json({ error: 'Tipo de token inválido.' });
+    }
+
+    req.usuario = decoded; // { id, email, perfil, nome, ... }
     next();
   } catch (err) {
-    return res.status(401).json({ erro: 'Token inválido ou expirado. Faça login novamente.' });
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expirado.', expired: true });
+    }
+    return res.status(401).json({ error: 'Token inválido.' });
   }
 }
 
-// ============================================================
-// Middleware de autorização por perfil
-// Uso: autorizarPerfis('admin', 'rh')
-// ============================================================
-function autorizarPerfis(...perfisPermitidos) {
+// ── Middleware de perfil: restringe a perfis específicos ─────────────────────
+// Uso: router.get('/rota', authMW, requirePerfil('admin'), handler)
+function requirePerfil(...perfis) {
   return (req, res, next) => {
     if (!req.usuario) {
-      return res.status(401).json({ erro: 'Não autenticado.' });
+      return res.status(401).json({ error: 'Não autenticado.' });
     }
-    if (!perfisPermitidos.includes(req.usuario.perfil)) {
+    if (!perfis.includes(req.usuario.perfil)) {
       return res.status(403).json({
-        erro: `Acesso negado. Perfil necessário: ${perfisPermitidos.join(' ou ')}.`
+        error: `Acesso restrito. Perfil necessário: ${perfis.join(' ou ')}.`,
       });
     }
     next();
   };
 }
 
-module.exports = { autenticar, autorizarPerfis };
+// ── Middleware opcional: não bloqueia mas popula req.usuario se houver token ─
+function authOptional(req, res, next) {
+  const header = req.headers['authorization'] || '';
+  const token  = header.startsWith('Bearer ') ? header.slice(7) : null;
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      if (!decoded.tipo || decoded.tipo === 'access') {
+        req.usuario = decoded;
+      }
+    } catch (_) {
+      // Token inválido/expirado — continua sem req.usuario
+    }
+  }
+  next();
+}
+
+module.exports = { authMW, requirePerfil, authOptional };
