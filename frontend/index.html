@@ -318,20 +318,23 @@ function corAvatar(nome) {
 // API HELPERS
 // ============================================================
 async function apiFetch(path, opts = {}) {
-  const token = localStorage.getItem('erp_token');
-  const res = await fetch(API + path, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: 'Bearer ' + token } : {}),
-    },
-    ...opts,
-    body: opts.body ? JSON.stringify(opts.body) : undefined,
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.erro || 'Erro desconhecido');
-  return data;
+  try {
+    let at = localStorage.getItem('erp_access');
+    if (at) {
+      try { const p=JSON.parse(atob(at.split('.')[1])); if((p.exp*1000)-Date.now()<30000){const rf=localStorage.getItem('erp_refresh');if(rf){const rr=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rf})});if(rr.ok){const rd=await rr.json();if(rd.accessToken){localStorage.setItem('erp_access',rd.accessToken);if(rd.refreshToken)localStorage.setItem('erp_refresh',rd.refreshToken);at=rd.accessToken;}}}} } catch(e){}
+    }
+    const headers = {'Content-Type':'application/json'};
+    if (at) headers['Authorization'] = 'Bearer ' + at;
+    const res = await fetch(API + path, {
+      headers,
+      ...opts,
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+    if (res.status === 401) { localStorage.removeItem('erp_access'); localStorage.removeItem('erp_refresh'); localStorage.removeItem('erp_user'); location.href='/login.html'; return null; }
+    if (!res.ok) return null;
+    return await res.json();
+  } catch(e) { return null; }
 }
-
 // ============================================================
 // TOAST
 // ============================================================
@@ -370,11 +373,16 @@ function Login({ onLogin }) {
     try {
       // DEMO: aceita qualquer login (remova em produÃ§Ã£o e use a API real)
       if (email && senha) {
-        const usuario = { nome: 'Administrador', cargo: 'CEO / Presidente', perfil: 'admin' };
-        localStorage.setItem('erp_token', 'demo_token');
-        localStorage.setItem('erp_usuario', JSON.stringify(usuario));
-        onLogin(usuario);
-      } else {
+      try {
+        const res = await fetch(API + '/api/auth/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,senha})});
+        const data = await res.json();
+        if (data?.accessToken) {
+          localStorage.setItem('erp_access', data.accessToken);
+          if(data.refreshToken) localStorage.setItem('erp_refresh', data.refreshToken);
+          localStorage.setItem('erp_user', JSON.stringify(data.usuario||data.user||{}));
+          onLoginSuccess(data.usuario||data.user||{});
+        } else { setErro(data?.error||'Credenciais inválidas'); }
+      } catch(e){ setErro('Erro de conexão'); }} else {
         setErro('Preencha e-mail e senha.');
       }
     } catch (err) {
@@ -1067,16 +1075,12 @@ function App() {
 // ============================================================
 function App() {
   const [usuario, setUsuario] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('erp_usuario')); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem('erp_user')); } catch { return null; }
   });
   const [pagina, setPagina] = useState('funcionarios');
   const toasts = useToast();
 
-  function logout() {
-    localStorage.removeItem('erp_token');
-    localStorage.removeItem('erp_usuario');
-    setUsuario(null);
-  }
+  function logout() { localStorage.removeItem('erp_access'); localStorage.removeItem('erp_refresh'); localStorage.removeItem('erp_user'); location.href='/login.html'; }
 
   if (!usuario) return <Login onLogin={u => setUsuario(u)} />;
 
