@@ -297,19 +297,27 @@ const DEMO_DETALHE_15 = {
 // ============================================================
 // HELPERS
 // ============================================================
-let TOKEN = localStorage.getItem('erp_token');
-let USUARIO = null;
-try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
+const _getAT=()=>localStorage.getItem('erp_access');
+const _getRF=()=>localStorage.getItem('erp_refresh');
+let USUARIO=null;
+try{USUARIO=JSON.parse(localStorage.getItem('erp_user'));}catch(e){}
 
-async function apiFetch(path, options={}) {
-    try {
-        const headers = { 'Content-Type': 'application/json' };
-        if (TOKEN) headers['Authorization'] = 'Bearer ' + TOKEN;
-        const res = await fetch(API_URL + path, { ...options, headers });
-        if (res.status === 401) { TOKEN=null; localStorage.removeItem('erp_token'); window.location.reload(); }
-        return await res.json();
-    } catch(e) { return null; }
-}
+async function _refreshToken(){
+  try{const rf=_getRF();if(!rf)return false;
+    const r=await fetch(API_URL+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rf})});
+    if(!r.ok)return false;const data=await r.json();
+    if(data.accessToken){localStorage.setItem('erp_access',data.accessToken);if(data.refreshToken)localStorage.setItem('erp_refresh',data.refreshToken);return true;}
+    return false;}catch(e){return false;}}
+
+async function apiFetch(path,options={}){
+  try{let at=_getAT();
+    if(at){try{const p=JSON.parse(atob(at.split('.')[1]));if((p.exp*1000)-Date.now()<30000){await _refreshToken();at=_getAT();}}catch(e){}}
+    const headers={'Content-Type':'application/json'};if(at)headers['Authorization']='Bearer '+at;
+    const res=await fetch(API_URL+path,{...options,headers});
+    if(res.status===401){const ok=await _refreshToken();
+      if(ok){at=_getAT();headers['Authorization']='Bearer '+at;const r2=await fetch(API_URL+path,{...options,headers});if(r2.status===401){localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}return await r2.json();}
+      localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}
+    return await res.json();}catch(e){return null;}}
 
 function fmt(v) { if (!v && v!==0) return '—'; return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:-}); }
 function fmtData(d) { if(!d) return '—'; return new Date(d+(d.length===10?'T00:00:00':'')).toLocaleDateString('pt-BR'); }
@@ -340,8 +348,8 @@ function Login({ onLogin }) {
         e.preventDefault(); setLoading(true); setErro('');
         const data = await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({usuario,senha})});
         setLoading(false);
-        if (data?.token) { TOKEN=data.token; USUARIO=data.usuario; localStorage.setItem('erp_token',TOKEN); localStorage.setItem('erp_usuario',JSON.stringify(USUARIO)); onLogin(data.usuario); }
-        else if (usuario==='admin'&&senha==='admin123') { USUARIO={id:1,nome:'Administrador',perfil:'admin'}; localStorage.setItem('erp_usuario',JSON.stringify(USUARIO)); onLogin(USUARIO); }
+        if (data?.accessToken||data?.token) { localStorage.setItem('erp_access',data.accessToken||data.token); if(data.refreshToken)localStorage.setItem('erp_refresh',data.refreshToken); USUARIO=data.usuario||data.user; localStorage.setItem('erp_user',JSON.stringify(USUARIO)); onLogin(USUARIO); }
+        else if (usuario==='admin'&&senha==='admin123') { USUARIO={id:1,nome:'Administrador',perfil:'admin'}; localStorage.setItem('erp_user',JSON.stringify(USUARIO)); onLogin(USUARIO); }
         else setErro('Usuário ou senha incorretos.');
     }
     return <div className="login-wrap"><div className="login-card">
@@ -862,7 +870,7 @@ function ModuloAtletas({ usuario }) {
 // ============================================================
 function App() {
     const [usuario, setUsuario] = useState(USUARIO);
-    function handleLogout() { TOKEN=null; USUARIO=null; localStorage.removeItem('erp_token'); localStorage.removeItem('erp_usuario'); setUsuario(null); }
+    function handleLogout() { USUARIO=null; localStorage.removeItem('erp_access'); localStorage.removeItem('erp_refresh'); localStorage.removeItem('erp_user'); setUsuario(null); }
     if (!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
     return <>
         <Sidebar usuario={usuario} onLogout={handleLogout}/>
