@@ -63,4 +63,10 @@ function authOptional(req, res, next) {
   next();
 }
 
-module.exports = { authMW, requirePerfil, authOptional };
+// ── Exports ──────────────────────────────────────────────────────────────────
+// Default export = authMW (compat. com rotas legadas: const autenticar = require(...))
+// Named exports  = { authMW, requirePerfil, authOptional }
+module.exports          = authMW;
+module.exports.authMW   = authMW;
+module.exports.requirePerfil  = requirePerfil;
+module.exports.authOptional   = authOptional;
