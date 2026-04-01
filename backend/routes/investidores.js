@@ -1,20 +1,20 @@
 // ============================================================
-// MÃÂDULN 5: INVESTIDORES E APORTES Ã¢ÂÂ Rotas da API
+// MÃÂÃÂDULN 5: INVESTIDORES E APORTES ÃÂ¢ÃÂÃÂ Rotas da API
 // ERP SAF
 // ============================================================
 
 const express = require('express');
 const router  = express.Router();
 const db      = require('../config/database');
-const { autenticar, autorizarPerfis } = reruire('../middleware/auth');
+const { autenticar, autorizarPerfis } = require('../middleware/auth');
 
 router.use(autenticar);
 
-// Perfis com acesso financeiro sensÃÂ­vel
+// Perfis com acesso financeiro sensÃÂÃÂ­vel
 const FINANBEIRO = ['admin', 'gestor', 'financeiro'];
 
 // ------------------------------------------------------------
-// GET /api/investidores/resumo Ã¢ÂÂ KPIs do dashboard
+// GET /api/investidores/resumo ÃÂ¢ÃÂÃÂ KPIs do dashboard
 // ------------------------------------------------------------
 router.get('/resumo', async (req, res) => {
     try {
@@ -52,7 +52,7 @@ router.get('/resumo', async (req, res) => {
 });
 
 // ------------------------------------------------------------
-// GET /api/investidores/evolucao Ã¢ÂÂ Aportes por mÃÂªs (ÃÂºltimos 24 meses)
+// GET /api/investidores/evolucao ÃÂ¢ÃÂÃÂ Aportes por mÃÂÃÂªs (ÃÂÃÂºltimos 24 meses)
 // ------------------------------------------------------------
 router.get('/evolucao', async (req, res) => {
     try {
@@ -72,12 +72,12 @@ router.get('/evolucao', async (req, res) => {
         `);
         res.json(r.rows);
     } catch (err) {
-        res.status(500).json({ erro: 'Erro ao buscar evoluÃÂ§ÃÂ£o' });
+        res.status(500).json({ erro: 'Erro ao buscar evoluÃÂÃÂ§ÃÂÃÂ£o' });
     }
 });
 
 // ------------------------------------------------------------
-// GET /api/investidores Ã¢ÂÂ Lista com filtros
+// GET /api/investidores ÃÂ¢ÃÂÃÂ Lista com filtros
 // ------------------------------------------------------------
 router.get('/', async (req, res) => {
     try {
@@ -132,7 +132,7 @@ router.get('/', async (req, res) => {
 });
 
 // ------------------------------------------------------------
-// GET /api/investidores/:id Ã¢ÂÂ Detalhe completo
+// GET /api/investidores/:id ÃÂ¢ÃÂÃÂ Detalhe completo
 // ------------------------------------------------------------
 router.get('/:id', async (req, res) => {
     try {
@@ -150,7 +150,7 @@ router.get('/:id', async (req, res) => {
             db.query('SELECT * FROM documentos_investidor WHERE investidor_id = $1 ORDER BY created_at DESC', [id])
         ]);
 
-        if (!investidor.rows[0]) return res.status(404).json({ erro: 'Investidor nÃÂ£o encontrado' });
+        if (!investidor.rows[0]) return res.status(404).json({ erro: 'Investidor nÃÂÃÂ£o encontrado' });
 
         const inv = investidor.rows[0];
         const ap  = aportes.rows;
@@ -177,7 +177,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // ------------------------------------------------------------
-// POST /api/investidores Ã¢ÂÂ Cadastrar investidor
+// POST /api/investidores ÃÂ¢ÃÂÃÂ Cadastrar investidor
 // ------------------------------------------------------------
 router.post('/', autorizarPerfis(...FINANCEIRO), async (req, res) => {
     try {
@@ -185,7 +185,7 @@ router.post('/', autorizarPerfis(...FINANCEIRO), async (req, res) => {
             nome, tipo, cpf_cnpj, rg, perfil, email, telefone, endereco,
             nome_fantasia, responsavel, percentual_participacao, observacoes
         } = req.body;
-        if (!nome || !perfil) return res.status(400).json({ erro: 'Nome e perfil sÃÂ£o obrigatÃÂ³rios' });
+        if (!nome || !perfil) return res.status(400).json({ erro: 'Nome e perfil sÃÂÃÂ£o obrigatÃÂÃÂ³rios' });
 
         const r = await db.query(`
             INSERT INTO investidores
@@ -206,7 +206,7 @@ router.post('/', autorizarPerfis(...FINANCEIRO), async (req, res) => {
 });
 
 // ------------------------------------------------------------
-// PUT /api/investidores/:id Ã¢ÂÂ Atualizar investidor
+// PUT /api/investidores/:id ÃÂ¢ÃÂÃÂ Atualizar investidor
 // ------------------------------------------------------------
 router.put('/:id', autorizarPerfis(...FINANCEIRO), async (req, res) => {
     try {
@@ -234,7 +234,7 @@ router.put('/:id', autorizarPerfis(...FINANCEIRO), async (req, res) => {
         `, [nome, tipo, cpf_cnpj, perfil, email, telefone, endereco,
             nome_fantasia, responsavel, percentual_participacao, ativo, observacoes, id]);
 
-        if (!r.rows[0]) return res.status(404).json({ erro: 'Investidor nÃÂ£o encontrado' });
+        if (!r.rows[0]) return res.status(404).json({ erro: 'Investidor nÃÂÃÂ£o encontrado' });
         res.json(r.rows[0]);
     } catch (err) {
         res.status(500).json({ erro: 'Erro ao atualizar investidor' });
@@ -245,7 +245,7 @@ router.put('/:id', autorizarPerfis(...FINANCEIRO), async (req, res) => {
 // APORTES
 // ============================================================
 
-// POST /api/investidores/:id/aportes Ã¢ÂÂ Registrar aporte
+// POST /api/investidores/:id/aportes ÃÂ¢ÃÂÃÂ Registrar aporte
 router.post('/:id/aportes', autorizarPerfis(...FINANCEIRO), async (req, res) => {
     try {
         const { id } = req.params;
@@ -256,7 +256,7 @@ router.post('/:id/aportes', autorizarPerfis(...FINANCEIRO), async (req, res) => 
         } = req.body;
 
         if (!tipo || !descricao || !valor) {
-            return res.status(400).json({ erro: 'tipo, descricao e valor sÃÂ£o obrigatÃÂ³rios' });
+            return res.status(400).json({ erro: 'tipo, descricao e valor sÃÂÃÂ£o obrigatÃÂÃÂ³rios' });
         }
 
         const r = await db.query(`
@@ -288,7 +288,7 @@ router.post('/:id/aportes', autorizarPerfis(...FINANCEIRO), async (req, res) => 
     }
 });
 
-// PUT /api/investidores/:id/aportes/:aporteId Ã¢ÂÂ Atualizar aporte
+// PUT /api/investidores/:id/aportes/:aporteId ÃÂ¢ÃÂÃÂ Atualizar aporte
 router.put('/:id/aportes/:aporteId', autorizarPerfis(...FINANCEIRO), async (req, res) => {
     try {
         const { aporteId } = req.params;
@@ -302,7 +302,7 @@ router.put('/:id/aportes/:aporteId', autorizarPerfis(...FINANCEIRO), async (req,
             WHERE id = $4 RETURNING *
         `, [valor_devolvido, status, observacoes, aporteId]);
 
-        if (!r.rows[0]) return res.status(404).json({ erro: 'Aporte nÃÂ£o encontrado' });
+        if (!r.rows[0]) return res.status(404).json({ erro: 'Aporte nÃÂÃÂ£o encontrado' });
         res.json(r.rows[0]);
     } catch (err) {
         res.status(500).json({ erro: 'Erro ao atualizar aporte' });
@@ -313,13 +313,13 @@ router.put('/:id/aportes/:aporteId', autorizarPerfis(...FINANCEIRO), async (req,
 // RETORNOS
 // ============================================================
 
-// POST /api/investidores/:id/retornos Ã¢ÂÂ Registrar retorno/dividendo
+// POST /api/investidores/:id/retornos ÃÂ¢ÃÂÃÂ Registrar retorno/dividendo
 router.post('/:id/retornos', autorizarPerfis(...FINANCEIRO), async (req, res) => {
     try {
         const { id } = req.params;
         const { aporte_id, tipo, descricao, valor, data_pagamento, competencia, observacoes } = req.body;
         if (!tipo || !descricao || !valor || !data_pagamento) {
-            return res.status(400).json({ erro: 'tipo, descricao, valor e data_pagamento sÃÂ£o obrigatÃÂ³rios' });
+            return res.status(400).json({ erro: 'tipo, descricao, valor e data_pagamento sÃÂÃÂ£o obrigatÃÂÃÂ³rios' });
         }
 
         const r = await db.query(`
