@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Agenda de Jogos – ERP SAF</title>
+<script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.topbar{background:#1e293b;border-bottom:1px solid #334155;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+.topbar h1{font-size:1.2rem;color:#38bdf8;font-weight:700}
+.topbar .user{font-size:.85rem;color:#94a3b8;display:flex;gap:12px;align-items:center}
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-size:.875rem;font-weight:600;transition:.2s}
+.btn-primary{background:#0ea5e9;color:#fff}.btn-primary:hover{background:#0284c7}
+.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-ghost{background:transparent;color:#94a3b8;border:1px solid #334155}.btn-ghost:hover{background:#1e293b}
+.btn-sm{padding:5px 10px;font-size:.8rem}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:20px}
+.card h2{font-size:1rem;color:#94a3b8;margin-bottom:16px;text-transform:uppercase;letter-spacing:.05em}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:.8rem;color:#94a3b8;font-weight:600}
+.form-group input,.form-group select{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:8px 12px;color:#e2e8f0;font-size:.9rem;outline:none}
+.form-group input:focus,.form-group select:focus{border-color:#0ea5e9}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:#0f172a}
+th{padding:10px 12px;text-align:left;font-size:.8rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #334155}
+td{padding:12px;border-bottom:1px solid #1e293b;font-size:.875rem}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#162032}
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-green{background:#064e3b;color:#34d399}
+.badge-red{background:#450a0a;color:#f87171}
+.badge-blue{background:#0c4a6e;color:#38bdf8}
+.badge-yellow{background:#422006;color:#fbbf24}
+.badge-gray{background:#1e293b;color:#94a3b8;border:1px solid #334155}
+.empty{text-align:center;padding:40px;color:#475569}
+.alert{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:.875rem}
+.alert-error{background:#450a0a;border:1px solid #ef4444;color:#fca5a5}
+.alert-success{background:#064e3b;border:1px solid #10b981;color:#6ee7b7}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:8px;border:1px solid #334155;cursor:pointer;font-size:.875rem;background:#1e293b;color:#94a3b8;transition:.2s}
+.tab.active{background:#0ea5e9;color:#fff;border-color:#0ea5e9}
+.score{font-weight:700;font-size:1rem}
+.score .win{color:#34d399}
+.score .loss{color:#f87171}
+.score .draw{color:#fbbf24}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;text-align:center}
+.stat-card .val{font-size:1.6rem;font-weight:700;color:#38bdf8}
+.stat-card .lbl{font-size:.75rem;color:#64748b;margin-top:4px}
+</style>
+</head>
+<body>
+<script type="text/babel">
+const API_URL = localStorage.getItem('erp_api_url') || 'https://erp-saf-production.up.railway.app';
+// ============================
+const _getAT=()=>localStorage.getItem('erp_access');
+const _getRF=()=>localStorage.getItem('erp_refresh');
+let USUARIO=null;
+try{USUARIO=JSON.parse(localStorage.getItem('erp_user'));}catch(e){}
+
+async function _refreshToken(){
+  try{const rf=_getRF();if(!rf)return false;
+    const r=await fetch(API_URL+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rf})});
+    if(!r.ok)return false;const data=await r.json();
+    if(data.accessToken){localStorage.setItem('erp_access',data.accessToken);if(data.refreshToken)localStorage.setItem('erp_refresh',data.refreshToken);return true;}
+    return false;}catch(e){return false;}}
+
+async function apiFetch(path,options={}){
+  try{let at=_getAT();
+    if(at){try{const p=JSON.parse(atob(at.split('.')[1]));if((p.exp*1000)-Date.now()<30000){await _refreshToken();at=_getAT();}}catch(e){}}
+    const headers={'Content-Type':'application/json'};if(at)headers['Authorization']='Bearer '+at;
+    const res=await fetch(API_URL+path,{...options,headers});
+    if(res.status===401){const ok=await _refreshToken();
+      if(ok){at=_getAT();headers['Authorization']='Bearer '+at;const r2=await fetch(API_URL+path,{...options,headers});if(r2.status===401){localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}return await r2.json();}
+      localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}
+    return await res.json();}catch(e){return null;}}
+
+function fmt(d){if(!d)return'-';const p=d.split('T')[0].split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+
+// ============================
+const {useState,useEffect,useCallback}=React;
+
+function Login({onLogin}){
+  const [email,setEmail]=useState('');
+  const [senha,setSenha]=useState('');
+  const [erro,setErro]=useState('');
+  const [loading,setLoading]=useState(false);
+  async function handleSubmit(e){
+    e.preventDefault();setLoading(true);setErro('');
+    const d=await apiFetch('/api/auth/login',{method:'POST',body:JSON.stringify({email,senha})});
+    setLoading(false);
+    if(d?.accessToken){localStorage.setItem('erp_access',d.accessToken);if(d.refreshToken)localStorage.setItem('erp_refresh',d.refreshToken);USUARIO=d.usuario||{};localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(USUARIO);}
+    else setErro(d?.error||'Credenciais inválidas');
+  }
+  return <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>
+    <div style={{background:'#1e293b',border:'1px solid #334155',borderRadius:16,padding:40,width:360}}>
+      <h2 style={{color:'#38bdf8',marginBottom:24,textAlign:'center'}}>⚽ ERP SAF – Jogos</h2>
+      {erro&&<div className="alert alert-error">{erro}</div>}
+      <form onSubmit={handleSubmit}>
+        <div className="form-group" style={{marginBottom:12}}>
+          <label>E-mail</label>
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/>
+        </div>
+        <div className="form-group" style={{marginBottom:20}}>
+          <label>Senha</label>
+          <input type="password" value={senha} onChange={e=>setSenha(e.target.value)} required/>
+        </div>
+        <button type="submit" className="btn btn-primary" style={{width:'100%'}} disabled={loading}>
+          {loading?'Entrando...':'Entrar'}
+        </button>
+      </form>
+    </div>
+  </div>;
+}
+
+function App(){
+  const [usuario,setUsuario]=useState(USUARIO);
+  const [jogos,setJogos]=useState([]);
+  const [loading,setLoading]=useState(false);
+  const [msg,setMsg]=useState({type:'',text:''});
+  const [aba,setAba]=useState('lista');
+  const [form,setForm]=useState({adversario:'',data:'',local:'',competicao:'',mandante:true,gols_nos:'',gols_adv:'',status:'agendado',observacoes:''});
+  const [editId,setEditId]=useState(null);
+
+  function logout(){USUARIO=null;setUsuario(null);localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';}
+
+  const carregar=useCallback(async()=>{
+    setLoading(true);
+    const d=await apiFetch('/api/jogos');
+    if(d)setJogos(Array.isArray(d)?d:d.jogos||[]);
+    setLoading(false);
+  },[]);
+
+  useEffect(()=>{if(usuario)carregar();},[usuario,carregar]);
+
+  const stats=React.useMemo(()=>{
+    const realizados=jogos.filter(j=>j.status==='realizado');
+    const v=realizados.filter(j=>Number(j.gols_nos)>Number(j.gols_adv)).length;
+    const d2=realizados.filter(j=>Number(j.gols_nos)===Number(j.gols_adv)).length;
+    const l=realizados.filter(j=>Number(j.gols_nos)<Number(j.gols_adv)).length;
+    const gf=realizados.reduce((a,j)=>a+Number(j.gols_nos||0),0);
+    const gc=realizados.reduce((a,j)=>a+Number(j.gols_adv||0),0);
+    return {total:jogos.length,realizados:realizados.length,v,d:d2,l,gf,gc};
+  },[jogos]);
+
+  async function salvar(){
+    const url=editId?'/api/jogos/'+editId:'/api/jogos';
+    const met=editId?'PUT':'POST';
+    const d=await apiFetch(url,{method:met,body:JSON.stringify(form)});
+    if(d&&!d.error){setMsg({type:'success',text:editId?'Jogo atualizado!':'Jogo cadastrado!'});resetForm();carregar();}
+    else setMsg({type:'error',text:d?.error||'Erro ao salvar'});
+    setTimeout(()=>setMsg({type:'',text:''}),3000);
+  }
+
+  function resetForm(){setForm({adversario:'',data:'',local:'',competicao:'',mandante:true,gols_nos:'',gols_adv:'',status:'agendado',observacoes:''});setEditId(null);setAba('lista');}
+
+  function editar(j){setForm({adversario:j.adversario||'',data:j.data?.split('T')[0]||'',local:j.local||'',competicao:j.competicao||'',mandante:j.mandante!==false,gols_nos:j.gols_nos??'',gols_adv:j.gols_adv??'',status:j.status||'agendado',observacoes:j.observacoes||''});setEditId(j.id);setAba('form');}
+
+  async function excluir(id){if(!confirm('Excluir este jogo?'))return;const d=await apiFetch('/api/jogos/'+id,{method:'DELETE'});if(d&&!d.error){setMsg({type:'success',text:'Jogo removido.'});carregar();}else setMsg({type:'error',text:'Erro ao excluir'});setTimeout(()=>setMsg({type:'',text:''}),3000);}
+
+  function resultado(j){
+    if(j.status!=='realizado'||j.gols_nos===null||j.gols_nos===undefined)return<span className="badge badge-gray">{j.status==='agendado'?'Agendado':j.status==='cancelado'?'Cancelado':'Pendente'}</span>;
+    const gn=Number(j.gols_nos),ga=Number(j.gols_adv);
+    if(gn>ga)return<span className="badge badge-green">V {gn}x{ga}</span>;
+    if(gn<ga)return<span className="badge badge-red">D {gn}x{ga}</span>;
+    return<span className="badge badge-yellow">E {gn}x{ga}</span>;
+  }
+
+  if(!usuario) return <Login onLogin={u=>{setUsuario(u);}}/>;
+
+  return <div>
+    <div className="topbar">
+      <h1>⚽ Agenda de Jogos</h1>
+      <div className="user">
+        <span>{usuario.nome||'Usuário'}</span>
+        <button className="btn btn-ghost btn-sm" onClick={logout}>Sair</button>
+      </div>
+    </div>
+    <div className="container">
+      {msg.text&&<div className={"alert "+(msg.type==='success'?'alert-success':'alert-error')}>{msg.text}</div>}
+
+      <div className="stats-row">
+        <div className="stat-card"><div className="val">{stats.total}</div><div className="lbl">Total</div></div>
+        <div className="stat-card"><div className="val">{stats.v}</div><div className="lbl">Vitórias</div></div>
+        <div className="stat-card"><div className="val">{stats.d}</div><div className="lbl">Empates</div></div>
+        <div className="stat-card"><div className="val">{stats.l}</div><div className="lbl">Derrotas</div></div>
+        <div className="stat-card"><div className="val">{stats.gf}</div><div className="lbl">Gols Marcados</div></div>
+        <div className="stat-card"><div className="val">{stats.gc}</div><div className="lbl">Gols Sofridos</div></div>
+      </div>
+
+      <div className="tabs">
+        <div className={"tab"+(aba==='lista'?' active':'')} onClick={()=>{setAba('lista');resetForm();}}>Lista de Jogos</div>
+        <div className={"tab"+(aba==='form'?' active':'')} onClick={()=>setAba('form')}>{editId?'Editar Jogo':'+ Novo Jogo'}</div>
+      </div>
+
+      {aba==='lista'&&<div className="card">
+        <h2>Jogos ({jogos.length})</h2>
+        {loading?<div className="empty">Carregando...</div>:jogos.length===0?<div className="empty">Nenhum jogo cadastrado.</div>:
+        <div className="table-wrap"><table>
+          <thead><tr>
+            <th>Data</th><th>Adversário</th><th>Mando</th><th>Competição</th><th>Local</th><th>Resultado</th><th>Ações</th>
+          </tr></thead>
+          <tbody>{jogos.map(j=><tr key={j.id}>
+            <td>{fmt(j.data)}</td>
+            <td style={{fontWeight:600}}>{j.adversario}</td>
+            <td><span className={"badge "+(j.mandante?'badge-blue':'badge-gray')}>{j.mandante?'Casa':'Fora'}</span></td>
+            <td>{j.competicao||'-'}</td>
+            <td>{j.local||'-'}</td>
+            <td>{resultado(j)}</td>
+            <td style={{display:'flex',gap:6}}>
+              <button className="btn btn-ghost btn-sm" onClick={()=>editar(j)}>✏️</button>
+              <button className="btn btn-danger btn-sm" onClick={()=>excluir(j.id)}>🗑</button>
+            </td>
+          </tr>)}</tbody>
+        </table></div>}
+      </div>}
+
+      {aba==='form'&&<div className="card">
+        <h2>{editId?'Editar Jogo':'Novo Jogo'}</h2>
+        <div className="form-grid">
+          <div className="form-group">
+            <label>Adversário *</label>
+            <input value={form.adversario} onChange={e=>setForm({...form,adversario:e.target.value})} placeholder="Nome do time"/>
+          </div>
+          <div className="form-group">
+            <label>Data *</label>
+            <input type="date" value={form.data} onChange={e=>setForm({...form,data:e.target.value})}/>
+          </div>
+          <div className="form-group">
+            <label>Competição</label>
+            <input value={form.competicao} onChange={e=>setForm({...form,competicao:e.target.value})} placeholder="Ex: Campeonato Catarinense"/>
+          </div>
+          <div className="form-group">
+            <label>Local / Estádio</label>
+            <input value={form.local} onChange={e=>setForm({...form,local:e.target.value})} placeholder="Ex: Estádio Florestão"/>
+          </div>
+          <div className="form-group">
+            <label>Mando de Campo</label>
+            <select value={form.mandante} onChange={e=>setForm({...form,mandante:e.target.value==='true'})}>
+              <option value="true">Casa (Mandante)</option>
+              <option value="false">Fora (Visitante)</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Status</label>
+            <select value={form.status} onChange={e=>setForm({...form,status:e.target.value})}>
+              <option value="agendado">Agendado</option>
+              <option value="realizado">Realizado</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+          {form.status==='realizado'&&<>
+            <div className="form-group">
+              <label>Gols Nossos</label>
+              <input type="number" min="0" value={form.gols_nos} onChange={e=>setForm({...form,gols_nos:e.target.value})}/>
+            </div>
+            <div className="form-group">
+              <label>Gols Adversário</label>
+              <input type="number" min="0" value={form.gols_adv} onChange={e=>setForm({...form,gols_adv:e.target.value})}/>
+            </div>
+          </>}
+        </div>
+        <div className="form-group" style={{marginBottom:16}}>
+          <label>Observações</label>
+          <input value={form.observacoes} onChange={e=>setForm({...form,observacoes:e.target.value})} placeholder="Notas adicionais..."/>
+        </div>
+        <div style={{display:'flex',gap:10}}>
+          <button className="btn btn-primary" onClick={salvar}>💾 {editId?'Atualizar':'Cadastrar'}</button>
+          <button className="btn btn-ghost" onClick={resetForm}>Cancelar</button>
+        </div>
+      </div>}
+    </div>
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<div id="root"></div>
+</body>
+</html>
