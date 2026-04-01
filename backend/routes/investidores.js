@@ -11,7 +11,7 @@ const { autenticar, autorizarPerfis } = require('../middleware/auth');
 router.use(autenticar);
 
 // Perfis com acesso financeiro sensÃÂÃÂ­vel
-const FINANBEIRO = ['admin', 'gestor', 'financeiro'];
+const FINANCEIRO = ['admin', 'gestor', 'financeiro'];
 
 // ------------------------------------------------------------
 // GET /api/investidores/resumo ÃÂ¢ÃÂÃÂ KPIs do dashboard
