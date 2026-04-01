@@ -70,3 +70,6 @@ module.exports          = authMW;
 module.exports.authMW   = authMW;
 module.exports.requirePerfil  = requirePerfil;
 module.exports.authOptional   = authOptional;
+
+// Alias para compatibilidade com rotas
+module.exports.autenticar = authMW;
