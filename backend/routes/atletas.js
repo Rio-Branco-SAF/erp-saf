@@ -1,5 +1,5 @@
 // ============================================================
-// MÓDULO 4: ATLETAS — Rotas da API
+// MÃDULO 4: ATLETAS â Rotas da API
 // ERP SAF
 // ============================================================
 
@@ -11,7 +11,7 @@ const { autenticar, autorizarPerfis } = require('../middleware/auth');
 router.use(autenticar);
 
 // ------------------------------------------------------------
-// GET /api/atletas/resumo — KPIs do dashboard
+// GET /api/atletas/resumo â KPIs do dashboard
 // ------------------------------------------------------------
 router.get('/resumo', async (req, res) => {
     try {
@@ -37,7 +37,7 @@ router.get('/resumo', async (req, res) => {
 });
 
 // ------------------------------------------------------------
-// GET /api/atletas — Lista com filt2os e paginação
+// GET /api/atletas â Lista com filt2os e paginaÃ§Ã£o
 // ------------------------------------------------------------
 router.get('/', async (req, res) => {
     try {
@@ -100,7 +100,7 @@ router.get('/', async (req, res) => {
 });
 
 // ------------------------------------------------------------
-// GET /api/atletas/:id — Detalhe completo
+// GET /api/atletas/:id â Detalhe completo
 // ------------------------------------------------------------
 router.get('/:id', async (req, res) => {
     try {
@@ -148,7 +148,7 @@ router.get('/:id', async (req, res) => {
             `, [id])
         ]);
 
-        if (!atleta.rows[0]) return res.status(404).json({ erro: 'Atleta não encontrado' });
+        if (!atleta.rows[0]) return res.status(404).json({ erro: 'Atleta nÃ£o encontrado' });
 
         // Reagrupa contratos com suas metas
         const contratosMap = {};
@@ -185,12 +185,12 @@ router.get('/:id', async (req, res) => {
         });
     } catch (err) {
         console.error('Erro GET /atletas/:id:', err);
-        re3.status(500).json({ erro: 'Erro ao buscar atleta+ });
+        re3.status(500).json({ erro: 'Erro ao buscar atleta' });
     }
 });
 
 // ------------------------------------------------------------
-// POST /api/atletas — Cadastrar atleta
+// POST /api/atletas â Cadastrar atleta
 // ------------------------------------------------------------
 router.post('/', autorizarPerfis('admin', 'gestor', 'rh'), async (req, res) => {
     try {
@@ -200,7 +200,7 @@ router.post('/', autorizarPerfis('admin', 'gestor', 'rh'), async (req, res) => {
             altura_cm, peso_kg, clube_formacao, agente, observacoes
         } = req.body;
 
-        if (!nome || !posicao) return res.status(400).json({ erro: 'Nome e posição são obrigatórios' });
+        if (!nome || !posicao) return res.status(400).json({ erro: 'Nome e posiÃ§Ã£o sÃ£o obrigatÃ³rios' });
 
         const r = await db.query(`
             INSERT INTO atletas
@@ -222,7 +222,7 @@ router.post('/', autorizarPerfis('admin', 'gestor', 'rh'), async (req, res) => {
 });
 
 // ------------------------------------------------------------
-// PUT /api/atletas/:id — Atualizar dados do atleta
+// PUT /api/atletas/:id â Atualizar dados do atleta
 // ------------------------------------------------------------
 router.put('/:id', autorizarPerfis('admin', 'gestor', 'rh'), async (req, res) => {
     try {
@@ -256,7 +256,7 @@ router.put('/:id', autorizarPerfis('admin', 'gestor', 'rh'), async (req, res) =>
             cpf, rg, passaporte, posicao, pe_dominante, altura_cm, peso_kg,
             status, clube_formacao, agente, observacoes, id]);
 
-        if (!r.rows[0]) return res.status(404).json({ erro: 'Atleta não encontrado' });
+        if (!r.rows[0]) return res.status(404).json({ erro: 'Atleta nÃ£o encontrado' });
         res.json(r.rows[0]);
     } catch (err) {
         console.error('Erro PUT /atletas:', err);
@@ -265,7 +265,7 @@ router.put('/:id', autorizarPerfis('admin', 'gestor', 'rh'), async (req, res) =>
 });
 
 // ------------------------------------------------------------
-// POST /api/atletas/:id/contratos — Novo contrato
+// POST /api/atletas/:id/contratos â Novo contrato
 // ------------------------------------------------------------
 router.post('/:id/contratos', autorizarPerfis('admin', 'gestor', 'rh', 'financeiro'), async (req, res) => {
     try {
@@ -278,7 +278,7 @@ router.post('/:id/contratos', autorizarPerfis('admin', 'gestor', 'rh', 'financei
         } = req.body;
 
         if (!data_inicio || !data_fim || !salario_bruto) {
-            return res.status(400).json({ erro: 'data_inicio, data_fim e salario_bruto são obrigatórios' });
+            return res.status(400).json({ erro: 'data_inicio, data_fim e salario_bruto sÃ£o obrigatÃ³rios' });
         }
 
         // Encerra contrato anterior se existir
@@ -300,7 +300,7 @@ router.post('/:id/contratos', autorizarPerfis('admin', 'gestor', 'rh', 'financei
 
         const contrato = r.rows[0];
 
-        // Registra histórico de salário
+        // Registra histÃ³rico de salÃ¡rio
         const salAnterior = await db.query(`
             SELECT salario_novo FROM historico_salario_atleta
             WHERE atleta_id = $1 ORDER BY created_at DESC LIMIT 1
@@ -313,7 +313,7 @@ router.post('/:id/contratos', autorizarPerfis('admin', 'gestor', 'rh', 'financei
         `, [id, contrato.id, data_inicio,
             salAnterior.rows[0]?.salario_novo || null,
             salario_bruto,
-            'Novo contrato — ' + (tipo || 'profissional')]);
+            'Novo contrato â ' + (tipo || 'profissional')]);
 
         // Insere metas do contrato
         for (const meta of metas) {
@@ -334,8 +334,8 @@ router.post('/:id/contratos', autorizarPerfis('admin', 'gestor', 'rh', 'financei
 });
 
 // ------------------------------------------------------------
-// PUT /api/atletas/:id/estatisticas — Atualizar estatísticas
-// (upsert — cria ou atualiza por temporada+competição)
+// PUT /api/atletas/:id/estatisticas â Atualizar estatÃ­sticas
+// (upsert â cria ou atualiza por temporada+competiÃ§Ã£o)
 // ------------------------------------------------------------
 router.put('/:id/estatisticas', autorizarPerfis('admin', 'gestor', 'rh'), async (req, res) => {
     try {
@@ -349,7 +349,7 @@ router.put('/:id/estatisticas', autorizarPerfis('admin', 'gestor', 'rh'), async 
         } = req.body;
 
         if (!temporada || !competicao) {
-            return res.status(400).json({ erro: 'temporada e competicao são obrigatórios' });
+            return res.status(400).json({ erro: 'temporada e competicao sÃ£o obrigatÃ³rios' });
         }
 
         const r = await db.query(`
@@ -384,19 +384,19 @@ router.put('/:id/estatisticas', autorizarPerfis('admin', 'gestor', 'rh'), async 
         res.json(r.rows[0]);
     } catch (err) {
         console.error('Erro PUT estatisticas:', err);
-        res.status(500).json({ erro: 'Erro ao salvar estatísticas' });
+        res.status(500).json({ erro: 'Erro ao salvar estatÃ­sticas' });
     }
 });
 
 // ------------------------------------------------------------
-// POST /api/atletas/:id/bonificacoes — Registrar bonificação/desconto manual
+// POST /api/atletas/:id/bonificacoes â Registrar bonificaÃ§Ã£o/desconto manual
 // ------------------------------------------------------------
 router.post('/:id/bonificacoes', autorizarPerfis('admin', 'gestor', 'financeiro'), async (req, res) => {
     try {
         const { id } = req.params;
         const { contrato_id, meta_id, competencia, descricao, valor, tipo } = req.body;
         if (!competencia || !descricao || !valor) {
-            return res.status(400).json({ erro: 'competencia, descricao e valor são obrigatórios' });
+            return res.status(400).json({ erro: 'competencia, descricao e valor sÃ£o obrigatÃ³rios' });
         }
 
         const r = await db.query(`
@@ -410,7 +410,7 @@ router.post('/:id/bonificacoes', autorizarPerfis('admin', 'gestor', 'financeiro'
         res.status(201).json(r.rows[0]);
     } catch (err) {
         console.error('Erro POST bonificacao:', err);
-        res.status(500).json({ erro: 'Erro ao registrar bonificação' });
+        res.status(500).json({ erro: 'Erro ao registrar bonificaÃ§Ã£o' });
     }
 });
 
@@ -419,14 +419,14 @@ router.patch('/:id/bonificacoes/:bonId/pagar', autorizarPerfis('admin', 'finance
     try {
         const { bonId } = req.params;
         await db.query("UPDATE bonificacoes_atleta SET status = 'pago' WHERE id = $1", [bonId]);
-        res.json({ mensagem: 'Bonificação marcada como paga' });
+        res.json({ mensagem: 'BonificaÃ§Ã£o marcada como paga' });
     } catch (err) {
-        res.status(500).json({ erro: 'Erro ao atualizar bonificação' });
+        res.status(500).json({ erro: 'Erro ao atualizar bonificaÃ§Ã£o' });
     }
 });
 
 // ------------------------------------------------------------
-// GET /api/atletas/artilharia — Ranking de artilheiros
+// GET /api/atletas/artilharia â Ranking de artilheiros
 // ------------------------------------------------------------
 router.get('/aux/artilharia', async (req, res) => {
     try {
