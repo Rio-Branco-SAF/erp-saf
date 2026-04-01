@@ -10,19 +10,25 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_PROJECT_ID: b3886d7a-9b80-4424-8edd-740c9ed879cf
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Deploy to Railway
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli@latest
+
+      - name: Check Railway CLI version
+        run: railway --version
+
+      - name: Deploy backend to Railway
         working-directory: ./backend
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway up \
-            --service e60c9f39-7b0c-4c9e-ac29-db42bdbb1876 \
-            --environment db2bbede-be91-41c1-8fd8-b93ea9609a5c \
-            --detach
+          railway up --service backend --environment production --detach
