@@ -7,7 +7,7 @@ router.use(autenticar);
 
 // ============================================================
 // GET /api/financeiro/resumo
-// Dashboard: saldo, totais do mês, mês anterior, comparativo
+// Dashboard: saldo, totais do mÃªs, mÃªs anterior, comparativo
 // ============================================================
 router.get('/resumo', async (req, res) => {
   try {
@@ -15,7 +15,7 @@ router.get('/resumo', async (req, res) => {
     const mesRef = mes ? parseInt(mes) : new Date().getMonth() + 1;
     const anoRef = ano ? parseInt(ano) : new Date().getFullYear();
 
-    // Saldo acumulado realizado até hoje
+    // Saldo acumulado realizado atÃ© hoje
     const saldoRes = await pool.query(`
       SELECT
         COALESCE(SUM(CASE WHEN tipo='receita' THEN valor ELSE -valor END), 0) AS saldo_total,
@@ -26,7 +26,7 @@ router.get('/resumo', async (req, res) => {
         AND data_competencia <= CURRENT_DATE
     `);
 
-    // Mês de referência
+    // MÃªs de referÃªncia
     const mesAtualRes = await pool.query(`
       SELECT
         COALESCE(SUM(CASE WHEN tipo='receita' THEN valor ELSE 0 END), 0) AS receitas,
@@ -40,7 +40,7 @@ router.get('/resumo', async (req, res) => {
         AND EXTRACT(YEAR  FROM data_competencia) = $2
     `, [mesRef, anoRef]);
 
-    // Mês anterior (para comparativo)
+    // MÃªs anterior (para comparativo)
     const mesAntRef = mesRef === 1 ? 12 : mesRef - 1;
     const anoAntRef = mesRef === 1 ? anoRef - 1 : anoRef;
     const mesAntRes = await pool.query(`
@@ -61,7 +61,7 @@ router.get('/resumo', async (req, res) => {
         AND data_competencia BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
     `);
 
-    // Contas a receber (previstas, nns próximos 30 dias)
+    // Contas a receber (previstas, nns prÃ³ximos 30 dias)
     const receberRes = await pool.query(`
       SELECT COUNT(*) AS qtd, COALESCE(SUM(valor),0) AS total
       FROM lancamentos_financeiros
@@ -99,7 +99,7 @@ router.get('/resumo', async (req, res) => {
 
 // ============================================================
 // GET /api/financeiro/fluxo-mensal
-// Dados para o gráfico de ilux/ de caixa (últimos N meses)
+// Dados para o grÃ¡fico de ilux/ de caixa (Ãºltimos N meses)
 // ============================================================
 router.get('/fluxo-mensal', async (req, res) => {
   try {
@@ -132,7 +132,7 @@ router.get('/fluxo-mensal', async (req, res) => {
 
 // ============================================================
 // GET /api/financeiro/lancamentos
-// Lista com filtros, busca e paginação
+// Lista com filtros, busca e paginaÃ§Ã£o
 // ============================================================
 router.get('/lancamentos', async (req, res) => {
   try {
@@ -189,8 +189,8 @@ router.get('/lancamentos', async (req, res) => {
       totalPaginas: Math.ceil(total / parseInt(limite)),
     });
   } catch (err) {
-    console.error('Erro ao listar lançamentos:', err);
-    res.status(500).json({ erro: 'Erro ao buscar lançamentos.' });
+    console.error('Erro ao listar lanÃ§amentos:', err);
+    res.status(500).json({ erro: 'Erro ao buscar lanÃ§amentos.' });
   }
 });
 
@@ -211,16 +211,16 @@ router.get('/lancamentos/:id', async (req, res) => {
       WHERE l.id = $1
     `, [req.params.id]);
 
-    if (!res2.rows.length) return res.status(404).json({ erro: 'Lançamento não encontrado.' });
+    if (!res2.rows.length) return res.status(404).json({ erro: 'LanÃ§amento nÃ£o encontrado.' });
     res.json(res2.rows[0]);
   } catch (err) {
-    res.status(500).json({ erro: 'Erro ao buscar lançamento.' });
+    res.status(500).json({ erro: 'Erro ao buscar lanÃ§amento.' });
   }
 });
 
 // ============================================================
 // POST /api/financeiro/lancamentos
-// Cria um lançamento (receita ou despesa)
+// Cria um lanÃ§amento (receita ou despesa)
 // ============================================================
 router.post('/lancamentos', autorizarPerfis('admin', 'gestor', 'financeiro'), async (req, res) => {
   const {
@@ -230,7 +230,7 @@ router.post('/lancamentos', autorizarPerfis('admin', 'gestor', 'financeiro'), as
   } = req.body;
 
   if (!tipo || !descricao || !valor || !categoria_id || !data_competencia) {
-    return res.status(400).json({ erro: 'Campos obrigatórios: tipo, descricao, valor, categoria_id, data_competencia.' });
+    return res.status(400).json({ erro: 'Campos obrigatÃ³rios: tipo, descricao, valor, categoria_id, data_competencia.' });
   }
   if (!['receita', 'despesa'].includes(tipo)) {
     return res.status(400).json({ erro: 'tipo deve ser "receita" ou "despesa".' });
@@ -257,12 +257,12 @@ router.post('/lancamentos', autorizarPerfis('admin', 'gestor', 'financeiro'), as
     ]);
 
     res.status(201).json({
-      mensagem: 'Lançamento criado com sucesso.',
+      mensagem: 'LanÃ§amento criado com sucesso.',
       lancamento: resultado.rows[0],
     });
   } catch (err) {
-    console.error('Erro ao criar lançamento:', err);
-    res.status(500).json({ erro: 'Erro ao criar lançamento.' });
+    console.error('Erro ao criar lanÃ§amento:', err);
+    res.status(500).json({ erro: 'Erro ao criar lanÃ§amento.' });
   }
 });
 
@@ -294,7 +294,7 @@ router.put('/lancamentos/:id', autorizarPerfis('admin', 'gestor', 'financeiro'),
       WHERE id = $12
       RETURNING *
     `, [
-      tipo || null, descricao |x null,
+      tipo || null, descricao || null,
       valor ? parseFloat(valor) : null,
       categoria_id || null, centro_custo_id || null,
       conta_bancaria_id || null, data_competencia || null,
@@ -303,16 +303,16 @@ router.put('/lancamentos/:id', autorizarPerfis('admin', 'gestor', 'financeiro'),
       observacoes || null, id,
     ]);
 
-    if (!resultado.rows.length) return res.status(404).json({ erro: 'Lançamento não encontrado.' });
-    res.json({ mensagem: 'Lançamento atualizado.', lancamento: resultado.rows[0] });
+    if (!resultado.rows.length) return res.status(404).json({ erro: 'LanÃ§amento nÃ£o encontrado.' });
+    res.json({ mensagem: 'LanÃ§amento atualizado.', lancamento: resultado.rows[0] });
   } catch (err) {
-    res.status(500).json({ erro: 'Erro ao atualizar lançamento.' });
+    res.status(500).json({ erro: 'Erro ao atualizar lanÃ§amento.' });
   }
 });
 
 // ============================================================
 // PATCH /api/financeiro/lancamentos/:id/realizar
-// Marca um lançamento previsto como realizado
+// Marca um lanÃ§amento previsto como realizado
 // ============================================================
 router.patch('/lancamentos/:id/realizar', autorizarPerfis('admin', 'gestor', 'financeiro'), async (req, res) => {
   const { data_pagamento } = req.body;
@@ -322,9 +322,9 @@ router.patch('/lancamentos/:id/realizar', autorizarPerfis('admin', 'gestor', 'fi
       SET status = 'realizado', data_pagamento = $1
       WHERE id = $2 AND status = 'previsto'
     `, [data_pagamento || new Date(), req.params.id]);
-    res.json({ mensagem: 'Lançamento confirmado como realizado.' });
+    res.json({ mensagem: 'LanÃ§amento confirmado como realizado.' });
   } catch (err) {
-    res.status(500).json({ erro: 'Erro ao realizar lançamento.' });
+    res.status(500).json({ erro: 'Erro ao realizar lanÃ§amento.' });
   }
 });
 
@@ -337,9 +337,9 @@ router.patch('/lancamentos/:id/cancelar', autorizarPerfis('admin', 'gestor', 'fi
       `UPDATE lancamentos_financeiros SET status='cancelado' WHERE id=$1`,
       [req.params.id]
     );
-    res.json({ mensagem: 'Lançamento cancelado.' });
+    res.json({ mensagem: 'LanÃ§amento cancelado.' });
   } catch (err) {
-    res.status(500).json({ erro: 'Erro ao cancelar lançamento.' });
+    res.status(500).json({ erro: 'Erro ao cancelar lanÃ§amento.' });
   }
 });
 
@@ -352,9 +352,9 @@ router.delete('/lancamentos/:id', autorizarPerfis('admin'), async (req, res) => 
       `UPDATE lancamentos_financeiros SET status='cancelado' WHERE id=$1`,
       [req.params.id]
     );
-    res.json({ mensagem: 'Lançamento removido.' });
+    res.json({ mensagem: 'LanÃ§amento removido.' });
   } catch (err) {
-    res.status(500).json({ erro: 'Erro ao remover lançamento.' });
+    res.status(500).json({ erro: 'Erro ao remover lanÃ§amento.' });
   }
 });
 
@@ -400,13 +400,13 @@ router.get('/contas-bancarias', async (req, res) => {
     );
     res.json(resultado.rows);
   } catch (err) {
-    res.status(500).json({ erro: 'Erro ao buscar contas bancárias.' });
+    res.status(500).json({ erro: 'Erro ao buscar contas bancÃ¡rias.' });
   }
 });
 
 // ============================================================
 // GET /api/financeiro/por-categoria
-// Totais agrupados por categoria (para gráfico de pizza)
+// Totais agrupados por categoria (para grÃ¡fico de pizza)
 // ============================================================
 router.get('/por-categoria', async (req, res) => {
   try {
