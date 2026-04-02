@@ -33,9 +33,18 @@ async function migrate() {
       try {
         await client.query(sql);
       } catch (e) {
-        console.log('[MIGRATE] Aviso em ' + file + ' : ' + e.message.split('
-')[0]);
+        console.log('[MIGRATE] Aviso em ' + file + ' : ' + e.message.split('\n')[0]);
       }
+    }
+    // Fix admin password if still placeholder
+    try {
+      await client.query(
+        `UPDATE usuarios SET senha_hash = $1 WHERE email = 'ceo@saf.com.br' AND (senha_hash LIKE '$2b$12$placeholder%' OR senha_hash NOT LIKE '$2b$%')`,
+        ['$2b$12$TloT5M3H0reeCGxowKoLd.W9G/xPN2.oZ1C43QLgEroMsLX4gpo3G']
+      );
+      console.log('[MIGRATE] Admin password hash atualizado');
+    } catch (e) {
+      console.log('[MIGRATE] Admin password fix: ' + e.message.split('\n')[0]);
     }
     console.log('[MIGRATE] Concluido com sucesso');
   } finally {
