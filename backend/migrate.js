@@ -9,11 +9,11 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const SQL_FILES = [
   'db/init.sql',
   'db/schema_pedidos.sql',
-  'db/schema_relatorios.sql',
   'db/schema_atletas.sql',
   'db/schema_financeiro.sql',
   'db/schema.sql',
   'db/migration_001_auth.sql',
+  'db/schema_relatorios.sql',
   'db/seed.sql',
   'db/seed_atletas.sql',
   'db/seed_financeiro.sql',
