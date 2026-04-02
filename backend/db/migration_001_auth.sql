@@ -60,3 +60,8 @@ CREATE INDEX IF NOT EXISTS idx_refresh_tokens_expira
 -- LIMPEZA: remove refresh tokens expirados (cron job / manual)
 -- ============================================================
 -- DELETE FROM refresh_tokens WHERE expira_em < NOW() OR revogado = true;
+
+-- Add nome column to usuarios (used by auth routes)
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS nome VARCHAR(150);
+-- Populate nome from linked funcionario
+UPDATE usuarios u SET nome = (SELECT nome_completo FROM funcionarios f WHERE f.id = u.funcionario_id) WHERE u.funcionario_id IS NOT NULL AND u.nome IS NULL;
