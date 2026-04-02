@@ -29,11 +29,12 @@ async function migrate() {
     for (const file of SQL_FILES) {
       const sql = fs.readFileSync(path.join(__dirname, file), 'utf8');
       const stmts = sql.split(';').filter(s => s.trim().length > 0);
-      console.log('[MIGRATE] ' + file + ' \u2014 ' + stmts.length + ' statements');
+      console.log('[MIGRATE] ' + file + ' — ' + stmts.length + ' statements');
       try {
         await client.query(sql);
       } catch (e) {
-        console.log('[MIGRATE] Aviso em ' + file + ' : ' + e.message.split('\n')[0]);
+        console.log('[MIGRATE] Aviso em ' + file + ' : ' + e.message.split('
+')[0]);
       }
     }
     console.log('[MIGRATE] Concluido com sucesso');
@@ -43,6 +44,7 @@ async function migrate() {
   }
 }
 
-migrate()
-  .then(() => process.exit(0))
-  .catch((e) => { console.error('[MIGRATE] Erro fatal:', e.message); process.exit(1); });
+migrate().catch((e) => {
+  console.error('[MIGRATE] Erro fatal:', e.message);
+  process.exit(1);
+});
