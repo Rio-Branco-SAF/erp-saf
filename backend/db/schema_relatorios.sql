@@ -20,10 +20,10 @@ CREATE TABLE IF NOT EXISTS relatorios_gerados (
 CREATE OR REPLACE VIEW vw_resumo_executivo AS
 SELECT
     -- Financeiro
-    (SELECT COALESCE(SUM(valor),0) FROM transacoes WHERE tipo='receita'  AND DATE_TRUNC('month', data_transacao) = DATE_TRUNC('month', CURRENT_DATE)) AS receita_mes,
-    (SELECT COALESCE(SUM(valor),0) FROM transacoes WHERE tipo='despesa'  AND DATE_TRUNC('month', data_transacao) = DATE_TRUNC('month', CURRENT_DATE)) AS despesa_mes,
-    (SELECT COALESCE(SUM(valor),0) FROM transacoes WHERE tipo='receita'  AND EXTRACT(YEAR FROM data_transacao) = EXTRACT(YEAR FROM CURRENT_DATE)) AS receita_ano,
-    (SELECT COALESCE(SUM(valor),0) FROM transacoes WHERE tipo='despesa'  AND EXTRACT(YEAR FROM data_transacao) = EXTRACT(YEAR FROM CURRENT_DATE)) AS despesa_ano,
+    (SELECT COALESCE(SUM(valor),0) FROM lancamentos_financeiros WHERE tipo='receita'  AND DATE_TRUNC('month', data_competencia) = DATE_TRUNC('month', CURRENT_DATE)) AS receita_mes,
+    (SELECT COALESCE(SUM(valor),0) FROM lancamentos_financeiros WHERE tipo='despesa'  AND DATE_TRUNC('month', data_competencia) = DATE_TRUNC('month', CURRENT_DATE)) AS despesa_mes,
+    (SELECT COALESCE(SUM(valor),0) FROM lancamentos_financeiros WHERE tipo='receita'  AND EXTRACT(YEAR FROM data_competencia) = EXTRACT(YEAR FROM CURRENT_DATE)) AS receita_ano,
+    (SELECT COALESCE(SUM(valor),0) FROM lancamentos_financeiros WHERE tipo='despesa'  AND EXTRACT(YEAR FROM data_competencia) = EXTRACT(YEAR FROM CURRENT_DATE)) AS despesa_ano,
 
     -- Folha (atletas + funcionários)
     (SELECT COALESCE(SUM(salario_bruto),0)       FROM contratos_atleta  WHERE status='ativo') AS folha_atletas,
@@ -55,16 +55,16 @@ SELECT
 -- ============================================================
 CREATE OR REPLACE VIEW vw_evolucao_financeira AS
 SELECT
-    TO_CHAR(DATE_TRUNC('month', data_transacao), 'YYYY-MM') AS mes,
-    TO_CHAR(DATE_TRUNC('month', data_transacao), 'Mon/YY')  AS mes_label,
+    TO_CHAR(DATE_TRUNC('month', data_competencia), 'YYYY-MM') AS mes,
+    TO_CHAR(DATE_TRUNC('month', data_competencia), 'Mon/YY')  AS mes_label,
     SUM(CASE WHEN tipo='receita' THEN valor ELSE 0 END)     AS receita,
     SUM(CASE WHEN tipo='despesa' THEN valor ELSE 0 END)     AS despesa,
     SUM(CASE WHEN tipo='receita' THEN valor ELSE 0 END)
   - SUM(CASE WHEN tipo='despesa' THEN valor ELSE 0 END)     AS resultado
-FROM transacoes
-WHERE data_transacao >= CURRENT_DATE - INTERVAL '12 months'
-GROUP BY DATE_TRUNC('month', data_transacao)
-ORDER BY DATE_TRUNC('month', data_transacao);
+FROM lancamentos_financeiros
+WHERE data_competencia >= CURRENT_DATE - INTERVAL '12 months'
+GROUP BY DATE_TRUNC('month', data_competencia)
+ORDER BY DATE_TRUNC('month', data_competencia);
 
 -- ============================================================
 -- VIEW: Folha Consolidada (atletas + funcionários)
