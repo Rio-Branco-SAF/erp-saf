@@ -27,7 +27,7 @@ SELECT
 
     -- Folha (atletas + funcionários)
     (SELECT COALESCE(SUM(salario_bruto),0)       FROM contratos_atleta  WHERE status='ativo') AS folha_atletas,
-    (SELECT COALESCE(SUM(salario_base),0)         FROM funcionarios      WHERE status='ativo') AS folha_funcionarios,
+    (SELECT COALESCE(SUM(salario),0)         FROM funcionarios      WHERE status='ativo') AS folha_funcionarios,
 
     -- Atletas
     (SELECT COUNT(*) FROM atletas WHERE status='ativo')                          AS atletas_ativos,
@@ -95,8 +95,8 @@ SELECT
     f.id                                    AS pessoa_id,
     f.nome_completo,
     f.cargo                                 AS cargo_posicao,
-    f.salario_base                          AS salario_bruto,
-    f.salario_base                          AS salario_carteira,
+    f.salario                          AS salario_bruto,
+    f.salario                          AS salario_carteira,
     0                                       AS complemento,
     NULL                                    AS contrato_ate,
     f.status
