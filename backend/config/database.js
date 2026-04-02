@@ -10,9 +10,7 @@ if (process.env.DATABASE_URL) {
   // Produção (Railway) - URL única
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production'
-      ? { rejectUnauthorized: false }
-      : false,
+    ssl: false,
     max: 10,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000,
@@ -20,10 +18,10 @@ if (process.env.DATABASE_URL) {
 } else {
   // Desenvolvimento local - variáveis individuais
   pool = new Pool({
-    host:     process.env.DB_HOST     || 'localhost',
-    port:     parseInt(process.env.DB_PORT || '5432'),
-    database: process.env.DB_NAME     || 'erp_saf',
-    user:     process.env.DB_USER     || 'postgres',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432'),
+    database: process.env.DB_NAME || 'erp_saf',
+    user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || '',
     max: 10,
     idleTimeoutMillis: 30000,
