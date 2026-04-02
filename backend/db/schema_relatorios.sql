@@ -46,7 +46,7 @@ SELECT
 
     -- Metas
     (SELECT COUNT(*) FROM metas WHERE status='ativa')                            AS metas_ativas,
-    (SELECT ROUND(AVGpercentual))  FROM metas_completo WHERE status='ativa')    AS progresso_medio_metas,
+    (SELECT ROUND(AVG(percentual)))  FROM metas_completo WHERE status='ativa')    AS progresso_medio_metas,
     (SELECT COUNT(*) FROM metas_completo WHERE status='ativa' AND percentual < 30
         AND dias_restantes < 30)                                                  AS metas_criticas;
 
@@ -62,7 +62,7 @@ SELECT
     SUM(CASE WHEN tipo='receita' THEN valor ELSE 0 END)
   - SUM(CASE WHEN tipo='despesa' THEN valor ELSE 0 END)     AS resultado
 FROM transacoes
-WHERE data_transacao >= CUPREGT_DATE - INTERVAL '12 months'
+WHERE data_transacao >= CURRENT_DATE - INTERVAL '12 months'
 GROUP BY DATE_TRUNC('month', data_transacao)
 ORDER BY DATE_TRUNC('month', data_transacao);
 
@@ -93,7 +93,7 @@ UNION ALL
 SELECT
     'funcionario'                           AS categoria,
     f.id                                    AS pessoa_id,
-    f.nome,
+    f.nome_completo,
     f.cargo                                 AS cargo_posicao,
     f.salario_base                          AS salario_bruto,
     f.salario_base                          AS salario_carteira,
@@ -111,7 +111,7 @@ ORDER BY categoria, salario_bruto DESC;
 CREATE OR REPLACE VIEW vw_ranking_fornecedores AS
 SELECT
     f.id,
-    f.nome,
+    f.nome_completo,
     f.categoria,
     COUNT(pc.id)                            AS total_pedidos,
     COUNT(CASE WHEN pc.status='concluido' THEN 1 END) AS pedidos_concluidos,
@@ -119,7 +119,7 @@ SELECT
 FROM fornecedores f
 LEFT JOIN pedidos_compra pc ON pc.fornecedor_id = f.id
 LEFT JOIN cotacoes co ON co.pedido_id = pc.id AND co.selecionada = TRUE
-GROUP BY f.id, f.nome, f.categoria
+GROUP BY f.id, f.nome_completo, f.categoria
 ORDER BY volume_total DESC;
 
 -- ============================================================
