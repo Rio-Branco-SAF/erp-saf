@@ -98,3 +98,6 @@ async function migrate() {
 }
 
 migrate().catch(err => { console.error('[MIGRATE] Fatal:', err.message); process.exit(1); });
+
+process.exit(0);
+process.exit(0);
