@@ -46,7 +46,7 @@ SELECT
 
     -- Metas
     (SELECT COUNT(*) FROM metas WHERE status='ativa')                            AS metas_ativas,
-    (SELECT ROUND(AVG(percentual)))  FROM metas_completo WHERE status='ativa')    AS progresso_medio_metas,
+    (SELECT ROUND(AVG(percentual))  FROM metas_completo WHERE status='ativa')    AS progresso_medio_metas,
     (SELECT COUNT(*) FROM metas_completo WHERE status='ativa' AND percentual < 30
         AND dias_restantes < 30)                                                  AS metas_criticas;
 
