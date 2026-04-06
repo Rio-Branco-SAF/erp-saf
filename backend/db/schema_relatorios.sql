@@ -144,14 +144,14 @@ SELECT
     ea.competicao,
     ea.temporada,
     COUNT(DISTINCT ea.atleta_id)            AS atletas,
-    SUM(ea.jogos)                           AS total_jogos,
+    SUM(ea.jogos_disputados)                           AS total_jogos,
     SUM(ea.gols)                            AS total_gols,
     SUM(ea.assistencias)                    AS total_assistencias,
-    SUM(ea.clean_sheets)                    AS total_clean_sheets,
+    SUM(ea.jogos_sem_sofrer_gol)                    AS total_clean_sheets,
     SUM(ea.cartoes_amarelos)                AS total_amarelos,
     SUM(ea.cartoes_vermelhos)               AS total_vermelhos,
-    CASE WHEN SUM(ea.jogos) > 0
-        THEN ROUND(SUM(ea.gols)::NUMERIC / SUM(ea.jogos), 2)
+    CASE WHEN SUM(ea.jogos_disputados) > 0
+        THEN ROUND(SUM(ea.gols)::NUMERIC / SUM(ea.jogos_disputados), 2)
         ELSE 0
     END                                     AS media_gols_jogo
 FROM estatisticas_atleta ea
@@ -168,10 +168,10 @@ SELECT
     a.posicao,
     SUM(ea.gols)                            AS total_gols,
     SUM(ea.assistencias)                    AS total_assistencias,
-    SUM(ea.jogos)                           AS total_jogos,
-    SUM(ea.clean_sheets)                    AS total_clean_sheets,
-    CASE WHEN SUM(ea.jogos) > 0
-        THEN ROUND(SUM(ea.gols)::NUMERIC / SUM(ea.jogos), 2)
+    SUM(ea.jogos_disputados)                           AS total_jogos,
+    SUM(ea.jogos_sem_sofrer_gol)                    AS total_clean_sheets,
+    CASE WHEN SUM(ea.jogos_disputados) > 0
+        THEN ROUND(SUM(ea.gols)::NUMERIC / SUM(ea.jogos_disputados), 2)
         ELSE 0
     END                                     AS media_gols
 FROM atletas a
