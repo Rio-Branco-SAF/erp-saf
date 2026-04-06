@@ -27,7 +27,8 @@ SELECT
             ROUND(GREATEST(0, LEAST(100, (CAST(valor_meta AS NUMERIC) / NULLIF(valor_atual, 0)) * 100)))
         ELSE
             ROUND(GREATEST(0, LEAST(100, (CAST(valor_atual AS NUMERIC) / NULLIF(valor_meta, 0)) * 100)))
-    END AS percentual
+    END AS percentual,
+    GREATEST(0, (data_fim - CURRENT_DATE)) AS dias_restantes
 FROM metas;
 
 CREATE OR REPLACE VIEW vw_resumo_executivo AS
