@@ -131,8 +131,8 @@ SELECT
     COUNT(CASE WHEN pc.status='concluido' THEN 1 END) AS pedidos_concluidos,
     COALESCE(SUM(co.valor_total), 0)        AS volume_total
 FROM fornecedores f
-LEFT JOIN pedidos_compra pc ON pc.fornecedor_id = f.id
-LEFT JOIN cotacoes co ON co.pedido_id = pc.id AND co.status = 'selecionada'
+LEFT JOIN cotacoes co ON co.fornecedor_id = f.id
+LEFT JOIN pedidos_compra pc ON pc.id = co.pedido_id
 GROUP BY f.id, f.nome, f.categoria
 ORDER BY volume_total DESC;
 
