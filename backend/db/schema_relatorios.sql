@@ -17,6 +17,19 @@ CREATE TABLE IF NOT EXISTS relatorios_gerados (
 -- ============================================================
 -- VIEW: Resumo Executivo Consolidado
 -- ============================================================
+-- View auxiliar: metas com percentual de progresso calculado
+CREATE OR REPLACE VIEW metas_completo AS
+SELECT
+    *,
+    CASE
+        WHEN valor_meta IS NULL OR valor_meta = 0 THEN 0
+        WHEN sentido = 'abaixo' THEN
+            ROUND(GREATEST(0, LEAST(100, (CAST(valor_meta AS NUMERIC) / NULLIF(valor_atual, 0)) * 100)))
+        ELSE
+            ROUND(GREATEST(0, LEAST(100, (CAST(valor_atual AS NUMERIC) / NULLIF(valor_meta, 0)) * 100)))
+    END AS percentual
+FROM metas;
+
 CREATE OR REPLACE VIEW vw_resumo_executivo AS
 SELECT
     -- Financeiro
