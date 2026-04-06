@@ -37,8 +37,8 @@ router.get('/financeiro', async (req, res) => {
     // Transações do período
     let filtros = ['1=1'];
     const params = [];
-    if (periodo_ini) { params.push(periodo_ini); filtros.push(`data_transacao >= $${params.length}`); }
-    if (periodo_fim) { params.push(periodo_fim); filtros.push(`data_transacao <= $${params.length}`); }
+    if (periodo_ini) { params.push(periodo_ini); filtros.push(`data_competencia >= $${params.length}`); }
+    if (periodo_fim) { params.push(periodo_fim); filtros.push(`data_competencia <= $${params.length}`); }
     if (categoria)   { params.push(categoria);   filtros.push(`categoria = $${params.length}`); }
 
     const transacoes = await db.query(
@@ -46,7 +46,7 @@ router.get('/financeiro', async (req, res) => {
        FROM transacoes t
        LEFT JOIN usuarios u ON u.id = t.criado_por
        WHERE ${filtros.join(' AND ')}
-       ORDER BY data_transacao DESC
+       ORDER BY data_competencia DESC
        LIMIT 200`,
       params
     );
