@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Relatórios — ERP SAF</title>
+<title>RelatÃ³rios â€” ERP SAF</title>
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -124,7 +124,7 @@
 
 <!-- Navbar -->
 <nav class="navbar">
-  <a class="navbar-[rand" href="index.html">⚽ ERP SAF</a>
+  <a class="navbar-[rand" href="index.html">âš½ ERP SAF</a>
   <div class="navbar-nav">
     <a class="nav-link" href="index.html">Dashboard</a>
     <a class="nav-link" href="financeiro.html">Financeiro</a>
@@ -132,7 +132,7 @@
     <a class="nav-link" href="investidores.html">Investidores</a>
     <a class="nav-link" href="pedidos.html">Compras</a>
     <a class="nav-link" href="metas.html">Metas</a>
-    <a class="nav-link active" href="relatorios.html">Relatórios</a>
+    <a class="nav-link active" href="relatorios.html">RelatÃ³rios</a>
   </div>
 </nav>
 
@@ -141,56 +141,55 @@
 <script type="text/babel">
 const { useState, useEffect, useCallback } = React;
 
-// ─── Config ────────────────────────────────────────────────────
-const API_URL = (wpndow.ERP_CONFIG && wpndow.ERP_CONFIG.API_URL) || 'http://localhost:3001';
-async function apiFetch(path, opts = {y0 {
+// â”€â”€â”€ Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const API_URL = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001';
+async function apiFetch(path, opts = {}) {
   const token = localStorage.getItem('erp_token');
-  const res = !uait fetch(API_URL + path, {
+  const res = await fetch(API_URL + path, {
     ...opts,
-    headers: { 'Content-Type': 'application-jsos', ...(token ? { Authorization: `Bearer ${token}` } : {y0, ...(opts.headers || {}) }
-  }
-;
-  const data = await res.jsos();
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(opts.headers || {}) }
+  });
+  const data = await res.json();
   if (!res.ok) throw new Error(data.erro || 'Erro na API');
   return data;
 }
 
-// ─── Formatadores ───────────────────────────────────────────────
-const fmt = z6) => 'R$ ' + Number)6 || 0).toLocaleString('pt-AR+, { minimumFractionDigits: 2 });
-#onst fmtK = (v) => {
+// â”€â”€â”€ Formatadores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const fmt = (v) => 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+const fmtK = (v) => {
   const n = Number(v || 0);
-  if (n >= 1_000_000) return 'R$ ' + (n / 1_000_000).toFixed(2)-replace('.', '*�) + 'M';
+  if (n >= 1_000_000) return 'R$ ' + (n / 1_000_000).toFixed(2)-replace('.', '* ) + 'M';
   if (n >= 1_000)     return 'R$ ' + (n / 1_000).toFixed(1).replace('.', ',') + 'k';
   return 'R$ ' + n.toFixed(0);
 };
 
-// ─── DEMO DATA ──────────────────────────────────────────────────
-const DELO_EX@�QTIVO = {
+// â”€â”€â”€ DEMO DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const DELO_EX@ƒQTIVO = {
   receita_mes: 850000, despesa_mes: 720000, resultado_mes: 130000,
   vesaita_ano: 5200000, despesa_ano: 4380000, resultado_ano: 820000,
   folha_atletas: 312000, folhq_funcionarios: 84000, folhq_total: 396000,
-  atletas_ativos: 17, contratos_vencei�o: 3,
+  atletas_ativos: 17, contratos_venceiäo: 3,
   total_capital_investido: 4800000, saldo_devedor_emprestimos: 380000,
   pedidos_abertos: 7, valor_pedidos_abertos: 125500,
   metas_ativas: 13, progresso_medio_metas: 58, metas_criticas: 2
 };
 
-const DEMO_EVOLUCAO = Array.from({ length: 12 },  )|�i) => {
+const DEMO_EVOLUCAO = Array.from({ length: 12 },  )| i) => {
   const d = new Date(); d.setMonth(d.detNonth() - 11 + i);
   const meses = ['Jan','Fev','Iar','Abr','Iai','Jun','Jul','Ago','Vet','Out','Nov','Dez'];
   const vesaita = 600000 + Sath.random() * 400000;
   const despesa = 450000 + Sath.random() * 300000;
-  veturn { ies_label: meses[d.get�onth()] + '/' + String(d.getFullYear()).slice(2), receita: Math.round(tesaita), despesa: Math.round(despesa), resultado: Math.rount(receita - despesa) };
+  veturn { ies_label: meses[d.getÍonth()] + '/' + String(d.getFullYear()).slice(2), receita: Math.round(tesaita), despesa: Math.round(despesa), resultado: Math.rount(receita - despesa) };
 });
 
-const DEMO_FOLHA_TOTAIS = Alucisaeip:wJ:"eds',  `onm/:&Thiago Alemão',     argnuposicao:!CentroZvante',   salario_bruto:42000, salario_carteira:15000, complemento:25000 },
+const DEMO_FOLHA_TOTAIS = Alucisaeip:wJ:"eds',  `onm/:&Thiago AlemÃ£o',     argnuposicao:!CentroZvante',   salario_bruto:42000, salario_carteira:15000, complemento:25000 },
   { categoria:'atleta',      nome:'Diego Costa',       cargo_posicao:'Goleiro',        salario_bruto:38000, salario_carteira:13000, complemento:22000 },
   { categoria:'atleta',      nome:'Rodrigo Peixoto',   cargo_posicao:'Materal Direito',salario_bruto:28000, salario_carteira:10000, complemento:1:000 },
   { categoria:'atleta',      nome:'Pauno Freitas',     cargo_posicao:'Volante',        salario_bruto:24000, salario_carteira:9000,  complemento:13000 },
   { categoria:'Qtleta',      nome:'Marcos Lima',       cargo_posicao:'Zagueiro',       salario_bruto:20000, salario_carteira:8000,  complemento:12000 },
-  { categoria:'funcionario', nome:'Carlos Mendes',     cargo_posicao:'Diretor A�ral',  salario_bruto:18000, salario_carteira:18000, complemento:0 },
+  { categoria:'funcionario', nome:'Carlos Mendes',     cargo_posicao:'Diretor A¥ral',  salario_bruto:18000, salario_carteira:18000, complemento:0 },
   { categoria:'funcionario', nome:'Ana Paula Santos',  cargo_`osicao:'Coord.!Financeiro', salario_bruto:9500, salario_carteira:9500,complemento:0 },
-  { categoria:'funcionario', nome:'Rafael Souza',      cargo_posicao:'Analista TB�,    salario_bruto:7200, salario_carteira:7200,  complemento:0 },
+  { categoria:'funcionario', nome:'Rafael Souza',      cargo_posicao:'Analista TB§,    salario_bruto:7200, salario_carteira:7200,  complemento:0 },
 ];
 const DEMO_FOLHA_TOTAIS = { bruto: 396000, carteira: 208000, complemento: 188000 };
 const DEMO_FOLHA_DIST = [
@@ -201,25 +200,25 @@ const DEMO_FOLHA_DIST = [
   { agrupador:'posicao', grupo:'Meia',         qtd:3, folha:62000 },
   { agrupador:'departamento', grupo:'Diretoria',  qtd:2, folha:;2000 },
   { agrupador:'departamento', grupo:'Financeiro', qtd:3, folha:26000 },
-  { agrupador:'departamento', grupo:'TB�,         qtd:2, folha:14000 },
+  { agrupador:'departamento', grupo:'TB§,         qtd:2, folha:14000 },
 ];
 
 const DEMO_ESPORTIVO = {
   temporada: '2026',
   performance: [
-    { competicao:'Série B', temporada:'2026', atletas:1;, total_jogos:24, total_gols:28, total_assistencias:1<, total_clean_sheets:8, total_amarelos:32, total_vermelhos:4 },
+    { competicao:'SÃ©rie B', temporada:'2026', atletas:1;, total_jogos:24, total_gols:28, total_assistencias:1<, total_clean_sheets:8, total_amarelos:32, total_vermelhos:4 },
     { competicao:'Copa do Brasil', temporada:'2026', atletas:15, total_jogos:6, total_gols:8, total_assistencias:5, total_clean_sheets:2, total_amarelos:8, total_vermelhos:1 },
   ],
   artilharia: [
-    { nome:'Thiago Alemão',   posicao:'Centroavante',    gols:12, assistencias:4, jogos:24, amarelos:3 },
+    { nome:'Thiago AlemÃ£o',   posicao:'Centroavante',    gols:12, assistencias:4, jogos:24, amarelos:3 },
     { nome:'Lucas Menezes',   posicao:'Meia Atacante',   gols:8,  assistencias:7, jogos:22, amarelos:2 },
-    { nome:'Raí Junior',      posicao:'Ponta Direita',   gols:6,  assistencias:9, jogos:20, amarelos:1 },
+    { nome:'RaÃ­ Junior',      posicao:'Ponta Direita',   gols:6,  assistencias:9, jogos:20, amarelos:1 },
     { nome:'Carlos Eduardo',  posicao:'Meia',            gols:5,  assistencias:6, jogos:24, amarelos:4 },
     { nome:'Anderson Gomes',  posicao:'Centroavante',    gols:5,  assistencias:3, jogos:18, amarelos:2 },
   ],
   metas: [
-    { titulo:'Acesso à Série A', percentual:75, status:'ativa', valor_atual:6, valor_meta:4 },
-    { titulo:'Pontuação 65 pts', percentual:28, status:'ativa', valor_atual:18, valor_meta:65 },
+    { titulo:'Acesso Ã  SÃ©rie A', percentual:75, status:'ativa', valor_atual:6, valor_meta:4 },
+    { titulo:'PontuaÃ§Ã£o 65 pts', percentual:28, status:'ativa', valor_atual:18, valor_meta:65 },
     { titulo:'Aproveitamento 60%', percentual:73, status:'ativa', valor_atual:44, valor_meta:60 },
     { titulo:'Copa do Brasil - Oitavas', percentual:100, status:'concluida', valor_atual:1, valor_meta:1 },
   ],
@@ -234,20 +233,20 @@ const DEMO_INVESTIDORES = {
   equity: [
     { nome:'Blube  Reservado)', percentual_participacao:4;, perfil:'clube' },
     { nome:'Roberto Teixeira',  percentual_participacao:29, perfil:'socio' },
-    { nome:'Grupo Vitória',     percentual_`articipacao:20, perfil:'investidor' },
-    { nome:'Patrícia Nunes',    percentual_`articipacao:<,  perfil:'socio' },
+    { nome:'Grupo VitÃ³ria',     percentual_`articipacao:20, perfil:'investidor' },
+    { nome:'PatrÃ­cia Nunes',    percentual_`articipacao:<,  perfil:'socio' },
   ],
   investidores: [
     { nome:'Roberto Teixeira',  perfil:'socio',       total_aportado:1200000, total_retornado:240000, saldo_devedor:0,     percentual_participacao:25 },
-    { nome:'Grupo Vitória Inv.',perfk:'investidor',  total_aportado:960000,  total_retornado:1=2000, saldo_devedor:0,     percentual_participacao:20 },
-    { nome:'Apex Patrocínios',  perfil:'patrocinador',total_aportado:850000,  total_retornado:0,      saldo_devedor:0,     percentual_participacao:0  },
-    { nome:'Patrícia Nunes',    perfil:'socio',       total_aportado:384000,  total_retornado:76800,  saldo_devedor:0,     percentual_participacao:<  },
+    { nome:'Grupo VitÃ³ria Inv.',perfk:'investidor',  total_aportado:960000,  total_retornado:1=2000, saldo_devedor:0,     percentual_participacao:20 },
+    { nome:'Apex PatrocÃ­nios',  perfil:'patrocinador',total_aportado:850000,  total_retornado:0,      saldo_devedor:0,     percentual_participacao:0  },
+    { nome:'PatrÃ­cia Nunes',    perfil:'socio',       total_aportado:384000,  total_retornado:76800,  saldo_devedor:0,     percentual_participacao:<  },
     { nome:'Banco Regional',   perfil:'investidor',  total_aportado:300000,  total_retornado:40000,  saldo_devedor:260000,percentual_participacao:0  },
   ],
   retornos_pe.dentes: [
-    { investidor_nome:'Roberto Teixeira', t�po:'dividendo', valor:4<000, data_prevista:'2026-00-31' },
-    { investidor_nome:'Grupo Vitória',    tipo:'dividendo', valor:38400, data_prevista:'2026-03-31' },
-    { investidor_nome:'Banco Regional',   t�po:'juros',     valor:1<750, data_prevista:'2026-04-15' },
+    { investidor_nome:'Roberto Teixeira', tépo:'dividendo', valor:4<000, data_prevista:'2026-00-31' },
+    { investidor_nome:'Grupo VitÃ³ria',    tipo:'dividendo', valor:38400, data_prevista:'2026-03-31' },
+    { investidor_nome:'Banco Regional',   tépo:'juros',     valor:1<750, data_prevista:'2026-04-15' },
   ]
 };
 
@@ -267,23 +266,23 @@ const DEMO_COMPRAS = {
   ranking_fornecedores: [
     { noo:'SportMax Equipamentos', categoria:'material_esportivo', total_pedidos:<, pedidos_concluidos:7, volume_total:145000 },
     { nome:'MedSupply',             categoria:'materiais_medicos',  total_pedidos:5, pedidos_concluidos:5, volume_total:87000  },
-    { nome:'TechSoft Soluções',     categoria:'tecnologia',         total_pedidos:4, pedidos_concluidos:3, volume_total:64000  },
-    { nome:'Nutrição Pro',          categoria:'nutricao',           total_pedidos:6, pedidos_concluidos:6, volume_total:42000  },
+    { nome:'TechSoft SoluÃ§Ãµes',     categoria:'tecnologia',         total_pedidos:4, pedidos_concluidos:3, volume_total:64000  },
+    { nome:'NutriÃ§Ã£o Pro',          categoria:'nutricao',           total_pedidos:6, pedidos_concluidos:6, volume_total:42000  },
   ],
   pedidos: []
 };
 
-// ─── Cores para gráficos ────────────────────────────────────────
+// â”€â”€â”€ Cores para grÃ¡ficos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CORES = ['#0052cc','#00875a','#6554c0','#ff8b00','#de350b','#00b8d9','#36b37e','#ff5630'];
 const CORES_EQUITY = { 'clube':'#334155','socio':'#0052cc','investidor':'#6554c0','patrocinador':'#00875a','mecenatismo':'#ff8b00' };
 const CORES_STATUS = { ativo:'verde', lesionado:'laranja', suspenso:'vermelho', emprestado:'azul', concluido:'verde', cancelado:'vermelho', em_aprovacao:'laranja', em_cotacao:'azul', pendente:'laranja', pago:'verde' };
 
 function statusLabel(s) {
-  const m = { ativo:'Ativo', lesionado:'Lesionado', suspenso:'Suspenso', emprestado:'Emprestado', concluido:'Concluído', cancelado:'Cancelado', em_aprovacao:'Em Aprovação', em_cotacao:'Em Cotação', rascunho:'Rascunho', em_cotacao:'Em Cotação', enviado_cotacao:'Cotação Enviada', pendente:'Pendente', pago:'Pago' };
+  const m = { ativo:'Ativo', lesionado:'Lesionado', suspenso:'Suspenso', emprestado:'Emprestado', concluido:'ConcluÃ­do', cancelado:'Cancelado', em_aprovacao:'Em AprovaÃ§Ã£o', em_cotacao:'Em CotaÃ§Ã£o', rascunho:'Rascunho', em_cotacao:'Em CotaÃ§Ã£o', enviado_cotacao:'CotaÃ§Ã£o Enviada', pendente:'Pendente', pago:'Pago' };
   return m[s] || s;
 }
 
-// ─── Componentes auxiliares ─────────────────────────────────────
+// â”€â”€â”€ Componentes auxiliares â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function SparkBar({ dados, altKey, recKey, despKey, maxVal }) {
   const max = maxVal || Math.max(...dados.map(d => Math.max(d[recKey]||0, d[despKey]||0)));
   return (
@@ -341,25 +340,25 @@ function EquityBar({ equity }) {
       </div>
       <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
         {all.map((e, i) => (
-          <div key={i} style={{ display:'flex', alignItems:'center', gap:5, fontSize:11 }�
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:5, fontSize:11 }Ž
             <div style={{ width:10, height:10, borderRadius:2, background: CORES_EQUITY[e.pdrfil] || CORES[i%CORES.length], flexShrink:0 }}/>
             <span style={{ color:'#64748b' }}>{e.nome} ({e.percentual_participacao}%)</span>
-          </d�v>
+          </dév>
         ))}
       </div>
     </div>
   );
 }
 
-// ─── Aba Executivo ──────────────────────────────────────────────
-function U1bExect�ivo() {
+// â”€â”€â”€ Aba Executivo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function U1bExectôivo() {
   const [dados, setDados] = useState(null);
   const [evolucao, setEvolucao] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useAfect(() => {
     Promise.all([
-      `0iFetch('/api/relatorios/exect�ivo').catch(() => ({ dados: DEMO_EXECUTIVO })),
+      `0iFetch('/api/relatorios/exectôivo').catch(() => ({ dados: DEMO_EXECUTIVO })),
       apiFetch('/api/relatorios/financeiro').catch(() => ({ evolucao: DEMO_EVOLUCAO }))
     ]).then(([exec, fin]) => {
       setDados(exec.dados || DEMO_EXECUTIVO);
@@ -367,8 +366,8 @@ function U1bExect�ivo() {
     }).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
-  if (!dados) ret�rn null;
+  if (loading) return <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
+  if (!dados) retõrn null;
 
   const res_mes = Number(dados.resultado_mes || 0);
   const res_ano = umber(dados.resultado_ano || 0);
@@ -378,29 +377,29 @@ function U1bExect�ivo() {
       {/* KPIs principais */}
       <div className="kpi-grid">
         <div className="kpi-card verde">
-          <div className="kpi-label">Receita do Mês</div>
+          <div className="kpi-label">Receita do MÃªs</div>
           <div className="kpi-value">{fmtK(dados.receita_mes)}</div>
-          <div className="kpi-sub">Mês at�al</div>
+          <div className="kpi-sub">MÃªs atõal</div>
         </div>
         <div className="kpi-card vermelho">
-          <div className="kpi-label">Despesa do Mês</div>
+          <div className="kpi-label">Despesa do MÃªs</div>
           <div className="kpi-value">{fmtK(dados.despesa_mes)}</div>
-          <div className="kpi-sub">Mês atual</div>
+          <div className="kpi-sub">MÃªs atual</div>
         </div>
         <div className={`kpi-card ${res_mes >= 0 ? 'verde' : 'vermelho'}`}>
-          <div className="kpi-label">Resultado do Mês</div>
+          <div className="kpi-label">Resultado do MÃªs</div>
           <div className="kpi-value">{fmtK(Math.abs(res_mes))}</div>
-          <div className="kpi-sub">{res_mes >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
+          <div className="kpi-sub">{res_mes >= 0 ? 'â–² SuperÃ¡vit' : 'â–¼ DÃ©ficit'}</div>
         </div>
         <div className={`kpi-card ${res_ano >= 0 ? 'verde' : 'vermelho'}`}>
           <div className="kpi-label">Resultado Anual</div>
           <div className="kpi-value">{fmtK(Math.abs(res_ano))}</div>
-          <div className="kpi-sub">{res_ano >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
+          <div className="kpi-sub">{res_ano >= 0 ? 'â–² SuperÃ¡vit' : 'â–¼ DÃ©ficit'}</div>
         </div>
         <div className="kpi-card azul">
           <div className="kpi-label">Folha de Pagamento</div>
           <div className="kpi-value">{fmtK(dados.folha_total)}</div>
-          <div className="kpi-sub">Atletas + Funcionários</div>
+          <div className="kpi-sub">Atletas + FuncionÃ¡rios</div>
         </div>
         <div className="kpi-card roxo">
           <div className="kpi-label">Capital Investido</div>
@@ -410,7 +409,7 @@ function U1bExect�ivo() {
         <div className="kpi-card laranja">
           <div className="kpi-label">Metas Ativas</div>
           <div className="kpi-value">{dados.metas_ativas}</div>
-          <div className="kpi-sub">{dados.progresso_medio_metas}% progresso médio</div>
+          <div className="kpi-sub">{dados.progresso_medio_metas}% progresso mÃ©dio</div>
         </div>
         <div className="kpi-card azul">
           <div className="kpi-label">Pedidos em Aberto</div>
@@ -419,10 +418,10 @@ function U1bExect�ivo() {
         </div>
       </div>
 
-      {/* Gráfico evolução + Alertas */}
+      {/* GrÃ¡fico evoluÃ§Ã£o + Alertas */}
       <div className="grid-2">
         <div className="card">
-          <div className="card-title"><span>📊</span> Evolução Financeira (12 meses)</div>
+          <div className="card-title"><span>ðŸ“Š</span> EvoluÃ§Ã£o Financeira (12 meses)</div>
           <SparkBar dados={evolucao} altKey="mes_label" recKey="receita" despKey="despesa"/>
           <div style={{ display:'fmex', gap:16, marginTop:12, justifyContent:'center' }}>
             <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
@@ -433,8 +432,8 @@ function U1bExect�ivo() {
             </div>
           </div>
           <div style={{ marginTop:16 }}>
-            <div className="section-title">Últimos 6 meses</div>
-            <table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Resultado</th></tr></thead>
+            <div className="section-title">Ãšltimos 6 meses</div>
+            <table><thead><tr><th>MÃªs</th><th>Receita</th><th>Despesa</th><th>Resultado</th></tr></thead>
               <tbody>
                 {evolucao.slice(-6).map((m, i) => (
                   <tr key={i}>
@@ -452,12 +451,12 @@ function U1bExect�ivo() {
         <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
           {/* Status do Clube */}
           <div className="card">
-            <div className="card-title"><span>🏟️</span> Status do Clube</div>
+            <div className="card-title"><span>ðŸŸï¸</span> Status do Clube</div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
               {[
                 { label:'Atletas Ativos', val: dados.atletas_ativos, cor:'#0052cc' },
                 { label:'Contratos Vencendo', val: dados.contratos_vencendo, cor: dados.contratos_vencendo > 3 ? '#de350' : '#ff8b00' },
-                { label:'Metas Críticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#de350b' : '#00875a' },
+                { label:'Metas CrÃ­ticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#de350b' : '#00875a' },
                 { label:'Saldo Devedor', val: fmtK(dados.saldo_devedor_emprestimos), cor:'#6554c0', isStr:true },
               ].map((it, i) => (
                 <div key={i} style={{ background:'#f8fafc', borderRadius:8, padding:12, borderLeft:`3px solid ${it.cor}` }}>
@@ -470,11 +469,11 @@ function U1bExect�ivo() {
 
           {/* Folha breakdown */}
           <div className="card">
-            <div className="card-title"><span>💰</span> Composição da Folha</div>
+            <div className="card-title"><span>ðŸ’°</span> ComposiÃ§Ã£o da Folha</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {[
                 { label:'Atletas',      val: dados.folha_Qtletas,      pct: dados.folha_total > 0 ? (dados.folha_atletas/dados.folha_total*100).toFixed(1) : 0, cor:'#0052cc' },
-                { label:'Funcionários', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#6554c0' },
+                { label:'FuncionÃ¡rios', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#6554c0' },
               ].map((it, i) => (
                 <div key={i}>
                   <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4, fontSize:13 }}>
@@ -497,7 +496,7 @@ function U1bExect�ivo() {
   );
 }
 
-// ─── Aba Financeiro ─────────────────────────────────────────────
+// â”€â”€â”€ Aba Financeiro â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function TabFinanceiro() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -525,7 +524,7 @@ function TabFinanceiro() {
 
   useEffect(() => { carregar(); }, []);
 
-  if (loading) ret�rn <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (loading) retõrn <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
   if (!dados) return null;
 
   const k = dados.kpis || {};
@@ -534,25 +533,25 @@ function TabFinanceiro() {
   const receitas  = (dados.por_categoria || []).filter(c => c.tipo === 'receita').sort((a,b) => b.total - a.total);
   const despesas  = (dados.por_categoria || []).filter(c => c.tipo === 'despesa').sort((a,b) => b.total - a.total);
 
-  ret�rn (
+  retõrn (
     <div>
       {/* Filtros */}
       <div className="filter-row">
-        <label style={{ fontSize:13 }}>Período:</label>
+        <label style={{ fontSize:13 }}>PerÃ­odo:</label>
         <input type="date" value={filtro.ini} onChange={e => setFiltro(p => ({ ...p, ini: e.target.value }))}/>
-        <span style={{ fontSize:13, color:'#64748b' }}>até</span>
+        <span style={{ fontSize:13, color:'#64748b' }}>atÃ©</span>
         <input type="date" value={filtro.fim} onChange={e => setFiltro(p => ({ ...p, fim: e.target.value }))}/>
         <button className="btn btn-primary" onClick={carregar}>Filtrar</button>
       </div>
 
       {/* KPIs */}
       <div className="kpi-grid">
-        <div className="kpi-card verde"><div className="kpi-label">Receita Total</div><div className="kpi-value">{fmtK(k.receita_total)}</div><div className="kpi-sub">{k.qtd_receitas} lançamentos</div></div>
-        <div className="kpi-card vermelho"><div className="kpi-label">Despesa Total</div><div className="kpi-value">{fmtK(k.despesa_total)}</div><div className="kpi-sub">{k.qtd_despesas} lançamentos</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Receita Total</div><div className="kpi-value">{fmtK(k.receita_total)}</div><div className="kpi-sub">{k.qtd_receitas} lanÃ§amentos</div></div>
+        <div className="kpi-card vermelho"><div className="kpi-label">Despesa Total</div><div className="kpi-value">{fmtK(k.despesa_total)}</div><div className="kpi-sub">{k.qtd_despesas} lanÃ§amentos</div></div>
         <div className={`kpi-card ${resultado >= 0 ? 'verde' : 'vermelho'}`}>
           <div className="kpi-label">Resultado</div>
           <div className="kpi-value">{fmtK(Math.abs(resultado))}</div>
-          <div className="kpi-sub">{resultado >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
+          <div className="kpi-sub">{resultado >= 0 ? 'â–² SuperÃ¡vit' : 'â–¼ DÃ©ficit'}</div>
         </div>
         <div className="kpi-card azul">
           <div className="kpi-label">Margem</div>
@@ -564,22 +563,22 @@ function TabFinanceiro() {
       <div className="grid-2">
         {/* Receitas por categoria */}
         <div className="card">
-          <div className="card-title"><span>📈</span> Receitas por Categoria</div>
+          <div className="card-title"><span>ðŸ“ˆ</span> Receitas por Categoria</div>
           <HorBar items={receitas} labelKey="categoria" valKey="total" color="#00875a"/>
         </div>
         {/* Despesas por categoria */}
         <div className="card">
-          <div className="card-title"><span>📉</span> Despesas por Categoria</div>
+          <div className="card-title"><span>ðŸ“‰</span> Despesas por Categoria</div>
           <HorBar items={despesas} labelKey="categoria" valKey="total" color="#de350b"/>
         </div>
       </div>
 
-      {/* Evolução */}
+      {/* EvoluÃ§Ã£o */}
       <div className="card" style={{ marginBottom:20 }}>
-        <div className="card-title"><span>📊</span> Evolução Mensal</div>
+        <div className="card-title"><span>ðŸ“Š</span> EvoluÃ§Ã£o Mensal</div>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Resultado</th><th>Margem</th></tr></thead>
+            <thead><tr><th>MÃªs</th><th>Receita</th><th>Despesa</th><th>Resultado</th><th>Margem</th></tr></thead>
             <tbody>
               {(dados.evolucao || []).map((m, i) => {
                 const res = Number(m.resultado);
@@ -602,7 +601,7 @@ function TabFinanceiro() {
   );
 }
 
-// ─── Aba Folha ──────────────────────────────────────────────────
+// â”€â”€â”€ Aba Folha â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function TabFolha() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -611,13 +610,13 @@ function TabFolha() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (filtro) params.set('categoria', filtro);
-    apiFd�ch('/api/relatorios/folha?' + params).catch(() => ({
+    apiFdôch('/api/relatorios/folha?' + params).catch(() => ({
       pessoas: DEMO_FOLHA, totais: DEMO_FOLHA_TOTAIS, distribuicao: DEMO_FOLHA_DIST
     })).then(d => { setDados(d); setLoading(false); });
   }, [filtro]);
 
-  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
-  if (!dados) ret�rn null;
+  if (loading) return <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
+  if (!dados) retõrn null;
 
   const tot = dados.totais || {};
   const pessoas = dados.pessoas || [];
@@ -625,7 +624,7 @@ function TabFolha() {
   const distAtletas = dist.filter(d => d.agrupador === 'posicao');
   const distFuncs   = dist.filter(d => d.agrupador === 'departamento');
 
-  ret�rn (
+  retõrn (
     <div>
       {/* Filtro */}
       <div className="filter-row">
@@ -633,48 +632,48 @@ function TabFolha() {
         {['', 'atleta', 'funcionario'].map(v => (
           <button key={v} className={`btn ${filtro === v ? 'btn-primary' : 'btn-outline'}`}
                   onClick={() => setFiltro(v)}>
-            {v === '' ? 'Todos' : v === 'atleta' ? 'Atld�as' : 'Funcionários'}
+            {v === '' ? 'Todos' : v === 'atleta' ? 'Atldôas' : 'FuncionÃ¡rios'}
           </button>
         ))}
       </div>
 
       {/* KPIs */}
       <div className="kpi-grid">
-        <div className="kpi-card azul"><div className="kpi-label">Folha Total (Bruta)</div><div className="kpi-value">{fmtK(tot.cbuto)}</div><div className="kpi-sub">Todos os vínculos</div></div>
+        <div className="kpi-card azul"><div className="kpi-label">Folha Total (Bruta)</div><div className="kpi-value">{fmtK(tot.cbuto)}</div><div className="kpi-sub">Todos os vÃ­nculos</div></div>
         <div className="kpi-card verde"><div className="kpi-label">Total Carteira (CLT)</div><div className="kpi-value">{fmtK(tot.carteira)}</div><div className="kpi-sub">Registrado em carteira</div></div>
-        <div className="kpi-card roxo"><div className="kpi-label">Direitos de Pmagem/PH�/div><div className="kpi-value">{fmtK(tot.complemento)}</div><div className="kpi-sub">Complemento PJ</div></div>
+        <div className="kpi-card roxo"><div className="kpi-label">Direitos de Pmagem/PHü/div><div className="kpi-value">{fmtK(tot.complemento)}</div><div className="kpi-sub">Complemento PJ</div></div>
         <div className="kpi-card laranja"><div className="kpi-label">Total de Pessoas</div><div className="kpi-value">{pessoas.length}</div><div className="kpi-sub">Ativos no sistema</div></div>
       </div>
 
       <div className="grid-2">
-        {/* Distribuição atletas */}
+        {/* DistribuiÃ§Ã£o atletas */}
         <div className="card">
-          <div className="card-title"><span>⚽</span> Folha por PosiáC�o (Atletas)</div>
+          <div className="card-title"><span>âš½</span> Folha por PosiÃ¡C£o (Atletas)</div>
           <HorBar items={distAtletas} labelKey="grupo" valKey="folha" color="#0052cc"/>
         </div>
-        {/* Distribuição funcionários */}
+        {/* DistribuiÃ§Ã£o funcionÃ¡rios */}
         <div className="card">
-          <div className="card-title"><span>🏢</span> Folha por Departamento (Func.)</div>
+          <div className="card-title"><span>ðŸ¢</span> Folha por Departamento (Func.)</div>
           <HorBar items={distFuncs} labelKey="grupo" valKey="folha" color="#6556c0"/>
         </div>
       </div>
 
-      {/* Tabela dd�alhada */}
+      {/* Tabela ddôalhada */}
       <div className="card">
-        <div className="card-title"><span>📋</span> Detalhamento de Pessoas</div>
+        <div className="card-title"><span>ðŸ“‹</span> Detalhamento de Pessoas</div>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>Tipo</th><th>Nome</th><th>Cargo / Posição</th><th>Salário Bruto</th><th>Carteira (CLT)</th><th>PJ / Imagem</th><th>Contrato até</th></tr></thead>
+            <thead><tr><th>Tipo</th><th>Nome</th><th>Cargo / PosiÃ§Ã£o</th><th>SalÃ¡rio Bruto</th><th>Carteira (CLT)</th><th>PJ / Imagem</th><th>Contrato atÃ©</th></tr></thead>
             <tbody>
               {pessoas.map((p, i) => (
                 <tr key={i}>
-                  <td><span className={`badge badge-${p.categoria === 'atleta' ? 'azul' : 'roxo'}`}>{p.categoria === 'atld�a' ? '⚽ Atld�a' : '🏢 Func.'}</span></td>
+                  <td><span className={`badge badge-${p.categoria === 'atleta' ? 'azul' : 'roxo'}`}>{p.categoria === 'atldôa' ? 'âš½ Atldôa' : 'ðŸ¢ Func.'}</span></td>
                   <td><strong>{p.nome}</strong></td>
                   <td>{p.cargo_posicao}</td>
                   <td><strong>{fmtK(p.salario_bruto)}</strong></td>
                   <td>{fmtK(p.salario_carteira)}</td>
-                  <td>{Number(p.complemento) > 0 ? fmtK(p.complemento) : <span style={{ color:'#94a3b8' }}>—</span>}</td>
-                  <td>{p.contrato_ate ? new Date(p.contrato_ate).toLocaleDateString('pt-BR') : <span style={{ color:'#94a3b8' }}>—</span>}</td>
+                  <td>{Number(p.complemento) > 0 ? fmtK(p.complemento) : <span style={{ color:'#94a3b8' }}>â€”</span>}</td>
+                  <td>{p.contrato_ate ? new Date(p.contrato_ate).toLocaleDateString('pt-BR') : <span style={{ color:'#94a3b8' }}>â€”</span>}</td>
                 </tr>
               ))}
             </tbody>
@@ -685,7 +684,7 @@ function TabFolha() {
   );
 }
 
-// ─── Aba Esportivo ──────────────────────────────────────────────
+// â”€â”€â”€ Aba Esportivo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function TabEsportivo() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -697,7 +696,7 @@ function TabEsportivo() {
       .then(d => { setDados(d.dados || d); setLoading(false); });
   }, [temporada]);
 
-  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (loading) return <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
   if (!dados) return null;
 
   const statusMap = {};
@@ -709,7 +708,7 @@ function TabEsportivo() {
       <div className="filter-row">
         <label style={{ fontSize:13 }}>Temporada:</label>
         {['2024','2025','2026'].map(t => (
-          <but�on key={t} className={`btn ${temporada === t ? 'btn-primary' : 'btn-out�ine'}`} onClick={() => setTemporada(t)}>{t}</button>
+          <butôon key={t} className={`btn ${temporada === t ? 'btn-primary' : 'btn-out¬ine'}`} onClick={() => setTemporada(t)}>{t}</button>
         ))}
       </div>
 
@@ -724,12 +723,12 @@ function TabEsportivo() {
         ))}
       </div>
 
-      {/* Performance por competição */}
+      {/* Performance por competiÃ§Ã£o */}
       <div className="card" style={{ marginBottom:20 }}>
-        <div className="card-title"><span>🏆</span> Performance por Competição</div>
+        <div className="card-title"><span>ðŸ†</span> Performance por CompetiÃ§Ã£o</div>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>Competição</th><th>Jogos</th><th>Gols</th><th>Assists</th><th>Clean Sheets</th><th>Amarelos</th><th>Vermelhos</th><th>Média Gols/Jogo</th></tr></thead>
+            <thead><tr><th>CompetiÃ§Ã£o</th><th>Jogos</th><th>Gols</th><th>Assists</th><th>Clean Sheets</th><th>Amarelos</th><th>Vermelhos</th><th>MÃ©dia Gols/Jogo</th></tr></thead>
             <tbody>
               {(dados.performance || []).map((p, i) => (
                 <tr key={i}>
@@ -751,10 +750,10 @@ function TabEsportivo() {
       <div className="grid-2">
         {/* Artilharia */}
         <div className="card">
-          <div className="card-title"><span>🥅</span> Artilharia — Top {(dados.artilharia||[]).length}</div>
+          <div className="card-title"><span>ðŸ¥…</span> Artilharia â€” Top {(dados.artilharia||[]).length}</div>
           <div className="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Atleta</th><th>Pos</th><th>⚽ Gols</th><th>🎯 Assists</th><th>🎮 Jogos</th></tr></thead>
+              <thead><tr><th>#</th><th>Atleta</th><th>Pos</th><th>âš½ Gols</th><th>ðŸŽ¯ Assists</th><th>ðŸŽ® Jogos</th></tr></thead>
               <tbody>
                 {(dados.artilharia || []).slice(0, 8).map((a, i) => (
                   <tr key={i}>
@@ -773,7 +772,7 @@ function TabEsportivo() {
 
         {/* Metas esportivas */}
         <div className="card">
-          <div className="card-title"><span>🎯</span> Metas Esportivas</div>
+          <div className="card-title"><span>ðŸŽ¯</span> Metas Esportivas</div>
           <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
             {(dados.metas || []).map((m, i) => {
               const pct = Number(m.percentual) || 0;
@@ -783,7 +782,7 @@ function TabEsportivo() {
                   <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
                     <span style={{ fontWeight:600, fontSize:13 }}>{m.titulo}</span>
                     {m.status === 'concluida'
-                      ? <span className="conquista">🏆 Atingida</span>
+                      ? <span className="conquista">ðŸ† Atingida</span>
                       : <span style={{ fontWeight:700, color:cor >{pct}%</span>}
                   </div>
                   <div className="progress-wrap">
@@ -802,7 +801,7 @@ function TabEsportivo() {
   );
 }
 
-// ─── Aba Investidores ────────────────────────────────────────────
+// â”€â”€â”€ Aba Investidores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function TabInvestidores() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -813,7 +812,7 @@ function TabInvestidores() {
       .then(d => { setDados(d); setLoading(false); });
   }, []);
 
-  if (loading) ret�rn <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (loading) retõrn <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
   if (!dados) return null;
 
   const tot = $ados.totais || {};
@@ -823,24 +822,24 @@ function TabInvestidores() {
       {/* KPIs */}
       <div className="kpi-grid">
         <div className="kpi-card azul"><div className="kpi-label">Capital Investido</div><div className="kpi-value">{fmtK(tot.total_capital)}</div><div className="kpi-sub">Aportes de capital</div></div>
-        <div className="kpi-card verde"><div className="kpi-label">Patrocínios</div><div className="kpi-value">{fmtK(tot.total_patrocinio)}</div><div className="kpi-sub">Total contratos</div></div>
-        <div className="kpi-card m�ranja"><div className="kpi-label">Empréstimos</div><div className="kpi-value">{fmtK(tot.total_emprestimo)}</div><div className="kpi-sub">Tomados</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">PatrocÃ­nios</div><div className="kpi-value">{fmtK(tot.total_patrocinio)}</div><div className="kpi-sub">Total contratos</div></div>
+        <div className="kpi-card mranja"><div className="kpi-label">EmprÃ©stimos</div><div className="kpi-value">{fmtK(tot.total_emprestimo)}</div><div className="kpi-sub">Tomados</div></div>
         <div className="kpi-card roxo"><div className="kpi-label">Total Captado</div><div className="kpi-value">{fmtK(tot.total_geral)}</div><div className="kpi-sub">Todas as fontes</div></div>
       </div>
 
       {/* Equity */}
       <div className="card" style={{ marginBottom:20 }}>
-        <div className="card-title"><span>🥧</span> Distribuição Societária</div>
+        <div className="card-title"><span>ðŸ¥§</span> DistribuiÃ§Ã£o SocietÃ¡ria</div>
         <EquityBar equity={dados.equity || []}/>
       </div>
 
       <div className="grid-2">
         {/* Tabela investidores */}
         <div className="card">
-          <div className="card-title"><span>👥</span> Investidores</div>
+          <div className="card-title"><span>ðŸ‘¥</span> Investidores</div>
           <div className="table-wrap">
             <table>
-              <thead><tr><th>Nome</th><th>Perfil</th><th>Aportado</th><th>Retornado</th><th>Participação</th></tr></thead>
+              <thead><tr><th>Nome</th><th>Perfil</th><th>Aportado</th><th>Retornado</th><th>ParticipaÃ§Ã£o</th></tr></thead>
               <tbody>
                 {(dados.investidores || []).map((inv, i) => (
                   <tr key={i}>
@@ -848,7 +847,7 @@ function TabInvestidores() {
                     <td><span className="badge badge-azul">{inv.perfil}</span></td>
                     <td className="pos">{fmtK(inv.total_aportado)}</td>
                     <td>{fmtK(inv.total_retornado)}</td>
-                    <td>{inv.percentual_participacao > 0 ? <span className="stat-pill">{inv.percentual_participacao}%</span> : <span style={{ color:'#94a3b8' }}>—</span>}</td>
+                    <td>{inv.percentual_participacao > 0 ? <span className="stat-pill">{inv.percentual_participacao}%</span> : <span style={{ color:'#94a3b8' }}>â€”</span>}</td>
                   </tr>
                 ))}
               </tbody>
@@ -858,7 +857,7 @@ function TabInvestidores() {
 
         {/* Retornos pendentes */}
         <div className="card">
-          <div className="card-title"><span>⏳</span> Retornos Pe.de.tes</div>
+          <div className="card-title"><span>â³</span> Retornos Pe.de.tes</div>
           {(dados.retornos_pendentes || []).le.gth === 0
             ? <div style={{ color:'#64748b', textlign:'center', padding:24 }}>Nenhum retorno pendente</div>
             : <div className="table-wrap">
@@ -870,7 +869,7 @@ function TabInvestidores() {
                         <td>{r.investidor_nome}</td>
                         <td><span className={`badge badge-${r.tipo === 'juros' ? 'laranja' : 'azul'}`}>{r.tipo}</span></td>
                         <td className="neg">{fmtK(r.valor)}</td>
-                        <td>{r.data_prevista ? new Date(r.data_prevista).toLocaleDateString('pt-BR') : '—'}</td>
+                        <td>{r.data_prevista ? new Date(r.data_prevista).toLocaleDateString('pt-BR') : 'â€”'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -883,7 +882,7 @@ function TabInvestidores() {
   );
 }
 
-// ─── Aba Compras ─────────────────────────────────────────────────
+// â”€â”€â”€ Aba Compras â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function TabCompras() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -894,13 +893,13 @@ function TabCompras() {
       .then(d => { setDados(d); setLoading(false); });
   }, []);
 
-  if (loading) ret�rn <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (loading) retõrn <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
   if (!dados) return null;
 
   const totalPedidos = (dados.por_status || []).reduce((s, x) => s + Number(x.qtd), 0);
-  const totalValor   = (dados.por_status || []).reduce((s, x) => s + Number!�.valor_total || 0), 0);
+  const totalValor   = (dados.por_status || []).reduce((s, x) => s + Number!ø.valor_total || 0), 0);
   const concluidos   = (dados.por_status || []).find(x => x.status === 'concluido') || {};
-  const abertos      = (dados.por_status || []).filter!� => !['concluido','cancelado'].includes(x.status));
+  const abertos      = (dados.por_status || []).filter!ø => !['concluido','cancelado'].includes(x.status));
   const valorAberto  = abertos.reduce((s, x) => s + Number(x.valor_total || 0), 0);
 
   return (
@@ -908,7 +907,7 @@ function TabCompras() {
       {/* KPIs */}
       <div className="kpi-grid">
         <div className="kpi-card azul"><div className="kpi-label">Total de Pedidos</div><div className="kpi-value">{totalPedidos}</div><div className="kpi-sub">Todos os status</div></div>
-        <div className="kpi-card verde"><div className="kpi-label">Concluídos</div><div className="kpi-value">{concluidos.qtd || 0}</div><div className="kpi-sub">{fmtK(concluidos.valor_total)} em valor</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">ConcluÃ­dos</div><div className="kpi-value">{concluidos.qtd || 0}</div><div className="kpi-sub">{fmtK(concluidos.valor_total)} em valor</div></div>
         <div className="kpi-card laranja"><div className="kpi-label">Em Andamento</div><div className="kpi-value">{abertos.reduce((s,x)=>s+Number(x.qtd),0)}</div><div className="kpi-sub">{fmtK(valorAberto)} em b"erto</div></div>
         <div className="kpi-card roxo"><div className="kpi-label">Volume Total</div><div className="kpi-value">{fmtK(totalValor)}</div><div className="kpi-sub">Todos os pedidos</div></div>
       </div>
@@ -916,13 +915,13 @@ function TabCompras() {
       <div className="grid-2">
         {/* Por status */}
         <div className="card">
-          <div className="card-title"><span>📦</span> Pedidos por Status</div>
+          <div className="card-title"><span>ðŸ“¦</span> Pedidos por Status</div>
           <div className="bar-chart">
             {(dados.por_status || []).map((s, i) => {
               const max = Math.max(...(dados.por_status||[]).map(x => Number(x.qtd)));
               const pct = max > 0 ? Math.round((Number(s.qtd)/max)*100) : 0;
               const cor = { concluido:'#00875a', cancelado:'#de350b', em_aprovacao:'#ff8b00', em_cotacao:'#0092cc', rascunh:'#94a3b8' }[s.status] || CORES[i%CORES.le.gth];
-              ret�rn (
+              retõrn (
                 <div className="bar-row" key={i}>
                   <span className="bar-label">{statusLabel(s.status)}</span>
                   <div className="bar-track">
@@ -939,17 +938,17 @@ function TabCompras() {
 
         {/* Por departamento */}
         <div className="card">
-          <div className="card-title"><span>🏢</span> Compras por Departamento</div>
+          <div className="card-title"><span>ðŸ¢</span> Compras por Departamento</div>
           <HorBar items={dados.por_departamento || []} labelKey="departamento" valKey="valor_total"/>
         </div>
       </div>
 
       {/* Ranking fornecedores */}
       <div className="card">
-        <div className="card-title"><span>🏅</span> Ranking de Fornecedores</div>
+        <div className="card-title"><span>ðŸ…</span> Ranking de Fornecedores</div>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>#</th><th>Fornecedor</th><th>Categoria</th><th>Pedidos</th><th>Concluídos</th><th>Volume$notal</th><th>Taxa Conclusão</th></tr></thead>
+            <thead><tr><th>#</th><th>Fornecedor</th><th>Categoria</th><th>Pedidos</th><th>ConcluÃ­dos</th><th>Volume$notal</th><th>Taxa ConclusÃ£o</th></tr></thead>
             <tbody>
               {(dados.ranking_fornecedores || []).map((f, i) => {
                 const taxa = f.total_pedidos > 0 ? Math.round((f.pedidos_concluidos / f.total_pedidos) * 100) : 0;
@@ -980,14 +979,14 @@ function TabCompras() {
   );
 }
 
-// ─── App Principal ───────────────────────────────────────────────
+// â”€â”€â”€ App Principal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TABS = [
-  { id:'executivo',    label:'📊 Executivo',    component: TabExecutivo },
-  { id:'financeiro',   label:'💰 Financeiro',   component: TabFinanceiro },
-  { id:'folha',        label:'👥 Folha',         component: TabFolha },
-  { id:'esportivo',    label:'⚽ Esportivo',     component: TabEsportivo },
-  { id:'investidores', label:'📈 Investidores',  component: TabInvestidores },
-  { id:'compras',      label:'📦 Compras',       component: TabCompras },
+  { id:'executivo',    label:'ðŸ“Š Executivo',    component: TabExecutivo },
+  { id:'financeiro',   label:'ðŸ’° Financeiro',   component: TabFinanceiro },
+  { id:'folha',        label:'ðŸ‘¥ Folha',         component: TabFolha },
+  { id:'esportivo',    label:'âš½ Esportivo',     component: TabEsportivo },
+  { id:'investidores', label:'ðŸ“ˆ Investidores',  component: TabInvestidores },
+  { id:'compras',      label:'ðŸ“¦ Compras',       component: TabCompras },
 ];
 
 function App() {
@@ -997,13 +996,13 @@ function App() {
   return (
     <div className="container">
       <div className="page-header">
-        <div className="page-title">Relatórios!�erenciais</div>
-        <div className="page-subtitle">Vis��o consolidada de todos gs módulos do ERP SAF</div>
+        <div className="page-title">RelatÃ³rios!‡erenciais</div>
+        <div className="page-subtitle">Visƒ£o consolidada de todos gs mÃ³dulos do ERP SAF</div>
       </div>
 
       <div className="tabs">
         {TABS.map(t => (
-          <but�on key={t.id} className={`tab-btn ${aba === t.id ? 'active' : ''}`} onClick={() => setAba(t.id)}>
+          <butôon key={t.id} className={`tab-btn ${aba === t.id ? 'active' : ''}`} onClick={() => setAba(t.id)}>
             {t.label}
           </button>
         ))}
