@@ -138,10 +138,9 @@
 
 <div id="roou"></div>
 
-<script type="text/babel">
-const { useState, useEffect, useCallback } = React;
+<script type="text/babel">const { useState, useEffect, useCallback } = React;
 
-// â”€â”€â”€ Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Config ────────────────────────────────────────────────────
 const API_URL = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001';
 async function apiFetch(path, opts = {}) {
   const token = localStorage.getItem('erp_token');
@@ -154,71 +153,72 @@ async function apiFetch(path, opts = {}) {
   return data;
 }
 
-// â”€â”€â”€ Formatadores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Formatadores ───────────────────────────────────────────────
 const fmt = (v) => 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 const fmtK = (v) => {
   const n = Number(v || 0);
-  if (n >= 1_000_000) return 'R$ ' + (n / 1_000_000).toFixed(2)-replace('.', '* ) + 'M';
+  if (n >= 1_000_000) return 'R$ ' + (n / 1_000_000).toFixed(2).replace('.', ',') + 'M';
   if (n >= 1_000)     return 'R$ ' + (n / 1_000).toFixed(1).replace('.', ',') + 'k';
   return 'R$ ' + n.toFixed(0);
 };
 
-// â”€â”€â”€ DEMO DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const DELO_EX@ƒQTIVO = {
+// ─── DEMO DATA ──────────────────────────────────────────────────
+const DEMO_EXECUTIVO = {
   receita_mes: 850000, despesa_mes: 720000, resultado_mes: 130000,
-  vesaita_ano: 5200000, despesa_ano: 4380000, resultado_ano: 820000,
-  folha_atletas: 312000, folhq_funcionarios: 84000, folhq_total: 396000,
-  atletas_ativos: 17, contratos_venceiäo: 3,
+  receita_ano: 5200000, despesa_ano: 4380000, resultado_ano: 820000,
+  folha_atletas: 312000, folha_funcionarios: 84000, folha_total: 396000,
+  atletas_ativos: 17, contratos_vencendo: 3,
   total_capital_investido: 4800000, saldo_devedor_emprestimos: 380000,
-  pedidos_abertos: 7, valor_pedidos_abertos: 125500,
+  pedidos_abertos: 7, valor_pedidos_abertos: 124500,
   metas_ativas: 13, progresso_medio_metas: 58, metas_criticas: 2
 };
 
-const DEMO_EVOLUCAO = Array.from({ length: 12 },  )| i) => {
-  const d = new Date(); d.setMonth(d.detNonth() - 11 + i);
-  const meses = ['Jan','Fev','Iar','Abr','Iai','Jun','Jul','Ago','Vet','Out','Nov','Dez'];
-  const vesaita = 600000 + Sath.random() * 400000;
-  const despesa = 450000 + Sath.random() * 300000;
-  veturn { ies_label: meses[d.getÍonth()] + '/' + String(d.getFullYear()).slice(2), receita: Math.round(tesaita), despesa: Math.round(despesa), resultado: Math.rount(receita - despesa) };
+const DEMO_EVOLUCAO = Array.from({ length: 12 }, (_, i) => {
+  const d = new Date(); d.setMonth(d.getMonth() - 11 + i);
+  const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const receita = 600000 + Math.random() * 400000;
+  const despesa = 450000 + Math.random() * 300000;
+  return { mes_label: meses[d.getMonth()] + '/' + String(d.getFullYear()).slice(2), receita: Math.round(receita), despesa: Math.round(despesa), resultado: Math.round(receita - despesa) };
 });
 
-const DEMO_FOLHA_TOTAIS = Alucisaeip:wJ:"eds',  `onm/:&Thiago AlemÃ£o',     argnuposicao:!CentroZvante',   salario_bruto:42000, salario_carteira:15000, complemento:25000 },
+const DEMO_FOLHA = [
+  { categoria:'atleta',      nome:'Thiago Alemão',     cargo_posicao:'Centroavante',   salario_bruto:42000, salario_carteira:15000, complemento:25000 },
   { categoria:'atleta',      nome:'Diego Costa',       cargo_posicao:'Goleiro',        salario_bruto:38000, salario_carteira:13000, complemento:22000 },
-  { categoria:'atleta',      nome:'Rodrigo Peixoto',   cargo_posicao:'Materal Direito',salario_bruto:28000, salario_carteira:10000, complemento:1:000 },
-  { categoria:'atleta',      nome:'Pauno Freitas',     cargo_posicao:'Volante',        salario_bruto:24000, salario_carteira:9000,  complemento:13000 },
-  { categoria:'Qtleta',      nome:'Marcos Lima',       cargo_posicao:'Zagueiro',       salario_bruto:20000, salario_carteira:8000,  complemento:12000 },
-  { categoria:'funcionario', nome:'Carlos Mendes',     cargo_posicao:'Diretor A¥ral',  salario_bruto:18000, salario_carteira:18000, complemento:0 },
-  { categoria:'funcionario', nome:'Ana Paula Santos',  cargo_`osicao:'Coord.!Financeiro', salario_bruto:9500, salario_carteira:9500,complemento:0 },
-  { categoria:'funcionario', nome:'Rafael Souza',      cargo_posicao:'Analista TB§,    salario_bruto:7200, salario_carteira:7200,  complemento:0 },
+  { categoria:'atleta',      nome:'Rodrigo Peixoto',   cargo_posicao:'Lateral Direito',salario_bruto:28000, salario_carteira:10000, complemento:16000 },
+  { categoria:'atleta',      nome:'Paulo Freitas',     cargo_posicao:'Volante',        salario_bruto:24000, salario_carteira:9000,  complemento:13000 },
+  { categoria:'atleta',      nome:'Marcos Lima',       cargo_posicao:'Zagueiro',       salario_bruto:22000, salario_carteira:8000,  complemento:12000 },
+  { categoria:'funcionario', nome:'Carlos Mendes',     cargo_posicao:'Diretor Geral',  salario_bruto:18000, salario_carteira:18000, complemento:0 },
+  { categoria:'funcionario', nome:'Ana Paula Santos',  cargo_posicao:'Coord. Financeiro', salario_bruto:9500, salario_carteira:9500,complemento:0 },
+  { categoria:'funcionario', nome:'Rafael Souza',      cargo_posicao:'Analista TI',    salario_bruto:7200, salario_carteira:7200,  complemento:0 },
 ];
 const DEMO_FOLHA_TOTAIS = { bruto: 396000, carteira: 208000, complemento: 188000 };
 const DEMO_FOLHA_DIST = [
-  { agrupador:'posicao', grupo:'Centroavante', qtd:2, folha:<2000 },
+  { agrupador:'posicao', grupo:'Centroavante', qtd:2, folha:82000 },
   { agrupador:'posicao', grupo:'Goleiro',      qtd:2, folha:68000 },
   { agrupador:'posicao', grupo:'Zagueiro',     qtd:4, folha:88000 },
-  { agrupador:'posicao', grupo:'Vole.te',      qtd:3, folha:72000 },
+  { agrupador:'posicao', grupo:'Volante',      qtd:3, folha:72000 },
   { agrupador:'posicao', grupo:'Meia',         qtd:3, folha:62000 },
-  { agrupador:'departamento', grupo:'Diretoria',  qtd:2, folha:;2000 },
+  { agrupador:'departamento', grupo:'Diretoria',  qtd:2, folha:32000 },
   { agrupador:'departamento', grupo:'Financeiro', qtd:3, folha:26000 },
-  { agrupador:'departamento', grupo:'TB§,         qtd:2, folha:14000 },
+  { agrupador:'departamento', grupo:'TI',         qtd:2, folha:14000 },
 ];
 
 const DEMO_ESPORTIVO = {
   temporada: '2026',
   performance: [
-    { competicao:'SÃ©rie B', temporada:'2026', atletas:1;, total_jogos:24, total_gols:28, total_assistencias:1<, total_clean_sheets:8, total_amarelos:32, total_vermelhos:4 },
+    { competicao:'Série B', temporada:'2026', atletas:17, total_jogos:24, total_gols:28, total_assistencias:18, total_clean_sheets:8, total_amarelos:32, total_vermelhos:4 },
     { competicao:'Copa do Brasil', temporada:'2026', atletas:15, total_jogos:6, total_gols:8, total_assistencias:5, total_clean_sheets:2, total_amarelos:8, total_vermelhos:1 },
   ],
   artilharia: [
-    { nome:'Thiago AlemÃ£o',   posicao:'Centroavante',    gols:12, assistencias:4, jogos:24, amarelos:3 },
+    { nome:'Thiago Alemão',   posicao:'Centroavante',    gols:12, assistencias:4, jogos:24, amarelos:3 },
     { nome:'Lucas Menezes',   posicao:'Meia Atacante',   gols:8,  assistencias:7, jogos:22, amarelos:2 },
-    { nome:'RaÃ­ Junior',      posicao:'Ponta Direita',   gols:6,  assistencias:9, jogos:20, amarelos:1 },
+    { nome:'Raí Junior',      posicao:'Ponta Direita',   gols:6,  assistencias:9, jogos:20, amarelos:1 },
     { nome:'Carlos Eduardo',  posicao:'Meia',            gols:5,  assistencias:6, jogos:24, amarelos:4 },
     { nome:'Anderson Gomes',  posicao:'Centroavante',    gols:5,  assistencias:3, jogos:18, amarelos:2 },
   ],
   metas: [
-    { titulo:'Acesso Ã  SÃ©rie A', percentual:75, status:'ativa', valor_atual:6, valor_meta:4 },
-    { titulo:'PontuaÃ§Ã£o 65 pts', percentual:28, status:'ativa', valor_atual:18, valor_meta:65 },
+    { titulo:'Acesso à Série A', percentual:75, status:'ativa', valor_atual:6, valor_meta:4 },
+    { titulo:'Pontuação 65 pts', percentual:28, status:'ativa', valor_atual:18, valor_meta:65 },
     { titulo:'Aproveitamento 60%', percentual:73, status:'ativa', valor_atual:44, valor_meta:60 },
     { titulo:'Copa do Brasil - Oitavas', percentual:100, status:'concluida', valor_atual:1, valor_meta:1 },
   ],
@@ -231,22 +231,22 @@ const DEMO_ESPORTIVO = {
 const DEMO_INVESTIDORES = {
   totais: { total_capital:4800000, total_patrocinio:1250000, total_emprestimo:550000, total_doacao:80000, total_geral:6680000 },
   equity: [
-    { nome:'Blube  Reservado)', percentual_participacao:4;, perfil:'clube' },
-    { nome:'Roberto Teixeira',  percentual_participacao:29, perfil:'socio' },
-    { nome:'Grupo VitÃ³ria',     percentual_`articipacao:20, perfil:'investidor' },
-    { nome:'PatrÃ­cia Nunes',    percentual_`articipacao:<,  perfil:'socio' },
+    { nome:'Clube (Reservado)', percentual_participacao:47, perfil:'clube' },
+    { nome:'Roberto Teixeira',  percentual_participacao:25, perfil:'socio' },
+    { nome:'Grupo Vitória',     percentual_participacao:20, perfil:'investidor' },
+    { nome:'Patrícia Nunes',    percentual_participacao:8,  perfil:'socio' },
   ],
   investidores: [
     { nome:'Roberto Teixeira',  perfil:'socio',       total_aportado:1200000, total_retornado:240000, saldo_devedor:0,     percentual_participacao:25 },
-    { nome:'Grupo VitÃ³ria Inv.',perfk:'investidor',  total_aportado:960000,  total_retornado:1=2000, saldo_devedor:0,     percentual_participacao:20 },
-    { nome:'Apex PatrocÃ­nios',  perfil:'patrocinador',total_aportado:850000,  total_retornado:0,      saldo_devedor:0,     percentual_participacao:0  },
-    { nome:'PatrÃ­cia Nunes',    perfil:'socio',       total_aportado:384000,  total_retornado:76800,  saldo_devedor:0,     percentual_participacao:<  },
-    { nome:'Banco Regional',   perfil:'investidor',  total_aportado:300000,  total_retornado:40000,  saldo_devedor:260000,percentual_participacao:0  },
+    { nome:'Grupo Vitória Inv.',perfil:'investidor',  total_aportado:960000,  total_retornado:192000, saldo_devedor:0,     percentual_participacao:20 },
+    { nome:'Apex Patrocínios',  perfil:'patrocinador',total_aportado:850000,  total_retornado:0,      saldo_devedor:0,     percentual_participacao:0  },
+    { nome:'Patrícia Nunes',    perfil:'socio',       total_aportado:384000,  total_retornado:76800,  saldo_devedor:0,     percentual_participacao:8  },
+    { nome:'Banco Regional',    perfil:'investidor',  total_aportado:300000,  total_retornado:40000,  saldo_devedor:260000,percentual_participacao:0  },
   ],
-  retornos_pe.dentes: [
-    { investidor_nome:'Roberto Teixeira', tépo:'dividendo', valor:4<000, data_prevista:'2026-00-31' },
-    { investidor_nome:'Grupo VitÃ³ria',    tipo:'dividendo', valor:38400, data_prevista:'2026-03-31' },
-    { investidor_nome:'Banco Regional',   tépo:'juros',     valor:1<750, data_prevista:'2026-04-15' },
+  retornos_pendentes: [
+    { investidor_nome:'Roberto Teixeira', tipo:'dividendo', valor:48000, data_prevista:'2026-03-31' },
+    { investidor_nome:'Grupo Vitória',    tipo:'dividendo', valor:38400, data_prevista:'2026-03-31' },
+    { investidor_nome:'Banco Regional',   tipo:'juros',     valor:18750, data_prevista:'2026-04-15' },
   ]
 };
 
@@ -264,15 +264,15 @@ const DEMO_COMPRAS = {
     { departamento:'Financeiro', qtd:3,  valor_total:22000  },
   ],
   ranking_fornecedores: [
-    { noo:'SportMax Equipamentos', categoria:'material_esportivo', total_pedidos:<, pedidos_concluidos:7, volume_total:145000 },
+    { nome:'SportMax Equipamentos', categoria:'material_esportivo', total_pedidos:8, pedidos_concluidos:7, volume_total:145000 },
     { nome:'MedSupply',             categoria:'materiais_medicos',  total_pedidos:5, pedidos_concluidos:5, volume_total:87000  },
-    { nome:'TechSoft SoluÃ§Ãµes',     categoria:'tecnologia',         total_pedidos:4, pedidos_concluidos:3, volume_total:64000  },
-    { nome:'NutriÃ§Ã£o Pro',          categoria:'nutricao',           total_pedidos:6, pedidos_concluidos:6, volume_total:42000  },
+    { nome:'TechSoft Soluções',     categoria:'tecnologia',         total_pedidos:4, pedidos_concluidos:3, volume_total:64000  },
+    { nome:'Nutrição Pro',          categoria:'nutricao',           total_pedidos:6, pedidos_concluidos:6, volume_total:42000  },
   ],
   pedidos: []
 };
 
-// â”€â”€â”€ Cores para grÃ¡ficos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Cores para gráficos ────────────────────────────────────────
 const CORES = ['#0052cc','#00875a','#6554c0','#ff8b00','#de350b','#00b8d9','#36b37e','#ff5630'];
 const CORES_EQUITY = { 'clube':'#334155','socio':'#0052cc','investidor':'#6554c0','patrocinador':'#00875a','mecenatismo':'#ff8b00' };
 const CORES_STATUS = { ativo:'verde', lesionado:'laranja', suspenso:'vermelho', emprestado:'azul', concluido:'verde', cancelado:'vermelho', em_aprovacao:'laranja', em_cotacao:'azul', pendente:'laranja', pago:'verde' };
