@@ -179,3 +179,28 @@ JOIN estatisticas_atleta ea ON ea.atleta_id = a.id
 WHERE EXTRACT(YEAR FROM CURRENT_DATE)::TEXT = ea.temporada
 GROUP BY a.id, a.nome, a.posicao
 ORDER BY total_gols DESC, total_assistencias DESC;
+
+
+-- ============================================================
+-- VIEW: Compatibilidade — transacoes (alias de lancamentos_financeiros)
+-- ============================================================
+CREATE OR REPLACE VIEW transacoes AS
+SELECT
+    lf.id,
+    lf.tipo,
+    lf.descricao,
+    lf.valor,
+    lf.data_competencia,
+    lf.status,
+    lf.recorrente,
+    lf.observacoes,
+    lf.comprovante_url,
+    lf.criado_por,
+    lf.categoria_id,
+    lf.centro_custo_id,
+    lf.conta_bancaria_id,
+    lf.created_at,
+    lf.updated_at,
+    cf.nome AS categoria
+FROM lancamentos_financeiros lf
+LEFT JOIN categorias_financeiras cf ON cf.id = lf.categoria_id;
