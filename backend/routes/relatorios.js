@@ -120,10 +120,12 @@ router.get('/folha', async (req, res) => {
       WHERE a.status='ativo'
       GROUP BY posicao
       UNION ALL
-      SELECT 'departamento', departamento,
-             COUNT(*), SUM(salario_base)
-      FROM funcionarios WHERE status='ativo'
-      GROUP BY departamento
+      SELECT 'departamento', d.nome,
+             COUNT(*), SUM(f.salario)
+      FROM funcionarios f
+      JOIN departamentos d ON d.id = f.departamento_id
+      WHERE f.status='ativo'
+      GROUP BY d.nome
       ORDER BY agrupador, folha DESC
     `);
 
