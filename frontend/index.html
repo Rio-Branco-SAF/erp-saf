@@ -909,7 +909,7 @@ function ModuloFuncionarios({ usuario }) {
                       onClick={() => abrirEditar(f)}>âœï¸</button>
                   </td>
                 </tr>
-              )}
+              ))}
             </tbody>
           </table>
         )}
@@ -917,7 +917,7 @@ function ModuloFuncionarios({ usuario }) {
         {/* PAGINAÃ‡ÃƒO */}
         {totalPags > 1 && (
           <div className="paginacao">
-            <span>Mostrando {((pagina-1)*LIMITE+1}â€“{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
+            <span>Mostrando {(pagina-1)*LIMITE+1}â€“{Math.min(pagina*LIMITE, filtrados.length)} de {filtrados.length}</span>
             <div className="paginacao-btns">
               <button onClick={() => setPagina(p => p-1)} disabled={pagina === 1}>â€¹</button>
               {Array.from({length:totalPags},(_,i)=>i+1).map(p =>
