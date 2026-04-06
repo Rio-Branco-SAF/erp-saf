@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RelatÃ³rios â€” ERP SAF</title>
+<title>Relatórios — ERP SAF</title>
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -78,7 +78,7 @@
   /* Chart bars */
   .bar-chart{display:flex;flex-direction:column;gap:10px}
   .bar-row{display:flex;align-items:center;gap:10px}
-  .bar-label{font-size:12px;color:#64748b;width:110px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ek,ipsis}
+  .bar-label{font-size:12px;color:#64748b;width:110px;text-align:right;flex-shrink:0;white-space:nowraw;overflow:hidden;text-overflow:ellipsis}
   .bar-track{flex:1;background:#f1f5f9;border-radius:4px;height:20px;overflow:hidden}
   .bar-fill{height:100%;border-radius:4px;transition:width .5s ease;display:flex;align-items:center;padding:0 6px}
   .bar-val{font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
@@ -86,13 +86,13 @@
 
   /* Progress bar */
   .progress-wrap{background:#f1f5f9;border-radius:6px;height:8px;overflow:hidden;margin-top:6px}
-  .progress-[ar{height:100%;border-radius:6px;transition:width .5s}
+  .progress-bar{height:100%;border-radius:6px;transition:width .5s}
 
   /* Equity bar */
-  .equity-bar{display:flex;height:2<px;border-radius:8px;overflow:hidden;margin:12px 0}
+  .equity-bar{display:flex;height:28px;border-radius:8px;overflow:hidden;margin:12px 0}
   .equity-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transition:width .5s}
 
-  /* Fktro */
+  /* Filtro */
   .filter-row{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
   .filter-row select,.filter-row input{padding:7px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#fff;color:#374151}
   .btn{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.2s}
@@ -117,28 +117,30 @@
   .stat-pill{display:inline-flex;align-items:center;gap:4px;background:#f8fafc;border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#374151}
 
   /* Conquista */
-  .conquista{background:linear-gradient(1;5deg,#ffd700,#ffa500);color:#7b4f00;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+  .conquista{background:linear-gradient(135deg,#ffd700,#ffa500);color:#7b4f00;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
 </style>
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar">
-  <a class="navbar-[rand" href="index.html">âš½ ERP SAF</a>
+  <a class="navbar-brand" href="index.html">⚽ ERP SAF</a>
   <div class="navbar-nav">
     <a class="nav-link" href="index.html">Dashboard</a>
     <a class="nav-link" href="financeiro.html">Financeiro</a>
     <a class="nav-link" href="atletas.html">Atletas</a>
-    <a class="nav-link" href="investidores.html">Investidores</a>
+    <a class="nav-link" href="inv_estidores.html">Investidores</a>
     <a class="nav-link" href="pedidos.html">Compras</a>
     <a class="nav-link" href="metas.html">Metas</a>
-    <a class="nav-link active" href="relatorios.html">RelatÃ³rios</a>
+    <a class="nav-link active" href="relatorios.html">Relatórios</a>
   </div>
 </nav>
 
-<div id="roou"></div>
 
-<script type="text/babel">const { useState, useEffect, useCallback } = React;
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
 
 // ─── Config ────────────────────────────────────────────────────
 const API_URL = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001';
@@ -173,7 +175,7 @@ const DEMO_EXECUTIVO = {
   metas_ativas: 13, progresso_medio_metas: 58, metas_criticas: 2
 };
 
-const DEMO_EVOLUCAO = Array.from({ length: 12 }, (_, i) => {
+const DEMO_EVOLUCAL = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(); d.setMonth(d.getMonth() - 11 + i);
   const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const receita = 600000 + Math.random() * 400000;
@@ -184,7 +186,7 @@ const DEMO_EVOLUCAO = Array.from({ length: 12 }, (_, i) => {
 const DEMO_FOLHA = [
   { categoria:'atleta',      nome:'Thiago Alemão',     cargo_posicao:'Centroavante',   salario_bruto:42000, salario_carteira:15000, complemento:25000 },
   { categoria:'atleta',      nome:'Diego Costa',       cargo_posicao:'Goleiro',        salario_bruto:38000, salario_carteira:13000, complemento:22000 },
-  { categoria:'atleta',      nome:'Rodrigo Peixoto',   cargo_posicao:'Lateral Direito',salario_bruto:28000, salario_carteira:10000, complemento:16000 },
+  { categoria:'atleta',      nome:'Rodrigo Peixoto',   cargo_posicao:'Lateral Direito', salario_bruto:28000, salario_carteira:10000, complemento:16000 },
   { categoria:'atleta',      nome:'Paulo Freitas',     cargo_posicao:'Volante',        salario_bruto:24000, salario_carteira:9000,  complemento:13000 },
   { categoria:'atleta',      nome:'Marcos Lima',       cargo_posicao:'Zagueiro',       salario_bruto:22000, salario_carteira:8000,  complemento:12000 },
   { categoria:'funcionario', nome:'Carlos Mendes',     cargo_posicao:'Diretor Geral',  salario_bruto:18000, salario_carteira:18000, complemento:0 },
@@ -278,11 +280,11 @@ const CORES_EQUITY = { 'clube':'#334155','socio':'#0052cc','investidor':'#6554c0
 const CORES_STATUS = { ativo:'verde', lesionado:'laranja', suspenso:'vermelho', emprestado:'azul', concluido:'verde', cancelado:'vermelho', em_aprovacao:'laranja', em_cotacao:'azul', pendente:'laranja', pago:'verde' };
 
 function statusLabel(s) {
-  const m = { ativo:'Ativo', lesionado:'Lesionado', suspenso:'Suspenso', emprestado:'Emprestado', concluido:'ConcluÃ­do', cancelado:'Cancelado', em_aprovacao:'Em AprovaÃ§Ã£o', em_cotacao:'Em CotaÃ§Ã£o', rascunho:'Rascunho', em_cotacao:'Em CotaÃ§Ã£o', enviado_cotacao:'CotaÃ§Ã£o Enviada', pendente:'Pendente', pago:'Pago' };
+  const m = { ativo:'Ativo', lesionado:'Lesionado', suspenso:'Suspenso', emprestado:'Emprestado', concluido:'Concluído', cancelado:'Cancelado', em_aprovacao:'Em Aprovação', em_cotacao:'Em Cotação', rascunho:'Rascunho', em_cotacao:'Em Cotação', enviado_cotacao:'Cotação Enviada', pendente:'Pendente', pago:'Pago' };
   return m[s] || s;
 }
 
-// â”€â”€â”€ Componentes auxiliares â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Componentes auxiliares ─────────────────────────────────────
 function SparkBar({ dados, altKey, recKey, despKey, maxVal }) {
   const max = maxVal || Math.max(...dados.map(d => Math.max(d[recKey]||0, d[despKey]||0)));
   return (
@@ -330,76 +332,76 @@ function EquityBar({ equity }) {
   return (
     <div>
       <div className="equity-bar">
-        {ll.map((e, i) => (
+        {all.map((e, i) => (
           <div key={i} className="equity-seg"
-               style={{ width:`${e.pdrcentual_participacao}%`, background: CORES_EQUITY[e.perfil] || CORES[i%CORES.length] }}
-               title={`${e.nome}: ${e.pdrcentual_participacao}%`}>
-            {e-percentual_participacao >= 10 && `${e.percentual_participacao}%`}
+               style={{ width:`${e.percentual_participacao}%`, background: CORES_EQUITY[e.perfil] || CORES[i%CORES.length] }}
+               title={`${e.nome}: ${e.percentual_participacao}%`}>
+            {e.percentual_participacao >= 10 && `${e.percentual_participacao}%`}
           </div>
         ))}
       </div>
       <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
         {all.map((e, i) => (
-          <div key={i} style={{ display:'flex', alignItems:'center', gap:5, fontSize:11 }Ž
-            <div style={{ width:10, height:10, borderRadius:2, background: CORES_EQUITY[e.pdrfil] || CORES[i%CORES.length], flexShrink:0 }}/>
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:5, fontSize:11 }}>
+            <div style={{ width:10, height:10, borderRadius:2, background: CORES_EQUITY[e.perfil] || CORES[i%CORES.length], flexShrink:0 }}/>
             <span style={{ color:'#64748b' }}>{e.nome} ({e.percentual_participacao}%)</span>
-          </dév>
+          </div>
         ))}
       </div>
     </div>
   );
 }
 
-// â”€â”€â”€ Aba Executivo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function U1bExectôivo() {
+// ─── Aba Executivo ──────────────────────────────────────────────
+function TabExecutivo() {
   const [dados, setDados] = useState(null);
   const [evolucao, setEvolucao] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useAfect(() => {
+  useEffect(() => {
     Promise.all([
-      `0iFetch('/api/relatorios/exectôivo').catch(() => ({ dados: DEMO_EXECUTIVO })),
+      apiFetch('/api/relatorios/executivo').catch(() => ({ dados: DEMO_EXECUTIVO })),
       apiFetch('/api/relatorios/financeiro').catch(() => ({ evolucao: DEMO_EVOLUCAO }))
     ]).then(([exec, fin]) => {
       setDados(exec.dados || DEMO_EXECUTIVO);
-      setEvolucao(fin.evolucao || DEMO_EVOLUBAO);
+      setEvolucao(fin.evolucao || DEMO_EVOLUCAO);
     }).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
-  if (!dados) retõrn null;
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (!dados) return null;
 
   const res_mes = Number(dados.resultado_mes || 0);
-  const res_ano = umber(dados.resultado_ano || 0);
+  const res_ano = Number(dados.resultado_ano || 0);
 
   return (
     <div>
       {/* KPIs principais */}
       <div className="kpi-grid">
         <div className="kpi-card verde">
-          <div className="kpi-label">Receita do MÃªs</div>
+          <div className="kpi-label">Receita do Mês</div>
           <div className="kpi-value">{fmtK(dados.receita_mes)}</div>
-          <div className="kpi-sub">MÃªs atõal</div>
+          <div className="kpi-sub">Mês atual</div>
         </div>
         <div className="kpi-card vermelho">
-          <div className="kpi-label">Despesa do MÃªs</div>
+          <div className="kpi-label">Despesa do Mês</div>
           <div className="kpi-value">{fmtK(dados.despesa_mes)}</div>
-          <div className="kpi-sub">MÃªs atual</div>
+          <div className="kpi-sub">Mês atual</div>
         </div>
         <div className={`kpi-card ${res_mes >= 0 ? 'verde' : 'vermelho'}`}>
-          <div className="kpi-label">Resultado do MÃªs</div>
+          <div className="kpi-label">Resultado do Mês</div>
           <div className="kpi-value">{fmtK(Math.abs(res_mes))}</div>
-          <div className="kpi-sub">{res_mes >= 0 ? 'â–² SuperÃ¡vit' : 'â–¼ DÃ©ficit'}</div>
+          <div className="kpi-sub">{res_mes >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
         </div>
         <div className={`kpi-card ${res_ano >= 0 ? 'verde' : 'vermelho'}`}>
           <div className="kpi-label">Resultado Anual</div>
           <div className="kpi-value">{fmtK(Math.abs(res_ano))}</div>
-          <div className="kpi-sub">{res_ano >= 0 ? 'â–² SuperÃ¡vit' : 'â–¼ DÃ©ficit'}</div>
+          <div className="kpi-sub">{res_ano >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
         </div>
         <div className="kpi-card azul">
           <div className="kpi-label">Folha de Pagamento</div>
           <div className="kpi-value">{fmtK(dados.folha_total)}</div>
-          <div className="kpi-sub">Atletas + FuncionÃ¡rios</div>
+          <div className="kpi-sub">Atletas + Funcionários</div>
         </div>
         <div className="kpi-card roxo">
           <div className="kpi-label">Capital Investido</div>
@@ -409,7 +411,7 @@ function U1bExectôivo() {
         <div className="kpi-card laranja">
           <div className="kpi-label">Metas Ativas</div>
           <div className="kpi-value">{dados.metas_ativas}</div>
-          <div className="kpi-sub">{dados.progresso_medio_metas}% progresso mÃ©dio</div>
+          <div className="kpi-sub">{dados.progresso_medio_metas}% progresso médio</div>
         </div>
         <div className="kpi-card azul">
           <div className="kpi-label">Pedidos em Aberto</div>
@@ -418,12 +420,12 @@ function U1bExectôivo() {
         </div>
       </div>
 
-      {/* GrÃ¡fico evoluÃ§Ã£o + Alertas */}
+      {/* Gráfico evolução + Alertas */}
       <div className="grid-2">
         <div className="card">
-          <div className="card-title"><span>ðŸ“Š</span> EvoluÃ§Ã£o Financeira (12 meses)</div>
+          <div className="card-title"><span>📊</span> Evolução Financeira (12 meses)</div>
           <SparkBar dados={evolucao} altKey="mes_label" recKey="receita" despKey="despesa"/>
-          <div style={{ display:'fmex', gap:16, marginTop:12, justifyContent:'center' }}>
+          <div style={{ display:'flex', gap:16, marginTop:12, justifyContent:'center' }}>
             <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
               <div style={{ width:12, height:12, background:'#00875a', borderRadius:2 }}/> Receita
             </div>
@@ -432,8 +434,8 @@ function U1bExectôivo() {
             </div>
           </div>
           <div style={{ marginTop:16 }}>
-            <div className="section-title">Ãšltimos 6 meses</div>
-            <table><thead><tr><th>MÃªs</th><th>Receita</th><th>Despesa</th><th>Resultado</th></tr></thead>
+            <div className="section-title">Últimos 6 meses</div>
+            <table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Resultado</th></tr></thead>
               <tbody>
                 {evolucao.slice(-6).map((m, i) => (
                   <tr key={i}>
@@ -451,17 +453,17 @@ function U1bExectôivo() {
         <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
           {/* Status do Clube */}
           <div className="card">
-            <div className="card-title"><span>ðŸŸï¸</span> Status do Clube</div>
+            <div className="card-title"><span>🏟️</span> Status do Clube</div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
               {[
                 { label:'Atletas Ativos', val: dados.atletas_ativos, cor:'#0052cc' },
-                { label:'Contratos Vencendo', val: dados.contratos_vencendo, cor: dados.contratos_vencendo > 3 ? '#de350' : '#ff8b00' },
-                { label:'Metas CrÃ­ticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#de350b' : '#00875a' },
+                { label:'Contratos Vencendo', val: dados.contratos_vencendo, cor: dados.contratos_vencendo > 3 ? '#de350b' : '#ff8b00' },
+                { label:'Metas Críticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#de350b' : '#00875a' },
                 { label:'Saldo Devedor', val: fmtK(dados.saldo_devedor_emprestimos), cor:'#6554c0', isStr:true },
               ].map((it, i) => (
                 <div key={i} style={{ background:'#f8fafc', borderRadius:8, padding:12, borderLeft:`3px solid ${it.cor}` }}>
                   <div style={{ fontSize:11, color:'#64748b', marginBottom:4 }}>{it.label}</div>
-                  <div style={{ fontSize:10, fontWeight:700, color:it.cor }}>{it.val}</div>
+                  <div style={{ fontSize:20, fontWeight:700, color:it.cor }}>{it.val}</div>
                 </div>
               ))}
             </div>
@@ -469,11 +471,11 @@ function U1bExectôivo() {
 
           {/* Folha breakdown */}
           <div className="card">
-            <div className="card-title"><span>ðŸ’°</span> ComposiÃ§Ã£o da Folha</div>
+            <div className="card-title"><span>💰</span> Composição da Folha</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {[
-                { label:'Atletas',      val: dados.folha_Qtletas,      pct: dados.folha_total > 0 ? (dados.folha_atletas/dados.folha_total*100).toFixed(1) : 0, cor:'#0052cc' },
-                { label:'FuncionÃ¡rios', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#6554c0' },
+                { label:'Atletas',      val: dados.folha_atletas,      pct: dados.folha_total > 0 ? (dados.folha_atletas/dados.folha_total*100).toFixed(1) : 0, cor:'#0052cc' },
+                { label:'Funcionários', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#6554c0' },
               ].map((it, i) => (
                 <div key={i}>
                   <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4, fontSize:13 }}>
@@ -496,7 +498,7 @@ function U1bExectôivo() {
   );
 }
 
-// â”€â”€â”€ Aba Financeiro â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Aba Financeiro ─────────────────────────────────────────────
 function TabFinanceiro() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -509,7 +511,7 @@ function TabFinanceiro() {
     if (filtro.fim) params.set('periodo_fim', filtro.fim);
     apiFetch('/api/relatorios/financeiro?' + params).catch(() => ({
       evolucao: DEMO_EVOLUCAO,
-      kpis: { receita_total:5200000, despesa_total:4380000, qtd_receitas:4, qtd_despesas:92 },
+      kpis: { receita_total:5200000, despesa_total:4380000, qtd_receitas:48, qtd_despesas:92 },
       por_categoria: [
         { categoria:'patrocinio',   tipo:'receita', qtd:6,  total:1250000 },
         { categoria:'bilheteria',   tipo:'receita', qtd:12, total:820000  },
@@ -524,7 +526,7 @@ function TabFinanceiro() {
 
   useEffect(() => { carregar(); }, []);
 
-  if (loading) retõrn <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
   if (!dados) return null;
 
   const k = dados.kpis || {};
@@ -533,25 +535,25 @@ function TabFinanceiro() {
   const receitas  = (dados.por_categoria || []).filter(c => c.tipo === 'receita').sort((a,b) => b.total - a.total);
   const despesas  = (dados.por_categoria || []).filter(c => c.tipo === 'despesa').sort((a,b) => b.total - a.total);
 
-  retõrn (
+  return (
     <div>
       {/* Filtros */}
       <div className="filter-row">
-        <label style={{ fontSize:13 }}>PerÃ­odo:</label>
+        <label style={{ fontSize:13 }}>Período:</label>
         <input type="date" value={filtro.ini} onChange={e => setFiltro(p => ({ ...p, ini: e.target.value }))}/>
-        <span style={{ fontSize:13, color:'#64748b' }}>atÃ©</span>
+        <span style={{ fontSize:13, color:'#64748b' }}>até</span>
         <input type="date" value={filtro.fim} onChange={e => setFiltro(p => ({ ...p, fim: e.target.value }))}/>
         <button className="btn btn-primary" onClick={carregar}>Filtrar</button>
       </div>
 
       {/* KPIs */}
       <div className="kpi-grid">
-        <div className="kpi-card verde"><div className="kpi-label">Receita Total</div><div className="kpi-value">{fmtK(k.receita_total)}</div><div className="kpi-sub">{k.qtd_receitas} lanÃ§amentos</div></div>
-        <div className="kpi-card vermelho"><div className="kpi-label">Despesa Total</div><div className="kpi-value">{fmtK(k.despesa_total)}</div><div className="kpi-sub">{k.qtd_despesas} lanÃ§amentos</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Receita Total</div><div className="kpi-value">{fmtK(k.receita_total)}</div><div className="kpi-sub">{k.qtd_receitas} lançamentos</div></div>
+        <div className="kpi-card vermelho"><div className="kpi-label">Despesa Total</div><div className="kpi-value">{fmtK(k.despesa_total)}</div><div className="kpi-sub">{k.qtd_despesas} lançamentos</div></div>
         <div className={`kpi-card ${resultado >= 0 ? 'verde' : 'vermelho'}`}>
           <div className="kpi-label">Resultado</div>
           <div className="kpi-value">{fmtK(Math.abs(resultado))}</div>
-          <div className="kpi-sub">{resultado >= 0 ? 'â–² SuperÃ¡vit' : 'â–¼ DÃ©ficit'}</div>
+          <div className="kpi-sub">{resultado >= 0 ? '▲ Superávit' : '▼ Déficit'}</div>
         </div>
         <div className="kpi-card azul">
           <div className="kpi-label">Margem</div>
@@ -563,22 +565,23 @@ function TabFinanceiro() {
       <div className="grid-2">
         {/* Receitas por categoria */}
         <div className="card">
-          <div className="card-title"><span>ðŸ“ˆ</span> Receitas por Categoria</div>
+          <div className="card-title"><span>📈</span> Receitas por Categoria</div>
           <HorBar items={receitas} labelKey="categoria" valKey="total" color="#00875a"/>
         </div>
         {/* Despesas por categoria */}
         <div className="card">
-          <div className="card-title"><span>ðŸ“‰</span> Despesas por Categoria</div>
+          <div className="card-title"><span>📉</span> Despesas por Categoria</div>
           <HorBar items={despesas} labelKey="categoria" valKey="total" color="#de350b"/>
         </div>
       </div>
 
-      {/* EvoluÃ§Ã£o */}
+      {/* Evolução */}
       <div className="card" style={{ marginBottom:20 }}>
-        <div className="card-title"><span>ðŸ“Š</span> EvoluÃ§Ã£o Mensal</div>
+        <div className="card-title"><span>�
+</span> Evolução Mensal</div>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>MÃªs</th><th>Receita</th><th>Despesa</th><th>Resultado</th><th>Margem</th></tr></thead>
+            <thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Resultado</th><th>Margem</th></tr></thead>
             <tbody>
               {(dados.evolucao || []).map((m, i) => {
                 const res = Number(m.resultado);
@@ -601,7 +604,7 @@ function TabFinanceiro() {
   );
 }
 
-// â”€â”€â”€ Aba Folha â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Aba Folha ──────────────────────────────────────────────────
 function TabFolha() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -610,13 +613,13 @@ function TabFolha() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (filtro) params.set('categoria', filtro);
-    apiFdôch('/api/relatorios/folha?' + params).catch(() => ({
+    apiFetch('/api/relatorios/folha?' + params).catch(() => ({
       pessoas: DEMO_FOLHA, totais: DEMO_FOLHA_TOTAIS, distribuicao: DEMO_FOLHA_DIST
     })).then(d => { setDados(d); setLoading(false); });
   }, [filtro]);
 
-  if (loading) return <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
-  if (!dados) retõrn null;
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
+  if (!dados) return null;
 
   const tot = dados.totais || {};
   const pessoas = dados.pessoas || [];
@@ -624,56 +627,56 @@ function TabFolha() {
   const distAtletas = dist.filter(d => d.agrupador === 'posicao');
   const distFuncs   = dist.filter(d => d.agrupador === 'departamento');
 
-  retõrn (
+  return (
     <div>
       {/* Filtro */}
       <div className="filter-row">
-        <label style={{ fontSize:13 }}>Fktrar por:</label>
+        <label style={{ fontSize:13 }}>Filtrar por:</label>
         {['', 'atleta', 'funcionario'].map(v => (
           <button key={v} className={`btn ${filtro === v ? 'btn-primary' : 'btn-outline'}`}
                   onClick={() => setFiltro(v)}>
-            {v === '' ? 'Todos' : v === 'atleta' ? 'Atldôas' : 'FuncionÃ¡rios'}
+            {v === '' ? 'Todos' : v === 'atleta' ? 'Atletas' : 'Funcionários'}
           </button>
         ))}
       </div>
 
       {/* KPIs */}
       <div className="kpi-grid">
-        <div className="kpi-card azul"><div className="kpi-label">Folha Total (Bruta)</div><div className="kpi-value">{fmtK(tot.cbuto)}</div><div className="kpi-sub">Todos os vÃ­nculos</div></div>
+        <div className="kpi-card azul"><div className="kpi-label">Folha Total (Bruta)</div><div className="kpi-value">{fmtK(tot.bruto)}</div><div className="kpi-sub">Todos os vínculos</div></div>
         <div className="kpi-card verde"><div className="kpi-label">Total Carteira (CLT)</div><div className="kpi-value">{fmtK(tot.carteira)}</div><div className="kpi-sub">Registrado em carteira</div></div>
-        <div className="kpi-card roxo"><div className="kpi-label">Direitos de Pmagem/PHü/div><div className="kpi-value">{fmtK(tot.complemento)}</div><div className="kpi-sub">Complemento PJ</div></div>
+        <div className="kpi-card roxo"><div className="kpi-label">Direitos de Imagem/PJ</div><div className="kpi-value">{fmtK(tot.complemento)}</div><div className="kpi-sub">Complemento PJ</div></div>
         <div className="kpi-card laranja"><div className="kpi-label">Total de Pessoas</div><div className="kpi-value">{pessoas.length}</div><div className="kpi-sub">Ativos no sistema</div></div>
       </div>
 
       <div className="grid-2">
-        {/* DistribuiÃ§Ã£o atletas */}
+        {/* Distribuição atletas */}
         <div className="card">
-          <div className="card-title"><span>âš½</span> Folha por PosiÃ¡C£o (Atletas)</div>
+          <div className="card-title"><span>⚽</span> Folha por Posição (Atletas)</div>
           <HorBar items={distAtletas} labelKey="grupo" valKey="folha" color="#0052cc"/>
         </div>
-        {/* DistribuiÃ§Ã£o funcionÃ¡rios */}
+        {/* Distribuição funcionários */}
         <div className="card">
-          <div className="card-title"><span>ðŸ¢</span> Folha por Departamento (Func.)</div>
-          <HorBar items={distFuncs} labelKey="grupo" valKey="folha" color="#6556c0"/>
+          <div className="card-title"><span>🏢</span> Folha por Departamento (Func.)</div>
+          <HorBar items={distFuncs} labelKey="grupo" valKey="folha" color="#6554c0"/>
         </div>
       </div>
 
-      {/* Tabela ddôalhada */}
+      {/* Tabela detalhada */}
       <div className="card">
-        <div className="card-title"><span>ðŸ“‹</span> Detalhamento de Pessoas</div>
+        <div className="card-title"><span>📋</span> Detalhamento de Pessoas</div>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>Tipo</th><th>Nome</th><th>Cargo / PosiÃ§Ã£o</th><th>SalÃ¡rio Bruto</th><th>Carteira (CLT)</th><th>PJ / Imagem</th><th>Contrato atÃ©</th></tr></thead>
+            <thead><tr><th>Tipo</th><th>Nome</th><th>Cargo / Posição</th><th>Salário Bruto</th><th>Carteira (CLT)</th><th>PJ / Imagem</th><th>Contrato até</th></tr></thead>
             <tbody>
               {pessoas.map((p, i) => (
                 <tr key={i}>
-                  <td><span className={`badge badge-${p.categoria === 'atleta' ? 'azul' : 'roxo'}`}>{p.categoria === 'atldôa' ? 'âš½ Atldôa' : 'ðŸ¢ Func.'}</span></td>
+                  <td><span className={`badge badge-${p.categoria === 'atleta' ? 'azul' : 'roxo'}`}>{p.categoria === 'atleta' ? '⚽ Atleta' : '🏢 Func.'}</span></td>
                   <td><strong>{p.nome}</strong></td>
                   <td>{p.cargo_posicao}</td>
                   <td><strong>{fmtK(p.salario_bruto)}</strong></td>
                   <td>{fmtK(p.salario_carteira)}</td>
-                  <td>{Number(p.complemento) > 0 ? fmtK(p.complemento) : <span style={{ color:'#94a3b8' }}>â€”</span>}</td>
-                  <td>{p.contrato_ate ? new Date(p.contrato_ate).toLocaleDateString('pt-BR') : <span style={{ color:'#94a3b8' }}>â€”</span>}</td>
+                  <td>{Number(p.complemento) > 0 ? fmtK(p.complemento) : <span style={{ color:'#94a3b8' }}>—</span>}</td>
+                  <td>{p.contrato_ate ? new Date(p.contrato_ate).toLocaleDateString('pt-BR') : <span style={{ color:'#94a3b8' }}>—</span>}</td>
                 </tr>
               ))}
             </tbody>
@@ -684,7 +687,7 @@ function TabFolha() {
   );
 }
 
-// â”€â”€â”€ Aba Esportivo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Aba Esportivo ──────────────────────────────────────────────
 function TabEsportivo() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -696,7 +699,7 @@ function TabEsportivo() {
       .then(d => { setDados(d.dados || d); setLoading(false); });
   }, [temporada]);
 
-  if (loading) return <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
   if (!dados) return null;
 
   const statusMap = {};
@@ -708,7 +711,7 @@ function TabEsportivo() {
       <div className="filter-row">
         <label style={{ fontSize:13 }}>Temporada:</label>
         {['2024','2025','2026'].map(t => (
-          <butôon key={t} className={`btn ${temporada === t ? 'btn-primary' : 'btn-out¬ine'}`} onClick={() => setTemporada(t)}>{t}</button>
+          <button key={t} className={`btn ${temporada === t ? 'btn-primary' : 'btn-outline'}`} onClick={() => setTemporada(t)}>{t}</button>
         ))}
       </div>
 
@@ -723,12 +726,12 @@ function TabEsportivo() {
         ))}
       </div>
 
-      {/* Performance por competiÃ§Ã£o */}
+      {/* Performance por competição */}
       <div className="card" style={{ marginBottom:20 }}>
-        <div className="card-title"><span>ðŸ†</span> Performance por CompetiÃ§Ã£o</div>
+        <div className="card-title"><span>🏆</span> Performance por Competição</div>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>CompetiÃ§Ã£o</th><th>Jogos</th><th>Gols</th><th>Assists</th><th>Clean Sheets</th><th>Amarelos</th><th>Vermelhos</th><th>MÃ©dia Gols/Jogo</th></tr></thead>
+            <thead><tr><th>Competição</th><th>Jogos</th><th>Gols</th><th>Assists</th><th>Clean Sheets</th><th>Amarelos</th><th>Vermelhos</th><th>Média Gols/Jogo</th></tr></thead>
             <tbody>
               {(dados.performance || []).map((p, i) => (
                 <tr key={i}>
@@ -750,10 +753,10 @@ function TabEsportivo() {
       <div className="grid-2">
         {/* Artilharia */}
         <div className="card">
-          <div className="card-title"><span>ðŸ¥…</span> Artilharia â€” Top {(dados.artilharia||[]).length}</div>
+          <div className="card-title"><span>🥅</span> Artilharia — Top {(dados.artilharia||[]).length}</div>
           <div className="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Atleta</th><th>Pos</th><th>âš½ Gols</th><th>ðŸŽ¯ Assists</th><th>ðŸŽ® Jogos</th></tr></thead>
+              <thead><tr><th>#</th><th>Atleta</th><th>Pos</th><th>⚽ Gols</th><th>🎯 Assists</th><th>🎮 Jogos</th></tr></thead>
               <tbody>
                 {(dados.artilharia || []).slice(0, 8).map((a, i) => (
                   <tr key={i}>
@@ -772,7 +775,7 @@ function TabEsportivo() {
 
         {/* Metas esportivas */}
         <div className="card">
-          <div className="card-title"><span>ðŸŽ¯</span> Metas Esportivas</div>
+          <div className="card-title"><span>🎯</span> Metas Esportivas</div>
           <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
             {(dados.metas || []).map((m, i) => {
               const pct = Number(m.percentual) || 0;
@@ -782,13 +785,13 @@ function TabEsportivo() {
                   <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
                     <span style={{ fontWeight:600, fontSize:13 }}>{m.titulo}</span>
                     {m.status === 'concluida'
-                      ? <span className="conquista">ðŸ† Atingida</span>
-                      : <span style={{ fontWeight:700, color:cor >{pct}%</span>}
+                      ? <span className="conquista">🏆 Atingida</span>
+                      : <span style={{ fontWeight:700, color:cor }}>{pct}%</span>}
                   </div>
                   <div className="progress-wrap">
                     <div className="progress-bar" style={{ width:`${pct}%`, background:cor }}/>
                   </div>
-                  <div style={{ fontSize:11, color:'#64748b', narginTop:4 >
+                  <div style={{ fontSize:11, color:'#64748b', marginTop:4 }}>
                     {m.valor_atual} / {m.valor_meta}
                   </div>
                 </div>
@@ -801,45 +804,45 @@ function TabEsportivo() {
   );
 }
 
-// â”€â”€â”€ Aba Investidores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Aba Investidores ────────────────────────────────────────────
 function TabInvestidores() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    `0iFetch('/api/relatorios/investidores')
+    apiFetch('/api/relatorios/investidores')
       .catch(() => DEMO_INVESTIDORES)
       .then(d => { setDados(d); setLoading(false); });
   }, []);
 
-  if (loading) retõrn <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
   if (!dados) return null;
 
-  const tot = $ados.totais || {};
+  const tot = dados.totais || {};
 
   return (
     <div>
       {/* KPIs */}
       <div className="kpi-grid">
         <div className="kpi-card azul"><div className="kpi-label">Capital Investido</div><div className="kpi-value">{fmtK(tot.total_capital)}</div><div className="kpi-sub">Aportes de capital</div></div>
-        <div className="kpi-card verde"><div className="kpi-label">PatrocÃ­nios</div><div className="kpi-value">{fmtK(tot.total_patrocinio)}</div><div className="kpi-sub">Total contratos</div></div>
-        <div className="kpi-card mranja"><div className="kpi-label">EmprÃ©stimos</div><div className="kpi-value">{fmtK(tot.total_emprestimo)}</div><div className="kpi-sub">Tomados</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Patrocínios</div><div className="kpi-value">{fmtK(tot.total_patrocinio)}</div><div className="kpi-sub">Total contratos</div></div>
+        <div className="kpi-card laranja"><div className="kpi-label">Empréstimos</div><div className="kpi-value">{fmtK(tot.total_emprestimo)}</div><div className="kpi-sub">Tomados</div></div>
         <div className="kpi-card roxo"><div className="kpi-label">Total Captado</div><div className="kpi-value">{fmtK(tot.total_geral)}</div><div className="kpi-sub">Todas as fontes</div></div>
       </div>
 
       {/* Equity */}
       <div className="card" style={{ marginBottom:20 }}>
-        <div className="card-title"><span>ðŸ¥§</span> DistribuiÃ§Ã£o SocietÃ¡ria</div>
+        <div className="card-title"><span>🥧</span> Distribuição Societária</div>
         <EquityBar equity={dados.equity || []}/>
       </div>
 
       <div className="grid-2">
         {/* Tabela investidores */}
         <div className="card">
-          <div className="card-title"><span>ðŸ‘¥</span> Investidores</div>
+          <div className="card-title"><span>👥</span> Investidores</div>
           <div className="table-wrap">
             <table>
-              <thead><tr><th>Nome</th><th>Perfil</th><th>Aportado</th><th>Retornado</th><th>ParticipaÃ§Ã£o</th></tr></thead>
+              <thead><tr><th>Nome</th><th>Perfil</th><th>Aportado</th><th>Retornado</th><th>Participação</th></tr></thead>
               <tbody>
                 {(dados.investidores || []).map((inv, i) => (
                   <tr key={i}>
@@ -847,7 +850,7 @@ function TabInvestidores() {
                     <td><span className="badge badge-azul">{inv.perfil}</span></td>
                     <td className="pos">{fmtK(inv.total_aportado)}</td>
                     <td>{fmtK(inv.total_retornado)}</td>
-                    <td>{inv.percentual_participacao > 0 ? <span className="stat-pill">{inv.percentual_participacao}%</span> : <span style={{ color:'#94a3b8' }}>â€”</span>}</td>
+                    <td>{inv.percentual_participacao > 0 ? <span className="stat-pill">{inv.percentual_participacao}%</span> : <span style={{ color:'#94a3b8' }}>—</span>}</td>
                   </tr>
                 ))}
               </tbody>
@@ -857,19 +860,19 @@ function TabInvestidores() {
 
         {/* Retornos pendentes */}
         <div className="card">
-          <div className="card-title"><span>â³</span> Retornos Pe.de.tes</div>
-          {(dados.retornos_pendentes || []).le.gth === 0
-            ? <div style={{ color:'#64748b', textlign:'center', padding:24 }}>Nenhum retorno pendente</div>
+          <div className="card-title"><span>⏳</span> Retornos Pendentes</div>
+          {(dados.retornos_pendentes || []).length === 0
+            ? <div style={{ color:'#64748b', textAlign:'center', padding:24 }}>Nenhum retorno pendente</div>
             : <div className="table-wrap">
                 <table>
                   <thead><tr><th>Investidor</th><th>Tipo</th><th>Valor</th><th>Vencimento</th></tr></thead>
                   <tbody>
-                    {(dados.retornos_pe.de.tes || []).map((r, i) => (
+                    {(dados.retornos_pendentes || []).map((r, i) => (
                       <tr key={i}>
                         <td>{r.investidor_nome}</td>
                         <td><span className={`badge badge-${r.tipo === 'juros' ? 'laranja' : 'azul'}`}>{r.tipo}</span></td>
                         <td className="neg">{fmtK(r.valor)}</td>
-                        <td>{r.data_prevista ? new Date(r.data_prevista).toLocaleDateString('pt-BR') : 'â€”'}</td>
+                        <td>{r.data_prevista ? new Date(r.data_prevista).toLocaleDateString('pt-BR') : '—'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -882,7 +885,7 @@ function TabInvestidores() {
   );
 }
 
-// â”€â”€â”€ Aba Compras â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Aba Compras ─────────────────────────────────────────────────
 function TabCompras() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -893,13 +896,13 @@ function TabCompras() {
       .then(d => { setDados(d); setLoading(false); });
   }, []);
 
-  if (loading) retõrn <div className="loading"><span className="spin">âŸ³</span> Carregando...</div>;
+  if (loading) return <div className="loading"><span className="spin">⟳</span> Carregando...</div>;
   if (!dados) return null;
 
   const totalPedidos = (dados.por_status || []).reduce((s, x) => s + Number(x.qtd), 0);
-  const totalValor   = (dados.por_status || []).reduce((s, x) => s + Number!ø.valor_total || 0), 0);
+  const totalValor   = (dados.por_status || []).reduce((s, x) => s + Number(x.valor_total || 0), 0);
   const concluidos   = (dados.por_status || []).find(x => x.status === 'concluido') || {};
-  const abertos      = (dados.por_status || []).filter!ø => !['concluido','cancelado'].includes(x.status));
+  const abertos      = (dados.por_status || []).filter(x => !['concluido','cancelado'].includes(x.status));
   const valorAberto  = abertos.reduce((s, x) => s + Number(x.valor_total || 0), 0);
 
   return (
@@ -907,26 +910,26 @@ function TabCompras() {
       {/* KPIs */}
       <div className="kpi-grid">
         <div className="kpi-card azul"><div className="kpi-label">Total de Pedidos</div><div className="kpi-value">{totalPedidos}</div><div className="kpi-sub">Todos os status</div></div>
-        <div className="kpi-card verde"><div className="kpi-label">ConcluÃ­dos</div><div className="kpi-value">{concluidos.qtd || 0}</div><div className="kpi-sub">{fmtK(concluidos.valor_total)} em valor</div></div>
-        <div className="kpi-card laranja"><div className="kpi-label">Em Andamento</div><div className="kpi-value">{abertos.reduce((s,x)=>s+Number(x.qtd),0)}</div><div className="kpi-sub">{fmtK(valorAberto)} em b"erto</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Concluídos</div><div className="kpi-value">{concluidos.qtd || 0}</div><div className="kpi-sub">{fmtK(concluidos.valor_total)} em valor</div></div>
+        <div className="kpi-card laranja"><div className="kpi-label">Em Andamento</div><div className="kpi-value">{abertos.reduce((s,x)=>s+Number(x.qtd),0)}</div><div className="kpi-sub">{fmtK(valorAberto)} em aberto</div></div>
         <div className="kpi-card roxo"><div className="kpi-label">Volume Total</div><div className="kpi-value">{fmtK(totalValor)}</div><div className="kpi-sub">Todos os pedidos</div></div>
       </div>
 
       <div className="grid-2">
         {/* Por status */}
         <div className="card">
-          <div className="card-title"><span>ðŸ“¦</span> Pedidos por Status</div>
+          <div className="card-title"><span>📦</span> Pedidos por Status</div>
           <div className="bar-chart">
             {(dados.por_status || []).map((s, i) => {
               const max = Math.max(...(dados.por_status||[]).map(x => Number(x.qtd)));
               const pct = max > 0 ? Math.round((Number(s.qtd)/max)*100) : 0;
-              const cor = { concluido:'#00875a', cancelado:'#de350b', em_aprovacao:'#ff8b00', em_cotacao:'#0092cc', rascunh:'#94a3b8' }[s.status] || CORES[i%CORES.le.gth];
-              retõrn (
+              const cor = { concluido:'#00875a', cancelado:'#de350b', em_aprovacao:'#ff8b00', em_cotacao:'#0052cc', rascunho:'#94a3b8' }[s.status] || CORES[i%CORES.length];
+              return (
                 <div className="bar-row" key={i}>
                   <span className="bar-label">{statusLabel(s.status)}</span>
                   <div className="bar-track">
                     <div className="bar-fill" style={{ width:`${pct}%`, background:cor }}>
-                      {pct > 20 && <span className="bar-val">{s.qtd}*pedidos</span>}
+                      {pct > 20 && <span className="bar-val">{s.qtd} pedidos</span>}
                     </div>
                   </div>
                   {pct <= 20 && <span className="bar-val-out">{s.qtd}</span>}
@@ -938,17 +941,17 @@ function TabCompras() {
 
         {/* Por departamento */}
         <div className="card">
-          <div className="card-title"><span>ðŸ¢</span> Compras por Departamento</div>
+          <div className="card-title"><span>🏢</span> Compras por Departamento</div>
           <HorBar items={dados.por_departamento || []} labelKey="departamento" valKey="valor_total"/>
         </div>
       </div>
 
       {/* Ranking fornecedores */}
       <div className="card">
-        <div className="card-title"><span>ðŸ…</span> Ranking de Fornecedores</div>
+        <div className="card-title"><span>🏅</span> Ranking de Fornecedores</div>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>#</th><th>Fornecedor</th><th>Categoria</th><th>Pedidos</th><th>ConcluÃ­dos</th><th>Volume$notal</th><th>Taxa ConclusÃ£o</th></tr></thead>
+            <thead><tr><th>#</th><th>Fornecedor</th><th>Categoria</th><th>Pedidos</th><th>Concluídos</th><th>Volume Total</th><th>Taxa Conclusão</th></tr></thead>
             <tbody>
               {(dados.ranking_fornecedores || []).map((f, i) => {
                 const taxa = f.total_pedidos > 0 ? Math.round((f.pedidos_concluidos / f.total_pedidos) * 100) : 0;
@@ -963,7 +966,7 @@ function TabCompras() {
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                         <div style={{ flex:1, background:'#f1f5f9', borderRadius:4, height:6, overflow:'hidden' }}>
-                          <div style={{ height:'100%', background: taxa >= <0 ? '#00<75!' : taxa >= 50 ? '#ff8b00' : '#de350b', width:`${taxa}%`, borderRadius:4 }}/>
+                          <div style={{ height:'100%', background: taxa >= 80 ? '#00875a' : taxa >= 50 ? '#ff8b00' : '#de350b', width:`${taxa}%`, borderRadius:4 }}/>
                         </div>
                         <span style={{ fontSize:11, fontWeight:700, color: taxa >= 80 ? '#00875a' : taxa >= 50 ? '#ff8b00' : '#de350b' }}>{taxa}%</span>
                       </div>
@@ -979,14 +982,14 @@ function TabCompras() {
   );
 }
 
-// â”€â”€â”€ App Principal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── App Principal ───────────────────────────────────────────────
 const TABS = [
-  { id:'executivo',    label:'ðŸ“Š Executivo',    component: TabExecutivo },
-  { id:'financeiro',   label:'ðŸ’° Financeiro',   component: TabFinanceiro },
-  { id:'folha',        label:'ðŸ‘¥ Folha',         component: TabFolha },
-  { id:'esportivo',    label:'âš½ Esportivo',     component: TabEsportivo },
-  { id:'investidores', label:'ðŸ“ˆ Investidores',  component: TabInvestidores },
-  { id:'compras',      label:'ðŸ“¦ Compras',       component: TabCompras },
+  { id:'executivo',    label:'📊 Executivo',    component: TabExecutivo },
+  { id:'financeiro',   label:'💰 Financeiro',   component: TabFinanceiro },
+  { id:'folha',        label:'👥 Folha',         component: TabFolha },
+  { id:'esportivo',    label:'⚽ Esportivo',     component: TabEsportivo },
+  { id:'investidores', label:'📈 Investidores',  component: TabInvestidores },
+  { id:'compras',      label:'📦 Compras',       component: TabCompras },
 ];
 
 function App() {
@@ -996,13 +999,13 @@ function App() {
   return (
     <div className="container">
       <div className="page-header">
-        <div className="page-title">RelatÃ³rios!‡erenciais</div>
-        <div className="page-subtitle">Visƒ£o consolidada de todos gs mÃ³dulos do ERP SAF</div>
+        <div className="page-title">Relatórios Gerenciais</div>
+        <div className="page-subtitle">Visão consolidada de todos os módulos do ERP SAF</div>
       </div>
 
       <div className="tabs">
         {TABS.map(t => (
-          <butôon key={t.id} className={`tab-btn ${aba === t.id ? 'active' : ''}`} onClick={() => setAba(t.id)}>
+          <button key={t.id} className={`tab-btn ${aba === t.id ? 'active' : ''}`} onClick={() => setAba(t.id)}>
             {t.label}
           </button>
         ))}
@@ -1013,7 +1016,7 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById*'root')).render(<App/>);
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
