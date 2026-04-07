@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP SAF — Prospecção</title>
+  <script src="config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0e1a2b; color: #e2e8f0; min-height: 100vh; }
+    button { cursor: pointer; font-family: inherit; }
+    input, select, textarea { font-family: inherit; }
+
+    :root {
+      --verde:      #155724;
+      --verde-med:  #1e8449;
+      --sidebar-bg: #0a1628;
+      --card-bg:    #152036;
+      --card-borda: #1e3a5f;
+      --input-bg:   #0e1e33;
+      --texto:      #e2e8f0;
+      --texto-leve: #94a3b8;
+      --azul:       #1e40af;
+      --azul-claro: #3b82f6;
+    }
+
+    /* LAYOUT */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px; min-height: 100vh; background: var(--sidebar-bg);
+      display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
+      border-right: 1px solid #1e3a5f;
+    }
+    .sidebar-logo {
+      padding: 18px 16px; border-bottom: 1px solid #1e3a5f;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-logo .icon { font-size: 26px; }
+    .sidebar-logo .title { color: #fff; font-size: 13px; font-weight: 700; }
+    .sidebar-logo .sub   { color: rgba(255,255,255,.5); font-size: 10px; }
+    .sidebar-nav { flex: 1; padding: 10px 0; }
+    .nav-label {
+      color: rgba(255,255,255,.35); font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em; padding: 10px 14px 3px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 9px; padding: 9px 14px;
+      color: rgba(255,255,255,.65); font-size: 12px; text-decoration: none;
+      transition: all .15s; border-left: 3px solid transparent; cursor: pointer;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .nav-item.ativo { background: rgba(59,130,246,.15); color: #60a5fa; border-left-color: #3b82f6; font-weight: 600; }
+    .nav-item.disabled { opacity: .4; cursor: not-allowed; }
+    .nav-item .icon { font-size: 15px; width: 18px; text-align: center; }
+
+    /* MAIN */
+    .main { margin-left: 220px; flex: 1; display: flex; flex-direction: column; }
+
+    /* TOPBAR */
+    .topbar {
+      background: var(--card-bg); border-bottom: 1px solid var(--card-borda);
+      padding: 0 24px; height: 56px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-title { font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .topbar-title span { font-size: 18px; }
+
+    /* CONTENT */
+    .content { padding: 20px 24px; flex: 1; }
+
+    /* KPI GRID */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .kpi-card {
+      background: var(--card-bg); border: 1px solid var(--card-borda); border-radius: 8px;
+      padding: 14px 16px; border-top: 3px solid;
+    }
+    .kpi-card.azul    { border-top-color: #3b82f6; }
+    .kpi-card.verde   { border-top-color: #22c55e; }
+    .kpi-card.amarelo { border-top-color: #f59e0b; }
+    .kpi-card.vermelho{ border-top-color: #ef4444; }
+    .kpi-card.roxo    { border-top-color: #a78bfa; }
+    .kpi-card.cinza   { border-top-color: #64748b; }
+    .kpi-label  { font-size: 10px; color: var(--texto-leve); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+    .kpi-value  { font-size: 22px; font-weight: 800; color: #fff; }
+    .kpi-sub    { font-size: 10px; color: var(--texto-leve); margin-top: 2px; }
+
+    /* TOOLBAR */
+    .toolbar {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      flex: 1; min-width: 200px; background: var(--card-bg); border: 1px solid var(--card-borda);
+      border-radius: 6px; padding: 7px 12px; color: #fff; font-size: 13px; outline: none;
+    }
+    .search-box::placeholder { color: var(--texto-leve); }
+    .search-box:focus { border-color: #3b82f6; }
+    .filter-select {
+      background: var(--card-bg); border: 1px solid var(--card-borda);
+      border-radius: 6px; padding: 7px 10px; color: #fff; font-size: 12px; outline: none;
+    }
+    .filter-select:focus { border-color: #3b82f6; }
+    .btn { padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; border: none; }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-success { background: #16a34a; color: #fff; }
+    .btn-success:hover { background: #15803d; }
+    .btn-ghost { background: transparent; border: 1px solid var(--card-borda); color: var(--texto-leve); }
+    .btn-ghost:hover { border-color: #3b82f6; color: #60a5fa; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th {
+      background: var(--sidebar-bg); color: var(--texto-leve); font-size: 10px;
+      text-transform: uppercase; letter-spacing: .06em; padding: 10px 12px;
+      text-align: left; border-bottom: 1px solid var(--card-borda); white-space: nowrap;
+      cursor: pointer; user-select: none;
+    }
+    thead th:hover { color: #60a5fa; }
+    tbody tr { border-bottom: 1px solid #1a2f4a; transition: background .1s; cursor: pointer; }
+  2 tbody tr:hover { background: rgba(59,130,246,.07); }
+    tbody td { padding: 10px 12px; vertical-align: middle; }
+    .player-nome strong { color: #fff; font-size: 13px; }
+    .player-nome small  { color: var(--texto-leve); font-size: 10px; display: block; }
+
+    /* ATTRIBUTE BADGE — FM STYLE */
+    .ab {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 4px; font-weight: 800;
+      font-size: 12px; color: #fff; flex-shrink: 0;
+    }
+    .ab.sm { width: 22px; height: 22px; font-size: 11px; }
+    .ab-1  { background: #7f1d1d; }
+    .ab-2  { background: #991b1b; }
+    .ab-3  { background: #b91c1c; }
+    .ab-4  { background: #dc2626; }
+    .ab-5  { background: #ef4444; }
+    .ab-6  { background: #f87171; color: #1a1a1a; }
+    .ab-7  { background: #ea580c; }
+    .ab-8  { background: #f97316; }
+    .ab-9  { background: #fb923c; }
+    .ab-10 { background: #fdba74; color: #1a1a1a; }
+    .ab-11 { background: #fcd34d; color: #1a1a1a; }
+    .ab-12 { background: #fde68a; color: #1a1a1a; }
+    .ab-13 { background: #bbf7d0; color: #1a1a1a; }
+    .ab-14 { background: #86efac; color: #1a1a1a; }
+    .ab-15 { background: #4ade80; color: #1a1a1a; }
+    .ab-16 { background: #22c55e; color: #fff; }
+    .ab-17 { background: #16a34a; }
+    .ab-18 { background: #15803d; }
+    .ab-19 { background: #166534; }
+    .ab-20 { background: #14532d; border: 2px solid #4ade80; }
+
+    /* STATUS BADGE */
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+    .badge-obs      { background: #1e3a5f; color: #60a5fa; }
+    .badge-interesse{ background: #1c3f2a; color: #4ade80; }
+    .badge-neg      { background: #3b1f00; color: #fb923c; }
+    .badge-proposta { background: #2d1a5f; color: #c4b5fd; }
+    .badge-contratado{ background: #14532d; color: #86efac; }
+    .badge-descartado{ background: #2d1414; color: #f87171; }
+
+    /* PRIORITY */
+    .prio { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+    .prio-alta   { background: #ef4444; }
+    .prio-media  { background: #f59e0b; }
+    .prio-baixa  { background: #64748b; }
+
+    /* STARS */
+    .stars { color: #f59e0b; font-size: 12px; letter-spacing: 1px; }
+
+    /* POSITION BADGE */
+    .pos-badge {
+      background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.3);
+      border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    }
+
+    /* PLAYER MODAL */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 20px; overflow-y: auto;
+    }
+    .modal {
+      background: #0e1a2b; border: 1px solid var(--card-borda); border-radius: 12px;
+      width: 100%; max-width: 900px; overflow: hidden; margin: auto;
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #0a1628 0%, #152036 100%);
+      border-bottom: 1px solid var(--card-borda);
+      padding: 20px 24px; display: flex; align-items: center; gap: 16px; position: relative;
+    }
+    .player-avatar {
+      width: 64px; height: 64px; border-radius: 8px; background: var(--card-bg);
+      display: flex; align-items: center; justify-content: center; font-size: 28px;
+      border: 2px solid var(--card-borda); flex-shrink: 0;
+    }
+    .player-info-main h2 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .player-info-main .meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; color: var(--texto-leve); font-size: 22px; cursor: pointer;
+    }
+    .modal-close:hover { color: #fff; }
+    .modal-body { padding: 20px 24px; }
+
+    /* ATTR SECTION */
+    .attr-section { margin-bottom: 20px; }
+    .attr-section-title {
+      font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+      color: var(--texto-leve); margin-bottom: 10px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--card-borda);
+    }
+    .attr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 6px; }
+    .attr-row {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--card-bg); border-radius: 6px; padding: 6px 10px;
+    }
+    .attr-name { flex: 1; font-size: 11px; color: var(--texto-leve); }
+    .attr-bar-wrap { width: 60px; height: 4px; background: #1e3a5f; border-radius: 2px; overflow: hidden; }
+    .attr-bar { height: 100%; border-radius: 2px; }
+
+    /* FORM */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .form-full { grid-column: 1 / -1; }
+    .form-label { font-size: 11px; color: var(--texto-leve); margin-bottom: 4px; display: block; }
+    .form-input {
+      width: 100%; background: var(--input-bg); border: 1px solid var(--card-borda);
+      border-radius: 6px; padding: 8px 10px; color: #fff; font-size: 13px; outline: none;
+    }
+    .form-input:focus { border-color: #3b82f6; }
+    .form-input::placeholder { color: var(--texto-leve); }
+    .form-section-title {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+      color: #60a5fa; margin: 18px 0 10px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--card-borda);
+    }
+    .attr-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .attr-input-label { width: 130px; font-size: 11px; color: var(--texto-leve); flex-shrink: 0; }
+    .attr-input-range { flex: 1; accent-color: #3b82f6; }
+    .attr-input-val { width: 30px; text-align: center; font-weight: 800; font-size: 12px; }
+
+    /* IMPORT */
+    .import-zone {
+      border: 2px dashed var(--card-borda); border-radius: 8px;
+      padding: 32px; text-align: center; color: var(--texto-leve);
+      cursor: pointer; transition: border-color .2s;
+    }
+    .import-zone:hover, .import-zone.drag { border-color: #3b82f6; color: #60a5fa; }
+    .import-zone .icon { font-size: 36px; margin-bottom: 10px; }
+
+    /* TABS */
+    .tabs { display: flex; border-bottom: 1px solid var(--card-borda); margin-bottom: 20px; }
+    .tab-btn {
+  2   background: none; border: none; color: var(--texto-leve); font-size: 12px;
+      padding: 10px 16px; border-bottom: 2px solid transparent; cursor: pointer;
+      font-weight: 600; transition: all .15s;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active { color: #60a5fa; border-bottom-color: #3b82f6; }
+
+    /* MISC */
+    .card { background: var(--card-bg); border: 1px solid var(--card-borda); border-radius: 8px; }
+    .loading { display: flex; align-items: center; justify-content: center; padding: 60px; color: var(--texto-leve); gap: 10px; font-size: 14px; }
+    .spin { animation: spin 1s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty { text-align: center; padding: 48px; color: var(--texto-leve); font-size: 14px; }
+    .empty .icon { font-size: 40px; margin-bottom: 10px; }
+    textarea.form-input { resize: vertical; min-height: 80px; }
+    .divider { height: 1px; background: var(--card-borda); margin: 16px 0; }
+    .text-green { color: #4ade80; }
+    .text-red   { color: #f87171; }
+    .flag { font-size: 18px; }
+    .nota-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 6px; font-weight: 800; font-size: 13px;
+      background: #1e3a5f; color: #60a5fa; border: 1px solid #2d5080;
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+// ── Config ──────────────────────────────────────────────────
+const API = (window._ENV?.API_URL || '') + '/api';
+
+async function apiFetch(path, opts = {}) {
+  const token = localStorage.getItem('erp_token');
+  const res = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+    ...opts,
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+// ── Dados demo (quando API indisponível) ────────────────────
+const DEMO = {
+  jogadores: [
+    {
+      id: 1, nome: 'Carlos Eduardo Silva', nome_guerra: 'Cadu', posicao: 'atacante',
+      data_nascimento: '1999-03-14', nacionalidade: 'Brasil', pe_dominante: 'direito',
+      altura_cm: 178, clube_atual: 'Athletico Paranaense', liga_atual: 'Brasileirão A',
+      valor_mercado: 3200000, salario_atual: 45000, contrato_ate: '2025-12-31',
+      status_prospeccao: 'interesse', prioridade: 'alta', avaliacao_geral: 4,
+      attr_finalizacao: 16, attr_passe_curto: 13, attr_passe_longo: 11, attr_drible: 17,
+      attr_cruzamento: 10, attr_cabeceio: 12, attr_controle: 15, attr_marcacao: 7, attr_desarme: 6,
+      attr_velocidade: 18, attr_aceleracao: 17, attr_forca: 12, attr_resistencia: 14, attr_agilidade: 16, attr_salto: 13,
+      attr_visao: 14, attr_decisao: 13, attr_posicionamento: 15, attr_criatividade: 14, attr_dedicacao: 15, attr_trabalho: 13,
+      stats_temporada: '2025', stats_jogos: 28, stats_gols: 14, stats_assistencias: 7, stats_amarelos: 3, stats_vermelhos: 0,
+      nota_olheiro: 8, pontos_fortes: 'Velocidade excepcional, forte no drible em espaços reduzidos.', pontos_fracos: 'Pode melhorar no jogo aéreo.', observacoes: 'Observado em 3 jogos. Muito constante.',
+    },
+    {
+      id: 2, nome: 'Rafael Mendes Costa', nome_guerra: 'Rafa', posicao: 'volante',
+      data_nascimento: '1997-08-22', nacionalidade: 'Brasil', pe_dominante: 'ambos',
+      altura_cm: 183, clube_atual: 'Grêmio', liga_atual: 'Brasileirão A',
+      valor_mercado: 5000000, salario_atual: 80000, contrato_ate: '2026-06-30',
+      status_prospeccao: 'negociando', prioridade: 'alta', avaliacao_geral: 5,
+      attr_finalizacao: 11, attr_passe_curto: 17, attr_passe_longo: 16, attr_drible: 13,
+      attr_cruzamento: 12, attr_cabeceio: 14, attr_controle: 16, attr_marcacao: 17, attr_desarme: 18,
+      attr_velocidade: 13, attr_aceleracao: 12, attr_forca: 16, attr_resistencia: 17, attr_agilidade: 14, attr_salto: 15,
+     0attr_visao: 17, attr_decisao: 16, attr_posicionamento: 18, attr_criatividade: 15, attr_dedicacao: 18, attr_trabalho: 17,
+      stats_temporada: '2025', stats_jogos: 32, stats_gols: 3, stats_assistencias: 9, stats_amarelos: 5, stats_vermelhos: 1,
+      nota_olheiro: 9, pontos_fortes: 'Excelente visão de jogo, liderança natural.', pontos_fracos: 'Velocidade abaixo da média dos melhores volantes.', observacoes: 'Prioridade máxima. Janela de jan/2026.',
+    },
+    {
+      id: 3, nome: 'Lucas Ferreira', nome_guerra: 'Ferreirinha', posicao: 'lateral_direito',
+      data_nascimento: '2002-05-10', nacionalidade: 'Brasil', pe_dominante: 'direito',
+      altura_cm: 174, clube_atual: 'Fortaleza', liga_atual: 'Brasileirão A',
+      valor_mercado: 2000000, salario_atual: 25000, contrato_ate: '2025-06-30',
+      status_prospeccao: 'observacao', prioridade: 'media', avaliacao_geral: 3,
+      attr_finalizacao: 9, attr_passe_curto: 14, attr_passe_longo: 13, attr_drible: 14,
+      attr_cruzamento: 16, attr_cabeceio: 10, attr_controle: 13, attr_marcacao: 14, attr_desarme: 13,
+      attr_velocidade: 17, attr_aceleracao: 16, attr_forca: 11, attr_resistencia: 15, attr_agilidade: 15, attr_salto: 11,
+      attr_visao: 13, attr_decisao: 12, attr_posicionamento: 14, attr_criatividade: 12, attr_dedicacao: 14, attr_trabalho: 15,
+      stats_temporada: '2025', stats_jogos: 24, stats_gols: 1, stats_assistencias: 5, stats_amarelos: 2, stats_vermelhos: 0,
+      nota_olheiro: 7, pontos_fortes: 'Cruzamento de qualidade, boa sobreposição.', pontos_fracos: 'Defesa individual pode melhorar.', observacoes: 'Contrato vence em junho. Acompanhar.',
+    },
+  ],
+  resumo: { total: 3, observacao: 1, interesse: 1, negociando: 1, proposta_enviada: 0, contratado: 0, descartado: 0, alta_prioridade: 2, media_avaliacao: 4.0 },
+};
+
+// ── Helpers ─────────────────────────────────────────────────
+const POSICOES = ['goleiro','zagueiro','lateral_direito','lateral_esquerdo','volante','meia','meia_ofensivo','atacante','ponta'];
+const POSICAO_LABEL = { goleiro:'GOL', zagueiro:'ZAG', lateral_direito:'LD', lateral_esquerdo:'LE', volante:'VOL', meia:'MEI', meia_ofensivo:'MAO', atacante:'ATA', ponta:'PON' };
+const POSICAO_NOME = { goleiro:'Goleiro', zagueiro:'Zagueiro', lateral_direito:'Lateral Direito', lateral_esquerdo:'Lateral Esquerdo', volante:'Volante', meia:'Meia', meia_ofensivo:'Meia Ofensivo', atacante:'Atacante', ponta:'Ponta' };
+const STATUS_LABEL = { observacao:'Em Observação', interesse:'Interesse', negociando:'Negociando', proposta_enviada:'Proposta Enviada', contratado:'Contratado', descartado:'Descartado' };
+const STATUS_CLS   = { observacao:'obs', interesse:'interesse', negociando:'neg', proposta_enviada:'proposta', contratado:'contratado', descartado:'descartado' };
+const PRIO_LABEL   = { alta:'Alta', media:'Média', baixa:'Baixa' };
+
+function idade(dob) {
+  if (!dob) return '—';
+  const d = new Date(dob); const hoje = new Date();
+  let a = hoje.getFullYear() - d.getFullYear();
+  if (hoje < new Date(hoje.getFullYear(), d.getMonth(), d.getDate())) a--;
+  return a;
+}
+function fmtVal(n) {
+  if (!n) return '—';
+  const v = Number(n);
+  if (v >= 1e6) return 'R$ ' + (v/1e6).toFixed(1).replace('.',',') + 'M';
+  if (v >= 1e3) return 'R$ ' + (v/1e3).toFixed(0) + 'k';
+  return 'R$ ' + v.toLocaleString('pt-BR');
+}
+function attrColor(v) {
+  if (!v) return '#2d3748';
+  if (v <= 5) return '#dc2626'; if (v <= 9) return '#ea580c';
+  if (v <= 12) return '#f59e0b'; if (v <= 15) return '#22c55e';
+  if (v <= 18) return '#16a34a'; return '#14532d';
+}
+function stars(n) {
+  if (!n) return '—';
+  return '★'.repeat(n) + '☆'.repeat(5 - n);
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('pt-BR');
+}
+
+// ── AttrBadge ────────────────────────────────────────────────
+function AB({ v, sm }) {
+  if (!v) return <span className={`ab${sm?' sm':''} ab-0`} style={{background:'#1e2d3d',color:'#4a5568'}}>—</span>;
+  return <span className={`ab${sm?' sm':''} ab-${v}`}>{v}</span>;
+}
+
+// ── AttrBar ──────────────────────────────────────────────────
+function AttrRow({ label, value }) {
+  const pct = value ? Math.round((value / 20) * 100) : 0;
+  return (
+    <div className="attr-row">
+      <span className="attr-name">{label}</span>
+      <AB v={value} sm />
+      <div className="attr-bar-wrap">
+        <div className="attr-bar" style={{ width: pct + '%', background: attrColor(value) }} />
+      </div>
+    </div>
+  );
+}
+
+// ── PlayerModal (detalhe) ────────────────────────────────────
+function PlayerModal({ player: p, onClose, onEdit, onDelete, onStatusChange }) {
+  const [tab, setTab] = useState('atributos');
+
+  const posAtletaLabel = POSICAO_NOME[p.posicao] || p.posicao || '—';
+  const isGK = p.posicao === 'goleiro';
+
+  return (
+    <div className="overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        {/* Header */}
+        <div className="modal-header">
+          <div className="player-avatar">{isGK ? '🧤' : '⚽'}</div>
+          <div className="player-info-main">
+            <h2>{p.nome} {p.nome_guerra ? <span style={{color:'#94a3b8',fontSize:14}}>"{p.nome_guerra}"</span> : null}</h2>
+            <div className="meta">
+              {p.posicao && <span className="pos-badge">{POSICAO_LABEL[p.posicao] || p.posicao.toUpperCase()}</span>}
+              {p.nacionalidade && <span>🌍 {p.nacionalidade}</span>}
+              {p.data_nascimento && <span>🎂 {idade(p.data_nascimento)} anos</span>}
+              {p.altura_cm && <span>📏 {p.altura_cm}cm</span>}
+              {p.pe_dominante && <span>👟 {p.pe_dominante.charAt(0).toUpperCase()+p.pe_dominante.slice(1)}</span>}
+            </div>
+            <div className="meta" style={{marginTop:8}}>
+              {p.clube_atual && <span style={{color:'#60a5fa'}}>🏟 {p.clube_atual}</span>}
+              {p.liga_atual && <span style={{color:'#94a3b8'}}>({p.liga_atual})</span>}
+            </div>
+          </div>
+
+          <div style={{marginLeft:'auto',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:8}}>
+            <span className={`badge badge-${STATUS_CLS[p.status_prospeccao]}`}>
+              {STATUS_LABEL[p.status_prospeccao]}
+            </span>
+            {p.avaliacao_geral && <span className="stars" style={{fontSize:16}}>{stars(p.avaliacao_geral)}</span>}
+            {p.nota_olheiro && <span className="nota-badge" title="Nota do Olheiro">{p.nota_olheiro}</span>}
+          </div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+
+        {/* Tabs */}
+        <div className="tabs" style={{padding:'0 24px', background:'var(--sidebar-bg)'}}>
+          {['atributos','stats','contrato','avaliacao'].map(t => (
+            <button key={t} className={`tab-btn${tab===t?' active':''}`} onClick={() => setTab(t)}>
+              {t === 'atributos' ? '🎯 Atributos' : t === 'stats' ? '📊 Stats' : t === 'contrato' ? '📄 Contrato' : '🔍 Avaliação'}
+            </button>
+          ))}
+        </div>
+
+        <div className="modal-body">
+          {tab === 'atributos' && (
+            <div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:16}}>
+                <div className="attr-section">
+                  <div className="attr-section-title">⚡ Técnicos</div>
+                  <div className="attr-grid" style={{gridTemplateColumns:'1fr'}}>
+                    <AttrRow label="Finalização"  value={p.attr_finalizacao} />
+                    <AttrRow label="Passe Curto"  value={p.attr_passe_curto} />
+                    <AttrRow label="Passe Longo"  value={p.attr_passe_longo} />
+                    <AttrRow label="Drible"        value={p.attr_drible} />
+                    <AttrRow label="Cruzamento"    value={p.attr_cruzamento} />
+                    <AttrRow label="Cabeceio"      value={p.attr_cabeceio} />
+                    <AttrRow label="Controle"      value={p.attr_controle} />
+                    <AttrRow label="Marcação"      value={p.attr_marcacao} />
+                    <AttrRow label="Desarme"       value={p.attr_desarme} />
+                  </div>
+                </div>
+                <div className="attr-section">
+                  <div className="attr-section-title">💪 Físicos</div>
+                  <div className="attr-grid" style={{gridTemplateColumns:'1fr'}}>
+                    <AttrRow label="Velocidade"    value={p.attr_velocidade} />
+                    <AttrRow label="Aceleração"    value={p.attr_aceleracao} />
+                    <AttrRow label="Força"         value={p.attr_forca} />
+                    <AttrRow label="Resistência"   value={p.attr_resistencia} />
+                    <AttrRow label="Agilidade"     value={p.attr_agilidade} />
+                    <AttrRow label="Salto"         value={p.attr_salto} />
+                  </div>
+                  <div className="attr-section-title" style={{marginTop:16}}>🧠 Mentais</div>
+                  <div className="attr-grid" style={{gridTemplateColumns:'1fr'}}>
+                    <AttrRow label="Visão de Jogo" value={p.attr_visao} />
+                    <AttrRow label="Decisão"       value={p.attr_decisao} />
+                    <AttrRow label="Posicionamento"value={p.attr_posicionamento} />
+                    <AttrRow label="Criatividade"  value={p.attr_criatividade} />
+                    <AttrRow label="Dedicação"     value={p.attr_dedicacao} />
+                    <AttrRow label="Trabalho"      value={p.attr_trabalho} />
+                  </div>
+                </div>
+                {isGK && (
+                  <div className="attr-section">
+                    <div className="attr-section-title">🧤 Goleiro</div>
+                    <div className="attr-grid" style={{gridTemplateColumns:'1fr'}}>
+                      <AttrRow label="Defesas"        value={p.attr_defesas} />
+                      <AttrRow label="Reflexos"       value={p.attr_reflexos} />
+                      <AttrRow label="Saída"          value={p.attr_saida} />
+                      <AttrRow label="Comando"        value={p.attr_comando} />
+                      <AttrRow label="Distribuição"   value={p.attr_distribuicao} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {tab === 'stats' && (
+            <div>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:20}}>
+                {[
+                  {l:'Jogos',       v:p.stats_jogos||0,        icon:'⚽'},
+                  {l:'Gols',        v:p.stats_gols||0,         icon:'🥅'},
+                  {l:'Assistências',v:p.stats_assistencias||0, icon:'🎯'},
+                  {l:'Clean Sheets',v:p.stats_clean_sheets||0, icon:'🧤'},
+                  {l:'Amarelos',    v:p.stats_amarelos||0,     icon:'🟨'},
+                  {l:'Vermelhos',   v:p.stats_vermelhos||0,    icon:'🟥'},
+                  {l:'Gols/Jogo',   v:p.stats_jogos>0 ? (p.stats_gols/p.stats_jogos).toFixed(2) : '—', icon:'📈'},
+                  {l:'Temporada',   v:p.stats_temporada||'—',  icon:'📅'},
+                ].map((s,i) => (
+                  <div key={i} style={{background:'var(--card-bg)',border:'1px solid var(--card-borda)',borderRadius:8,padding:'14px 16px',textAlign:'center'}}>
+                    <div style={{fontSize:22,marginBottom:4}}>{s.icon}</div>
+                    <div style={{fontSize:22,fontWeight:800,color:'#fff'}}>{s.v}</div>
+                    <div style={{fontSize:10,color:'var(--texto-leve)',textTransform:'uppercase',letterSpacing:'.05em'}}>{s.l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tab === 'contrato' && (
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+              {[
+                {l:'Clube Atual', v:p.clube_atual||'—'},
+                {l:'Liga', v:p.liga_atual||'—'},
+                {l:'Valor de Mercado', v:fmtVal(p.valor_mercado)},
+                {l:'Salário Atual', v:fmtVal(p.salario_atual)},
+                {l:'Contrato até', v:fmtDate(p.contrato_ate)},
+                {l:'Pé Dominante', v:p.pe_dominante ? p.pe_dominante.charAt(0).toUpperCase()+p.pe_dominante.slice(1) : '—'},
+ 2              {l:'Altura', v:p.altura_cm ? p.altura_cm + ' cm' : '—'},
+                {l:'Peso', v:p.peso_kg ? p.peso_kg + ' kg' : '—'},
+              ].map((r,i) => (
+                <div key={i} style={{background:'var(--card-bg)',border:'1px solid var(--card-borda)',borderRadius:8,padding:'12px 16px'}}>
+                  <div style={{fontSize:10,color:'var(--texto-leve)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:4}}>{r.l}</div>
+                  <div style={{fontSize:16,fontWeight:700,color:'#fff'}}>{r.v}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {tab === 'avaliacao' && (
+            <div>
+              {p.pontos_fortes && (
+                <div style={{marginBottom:16}}>
+                  <div style={{fontSize:11,color:'#4ade80',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:6}}>✅ Pontos Fortes</div>
+                  <p style={{background:'var(--card-bg)',border:'1px solid #1a3d28',borderRadius:8,padding:'12px 16px',fontSize:13,lineHeight:1.6}}>{p.pontos_fortes}</p>
+                </div>
+              )}
+          2   {p.pontos_fracos && (
+                <div style={{marginBottom:16}}>
+                  <div style={{fontSize:11,color:'#f87171',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:6}}>⚠️ Pontos Fracos</div>
+                  <p style={{background:'var(--card-bg)',border:'1px solid #3d1a1a',borderRadius:8,padding:'12px 16px',fontSize:13,lineHeight:1.6}}>{p.pontos_fracos}</p>
+                </div>
+              )}
+              {p.observacoes && (
+                <div>
+                  <div style={{fontSize:11,color:'var(--texto-leve)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:6}}>📝 Observações</div>
+                  <p style={{background:'var(--card-bg)',border:'1px solid var(--card-borda)',borderRadius:8,padding:'12px 16px',fontSize:13,lineHeight:1.6}}>{p.observacoes}</p>
+                </div>
+              )}
+              {p.responsavel_nome && (
+                <div style={{marginTop:16,fontSize:12,color:'var(--texto-leve)'}}>👤 Responsável: <strong style={{color:'#fff'}}>{p.responsavel_nome}</strong></div>
+              )}
+            </div>
+          )}
+
+          {/* Ações */}
+          <div className="divider" />
+          <div style={{display:'flex',gap:8,justifyContent:'space-between',alignItems:'center'}}>
+            <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+              {Object.entries(STATUS_LABEL).map(([k,v]) => k !== p.status_prospeccao && (
+                <button key={k} className="btn btn-ghost btn-sm" onClick={() => onStatusChange(p.id, k)}>{v}</button>
+              ))}
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <button className="btn btn-primary btn-sm" onClick={() => onEdit(p)}>✏️ Editar</button>
+              <button className="btn btn-danger btn-sm" onClick={() => { if(confirm('Remover jogador?')) onDelete(p.id); }}>🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── AttrInputRow ─────────────────────────────────────────────
+function AttrInput({ label, name, form, setForm }) {
+  const v = form[name] || 0;
+  return (
+    <div className="attr-input-row">
+      <span className="attr-input-label">{label}</span>
+      <input type="range" min="0" max="20" value={v} className="attr-input-range"
+        onChange={e => setForm(f => ({...f, [name]: parseInt(e.target.value)}))} />
+      <AB v={v > 0 ? v : null} sm />
+    </div>
+  );
+}
+
+// ── FormModal (add/edit) ─────────────────────────────────────
+const FORM_EMPTY = {
+  nome:'', nome_guerra:'', data_nascimento:'', nacionalidade:'Brasil',
+  posicao:'', posicao_secundaria:'', pe_dominante:'direito', altura_cm:'', peso_kg:'',
+  clube_atual:'', liga_atual:'', valor_mercado:'', salario_atual:'', contrato_ate:'',
+  status_prospeccao:'observacao', prioridade:'media', avaliacao_geral:3,
+  attr_finalizacao:0, attr_passe_curto:0, attr_passe_longo:0, attr_drible:0,
+  attr_cruzamento:0, attr_cabeceio:0, attr_controle:0, attr_marcacao:0, attr_desarme:0,
+  attr_velocidade:0, attr_aceleracao:0, attr_forca:0, attr_resistencia:0, attr_agilidade:0, attr_salto:0,
+  attr_visao:0, attr_decisao:0, attr_posicionamento:0, attr_criatividade:0, attr_dedicacao:0, attr_trabalho:0,
+  attr_defesas:0, attr_reflexos:0, attr_saida:0, attr_comando:0, attr_distribuicao:0,
+  stats_temporada: new Date().getFullYear().toString(), stats_jogos:0, stats_gols:0,
+  stats_assistencias:0, stats_clean_sheets:0, stats_amarelos:0, stats_vermelhos:0,
+  nota_olheiro:5, pontos_fortes:'', pontos_fracos:'', observacoes:'',
+};
+
+function FormModal({ initial, onSave, onClose }) {
+  const [form, setForm] = useState(initial ? {
+    ...FORM_EMPTY, ...initial,
+    data_nascimento: initial.data_nascimento ? initial.data_nascimento.split('T')[0] : '',
+    contrato_ate: initial.contrato_ate ? initial.contrato_ate.split('T')[0] : '',
+  } : FORM_EMPTY);
+  const [tab, setTab] = useState('info');
+  const set = k => e => setForm(f => ({...f, [k]: e.target.value}));
+  const isGK = form.posicao === 'goleiro';
+
+  return (
+    <div className="overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal" style={{maxWidth:800}}>
+        <div className="modal-header">
+          <div style={{flex:1}}>
+            <h2 style={{color:'#fff',fontSize:18}}>{initial ? '✏️ Editar Jogador' : '➕ Novo Jogador Prospectado'}</h2>
+          </div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+
+        <div className="tabs" style={{padding:'0 24px',background:'var(--sidebar-bg)'}}>
+          {['info','atributos','stats','avaliacao'].map(t => (
+            <button key={t} className={`tab-btn${tab===t?' active':''}`} onClick={() => setTab(t)}>
+              {t==='info'?'📋 Info':t==='atributos'?'🎯 Atributos':t==='stats'?'📊 Stats':'🔍 Avaliação'}
+            </button>
+          ))}
+        </div>
+
+        <div className="modal-body">
+          {tab === 'info' && (
+            <div>
+              <div className="form-grid">
+                <div>
+                2 <label className="form-label">Nome Completo *</label>
+                  <input className="form-input" value={form.nome} onChange={set('nome')} placeholder="Nome completo" />
+                </div>
+                <div>
+                  <label className="form-label">Nome de Guerra</label>
+                  <input className="form-input" value={form.nome_guerra} onChange={set('nome_guerra')} placeholder="Apelido / nome de guerra" />
+                </div>
+                <div>
+                  <label className="form-label">Posição *</label>
+                  <select className="form-input" value={form.posicao} onChange={set('posicao')}>
+                    <option value="">Selecione...</option>
+                    {POSICOES.map(p => <option key={p} value={p}>{POSICAO_NOME[p]}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Posição Secundária</label>
+                  <select className="form-input" value={form.posicao_secundaria} onChange={set('posicao_secundaria')}>
+                    <option value="">Nenhuma</option>
+ 2                  {POSICOES.map(p => <option key={p} value={p}>{POSICAO_NOME[p]}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Data de Nascimento</label>
+                  <input type="date" className="form-input" value={form.data_nascimento} onChange={set('data_nascimento')} />
+       #2       </div>
+                <div>
+                  <label className="form-label">Nacionalidade</label>
+                  <input className="form-input" value={form.nacionalidade} onChange={set('nacionalidade')} placeholder="Ex: Brasil" />
+                </div>
+                <div>
+                  <label className="form-label">Pé Dominante</label>
+                  <select className="form-input" value={form.pe_dominante} onChange={set('pe_dominante')}>
+                    <option value="direito">Direito</option>
+                    <option value="esquerdo">Esquerdo</option>
+                    <option value="ambos">Ambos</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Altura (cm)</label>
+                  <input type="number" className="form-input" value={form.altura_cm} onChange={set('altura_cm')} placeholder="Ex: 180" />
+                </div>
+              </div>
+              <div className="form-section-title">🏟 Clube & Contrato</div>
+              <div className="form-grid">
+                <div>
+                  <label className="form-label">Clube Atual</label>
+                  <input className="form-input" value={form.clube_atual} onChange={set('clube_atual')} placeholder="Nome do clube" />
+                </div>
+                <div>
+                  <label className="form-label">Liga</label>
+                  <input className="form-input" value={form.liga_atual} onChange={set('liga_atual')} placeholder="Ex: Brasileirão A" />
+                </div>
+                <div>
+                  <label className="form-label">Valor de Mercado (R$)</label>
+                  <input type="number" className="form-input" value={form.valor_mercado} onChange={set('valor_mercado')} placeholder="0" />
+                </div>
+                <div>
+                  <label className="form-label">Salário Atual (R$)</label>
+                  <input type="number" className="form-input" value={form.salario_atual} onChange={set('salario_atual')} placeholder="0" />
+                </div>
+                <div>
+                  <label className="form-label">Contrato até</label>
+                  <input type="date" className="form-input" value={form.contrato_ate} onChange={set('contrato_ate')} />
+                </div>
+              </div>
+              <div className="form-section-title">📌 Prospecção</div>
+              <div className="form-grid-3">
+                <div>
+                  <label className="form-label">Status</label>
+                  <select className="form-input" value={form.status_prospeccao} onChange={set('status_prospeccao')}>
+                    {Object.entries(STATUS_LABEL).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Prioridade</label>
+                  <select className="form-input" value={form.prioridade} onChange={set('prioridade')}>
+                    <option value="alta">🔴 Alta</option>
+                    <option value="media">🟡 Média</option>
+                    <option value="baixa">⚪ Baixa</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Avaliação Geral (1-5 ★)</label>
+                  <select className="form-input" value={form.avaliacao_geral} onChange={e => setForm(f => ({...f, avaliacao_geral: parseInt(e.target.value)}))}>
+                    {[1,2,3,4,5].map(n => <option key={n} value={n}>{stars(n)}</option>)}
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tab === 'atributos' && (
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24}}>
+              <div>
+                <div className="form-section-title">⚡ Técnicos (1-20)</div>
+                <AttrInput label="Finalização"  name="attr_finalizacao"  form={form} setForm={setForm} />
+                <AttrInput label="Passe Curto"  name="attr_passe_curto"  form={form} setForm={setForm} />
+                <AttrInput label="Passe Longo"  name="attr_passe_longo"  form={form} setForm={setForm} />
+                <AttrInput label="Drible"        name="attr_drible"       form={form} setForm={setForm} />
+                <AttrInput label="Cruzamento"    name="attr_cruzamento"   form={form} setForm={setForm} />
+                <AttrInput label="Cabeceio"      name="attr_cabeceio"     form={form} setForm={setForm} />
+                <AttrInput label="Controle"      name="attr_controle"     form={form} setForm={setForm} />
+                <AttrInput label="Marcação"      name="attr_marcacao"     form={form} setForm={setForm} />
+                <AttrInput label="Desarme"       name="attr_desarme"      form={form} setForm={setForm} />
+                {isGK && (<>
+                  <div className="form-section-title">🧤 Goleiro</div>
+                  <AttrInput label="Defesas"      name="attr_defesas"      form={form} setForm={setForm} />
+                  <AttrInput label="Reflexos"     name="attr_reflexos"     form={form} setForm={setForm} />
+                  <AttrInput label="Saída"        name="attr_saida"        form={form} setForm={setForm} />
+                  <AttrInput label="Comando"      name="attr_comando"      form={form} setForm={setForm} />
+                  <AttrInput label="Distribuição" name="attr_distribuicao" form={form} setForm={setForm} />
+                </>)}
+              </div>
+              <div>
+                <div className="form-section-title">💪 Físicos (1-20)</div>
+                <AttrInput label="Velocidade"    name="attr_velocidade"   form={form} setForm={setForm} />
+                <AttrInput label="Aceleração"    name="attr_aceleracao"   form={form} setForm={setForm} />
+                <AttrInput label="Força"         name="attr_forca"        form={form} setForm={setForm} />
+                <AttrInput label="Resistência"   name="attr_resistencia"  form={form} setForm={setForm} />
+                <AttrInput label="Agilidade"     name="attr_agilidade"    form={form} setForm={setForm} />
+                <AttrInput label="Salto"         name="attr_salto"        form={form} setForm={setForm} />
+                <div className="form-section-title">🧠 Mentais (1-20)</div>
+                <AttrInput label="Visão de Jogo" name="attr_visao"        form={form} setForm={setForm} />
+                <AttrInput label="Decisão"       name="attr_decisao"      form={form} setForm={setForm} />
+                <AttrInput label="Posicionamento"name="attr_posicionamento"form={form} setForm={setForm} />
+                <AttrInput label="Criatividade"  name="attr_criatividade" form={form} setForm={setForm} />
+                <AttrInput label="Dedicação"     name="attr_dedicacao"    form={form} setForm={setForm} />
+                <AttrInput label="Trabalho"      name="attr_trabalho"     form={form} setForm={setForm} />
+              </div>
+            </div>
+          )}
+
+          {tab === 'stats' && (
+            <div>
+              <div className="form-section-title">📊 Estatísticas da Temporada</div>
+              <div className="form-grid-3">
+                <div>
+                  <label className="form-label">Temporada</label>
+                  <input className="form-input" value={form.stats_temporada} onChange={set('stats_temporada')} placeholder="2025" />
+                </div>
+                <div>
+                  <label className="form-label">Jogos</label>
+                  <input type="number" min="0" className="form-input" value={form.stats_jogos} onChange={set('stats_jogos')} />
+                </div>
+                <div>
+                  <label className="form-label">Gols</label>
+                  <input type="number" min="0" className="form-input" value={form.stats_gols} onChange={set('stats_gols')} />
+                </div>
+                <div>
+                  <label className="form-label">Assistências</label>
+                  <input type="number" min="0" className="form-input" value={form.stats_assistencias} onChange={set('stats_assistencias')} />
+                </div>
+                <div>
+                  <label className="form-label">Clean Sheets</label>
+                  <input type="number" min="0" className="form-input" value={form.stats_clean_sheets} onChange={set('stats_clean_sheets')} />
+                </div>
+                <div>
+                  <label className="form-label">Cartões Amarelos</label>
+                  <input type="number" min="0" className="form-input" value={form.stats_amarelos} onChange={set('stats_amarelos')} />
+                </div>
+                <div>
+                  <label className="form-label">Cartões Vermelhos</label>
+                  <input type="number" min="0" className="form-input" value={form.stats_vermelhos} onChange={set('stats_vermelhos')} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tab === 'avaliacao' && (
+            <div>
+              <div className="form-grid">
+                <div>
+                  <label className="form-label">Nota do Olheiro (1-10)</label>
+                  <input type="number" min="1" max="10" className="form-input" value={form.nota_olheiro} onChange={e => setForm(f => ({...f, nota_olheiro: parseInt(e.target.value)}))} />
+                </div>
+              </div>
+              <div style={{marginTop:14}}>
+                <label className="form-label">✅ Pontos Fortes</label>
+                <textarea className="form-input" value={form.pontos_fortes} onChange={set('pontos_fortes')} placeholder="Descreva os pontos fortes..." />
+              </div>
+              <div style={{marginTop:12}}>
+                <label className="form-label">⚠️ Pontos Fracos</label>
+                <textarea className="form-input" value={form.pontos_fracos} onChange={set('pontos_fracos')} placeholder="Descreva os pontos fracos..." />
+              </div>
+              <div style={{marginTop:12}}>
+                <label className="form-label">📝 Observações Gerais</label>
+                <textarea className="form-input" value={form.observacoes} onChange={set('observacoes')} placeholder="Observações do scout, histórico de negociação, etc." style={{minHeight:100}} />
+              </div>
+            </div>
+          )}
+
+          <div className="divider" />
+          <div style={{display:'flex',justifyContent:'flex-end',gap:10}}>
+            <button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
+            <button className="btn btn-primary" onClick={() => { if(!form.nome.trim()) { alert('Informe o nome do jogador.'); return; } onSave(form); }}>
+              {initial ? '💾 Salvar Alterações' : '➕ Adicionar Jogador'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ImportModal ──────────────────────────────────────────────
+function ImportModal({ onClose, onImport }) {
+  const [rows, setRows] = useState([]);
+  const [preview, setPreview] = useState(false);
+  const fileRef = useRef();
+
+  function parseCSV(text) {
+    const lines = text.trim().split('\n');
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g,'_'));
+    return lines.slice(1).map(line => {
+      const vals = line.split(',');
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = (vals[i]||'').trim(); });
+      return obj;
+    }).filter(r => r.nome);
+  }
+
+  function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const parsed = parseCSV(e.target.result);
+      setRows(parsed); setPreview(true);
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  const template = 'nome,nome_guerra,posicao,data_nascimento,nacionalidade,clube_atual,valor_mercado,prioridade\nJoão Silva,Joãozinho,atacante,1999-01-01,Brasil,Clube XYZ,2000000,alta\n';
+
+  return (
+    <div className="overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal" style={{maxWidth:700}}>
+        <div className="modal-header">
+          <h2 style={{color:'#fff',fontSize:16}}>📥 Importar Jogadores por Planilha</h2>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          {!preview ? (
+            <>
+              <div className="import-zone" onClick={() => fileRef.current.click()}
+                onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add('drag'); }}
+                onDragLeave={e => e.currentTarget.classList.remove('drag')}
+                onDrop={e => { e.preventDefault(); e.currentTarget.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); }}>
+                <div className="icon">📄</div>
+                <div style={{fontSize:14,fontWeight:600,marginBottom:6}}>Clique ou arraste um arquivo CSV</div>
+                <div style={{fontSize:12}}>Formatos suportados: .csv (separado por vírgula)</div>
+              </div>
+              <input type="file" accept=".csv" ref={fileRef} style={{display:'none'}} onChange={e => handleFile(e.target.files[0])} />
+              <div style={{marginTop:16}}>
+                <div style={{fontSize:12,color:'var(--texto-leve)',marginBottom:8}}>📋 Modelo de planilha:</div>
+                <pre style={{background:'var(--card-bg)',border:'1px solid var(--card-borda)',borderRadius:6,padding:12,fontSize:11,color:'#94a3b8',overflowX:'auto'}}>{template}</pre>
+                <button className="btn btn-ghost btn-sm" style={{marginTop:8}} onClick={() => {
+                  const a = document.createElement('a');
+                  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(template);
+                  a.download = 'modelo_prospeccao.csv'; a.click();
+                }}>⬇️ Baixar modelo CSV</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{marginBottom:12,color:'#4ade80',fontSize:13}}>✅ {rows.length} jogador(es) encontrado(s). Confirme para importar:</div>
+              <div className="table-wrap" style={{maxHeight:300,overflowY:'auto'}}>
+                <table>
+                  <thead><tr><th>Nome</th><th>Posição</th><th>Clube</th><th>Prioridade</th></tr></thead>
+                  <tbody>
+                    {rows.map((r,i) => (
+                      <tr key={i}><td>{r.nome}</td><td>{POSICAO_NOME[r.posicao]||r.posicao}</td><td>{r.clube_atual||'—'}</td><td>{r.prioridade||'media'}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{display:'flex',gap:10,marginTop:16,justifyContent:'flex-end'}}>
+                <button className="btn btn-ghost" onClick={() => setPreview(false)}>← Voltar</button>
+                <button className="btn btn-success" onClick={() => onImport(rows)}>✅ Importar {rows.length} jogadores</button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── App Principal ────────────────────────────────────────────
+function App() {
+  const [jogadores, setJogadores] = useState([]);
+  const [resumo, setResumo]       = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [selected, setSelected]   = useState(null);
+  const [showForm, setShowForm]   = useState(false);
+  const [editing, setEditing]     = useState(null);
+  const [showImport, setShowImport] = useState(false);
+  const [busca, setBusca]         = useState('');
+  const [filStatus, setFilStatus] = useState('');
+  const [filPosicao, setFilPosicao] = useState('');
+  const [filPrioridade, setFilPrioridade] = useState('');
+  const [sortKey, setSortKey]     = useState('prioridade');
+  const [sortDir, setSortDir]     = useState('asc');
+
+  const carregar = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (filStatus)    params.set('status', filStatus);
+      if (filPosicao)   params.set('posicao', filPosicao);
+      if (filPrioridade)params.set('prioridade', filPrioridade);
+      if (busca)        params.set('busca', busca);
+      const [data, res] = await Promise.all([
+        apiFetch('/prospeccao?' + params),
+        apiFetch('/prospeccao/resumo'),
+      ]);
+      setJogadores(data.jogadores || []);
+      setResumo(res);
+    } catch {
+      setJogadores(DEMO.jogadores);
+      setResumo(DEMO.resumo);
+    } finally {
+      setLoading(false);
+    }
+  }, [busca, filStatus, filPosicao, filPrioridade]);
+
+  useEffect(() => { carregar(); }, [carregar]);
+
+  async function salvar(form) {
+    try {
+      if (editing) {
+        const updated = await apiFetch('/prospeccao/' + editing.id, { method: 'PUT', body: JSON.stringify(form) });
+        setJogadores(js => js.map(j => j.id === editing.id ? updated : j));
+      } else {
+        const novo = await apiFetch('/prospeccao', { method: 'POST', body: JSON.stringify(form) });
+        setJogadores(js => [novo, ...js]);
+      }
+    } catch {
+      // demo mode: update local state
+      if (editing) {
+        const updated = { ...editing, ...form, id: editing.id };
+        setJogadores(js => js.map(j => j.id === editing.id ? updated : j));
+        if (selected?.id === editing.id) setSelected(updated);
+      } else {
+        const novo = { ...form, id: Date.now() };
+        setJogadores(js => [novo, ...js]);
+      }
+    }
+    setShowForm(false); setEditing(null);
+  }
+
+  async function remover(id) {
+    try { await apiFetch('/prospeccao/' + id, { method: 'DELETE' }); } catch {}
+    setJogadores(js => js.filter(j => j.id !== id));
+    setSelected(null);
+  }
+
+  async function mudarStatus(id, status) {
+    try { await apiFetch('/prospeccao/' + id + '/status', { method: 'PATCH', body: JSON.stringify({ status_prospeccao: status }) }); } catch {}
+    setJogadores(js => js.map(j => j.id === id ? { ...j, status_prospeccao: status } : j));
+    setSelected(s => s?.id === id ? { ...s, status_prospeccao: status } : s);
+  }
+
+  async function importar(rows) {
+    for (const r of rows) {
+      const form = { ...FORM_EMPTY, ...r,
+        prioridade: r.prioridade || 'media',
+        status_prospeccao: r.status_prospeccao || 'observacao',
+        avaliacao_geral: parseInt(r.avaliacao_geral) || 3,
+      };
+      await salvar(form);
+    }
+    setShowImport(false);
+  }
+
+  // Sort & filter local
+  const lista = [...jogadores].sort((a, b) => {
+    let va = a[sortKey] ?? '', vb = b[sortKey] ?? '';
+    if (sortKey === 'prioridade') {
+      const order = { alta: 1, media: 2, baixa: 3 };
+      va = order[va] || 9; vb = order[vb] || 9;
+    }
+    if (sortKey === 'avaliacao_geral' || sortKey === 'nota_olheiro') { va = Number(va)||0; vb = Number(vb)||0; }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  function toggleSort(k) {
+    if (sortKey === k) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortKey(k); setSortDir('asc'); }
+  }
+  const sortIcon = k => sortKey === k ? (sortDir === 'asc' ? ' ▲' : ' ▼') : '';
+
+  const r = resumo || {};
+
+  return (
+    <div className="layout">
+      {/* SIDEBAR */}
+      <aside className="sidebar">
+        <div className="sidebar-logo">
+          <div className="icon">🔭</div>
+          <div>
+            <div className="title">ERP SAF</div>
+            <div className="sub">Prospecção</div>
+          </div>
+        </div>
+        <nav className="sidebar-nav">
+          <div className="nav-label">Navegação</div>
+          {[
+            {href:'index.html',    icon:'👥', label:'Funcionários'},
+            {href:'atletas.html',  icon:'⚽', label:'Atletas'},
+            {href:'financeiro.html',icon:'💰',label:'Financeiro'},
+            {href:'pedidos.html',  icon:'🛒', label:'Compras'},
+            {href:'investidores.html',icon:'📈',label:'Investidores'},
+            {href:'metas.html',    icon:'🎯', label:'Metas'},
+            {href:'relatorios.html',icon:'📊',label:'Relatórios'},
+            {href:'prospeccao.html',icon:'🔭',label:'Prospecção', ativo:true},
+          ].map(item => (
+            <a key={item.href} href={item.href} className={`nav-item${item.ativo?' ativo':''}`}>
+              <span className="icon">{item.icon}</span>
+              <span>{item.label}</span>
+            </a>
+          ))}
+        </nav>
+      </aside>
+
+      {/* MAIN */}
+      <main className="main">
+        <div className="topbar">
+          <div className="topbar-title"><span>🔭</span> Prospecção de Jogadores</div>
+          <div style={{display:'flex',gap:8}}>
+            <button className="btn btn-ghost btn-sm" onClick={() => setShowImport(true)}>📥 Importar CSV</button>
+            <button className="btn btn-primary" onClick={() => { setEditing(null); setShowForm(true); }}>➕ Novo Jogador</button>
+          </div>
+        </div>
+
+        <div className="content">
+          {/* KPIs */}
+          <div className="kpi-grid">
+            <div className="kpi-card azul">
+              <div className="kpi-label">Total</div>
+              <div className="kpi-value">{r.total||0}</div>
+              <div className="kpi-sub">prospectados</div>
+            </div>
+            <div className="kpi-card vermelho">
+              <div className="kpi-label">Alta Prior.</div>
+              <div className="kpi-value">{r.alta_prioridade||0}</div>
+              <div className="kpi-sub">🔴 urgentes</div>
+            </div>
+            <div className="kpi-card amarelo">
+              <div className="kpi-label">Negociando</div>
+              <div className="kpi-value">{(r.negociando||0)+(r.proposta_enviada||0)}</div>
+              <div className="kpi-sub">em andamento</div>
+            </div>
+            <div className="kpi-card verde">
+              <div className="kpi-label">Contratados</div>
+              <div className="kpi-value">{r.contratado||0}</div>
+              <div className="kpi-sub">✅ fechados</div>
+            </div>
+            <div className="kpi-card roxo">
+              <div className="kpi-label">Interesse</div>
+              <div className="kpi-value">{r.interesse||0}</div>
+              <div className="kpi-sub">em avaliação</div>
+            </div>
+            <div className="kpi-card cinza">
+              <div className="kpi-label">Observação</div>
+              <div className="kpi-value">{r.observacao||0}</div>
+              <div className="kpi-sub">monitorando</div>
+            </div>
+          </div>
+
+          {/* TOOLBAR */}
+          <div className="toolbar">
+            <input className="search-box" placeholder="🔍 Buscar jogador ou clube..." value={busca}
+              onChange={e => setBusca(e.target.value)} />
+            <select className="filter-select" value={filStatus} onChange={e => setFilStatus(e.target.value)}>
+              <option value="">Todos os status</option>
+              {Object.entries(STATUS_LABEL).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
+            </select>
+            <select className="filter-select" value={filPosicao} onChange={e => setFilPosicao(e.target.value)}>
+              <option value="">Todas posições</option>
+              {POSICOES.map(p => <option key={p} value={p}>{POSICAO_NOME[p]}</option>)}
+            </select>
+            <select className="filter-select" value={filPrioridade} onChange={e => setFilPrioridade(e.target.value)}>
+              <option value="">Toda prioridade</option>
+              <option value="alta">🔴 Alta</option>
+              <option value="media">🟡 Média</option>
+              <option value="baixa">⚪ Baixa</option>
+            </select>
+          </div>
+
+          {/* TABLE */}
+          <div className="card">
+            {loading ? (
+              <div className="loading"><span className="spin">⏳</span> Carregando...</div>
+            ) : lista.length === 0 ? (
+              <div className="empty">
+                <div className="icon">🔭</div>
+                <div>Nenhum jogador prospectado ainda.</div>
+                <button className="btn btn-primary" style={{marginTop:16}} onClick={() => setShowForm(true)}>➕ Adicionar primeiro jogador</button>
+              </div>
+            ) : (
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th onClick={() => toggleSort('prioridade')}>Prio{sortIcon('prioridade')}</th>
+                      <th onClick={() => toggleSort('nome')}>Jogador{sortIcon('nome')}</th>
+                      <th>Pos</th>
+                      <th onClick={() => toggleSort('data_nascimento')}>Idade{sortIcon('data_nascimento')}</th>
+                      <th>Clube</th>
+                      <th>Contrato</th>
+                      <th>Valor</th>
+                      <th title="Velocidade">VEL</th>
+                      <th title="Finalização">FIN</th>
+                      <th title="Passe Curto">PAS</th>
+                      <th title="Desarme">DES</th>
+                      <th title="Visão">VIS</th>
+                      <th onClick={() => toggleSort('avaliacao_geral')}>Aval{sortIcon('avaliacao_geral')}</th>
+                      <th onClick={() => toggleSort('nota_olheiro')}>Nota{sortIcon('nota_olheiro')}</th>
+                      <th onClick={() => toggleSort('status_prospeccao')}>Status{sortIcon('status_prospeccao')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {lista.map(j => (
+                      <tr key={j.id} onClick={() => setSelected(j)}>
+                        <td><span className={`prio prio-${j.prioridade||'media'}`} title={PRIO_LABEL[j.prioridade]} /></td>
+                        <td className="player-nome">
+                          <strong>{j.nome}</strong>
+                          {j.nome_guerra && <small>"{j.nome_guerra}"</small>}
+                        </td>
+                        <td>{j.posicao && <span className="pos-badge">{POSICAO_LABEL[j.posicao]}</span>}</td>
+                        <td style={{color:'var(--texto-leve)'}}>{idade(j.data_nascimento)}</td>
+                        <td style={{color:'var(--texto-leve)',maxWidth:120,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{j.clube_atual||'—'}</td>
+                        <td style={{color: j.contrato_ate && new Date(j.contrato_ate) < new Date(Date.now()+90*864e5) ? '#f87171' : 'var(--texto-leve)', fontSize:11}}>{fmtDate(j.contrato_ate)}</td>
+                        <td style={{color:'#60a5fa',fontSize:11}}>{fmtVal(j.valor_mercado)}</td>
+                        <td><AB v={j.attr_velocidade} sm /></td>
+                        <td><AB v={j.attr_finalizacao} sm /></td>
+                        <td><AB v={j.attr_passe_curto} sm /></td>
+                        <td><AB v={j.attr_desarme} sm /></td>
+                        <td><AB v={j.attr_visao} sm /></td>
+                        <td><span className="stars" style={{fontSize:10}}>{stars(j.avaliacao_geral)}</span></td>
+                        <td><span className="nota-badge" style={{width:24,height:24,fontSize:11}}>{j.nota_olheiro||'—'}</span></td>
+                        <td><span className={`badge badge-${STATUS_CLS[j.status_prospeccao]}`}>{STATUS_LABEL[j.status_prospeccao]}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+          <div style={{fontSize:11,color:'var(--texto-leve)',marginTop:10,textAlign:'right'}}>
+            {lista.length} jogador(es) | Clique em um jogador para ver detalhes
+          </div>
+        </div>
+      </main>
+
+      {selected && (
+        <PlayerModal
+          player={selected}
+          onClose={() => setSelected(null)}
+          onEdit={p => { setEditing(p); setSelected(null); setShowForm(true); }}
+          onDelete={id => remover(id)}
+          onStatusChange={(id, s) => mudarStatus(id, s)}
+        />
+      )}
+      {showForm && (
+        <FormModal
+          initial={editing}
+          onSave={salvar}
+          onClose={() => { setShowForm(false); setEditing(null); }}
+        />
+      )}
+      {showImport && (
+        <ImportModal
+          onClose={() => setShowImport(false)}
+          onImport={importar}
+        />
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
