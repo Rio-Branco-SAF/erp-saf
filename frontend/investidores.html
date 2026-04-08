@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Investidores â€” ERP SAF</title>
+<title>Investidores — ERP SAF</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -22,41 +22,42 @@
       --dourado:     #F59E0B;
       --azul:        #3B82F6;
       --azul-dark:   #1D4ED8;
-      --texto:       #3A3A5C;
+      --texto:       #E2E8F0;
       --texto-leve:  #94A3B8;
       --roxo:        #8B5CF6;
       --laranja:     #F97316;
     }
+
 *{box-sizing:border-box;margin:0;padding:0}
-background: var(--bg);color:#E2E8F0;display:flex;min-height:100vh}
+body{font-family:'Segoe UI',system-ui,sans-serif;background: var(--bg);color: var(--texto);display:flex;min-height:100vh}
 .sidebar{width:220px;background:#0f172a;color:#94a3b8;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
-.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#fff;border-bottom:1px solid #E2E8F0}
+.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#252540;border-bottom:1px solid #E2E8F0}
 .sidebar-logo span{color:#f59e0b}
 .sidebar nav{flex:1;padding:12px 0}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s}
 .nav-item:hover{background:#E2E8F0;color:#3A3A5C}
-.nav-item.active{background:#1d4ed8;color:#fff}
+.nav-item.active{background:#1d4ed8;color:#252540}
 .nav-item .icon{font-size:16px;width:20px;text-align:center}
 .sidebar-footer{padding:14px 16px;border-top:1px solid #E2E8F0;font-size:12px}
 .user-chip{display:flex;align-items:center;gap:8px}
-.ua{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.ua{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#252540}
 .main{margin-left:220px;flex:1;display:flex;flex-direction:column}
-.topbar{background:#fff;border-bottom:1px solid #3A3A5C;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar{background:#252540;border-bottom:1px solid #3A3A5C;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
 .topbar h1{font-size:18px;font-weight:700;color:#0f172a}
 .topbar-sub{font-size:12px;color:#64748b;margin-top:2px}
 .content{padding:24px 28px;flex:1}
 
 /* BTN */
 .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
-.btn-primary{background:#1d4ed8;color:#fff}.btn-primary:hover{background:#1e40af}
-.btn-outline{background:#fff;color:#475569;border:1px solid #3A3A5C}.btn-outline:hover{background:#252540}
+.btn-primary{background:#1d4ed8;color:#252540}.btn-primary:hover{background:#1e40af}
+.btn-outline{background:#252540;color:#475569;border:1px solid #3A3A5C}.btn-outline:hover{background:#252540}
 .btn-sm{padding:5px 12px;font-size:12px}
-.btn-success{background:#16a34a;color:#fff}.btn-success:hover{background:#15803d}
+.btn-success{background:#16a34a;color:#252540}.btn-success:hover{background:#15803d}
 .btn-ghost{background:transparent;color:#64748b;border:none;font-size:13px;cursor:pointer;padding:4px 8px}
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.kpi-card{background:#fff;border-radius:12px;padding:16px 20px;bordeb:1px solid #3A3A5C}
+.kpi-card{background:#252540;border-radius:12px;padding:16px 20px;border:1px solid #3A3A5C}
 .kpi-label{font-size:11.5px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 .kpi-value{font-size:22px;font-weight:800;margin:5px 0 2px;color:#0f172a}
 .kpi-sub{font-size:11.5px;color:#94a3b8}
@@ -65,19 +66,19 @@ background: var(--bg);color:#E2E8F0;display:flex;min-height:100vh}
 .kpi-card.urgente .kpi-value{color:#FF5C5C}
 
 /* EQUITY BAR */
-.equity-bar-wrap{background:#fff;border-radius:12px;padding:18px 22px;border:1px solid #3A3A5C;margin-bottom:20px}
+.equity-bar-wrap{background:#252540;border-radius:12px;padding:18px 22px;border:1px solid #3A3A5C;margin-bottom:20px}
 .equity-title{font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px}
 .equity-bar{height:18px;border-radius:100px;background:#1C1C2E;overflow:hidden;display:flex;margin-bottom:8px}
 .equity-segment{height:100%;transition:.3s}
 .equity-legend{display:flex;gap:16px;flex-wrap:wrap}
-.eq=leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#475569}
+.eq-leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#475569}
 .eq-dot{width:10px;height:10px;border-radius:50%}
 
 /* FILTROS */
 .filters-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 .search-input{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;width:220px;outline:none}
-.search-input:focus{borde-color:#1d4ed8}
-select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
+.search-input:focus{border-color:#1d4ed8}
+select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;background:#252540;outline:none;color:#475569;cursor:pointer}
 
 /* PILLS */
 .pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:11.5px;font-weight:600;white-space:nowrap}
@@ -96,11 +97,11 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 
 /* CARDS DE INVESTIDORES */
 .inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.inv-card{background:#fff;border-radius:14px;border:1px solid #3A3A5C;overflow:hidden;cursor:pointer;transition:.18s}
+.inv-card{background:#252540;border-radius:14px;border:1px solid #3A3A5C;overflow:hidden;cursor:pointer;transition:.18s}
 .inv-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);border-color:#c7d2fe}
 .inv-card-header{padding:18px 18px 14px;display:flex;align-items:flex-start;gap:12px}
-.inv-avatar{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0}
-.inv-nome{font-size:14.5px;font-weight:700;color:#0f172a;white-space:nowraw;overflow:hidden;text-overflow:ellipsis}
+.inv-avatar{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#252540;flex-shrink:0}
+.inv-nome{font-size:14.5px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .inv-sub{font-size:12px;color:#64748b;margin-top:2px}
 .inv-card-metrics{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid #1C1C2E}
 .metric-box{padding:12px 16px;border-right:1px solid #1C1C2E}
@@ -114,11 +115,11 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
-.modal{background:#fff;border-radius:16px;width:100%;max-width:900px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
-.modal-header{padding:20px 26px;border-bottom:1px solid #3A3A5C;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10}
+.modal{background:#252540;border-radius:16px;width:100%;max-width:900px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+.modal-header{padding:20px 26px;border-bottom:1px solid #3A3A5C;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#252540;z-index:10}
 .modal-header h2{font-size:18px;font-weight:800;color:#0f172a}
 .modal-body{padding:26px}
-.modal-footer{padding:16px 26px;border-top:1px solid #3A3A5C;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
+.modal-footer{padding:16px 26px;border-top:1px solid #3A3A5C;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#252540}
 .close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;line-height:1;flex-shrink:0;margin-top:2px}
 .close-btn:hover{color:#0f172a}
 
@@ -133,7 +134,7 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 /* TABS */
 .tabs{display:flex;gap:2px;background:#1C1C2E;border-radius:8px;padding:3px;width:fit-content;margin-bottom:20px}
 .tab{padding:6px 14px;border-radius:6px;font-size:12.5px;font-weight:600;cursor:pointer;color:#64748b;border:none;background:transparent;transition:.15s}
-.tab.active{background:#fff;color:#0f172a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.tab.active{background:#252540;color:#0f172a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 
 /* TOTAIS BOX */
 .totais-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
@@ -181,11 +182,11 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 .novo-aporte-box{border:1px solid #dbeafe;border-radius:10px;padding:16px;background:#eff6ff;margin-top:12px}
 
 /* CONTRAPARTIDA */
-.contrapartida-box{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 12px;font-size:13px;color:#92400e;margin-top:6px}
+.contrapartida-box{background:#252540beb;border:1px solid #fde68a;border-radius:8px;padding:10px 12px;font-size:13px;color:#92400e;margin-top:6px}
 
 /* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1C1C2E;width:100%}
-.login-card{background:#fff;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.login-card{background:#252540;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
 .login-logo{text-align:center;margin-bottom:28px}
 .login-logo h2{font-size:22px;font-weight:800;color:#0f172a;margin-top:10px}
 .login-err{background:#fee2e2;color:#FF5C5C;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px}
@@ -197,7 +198,7 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 <div id="root"></div>
 <script type="text/babel">
 const { useState, useEffect, useCallback } = React;
-const API_URL = (window.ERP_CONFIG || {}).API_URL || 'https://backend-production-7c51.up.railway.app/api';
+const API_URL = (window.ERP_CONFIG || {}).API_URL || 'http://localhost:3001/api';
 
 // ============================================================
 // DEMO DATA
@@ -211,38 +212,38 @@ const DEMO_RESUMO = {
     saldo_devedor_total: 1480000
 };
 
-const PERFIL_LABEL = { socio:'SÃ³cio', patrocinador:'Patrocinador', investidor:'Investidor', mecenatismo:'Mecenas' };
-const PERFIL_EMOJI = { socio:'ðŸ›ï¸', patrocinador:'ðŸŽ½', investidor:'ðŸ“ˆ', mecenatismo:'â¤ï¸' };
+const PERFIL_LABEL = { socio:'Sócio', patrocinador:'Patrocinador', investidor:'Investidor', mecenatismo:'Mecenas' };
+const PERFIL_EMOJI = { socio:'🏛️', patrocinador:'🎽', investidor:'📈', mecenatismo:'❤️' };
 const PERFIL_COR   = { socio:'#4338ca', patrocinador:'#a16207', investidor:'#16a34a', mecenatismo:'#7c3aed' };
 const PERFIL_BG    = { socio:'#e0e7ff', patrocinador:'#fef9c3', investidor:'#dcfce7', mecenatismo:'#f3e8ff' };
-const TIPO_LABEL   = { aporte_capital:'Aporte de Capital', patrocinio:'PatrocÃ­nio', emprestimo:'EmprÃ©stimo', doacan:'DoaÃ§Ã£o' };
-const TIPO_ICON    = { aporte_capital:'ðŸ’°', patrocinio:'ðŸŽ½', emprestimo:'ðŸ”„', doacao:'â¤ï¸' };
+const TIPO_LABEL   = { aporte_capital:'Aporte de Capital', patrocinio:'Patrocínio', emprestimo:'Empréstimo', doacao:'Doação' };
+const TIPO_ICON    = { aporte_capital:'💰', patrocinio:'🎽', emprestimo:'🔄', doacao:'❤️' };
 
 const DEMO_INVESTIDORES = [
     { id:1, nome:'Roberto Andrade Menezes',   nome_fantasia:null,          tipo:'pessoa_fisica',   perfil:'socio',        percentual_participacao:25, total_aportado:3800000, total_patrocinio:0, total_emprestado:0, saldo_devedor:0, retorno_pendente:80000, qtd_aportes:3, ativo:true },
-    { id:2, nome:'Grupo Empresarial VitÃ³ria', nome_fantasia:'Grupo VitÃ³ria',tipo:'pessoa_juridica', perfil:'socio',        percentual_participacao:20, total_aportado:3300000, total_patrocinio:0, total_emprestado:0, saldo_devedor:0, retorno_pendente:64000, qtd_aportes:3, ativo:true },
-    { id:4, nome:'Construtora Apex S/A',      nome_fantasia:'Apex ConstruÃ§Ãµes',tipo:'pessoa_juridica',perfil:'patrocinador',percentual_participacao:0, total_aportado:1620000, total_patrocinio:1620000, total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:3, ativo:true },
+    { id:2, nome:'Grupo Empresarial Vitória', nome_fantasia:'Grupo Vitória',tipo:'pessoa_juridica', perfil:'socio',        percentual_participacao:20, total_aportado:3300000, total_patrocinio:0, total_emprestado:0, saldo_devedor:0, retorno_pendente:64000, qtd_aportes:3, ativo:true },
+    { id:4, nome:'Construtora Apex S/A',      nome_fantasia:'Apex Construções',tipo:'pessoa_juridica',perfil:'patrocinador',percentual_participacao:0, total_aportado:1620000, total_patrocinio:1620000, total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:3, ativo:true },
     { id:3, nome:'Patricia Lima Coutinho',    nome_fantasia:null,          tipo:'pessoa_fisica',   perfil:'socio',        percentual_participacao:8,  total_aportado:1000000, total_patrocinio:0, total_emprestado:0, saldo_devedor:0, retorno_pendente:25600, qtd_aportes:2, ativo:true },
-    { id:8, nome:'Fundo Esporte Capital FIP', nome_fantasia:'Esporte Capital',tipo:'pessoa_juridica',perfil:'•nvestidor', percentual_participacao:0,  total_aportado:1000000, total_patrocinio:0, total_emprestado:1000000, saldo_devedor:1000000, retorno_pendente:0, qtd_aportes:1, ativo:true },
-    { id:5, nome:'FarmÃ¡cias SaÃºde Total',     nome_fantasia:'SaÃºde Total',  tipo:'pessoa_juridica', perfil:'patrocinador', percentual_participacao:0,  total_aportado:380000,  total_patrocinio:380000,  total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:2, ativo:true },
+    { id:8, nome:'Fundo Esporte Capital FIP', nome_fantasia:'Esporte Capital',tipo:'pessoa_juridica',perfil:'investidor', percentual_participacao:0,  total_aportado:1000000, total_patrocinio:0, total_emprestado:1000000, saldo_devedor:1000000, retorno_pendente:0, qtd_aportes:1, ativo:true },
+    { id:5, nome:'Farmácias Saúde Total',     nome_fantasia:'Saúde Total',  tipo:'pessoa_juridica', perfil:'patrocinador', percentual_participacao:0,  total_aportado:380000,  total_patrocinio:380000,  total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:2, ativo:true },
     { id:7, nome:'Ricardo Fontes Barros',     nome_fantasia:null,          tipo:'pessoa_fisica',   perfil:'investidor',   percentual_participacao:0,  total_aportado:600000,  total_patrocinio:0, total_emprestado:600000, saldo_devedor:480000, retorno_pendente:32000, qtd_aportes:2, ativo:true },
-    { id:6, nome:'Auto PeÃ§as Rodrigues Ltda', nome_fantasia:'Rodrigues PeÃ§as',tipo:'pessoa_juridica',perfil:'patrocinador',percentual_participacao:0, total_aportado:60000,   total_patrocinio:60000,   total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:1, ativo:true },
+    { id:6, nome:'Auto Peças Rodrigues Ltda', nome_fantasia:'Rodrigues Peças',tipo:'pessoa_juridica',perfil:'patrocinador',percentual_participacao:0, total_aportado:60000,   total_patrocinio:60000,   total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:1, ativo:true },
     { id:9, nome:'Dr. Henrique Albuquerque',  nome_fantasia:null,          tipo:'pessoa_fisica',   perfil:'mecenatismo',  percentual_participacao:0,  total_aportado:95000,   total_patrocinio:0, total_emprestado:0, saldo_devedor:0, retorno_pendente:0, qtd_aportes:3, ativo:true },
 ];
 
 const DEMO_DETALHE_1 = {
     id:1, nome:'Roberto Andrade Menezes', tipo:'pessoa_fisica', perfil:'socio',
     cpf_cnpj:'111.222.333-44', email:'roberto.menezes@email.com', telefone:'(11) 99999-1111',
-    percentual_participacao:25, observacoes:'SÃ³cio majoritÃ¡rio. EmpresÃ¡rio do setor imobiliÃ¡rio.',
+    percentual_participacao:25, observacoes:'Sócio majoritário. Empresário do setor imobiliário.',
     ativo:true,
     aportes:[
-        { id:1, tipo:'aporte_capital', descricao:'Aporte inicial de capitalizaÃ§Ã£o â€” fundaÃ§Ã£o da SAF', valor:2500000, data_aporte:'2023-01-15', percentual_concedido:25, status:'confirmado', valor_devolvido:0 },
-        { id:2, tipo:'aporte_capital', descricao:'Aporte complementar â€” reforÃ§o de elenco 2024', valor:500000, data_aporte:'2024-02-10', percentual_concedido:0, status:'confirmado', valor_devolvido:0 },
-        { id:3, tipo:'aporte_capital', descricao:'Aporte para infraestrutura â€” CT reforma', valor:800000, data_aporte:'2025-06-01', percentual_concedido:0, status:'confirmado', valor_devolvido:0 },
+        { id:1, tipo:'aporte_capital', descricao:'Aporte inicial de capitalização — fundação da SAF', valor:2500000, data_aporte:'2023-01-15', percentual_concedido:25, status:'confirmado', valor_devolvido:0 },
+        { id:2, tipo:'aporte_capital', descricao:'Aporte complementar — reforço de elenco 2024', valor:500000, data_aporte:'2024-02-10', percentual_concedido:0, status:'confirmado', valor_devolvido:0 },
+        { id:3, tipo:'aporte_capital', descricao:'Aporte para infraestrutura — CT reforma', valor:800000, data_aporte:'2025-06-01', percentual_concedido:0, status:'confirmado', valor_devolvido:0 },
     ],
     retornos:[
-        { id:1, tipo:'dividendo', descricao:'DistribuiÃ§Ã£o de resultado â€” 2024 (25%)', valor:125000, data_pagamento:'2025-01-31', status:'pago' },
-        { id:9, tipo:'dividendo', descricao:'DistribuiÃ§Ã£o parcial resultado â€” 1Âº semestre 2026', valor:80000, data_pagamento:'2026-07-31', status:'pendente' },
+        { id:1, tipo:'dividendo', descricao:'Distribuição de resultado — 2024 (25%)', valor:125000, data_pagamento:'2025-01-31', status:'pago' },
+        { id:9, tipo:'dividendo', descricao:'Distribuição parcial resultado — 1º semestre 2026', valor:80000, data_pagamento:'2026-07-31', status:'pendente' },
     ],
     documentos:[],
     totais:{ total_aportado:3800000, total_patrocinio:0, total_emprestado:0, saldo_devedor:0, total_retornado:125000, retorno_pendente:80000 }
@@ -251,31 +252,23 @@ const DEMO_DETALHE_1 = {
 // ============================================================
 // HELPERS
 // ============================================================
-const _getAT=()=>localStorage.getItem('erp_access');
-const _getRF=()=>localStorage.getItem('erp_refresh');
-let USUARIO=null;
-try{USUARIO=JSON.parse(localStorage.getItem('erp_user'));}catch(e){}
+let TOKEN = localStorage.getItem('erp_token');
+let USUARIO = null;
+try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
 
-async function _refreshToken(){
-  try{const rf=_getRF();if(!rf)return false;
-    const r=await fetch(API_URL+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rf})});
-    if(!r.ok)return false;const data=await r.json();
-    if(data.accessToken){localStorage.setItem('erp_access',data.accessToken);if(data.refreshToken)localStorage.setItem('erp_refresh',data.refreshToken);return true;}
-    return false;}catch(e){return false;}}
+async function apiFetch(path, options={}) {
+    try {
+        const headers = { 'Content-Type':'application/json' };
+        if (TOKEN) headers['Authorization'] = 'Bearer '+TOKEN;
+        const res = await fetch(API_URL+path, {...options, headers});
+        if (res.status===401) { TOKEN=null; localStorage.removeItem('erp_token'); window.location.reload(); }
+        return await res.json();
+    } catch(e) { return null; }
+}
 
-async function apiFetch(path,options={}){
-  try{let at=_getAT();
-    if(at){try{const p=JSON.parse(atob(at.split('.')[1]));if((p.exp*1000)-Date.now()<30000){await _refreshToken();at=_getAT();}}catch(e){}}
-    const headers={'Content-Type':'application/json'};if(at)headers['Authorization']='Bearer '+at;
-    const res=await fetch(API_URL+path,{...options,headers});
-    if(res.status===401){const ok=await _refreshToken();
-      if(ok){at=_getAT();headers['Authorization']='Bearer '+at;const r2=await fetch(API_URL+path,{...options,headers});if(r2.status===401){localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}return await r2.json();}
-      localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}
-    return await res.json();}catch(e){return null;}}
-
-function fmt(v) { if(!v&&v!==0) return 'â€”'; return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
-function fmtK(v) { if(!v&&v!==0) return 'â€”'; if(v>=1000000) return 'R$ '+(v/1000000).toFixed(1)+'M'; if(v>=1000) return 'R$ '+(v/1000).toFixed(0)+'k'; return fmt(v); }
-function fmtData(d) { if(!d) return 'â€”'; return new Date(d+(d.length===10?'T00:00:00':'')).toLocaleDateString('pt-BR'); }
+function fmt(v) { if(!v&&v!==0) return '—'; return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
+function fmtK(v) { if(!v&&v!==0) return '—'; if(v>=1000000) return 'R$ '+(v/1000000).toFixed(1)+'M'; if(v>=1000) return 'R$ '+(v/1000).toFixed(0)+'k'; return fmt(v); }
+function fmtData(d) { if(!d) return '—'; return new Date(d+(d.length===10?'T00:00:00':'')).toLocaleDateString('pt-BR'); }
 function initials(nome) { return (nome||'?').split(' ').filter(Boolean).map(n=>n[0]).slice(0,2).join('').toUpperCase(); }
 
 // ============================================================
@@ -287,15 +280,15 @@ function Login({ onLogin }) {
         e.preventDefault(); setL(true); setErr('');
         const d = await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({usuario:u,senha:s})});
         setL(false);
-        if(d?.accessToken||d?.token){localStorage.setItem('erp_access',d.accessToken||d.token);if(d.refreshToken)localStorage.setItem('erp_refresh',d.refreshToken);USUARIO=d.usuario||d.user;localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(d.usuario);}
-        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(USUARIO);}
-        else setErr('UsuÃ¡rio ou senha incorretos.');
+        if(d?.token){TOKEN=d.token;USUARIO=d.usuario;localStorage.setItem('erp_token',TOKEN);localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(d.usuario);}
+        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(USUARIO);}
+        else setErr('Usuário ou senha incorretos.');
     }
     return <div className="login-wrap"><div className="login-card">
-        <div className="login-logo"><div style={{fontSize:40}}>ðŸŸï¸</div><h2>ERP SAF</h2><p>Investidores & Aportes</p></div>
+        <div className="login-logo"><div style={{fontSize:40}}>🏟️</div><h2>ERP SAF</h2><p>Investidores & Aportes</p></div>
         {err&&<div className="login-err">{err}</div>}
         <form onSubmit={submit}>
-            <div className="form-group" style={{marginBottom:12}}><label>UsuÃ¡rio</label><input value={u} onChange={e=>setU(e.target.value)} required/></div>
+            <div className="form-group" style={{marginBottom:12}}><label>Usuário</label><input value={u} onChange={e=>setU(e.target.value)} required/></div>
             <div className="form-group" style={{marginBottom:20}}><label>Senha</label><input type="password" value={s} onChange={e=>setS(e.target.value)} required/></div>
             <button type="submit" className="btn btn-primary" style={{width:'100%',padding:11}} disabled={l}>{l?'Entrando...':'Entrar'}</button>
         </form>
@@ -309,44 +302,44 @@ function Login({ onLogin }) {
 function Sidebar({ usuario, onLogout }) {
     const ini = initials(usuario?.nome||'U');
     return <div className="sidebar">
-        <div className="sidebar-logo">ðŸŸï¸ ERP <span>SAF</span></div>
+        <div className="sidebar-logo">🏟️ ERP <span>SAF</span></div>
         <nav>
-            <div className="nav-item" onClick={()=>window.location.href='index.html'}><span className="icon">ðŸ‘¥</span> FuncionÃ¡rios</div>
-            <div className="nav-item" onClick={()=>window.location.href='financeiro.html'}><span className="icon">ðŸ’°</span> Financeiro</div>
-            <div className="nav-item" onClick={()=>window.location.href='pedidos.html'}><span className="icon">ðŸ›’</span> Pedidos de Compra</div>
-            <div className="nav-item" onClick={()=>window.location.href='atletas.html'}><span className="icon">âš½</span> Atletas</div>
-            <div className="nav-item active"><span className="icon">ðŸ’¼</span> Investidores</div>
-            <div className="nav-item" style={{opacity:.4,cursor5'not-allowed'}}><span className="icon">ðŸŽ¯</span> Metas</div>
-            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">ðŸŠ</span> RelatÃ³rios</div>
+            <div className="nav-item" onClick={()=>window.location.href='index.html'}><span className="icon">👥</span> Funcionários</div>
+            <div className="nav-item" onClick={()=>window.location.href='financeiro.html'}><span className="icon">💰</span> Financeiro</div>
+            <div className="nav-item" onClick={()=>window.location.href='pedidos.html'}><span className="icon">🛒</span> Pedidos de Compra</div>
+            <div className="nav-item" onClick={()=>window.location.href='atletas.html'}><span className="icon">⚽</span> Atletas</div>
+            <div className="nav-item active"><span className="icon">💼</span> Investidores</div>
+            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">🎯</span> Metas</div>
+            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">📊</span> Relatórios</div>
         </nav>
         <div className="sidebar-footer">
             <div className="user-chip"><div className="ua">{ini}</div>
-                <div><div style={{fontSize:12,color:'#3A3A5C',fontWeight:600}}>{usuario?.nome}</div><div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
+                <div><div style={{fontSize:12,color:'#e2e8f0',fontWeight:600}}>{usuario?.nome}</div><div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
             </div>
-            <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>Sair â†’</button>
+            <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>Sair →</button>
         </div>
     </div>;
 }
 
 // ============================================================
-// EQUITY BAR (distribuiÃ§Ã£o acionÃ¡ria visual)
+// EQUITY BAR (distribuição acionária visual)
 // ============================================================
 function EquityBar({ investidores, equityTotal }) {
     const socios = investidores.filter(i => i.perfil === 'socio' && i.percentual_participacao > 0);
     const SAF_PCT = Math.max(0, 100 - equityTotal);
-    const CORES = ['#4338ca','#0891b2','#16a34a','#d97706','#FF5C5C','#7c3aed'];
+    const CORES = ['#4338ca','#0891b2','#16a34a','#d97706','#dc2626','#7c3aed'];
     return <div className="equity-bar-wrap">
-        <div className="equity-title">ðŸ“Š DistribuiÃ§Ã£o AcionÃ¡ria do Clube</div>
+        <div className="equity-title">📊 Distribuição Acionária do Clube</div>
         <div className="equity-bar">
             {socios.map((s,i) => <div key={s.id} className="equity-segment" style={{width:s.percentual_participacao+'%',background:CORES[i%CORES.length]}}/>)}
-            {SAF_PCT > 0 && <div className="equity-segment" style={{width:SAF_PCT+'%',background:'#3A3A5C'}}/>}
+            {SAF_PCT > 0 && <div className="equity-segment" style={{width:SAF_PCT+'%',background:'#e2e8f0'}}/>}
         </div>
         <div className="equity-legend">
             {socios.map((s,i) => <div key={s.id} className="eq-leg">
                 <div className="eq-dot" style={{background:CORES[i%CORES.length]}}/>
                 <span>{s.nome_fantasia||s.nome.split(' ').slice(0,2).join(' ')} ({s.percentual_participacao}%)</span>
             </div>)}
-            {SAF_PCT > 0 && <div className="eq-leg"><div className="eq-dot" style={{background:'#3A3A5C',border:'1px solid #cbd5e1'}}/><span>SAF (disponÃ­vel {SAF_PCT.toFixed(1)}%)</span></div>}
+            {SAF_PCT > 0 && <div className="eq-leg"><div className="eq-dot" style={{background:'#e2e8f0',border:'1px solid #cbd5e1'}}/><span>SAF (disponível {SAF_PCT.toFixed(1)}%)</span></div>}
         </div>
     </div>;
 }
@@ -371,7 +364,7 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
     }, [inv.id]);
 
     async function salvarAporte() {
-        if (!novoAp.descricao || !novoAp.valor) { alert('Informe descriÃ§Ã£o e valor'); return; }
+        if (!novoAp.descricao || !novoAp.valor) { alert('Informe descrição e valor'); return; }
         setSaving(true);
         const d = await apiFetch('/investidores/'+inv.id+'/aportes',{method:'POST',body:JSON.stringify(novoAp)});
         setSaving(false);
@@ -407,11 +400,11 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                         </div>
                     </div>
                 </div>
-                <button className="close-btn" onClick={onClose}>âœ•</button>
+                <button className="close-btn" onClick={onClose}>✕</button>
             </div>
 
             <div className="modal-body">
-                {/* TOTAIS RÃPIDOS */}
+                {/* TOTAIS RÁPIDOS */}
                 <div className="totais-grid">
                     <div className="total-box">
                         <div className="total-label">Total Aportado</div>
@@ -423,7 +416,7 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                     </div>
                     {t.saldo_devedor > 0 ? (
                         <div className="total-box">
-                            <div className="total-label">Saldo Devedor (EmprÃ©stimo)</div>
+                            <div className="total-label">Saldo Devedor (Empréstimo)</div>
                             <div className="total-value vermelho">{fmt(t.saldo_devedor)}</div>
                         </div>
                     ) : (
@@ -435,9 +428,9 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                 </div>
 
                 <div className="tabs">
-                    <button className={'tab'+(aba==='perfil'?' active':'')} onClick={()=>setAba('perfil')}>ðŸ‘¤ Perfil</button>
-                    <button className={'tab'+(aba==='aportes'?' active':'')} onClick={()=>setAba('aportes')}>ðŸ’° Aportes ({d.aportes?.length||0})</button>
-                    <button className={'tab'+(aba==='retornos'?' active':'')} onClick={()=>setAba('retornos')}>ðŸ“¤ Retornos ({d.retornos?.length||0})</button>
+                    <button className={'tab'+(aba==='perfil'?' active':'')} onClick={()=>setAba('perfil')}>👤 Perfil</button>
+                    <button className={'tab'+(aba==='aportes'?' active':'')} onClick={()=>setAba('aportes')}>💰 Aportes ({d.aportes?.length||0})</button>
+                    <button className={'tab'+(aba==='retornos'?' active':'')} onClick={()=>setAba('retornos')}>📤 Retornos ({d.retornos?.length||0})</button>
                 </div>
 
                 {/* PERFIL */}
@@ -445,32 +438,32 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                     <div className="detail-section">
                         <h3>Dados Cadastrais</h3>
                         <div className="detail-grid-3">
-                            <div className="detail-item"><label>Tipo</label><span>{d.tipo==='pessoa_fisica'?'Pessoa FÃ­sica':'Pessoa JurÃ­dica'}</span></div>
-                            <div className="detail-item"><label>CPF / CNPJ</label><span>{d.cpf_cnpj||'â€”'}</span></div>
+                            <div className="detail-item"><label>Tipo</label><span>{d.tipo==='pessoa_fisica'?'Pessoa Física':'Pessoa Jurídica'}</span></div>
+                            <div className="detail-item"><label>CPF / CNPJ</label><span>{d.cpf_cnpj||'—'}</span></div>
                             <div className="detail-item"><label>Perfil</label><span>{PERFIL_LABEL[d.perfil]}</span></div>
-                            <div className="detail-item"><label>E-mail</label><span>{d.email||'â€”'}</span></div>
-                            <div className="detail-item"><label>Telefone</label><span>{d.telefone||'â€”'}</span></div>
-                            {d.responsavel && <div className="detail-item"><label>ResponsÃ¡vel</label><span>{d.responsavel}</span></div>}
+                            <div className="detail-item"><label>E-mail</label><span>{d.email||'—'}</span></div>
+                            <div className="detail-item"><label>Telefone</label><span>{d.telefone||'—'}</span></div>
+                            {d.responsavel && <div className="detail-item"><label>Responsável</label><span>{d.responsavel}</span></div>}
                         </div>
                         {d.percentual_participacao > 0 && (
                             <div style={{marginTop:12,background:'#e0e7ff',borderRadius:8,padding:'10px 14px',display:'flex',alignItems:'center',gap:10}}>
-                                <span style={{fontSize:22}}>ðŸ›ï¸</span>
+                                <span style={{fontSize:22}}>🏛️</span>
                                 <div>
-                                    <div style={{fontWeight:700,color:'#4338ca',fontSize:14}}>ParticipaÃ§Ã£o AcionÃ¡ria: {d.percentual_participacao}%</div>
-                                    <div style={{fontSize:12,color:'#6366f1',marginTop:2}}>SÃ³cio com direito a dividendos e voto nas assembleias</div>
+                                    <div style={{fontWeight:700,color:'#4338ca',fontSize:14}}>Participação Acionária: {d.percentual_participacao}%</div>
+                                    <div style={{fontSize:12,color:'#6366f1',marginTop:2}}>Sócio com direito a dividendos e voto nas assembleias</div>
                                 </div>
                             </div>
                         )}
-                        {d.observacoes && <div style={{marginTop:12,padding:'10px 12px',background:'#252540',borderRadius:8,fontSize:13,color:'#475569'}}>{d.observacoes}</div>}
+                        {d.observacoes && <div style={{marginTop:12,padding:'10px 12px',background:'#f8fafc',borderRadius:8,fontSize:13,color:'#475569'}}>{d.observacoes}</div>}
                     </div>
                 </div>}
 
                 {/* APORTES */}
                 {aba==='aportes' && <div>
                     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
-                        <div style={{fontWeight:700,fontSize:14,color:'#0f172a'}}>HistÃ³rico de Aportes</div>
+                        <div style={{fontWeight:700,fontSize:14,color:'#0f172a'}}>Histórico de Aportes</div>
                         <button className="btn btn-primary btn-sm" onClick={()=>setShowNovoAporte(!showNovoAporte)}>
-                            {showNovoAporte?'âœ• Cancelar':'+ Novo Aporte'}
+                            {showNovoAporte?'✕ Cancelar':'+ Novo Aporte'}
                         </button>
                     </div>
 
@@ -480,10 +473,10 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                             <div className="form-group">
                                 <label>Tipo *</label>
                                 <select value={novoAp.tipo} onChange={e=>setNovoAp(a=>({...a,tipo:e.target.value}))}>
-                                    <option value="aporte_capital">ðŸ’° Aporte de Capital</option>
-                                    <option value="patrocinio">ðŸŽ½ PatrocÃ­nio</option>
-                                    <option value="emprestimo">ðŸ”„ EmprÃ©stimo</option>
-                                    <option value="doacao">â¤ï¸ DoaÃ§Ã£o</option>
+                                    <option value="aporte_capital">💰 Aporte de Capital</option>
+                                    <option value="patrocinio">🎽 Patrocínio</option>
+                                    <option value="emprestimo">🔄 Empréstimo</option>
+                                    <option value="doacao">❤️ Doação</option>
                                 </select>
                             </div>
                             <div className="form-group">
@@ -491,7 +484,7 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                                 <input type="number" step="0.01" value={novoAp.valor} onChange={e=>setNovoAp(a=>({...a,valor:e.target.value}))} placeholder="0,00"/>
                             </div>
                             <div className="form-group form-full">
-                                <label>DescriÃ§Ã£o *</label>
+                                <label>Descrição *</label>
                                 <input value={novoAp.descricao} onChange={e=>setNovoAp(a=>({...a,descricao:e.target.value}))} placeholder="Descreva o aporte..."/>
                             </div>
                             <div className="form-group">
@@ -511,16 +504,16 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                                 <textarea value={novoAp.contrapartida} onChange={e=>setNovoAp(a=>({...a,contrapartida:e.target.value}))} placeholder="Ex: Logo na camisa + 4 ingressos por jogo..."/>
                             </div>}
                             <div className="form-group form-full">
-                                <label>ObservaÃ§Ãµes</label>
+                                <label>Observações</label>
                                 <textarea value={novoAp.observacoes} onChange={e=>setNovoAp(a=>({...a,observacoes:e.target.value}))} style={{minHeight:48}}/>
                             </div>
                         </div>
                         <button className="btn btn-primary btn-sm" onClick={salvarAporte} disabled={saving}>
-                            {saving?'Salvando...':'ðŸ’¾ Salvar Aporte'}
+                            {saving?'Salvando...':'💾 Salvar Aporte'}
                         </button>
                     </div>}
 
-                    {d.aportes?.length===0 ? <div className="empty-state"><div className="empty-icon">ðŸ’°</div><p>Nenhum aporte registrado.</p></div> :
+                    {d.aportes?.length===0 ? <div className="empty-state"><div className="empty-icon">💰</div><p>Nenhum aporte registrado.</p></div> :
                     d.aportes?.map(ap => {
                         const pctDevolvido = ap.tipo==='emprestimo' && ap.valor>0 ? Math.round((ap.valor_devolvido||0)/ap.valor*100) : 0;
                         return <div key={ap.id} className="aporte-row">
@@ -528,7 +521,22 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                             <div style={{flex:1,minWidth:0}}>
                                 <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:3}}>
                                     <span className={'tipo-'+ap.tipo}>{TIPO_LABEL[ap.tipo]}</span>
-                            t(ap.valor)}</div>
+                                    <span className={'pill-'+ap.status}>{ap.status}</span>
+                                    {ap.percentual_concedido>0 && <span style={{background:'#e0e7ff',color:'#4338ca',padding:'2px 8px',borderRadius:100,fontSize:11,fontWeight:700}}>{ap.percentual_concedido}% equity</span>}
+                                </div>
+                                <div className="aporte-desc">{ap.descricao}</div>
+                                <div className="aporte-meta">
+                                    {ap.taxa_juros_anual ? `Juros: ${ap.taxa_juros_anual}% a.a.` : ''}
+                                    {ap.data_vencimento ? ` · Vence: ${fmtData(ap.data_vencimento)}` : ''}
+                                </div>
+                                {ap.contrapartida && <div className="contrapartida-box" style={{marginTop:6}}>🎽 {ap.contrapartida}</div>}
+                                {ap.tipo==='emprestimo' && ap.valor>0 && <div style={{marginTop:8}}>
+                                    <div style={{fontSize:11.5,color:'#64748b',marginBottom:4}}>Devolvido: {fmt(ap.valor_devolvido||0)} de {fmt(ap.valor)} ({pctDevolvido}%)</div>
+                                    <div className="emprestimo-bar"><div className="emprestimo-fill" style={{width:pctDevolvido+'%'}}/></div>
+                                </div>}
+                            </div>
+                            <div style={{textAlign:'right',flex:'0 0 auto'}}>
+                                <div className="aporte-valor">{fmt(ap.valor)}</div>
                                 <div className="aporte-data">{fmtData(ap.data_aporte)}</div>
                             </div>
                         </div>;
@@ -538,7 +546,7 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                 {/* RETORNOS */}
                 {aba==='retornos' && <div>
                     <div style={{fontWeight:700,fontSize:14,color:'#0f172a',marginBottom:12}}>Retornos ao Investidor</div>
-                    {d.retornos?.length===0 ? <div className="empty-state"><div className="empty-icon">ðŸ“¤</div><p>Nenhum retorno registrado.</p></div> :
+                    {d.retornos?.length===0 ? <div className="empty-state"><div className="empty-icon">📤</div><p>Nenhum retorno registrado.</p></div> :
                     d.retornos?.map(r => <div key={r.id} className="retorno-row">
                         <div className="retorno-tipo">{r.tipo}</div>
                         <div style={{flex:1,minWidth:0}}>
@@ -548,7 +556,7 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
                         <div className="retorno-valor">{fmt(r.valor)}</div>
                         <div style={{width:80,textAlign:'right'}}>
                             {r.status==='pendente' ? (
-                                <button className="btn btn-success btn-sm" onClick={()=>pagarRetorno(r.id)}>âœ… Pagar</button>
+                                <button className="btn btn-success btn-sm" onClick={()=>pagarRetorno(r.id)}>✅ Pagar</button>
                             ) : (
                                 <span className={'pill-'+r.status}>{r.status}</span>
                             )}
@@ -564,7 +572,7 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
 }
 
 // ============================================================
-// MÃ“DULO PRINCIPAL
+// MÓDULO PRINCIPAL
 // ============================================================
 function ModuloInvestidores({ usuario }) {
     const [investidores, setInvestidores] = useState([]);
@@ -602,7 +610,7 @@ function ModuloInvestidores({ usuario }) {
 
     return <>
         <div className="topbar">
-            <div><h1>ðŸ’¼ Investidores & Aportes</h1><div className="topbar-sub">SÃ³cios, patrocinadores, emprÃ©stimos e dividendos</div></div>
+            <div><h1>💼 Investidores & Aportes</h1><div className="topbar-sub">Sócios, patrocinadores, empréstimos e dividendos</div></div>
             <button className="btn btn-primary">+ Cadastrar Investidor</button>
         </div>
         <div className="content">
@@ -614,39 +622,9 @@ function ModuloInvestidores({ usuario }) {
                     <div className="kpi-sub">{resumo.total_investidores} investidores ativos</div>
                 </div>
                 <div className="kpi-card">
-                    <div className="kpi-label">PatrocÃ­nio {new Date().getFullYear()}</div>
+                    <div className="kpi-label">Patrocínio {new Date().getFullYear()}</div>
                     <div className="kpi-value" style={{fontSize:20}}>{fmtK(resumo.patrocinio_ano_atual)}</div>
-                    <div className="kpi-sub">{resumo.total_patrocinadores} patrocinadores</div>
-                </div>
-                <div className="kpi-card alerta">
-          l);
-            setInvestidores(f);
-        }
-        if (resumoData?.total_investidores) setResumo(resumoData);
-        setLoading(false);
-    }, [busca, filtroPerfil]);
-
-    useEffect(() => { carregar(); }, [carregar]);
-
-    const equityTotal = investidores.filter(i=>i.perfil==='socio').reduce((s,i)=>s+parseFloat(i.percentual_participacao||0),0);
-
-    return <>
-        <div className="topbar">
-            <div><h1>ðŸ’¼ Investidores & Aportes</h1><div className="topbar-sub">SÃ³cios, patrocinadores, emprÃ©stimos e dividendos</div></div>
-            <button className="btn btn-primary">+ Cadastrar Investidor</button>
-        </div>
-        <div className="content">
-            {/* KPIs */}
-            <div className="kpi-grid">
-                <div className="kpi-card ok">
-                    <div className="kpi-label">Total Captado</div>
-                    <div className="kpi-value" style={{fontSize:20}}>{fmtK(resumo.total_captado)}</div>
-                    <div className="kpi-sub">{resumo.total_investidores} investidores ativos</div>
-                </div>
-                <div className="kpi-card">
-                    <div className="kpi-label">PatrocÃ­nio {new Date().getFullYear()}</div>
-                    <div className="kpi-value" style={{fontSize:20}}>{fmtK(resumo.patrocinio_ano_atual)}</div>
-                    <div className="kpi-sub">{resumo.total_patrocinadores} patrocinadores</div>
+                    <div className="kpi-sub">{resumo.total_patrocinadores} patrocinadores</sub>
                 </div>
                 <div className="kpi-card alerta">
                     <div className="kpi-label">Retornos Pendentes</div>
@@ -656,7 +634,7 @@ function ModuloInvestidores({ usuario }) {
                 <div className="kpi-card urgente">
                     <div className="kpi-label">Saldo Devedor</div>
                     <div className="kpi-value" style={{fontSize:20}}>{fmtK(resumo.saldo_devedor_total)}</div>
-                    <div className="kpi-sub">emprÃ©stimos a devolver</div>
+                    <div className="kpi-sub">empréstimos a devolver</div>
                 </div>
             </div>
 
@@ -668,12 +646,12 @@ function ModuloInvestidores({ usuario }) {
                 <input className="search-input" placeholder="Buscar investidor..." value={busca} onChange={e=>setBusca(e.target.value)}/>
                 <select className="filter-sel" value={filtroPerfil} onChange={e=>setFiltroPerfil(e.target.value)}>
                     <option value="">Todos os perfis</option>
-                    <option value="socio">ðŸ›ï¸ SÃ³cios</option>
-                    <option value="patrocinador">ðŸŽ½ Patrocinadores</option>
-                    <option value="investidor">ðŸ“ˆ Investidores</option>
-                    <option value="mecenatismo">â¤ï¸ Mecenas</option>
+                    <option value="socio">🏛️ Sócios</option>
+                    <option value="patrocinador">🎽 Patrocinadores</option>
+                    <option value="investidor">📈 Investidores</option>
+                    <option value="mecenatismo">❤️ Mecenas</option>
                 </select>
-                {(busca||filtroPerfil)&&<button className="btn-ghost" onClick={()=>{setBusca('');setFiltroPerfil('')}}>âœ• Limpar</button>}
+                {(busca||filtroPerfil)&&<button className="btn-ghost" onClick={()=>{setBusca('');setFiltroPerfil('')}}>✕ Limpar</button>}
                 <div style={{marginLeft:'auto',fontSize:13,color:'#94a3b8'}}>{investidores.length} registros</div>
             </div>
 
@@ -681,7 +659,7 @@ function ModuloInvestidores({ usuario }) {
             {loading ? (
                 <div style={{textAlign:'center',padding:'60px',color:'#94a3b8'}}>Carregando...</div>
             ) : investidores.length === 0 ? (
-                <div className="empty-state"><div className="empty-icon">ðŸ”</div><p>Nenhum investidor encontrado.</p></div>
+                <div className="empty-state"><div className="empty-icon">🔍</div><p>Nenhum investidor encontrado.</p></div>
             ) : (
                 <div className="inv-grid">
                     {investidores.map(inv => <div key={inv.id} className="inv-card" onClick={()=>setDetalhe(inv)}>
@@ -704,7 +682,7 @@ function ModuloInvestidores({ usuario }) {
                                 <div className="metric-value ok">{fmtK(inv.total_aportado)}</div>
                             </div>
                             <div className="metric-box">
-                                <div className="metric-label">{inv.saldo_devedor>0 ? 'Saldo Devedor' : inv.retorno_pendente>0 ? 'Retorno Pendente' : 'PatrocÃ­nio'}</div>
+                                <div className="metric-label">{inv.saldo_devedor>0 ? 'Saldo Devedor' : inv.retorno_pendente>0 ? 'Retorno Pendente' : 'Patrocínio'}</div>
                                 <div className={'metric-value '+(inv.saldo_devedor>0?'alerta':inv.retorno_pendente>0?'amarelo':'')}>
                                     {fmtK(inv.saldo_devedor>0 ? inv.saldo_devedor : inv.retorno_pendente>0 ? inv.retorno_pendente : inv.total_patrocinio)}
                                 </div>
@@ -712,7 +690,7 @@ function ModuloInvestidores({ usuario }) {
                         </div>
                         <div className="inv-card-footer">
                             <span style={{fontSize:12,color:'#94a3b8'}}>{inv.qtd_aportes} aporte{inv.qtd_aportes!==1?'s':''}</span>
-                            <span style={{fontSize:12,color:'#64748b',fontWeight:600}}>Ver detalhes â†’</span>
+                            <span style={{fontSize:12,color:'#64748b',fontWeight:600}}>Ver detalhes →</span>
                         </div>
                     </div>)}
                 </div>
@@ -728,7 +706,7 @@ function ModuloInvestidores({ usuario }) {
 // ============================================================
 function App() {
     const [usuario, setUsuario] = useState(USUARIO);
-    function logout() { TOKEN=null; USUARIO=null; localStorage.removeItem('erp_access'); localStorage.removeItem('erp_refresh'); localStorage.removeItem('erp_user'); setUsuario(null); location.href='/login.html'; }
+    function logout() { TOKEN=null; USUARIO=null; localStorage.removeItem('erp_token'); localStorage.removeItem('erp_usuario'); setUsuario(null); }
     if (!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
     return <><Sidebar usuario={usuario} onLogout={logout}/><div className="main"><ModuloInvestidores usuario={usuario}/></div></>;
 }
