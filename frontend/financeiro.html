@@ -245,7 +245,7 @@ function fmtMoeda(v) { return new Intl.NumberFormat('pt-BR',{style:'currency',cu
 function fmtData(d)  { if(!d)return'—'; return new Date(d+'T00:00:00').toLocaleDateString('pt-BR'); }
 function iniciais(n) { return (n||'?').split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase(); }
 
-alync function apiFetch(path, opts={}) {
+async function apiFetch(path, opts={}) {
   const token = localStorage.getItem('erp_token');
   const res = await fetch(API+path,{
     headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},
