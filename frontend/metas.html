@@ -22,39 +22,40 @@
       --dourado:     #F59E0B;
       --azul:        #3B82F6;
       --azul-dark:   #1D4ED8;
-      --texto:       #3A3A5C;
+      --texto:       #E2E8F0;
       --texto-leve:  #94A3B8;
       --roxo:        #8B5CF6;
       --laranja:     #F97316;
     }
+
 *{box-sizing:border-box;margin:0;padding:0}
-background: var(--bg);color:#E2E8F0;display:flex;min-height:100vh}
+body{font-family:'Segoe UI',system-ui,sans-serif;background: var(--bg);color: var(--texto);display:flex;min-height:100vh}
 .sidebar{width:220px;background:#0f172a;color:#94a3b8;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
-.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#fff;border-bottom:1px solid #E2E8F0}
+.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#252540;border-bottom:1px solid #E2E8F0}
 .sidebar-logo span{color:#f59e0b}
 .sidebar nav{flex:1;padding:12px 0}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s}
 .nav-item:hover{background:#E2E8F0;color:#3A3A5C}
-.nav-item.active{background:#1d4ed8;color:#fff}
+.nav-item.active{background:#1d4ed8;color:#252540}
 .nav-item .icon{font-size:16px;width:20px;text-align:center}
 .sidebar-footer{padding:14px 16px;border-top:1px solid #E2E8F0}
 .user-chip{display:flex;align-items:center;gap:8px}
-.ua{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.ua{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#252540}
 .main{margin-left:220px;flex:1;display:flex;flex-direction:column}
-.topbar{background:#fff;border-bottom:1px solid #3A3A5C;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar{background:#252540;border-bottom:1px solid #3A3A5C;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
 .topbar h1{font-size:18px;font-weight:700;color:#0f172a}
 .topbar-sub{font-size:12px;color:#64748b;margin-top:2px}
 .content{padding:24px 28px;flex:1}
 .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
-.btn-primary{background:#1d4ed8;color:#fff}.btn-primary:hover{background:#1e40af}
-.btn-outline{background:#fff;color:#475569;border:1px solid #3A3A5C}.btn-outline:hover{background:#252540}
+.btn-primary{background:#1d4ed8;color:#252540}.btn-primary:hover{background:#1e40af}
+.btn-outline{background:#252540;color:#475569;border:1px solid #3A3A5C}.btn-outline:hover{background:#252540}
 .btn-sm{padding:5px 12px;font-size:12px}
 .btn-ghost{background:transparent;color:#64748b;border:none;font-size:13px;cursor:pointer;padding:4px 8px}
-.btn-success{background:#16a34a;color:#fff}
+.btn-success{background:#16a34a;color:#252540}
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
-.kpi-card{background:#fff;border-radius:12px;padding:14px 18px;border:1px solid #3A3A5C}
+.kpi-card{background:#252540;border-radius:12px;padding:14px 18px;border:1px solid #3A3A5C}
 .kpi-label{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 .kpi-value{font-size:24px;font-weight:800;margin:5px 0 2px;color:#0f172a}
 .kpi-sub{font-size:11px;color:#94a3b8}
@@ -64,15 +65,15 @@ background: var(--bg);color:#E2E8F0;display:flex;min-height:100vh}
 
 /* FILTERS */
 .filters-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #3A3A5C;background:#fff;color:#475569;transition:.15s}
+.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #3A3A5C;background:#252540;color:#475569;transition:.15s}
 .filter-btn.active{border-color:transparent}
 .filter-btn.tipo-esportiva.active{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
 .filter-btn.tipo-financeira.active{background:#dcfce7;color:#16a34a;border-color:#bbf7d0}
 .filter-btn.tipo-institucional.active{background:#f3e8ff;color:#7c3aed;border-color:#ddd6fe}
-.filter-btn.tipo-all.active{background:#0f172a;color:#fff;border-color:#0f172a}
+.filter-btn.tipo-all.active{background:#0f172a;color:#252540;border-color:#0f172a}
 .search-input{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;width:200px;outline:none}
 .search-input:focus{border-color:#1d4ed8}
-select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
+select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;background:#252540;outline:none;color:#475569;cursor:pointer}
 
 /* PILLS */
 .pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
@@ -89,20 +90,20 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 
 /* META CARD */
 .metas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
-.meta-card{background:#fff;border-radius:14px;border:1px solid #3A3A5C;padding:18px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.meta-card{background:#252540;border-radius:14px;border:1px solid #3A3A5C;padding:18px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
 .meta-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px}
 .meta-card.esportiva::before{background:#1d4ed8}
 .meta-card.financeira::before{background:#16a34a}
 .meta-card.institucional::before{background:#7c3aed}
 .meta-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09)}
 .meta-card.concluida{opacity:.85;background:#f0fdf4}
-.meta-card.nao_atingida{opacity:.8;background:#fff5f5}
+.meta-card.nao_atingida{opacity:.8;background:#2525405f5}
 .meta-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px}
 .meta-titulo{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;flex:1}
 .meta-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
 
 /* BARRA DE PROGRESSO */
-.progrest-wrap{margin-bottom:12px}
+.progress-wrap{margin-bottom:12px}
 .progress-info{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .progress-valores{font-size:12.5px;color:#475569}
 .progress-pct{font-size:18px;font-weight:800}
@@ -125,14 +126,14 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 .dias-vencido{background:#1C1C2E;color:#64748b}
 
 /* CONQUISTA BANNER */
-.conquista-banner{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:3px}
+.conquista-banner{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#252540;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:3px}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
-.modal{background:#fff;border-radius:16px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
-.modal-header{padding:20px 24px;border-bottom:1px solid #3A3A5C;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10}
+.modal{background:#252540;border-radius:16px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+.modal-header{padding:20px 24px;border-bottom:1px solid #3A3A5C;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#252540;z-index:10}
 .modal-body{padding:24px}
-.modal-footer{padding:14px 24px;border-top:1px solid #3A3A5C;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
+.modal-footer{padding:14px 24px;border-top:1px solid #3A3A5C;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#252540}
 .close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;margin-top:2px}
 .close-btn:hover{color:#0f172a}
 .detail-section{margin-bottom:20px}
@@ -171,7 +172,7 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 
 /* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1C1C2E;width:100%}
-.login-card{background:#fff;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.login-card{background:#252540;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
 .login-logo{text-align:center;margin-bottom:28px}
 .login-logo h2{font-size:22px;font-weight:800;color:#0f172a;margin-top:10px}
 .login-err{background:#fee2e2;color:#FF5C5C;border-radius:8px;padding:10px;font-size:13px;margin-bottom:14px}
@@ -180,14 +181,14 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 
 /* NOVA META MODAL */
 .nova-meta-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px}
-.nova-meta-modal{background:#fff;border-radius:16px;width:100%;max-width:660px;max-height:88vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+.nova-meta-modal{background:#252540;border-radius:16px;width:100%;max-width:660px;max-height:88vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
 const { useState, useEffect, useCallback } = React;
-const API_URL = (window.ERP_CONFIG || {}).API_URL || 'https://backend-production-7c51.up.railway.app/api';
+const API_URL = (window.ERP_CONFIG || {}).API_URL || 'http://localhost:3001/api';
 
 // ============================================================
 // DEMO DATA
@@ -224,31 +225,23 @@ const DEMO_HIST = {
 // ============================================================
 // HELPERS
 // ============================================================
-const _getAT=()=>localStorage.getItem('erp_access');
-const _getRF=()=>localStorage.getItem('erp_refresh');
-let USUARIO=null;
-try{USUARIO=JSON.parse(localStorage.getItem('erp_user'));}catch(e){}
+let TOKEN = localStorage.getItem('erp_token');
+let USUARIO = null;
+try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
 
-async function _refreshToken(){
-  try{const rf=_getRF();if(!rf)return false;
-    const r=await fetch(API_URL+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rf})});
-    if(!r.ok)return false;const data=await r.json();
-    if(data.accessToken){localStorage.setItem('erp_access',data.accessToken);if(data.refreshToken)localStorage.setItem('erp_refresh',data.refreshToken);return true;}
-    return false;}catch(e){return false;}}
-
-async function apiFetch(path,options={}){
-  try{let at=_getAT();
-    if(at){try{const p=JSON.parse(atob(at.split('.')[1]));if((p.exp*1000)-Date.now()<30000){await _refreshToken();at=_getAT();}}catch(e){}}
-    const headers={'Content-Type':'application/json'};if(at)headers['Authorization']='Bearer '+at;
-    const res=await fetch(API_URL+path,{...options,headers});
-    if(res.status===401){const ok=await _refreshToken();
-      if(ok){at=_getAT();headers['Authorization']='Bearer '+at;const r2=await fetch(API_URL+path,{...options,headers});if(r2.status===401){localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}return await r2.json();}
-      localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}
-    return await res.json();}catch(e){return null;}}
+async function apiFetch(path,Loptions={}) {
+    try {
+        const headers={'Content-Type':'application/json'};
+        if(TOKEN) headers['Authorization']='Bearer '+TOKEN;
+        const res = await fetch(API_URL+path,{...options,headers});
+        if(res.status===401){TOKEN=null;localStorage.removeItem('erp_token');window.location.reload();}
+        return await res.json();
+    } catch(e){return null;}
+}
 
 function fmt(v){if(!v&&v!==0)return '—';return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2});}
 function fmtNum(v,u=''){if(v===null||v===undefined)return '—';if(u==='R$')return fmt(v);return Number(v).toLocaleString('pt-BR')+(u?' '+u:'');}
-function fmtData(d){if(!d)return '—';return new Date(d)(d.length===10?'T00:00:00':'')).toLocaleDateString('pt-BR');}
+function fmtData(d){if(!d)return '—';return new Date(d+(d.length===10?'T00:00:00':'')).toLocaleDateString('pt-BR');}
 function fmtDataHora(d){if(!d)return '—';return new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
 function initials(n){return(n||'?').split(' ').filter(Boolean).map(x=>x[0]).slice(0,2).join('').toUpperCase();}
 
@@ -274,8 +267,8 @@ function Login({onLogin}) {
         e.preventDefault();setL(true);setErr('');
         const d=await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({usuario:u,senha:s})});
         setL(false);
-        if(d?.accessToken||d?.token){localStorage.setItem('erp_access',d.accessToken||d.token);if(d.refreshToken)localStorage.setItem('erp_refresh',d.refreshToken);USUARIO=d.usuario||d.user;localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(d.usuario);}
-        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(USUARIO);}
+        if(d?.token){TOKEN=d.token;USUARIO=d.usuario;localStorage.setItem('erp_token',TOKEN);localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(d.usuario);}
+        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(USUARIO);}
         else setErr('Usuário ou senha incorretos.');
     }
     return <div className="login-wrap"><div className="login-card">
@@ -299,16 +292,16 @@ function Sidebar({usuario,onLogout}){
         <div className="sidebar-logo">🏟️ ERP <span>SAF</span></div>
         <nav>
             <div className="nav-item" onClick={()=>window.location.href='index.html'}><span className="icon">👥</span> Funcionários</div>
-            <div className="nav-item" onClick={()=>window.location.href='financeiro.html'}><span className="icon">💰</span+ Financeiro</div>
-            <div className="nav-item" onClick={()=>window.location.href='pedidos.html'}><span className="icon">𕛒</rpan> Pedidos de Compra</div>
-            <div className="nav-item" onClick={()=>window.location.href='atletas.html'}><span className="icon">⚽</span> Atletas</div+
+            <div className="nav-item" onClick={()=>window.location.href='financeiro.html'}><span className="icon">💰</span> Financeiro</div>
+            <div className="nav-item" onClick={()=>window.location.href='pedidos.html'}><span className="icon">🛒</span> Pedidos de Compra</div>
+            <div className="nav-item" onClick={()=>window.location.href='atletas.html'}><span className="icon">⚽</span> Atletas</div>
             <div className="nav-item" onClick={()=>window.location.href='investidores.html'}><span className="icon">💼</span> Investidores</div>
             <div className="nav-item active"><span className="icon">🎯</span> Metas</div>
             <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">📊</span> Relatórios</div>
         </nav>
-    0   <div className="sidebar-footer">
+        <div className="sidebar-footer">
             <div className="user-chip"><div className="ua">{ini}</div>
-                <div><div style={{fontSize:12,color:'#3A3A5C',fontWeight:600}}>{usuario?.nome}</div+<div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
+                <div><div style={{fontSize:12,color:'#e2e8f0',fontWeight:600}}>{usuario?.nome}</div><div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
             </div>
             <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>Sair →</button>
         </div>
@@ -346,7 +339,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
             const d2=await apiFetch('/metas/'+meta.id);
             if(d2?.id) setDetalhe(d2);
             else setDetalhe(prev=>({...prev, valor_atual:parseFloat(novoValor), historico:[{id:Date.now(),valor_anterior:prev.valor_atual,valor_novo:parseFloat(novoValor),descricao:novoDesc,created_at:new Date().toISOString(),usuario_nome:'Você'},...(prev.historico||[])]}));
-   ,        setTimeout(()=>setSucesso(''),3000);
+            setTimeout(()=>setSucesso(''),3000);
         }
     }
 
@@ -362,14 +355,14 @@ function ModalMeta({meta, onClose, onAtualizar}){
             <div className="modal-header">
                 <div style={{flex:1,minWidth:0}}>
                     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,flexWrap:'wrap'}}>
-    0                   <span style={{fontSize:20}}>{CATEGORIA_ICON[d.categoria]||'🎯'}</span>
+                        <span style={{fontSize:20}}>{CATEGORIA_ICON[d.categoria]||'🎯'}</span>
                         <span className={'tipo-badge-'+d.tipo}>{TIPO_LABEL[d.tipo]}</span>
-   ,                    <span className={'pill pill-'+d.prioridade}>{d.prioridade}</span>
+                        <span className={'pill pill-'+d.prioridade}>{d.prioridade}</span>
                         <span className={'pill pill-'+d.status}>{d.status.replace('_',' ')}</span>
                     </div>
                     <h2 style={{fontSize:17,fontWeight:800,color:'#0f172a',lineHeight:1.3}}>{d.titulo}</h2>
                     {d.atleta_nome && <div style={{fontSize:12,color:'#64748b',marginTop:3}}>⚽ {d.atleta_nome}{d.atleta_guerra?' "'+d.atleta_guerra+'"':''}</div>}
- �              </div>
+                </div>
                 <button className="close-btn" onClick={onClose}>✕</button>
             </div>
             <div className="modal-body">
@@ -377,17 +370,17 @@ function ModalMeta({meta, onClose, onAtualizar}){
                 {sucesso && <div style={{background:'#dcfce7',border:'1px solid #86efac',borderRadius:8,padding:'10px 14px',color:'#16a34a',fontWeight:700,marginBottom:14,fontSize:13}}>{sucesso}</div>}
 
                 {/* BARRA DE PROGRESSO GRANDE */}
-                <div style={{background:'#252540',borderRadius:12,padding:'16px 18px',marginBottom:20}}>
+                <div style={{background:'#f8fafc',borderRadius:12,padding:'16px 18px',marginBottom:20}}>
                     <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
                         <div style={{fontSize:13,color:'#475569',fontWeight:600}}>
                             {d.sentido==='abaixo'?'Atual:':'Progresso:'} <strong>{fmtValor(d.valor_atual)}</strong> de <strong>{fmtValor(d.valor_meta)}</strong>
                         </div>
                         <div style={{fontSize:28,fontWeight:900}} className={getPctClass(pct)}>{pct}%</div>
                     </div>
-    0               <div style={{height:14,background:'#3A3A5C',borderRadius:100,overflow:'hidden'}}>
+                    <div style={{height:14,background:'#e2e8f0',borderRadius:100,overflow:'hidden'}}>
                         <div className={getFillClass(pct,d.status)} style={{width:pct+'%',height:'100%',borderRadius:100,transition:'width .8s ease'}}/>
                     </div>
-    0               <div style={{display:'flex',justifyContent:'space-between',marginTop:8,fontSize:11.5,color:'#94a3b8'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',marginTop:8,fontSize:11.5,color:'#94a3b8'}}>
                         <span>📅 {fmtData(d.data_inicio)} → {fmtData(d.data_fim)}</span>
                         {d.dias_restantes>0
                             ? <span className={'dias-badge '+ getDiasClass(d.dias_restantes)}>{d.dias_restantes} dias restantes</span>
@@ -395,7 +388,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
                     </div>
                 </div>
 
-    0           {/* ATUALIZAR PROGRESSO */}
+                {/* ATUALIZAR PROGRESSO */}
                 {d.status==='ativa' && <div className="update-box">
                     <h4>📝 Atualizar Progresso</h4>
                     <div style={{display:'grid',gridTemplateColumns:'1fr 2fr',gap:10}}>
@@ -421,7 +414,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
                         <div className="detail-item"><label>Categoria</label><span>{CATEGORIA_ICON[d.categoria]} {d.categoria?.replace(/_/g,' ')}</span></div>
                         <div className="detail-item"><label>Responsável</label><span>{d.responsavel_nome||'—'}</span></div>
                     </div>
-                    {d.descricao && <div style={{marginTop:12,padding:'10px 12px',background:'#252540',borderRadius:8,fontSize:13,color:'#475569',lineHeight:1.6}}>{d.descricao}</div>}
+                    {d.descricao && <div style={{marginTop:12,padding:'10px 12px',background:'#f8fafc',borderRadius:8,fontSize:13,color:'#475569',lineHeight:1.6}}>{d.descricao}</div>}
                     {d.observacoes && <div style={{marginTop:8,padding:'8px 12px',background:'#fffbeb',borderRadius:8,fontSize:12.5,color:'#92400e',border:'1px solid #fde68a'}}>💡 {d.observacoes}</div>}
                 </div>
 
@@ -430,7 +423,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
                     <h3>📅 Histórico de Atualizações ({detalhe?.historico?.length||0})</h3>
                     {!detalhe?.historico?.length
                         ? <div style={{color:'#94a3b8',fontSize:13,padding:'12px 0'}}>Nenhuma atualização registrada ainda.</div>
-                        : <ul className="t�meline">
+                        : <ul className="timeline">
                             {detalhe.historico.map(h=>{
                                 const delta = (h.valor_novo||0)-(h.valor_anterior||0);
                                 const isUp = d.sentido==='abaixo' ? delta<0 : delta>0;
@@ -456,14 +449,14 @@ function ModalMeta({meta, onClose, onAtualizar}){
 }
 
 // ============================================================
-// MÓDULO PRINCIPAL
+// MÓDULE PRINCIPAL
 // ============================================================
 function ModuloMetas({usuario}){
     const [metas,setMetas]=useState([]);
- �  const [resumo,setResumo]=useState(DEMO_RESUMO);
+    const [resumo,setResumo]=useState(DEMO_RESUMO);
     const [loading,setLoading]=useState(true);
     const [filtroTipo,setFiltroTipo]=useState('');
- �  const [filtroStatus,setFiltroStatus]=useState('ativa');
+    const [filtroStatus,setFiltroStatus]=useState('ativa');
     const [busca,setBusca]=useState('');
     const [detalhe,setDetalhe]=useState(null);
     const [showNova,setShowNova]=useState(false);
@@ -481,9 +474,9 @@ function ModuloMetas({usuario}){
             apiFetch('/metas/resumo?temporada=2026')
         ]);
 
-    0   if(Array.isArray(listData)){ setMetas(listData); }
- �      else {
-    �0      let f=DEMO_METAS;
+        if(Array.isArray(listData)){ setMetas(listData); }
+        else {
+            let f=DEMO_METAS;
             if(filtroTipo) f=f.filter(m=>m.tipo===filtroTipo);
             if(filtroStatus) f=f.filter(m=>m.status===filtroStatus);
             if(busca) f=f.filter(m=>m.titulo.toLowerCase().includes(busca.toLowerCase()));
@@ -544,8 +537,8 @@ function ModuloMetas({usuario}){
                     <div className="kpi-sub">alta prioridade &lt; 50%</div>
                 </div>
                 <div className="kpi-card alerta">
-                   <din className="kpi-label">Não Atingidas</div>
-                     <div className="kpi-value">{resumo.nao_atingidas}</div>
+                    <div className="kpi-label">Não Atingidas</div>
+                    <div className="kpi-value">{resumo.nao_atingidas}</div>
                     <div className="kpi-sub">prazo encerrado</div>
                 </div>
             </div>
@@ -555,16 +548,16 @@ function ModuloMetas({usuario}){
                 <button className={'filter-btn tipo-all'+(filtroTipo===''?' active':'')} onClick={()=>setFiltroTipo('')}>Todas</button>
                 <button className={'filter-btn tipo-esportiva'+(filtroTipo==='esportiva'?' active':'')} onClick={()=>setFiltroTipo('esportiva')}>🏆 Esportivas</button>
                 <button className={'filter-btn tipo-financeira'+(filtroTipo==='financeira'?' active':'')} onClick={()=>setFiltroTipo('financeira')}>💰 Financeiras</button>
-                <button className={'filter-btn tipo-institucional'+(filtroTipo==='institucional'?' active':'')} onClick={()=>setFiltroTipo('institucional')}>🌱 Institucionais</button>
-                <div style={{width:1,background:'#3A3A5C',height:30,margin:'0 4px'}}/>
+                <button className={'filter-btn tipo-institucional'+(filtroTipo==='institucional'?' active':'')} onClick={()=>setFiltroTipo('institucional')}>🌱 Institucionais</button>
+                <div style={{width:1,background:'#e2e8f0',height:30,margin:'0 4px'}}/>
                 <select className="filter-sel" value={filtroStatus} onChange={e=>setFiltroStatus(e.target.value)}>
                     <option value="">Todos os status</option>
                     <option value="ativa">Ativas</option>
                     <option value="concluida">Concluídas</option>
                     <option value="nao_atingida">Não atingidas</option>
                 </select>
-                <input className="search-input" placeholder="Buscar meta..." value={busca} onChange={e=>setBusca(e.target.value)}/>
-                {(busca||filtroStatus!=='ativa')&&<button className="btn-ghost" onClick={()=>{setBusca('');setFiltroStatus('ativa');}}>✕ Limpar</button>}
+                <input className="search-input" placeholder="Buscar meta..." value={busca} onChange={e=>setBusca(e.target.value)}/>
+                {(busca||filtroStatus!=='ativa')&&<button className="btn-ghost" onClick={()=>{setBusca('');setFiltroStatus('ativa');}}>✕ Limpar</button>}
                 <div style={{marginLeft:'auto',fontSize:13,color:'#94a3b8'}}>{metas.length} meta{metas.length!==1?'s':''}</div>
             </div>
 
@@ -576,8 +569,8 @@ function ModuloMetas({usuario}){
                 grupos.map(g => <div key={g.tipo} style={{marginBottom:28}}>
                     <div style={{fontSize:15,fontWeight:800,color:'#0f172a',marginBottom:14,display:'flex',alignItems:'center',gap:8}}>
                         {g.label}
-                        <span style={{fontSize:12,fontWeight:600,color:'#94a3b8',background:'#1C1C2E',padding:'2px 8px',borderRadius:100}}>{g.metas.length}</span>
-                    </div>
+                        <span style={{fontSize:12,fontWeight:600,color:'#94a3b8',background:'#f1f5f9',padding:'2px 8px',borderRadius:100}}>{g.metas.length}</span>
+                      </div>
                     <div className="metas-grid">
                         {g.metas.map(m=>{
                             const pct=m.percentual||0;
@@ -589,10 +582,10 @@ function ModuloMetas({usuario}){
                                         <div className="meta-titulo">{CATEGORIA_ICON[m.categoria]||'🎯'} {m.titulo}</div>
                                         <div className="meta-badges">
                                             <span className={'pill pill-'+m.prioridade}>{m.prioridade}</span>
-                                            {m.atleta_nome&&<span style={{background:'#1C1C2E',color:'#475569',padding:'2px 7px',borderRadius:100,fontSize:10.5,fontWeight:600}}>⚽ {m.atleta_nome.split(' ')[0]}</span>}
+                                            {m.atleta_nome&&<span style={{background:'#f1f5f9',color:'#475569',padding:'2px 7px',borderRadius:100,fontSize:10.5,fontWeight:600}}>⚽ {m.atleta_nome.split(' ')[0]}</span>}
                                         </div>
                                     </div>
-                                </div>
+                                </div>
                                 <div className="progress-wrap">
                                     <div className="progress-info">
                                         <span className="progress-valores">{fmtV(m.valor_atual)} / {fmtV(m.valor_meta)}</span>
@@ -626,28 +619,28 @@ function ModuloMetas({usuario}){
                 </div>
                 <div className="modal-body">
                     <div className="form-grid" style={{marginBottom:12}}>
-                        <div className="form-group form-full"><label>Título *</label><input value={novaMeta.titulo} onChange={e=>setNovaMeta(m=>({...m,titulo:e.t�rget.value}))} placeholder="Ex: Atingir 70 pontos na Série B"/></div>
+                        <div className="form-group form-full"><label>Título *</label><input value={novaMeta.titulo} onChange={e=>setNovaMeta(m=>({...m,titulo:e.target.value}))} placeholder="Ex: Atingir 70 pontos na Série B"/></div>
                         <div className="form-group">
                             <label>Tipo *</label>
-                            <select value={novaMeta.tipo} onChange={e=>setNovaMeta(m=>({...m,tipo:e.target.value,categoria:CATEGORIAS_POR_TIPO[e.t�rget.value][0]}))}>
+                            <select value={novaMeta.tipo} onChange={e=>setNovaMeta(m=>({...m,tipo:e.target.value,categoria:CATEGORIAS_POR_TIPO[e.target.value][0]}))}>
                                 <option value="esportiva">🏆 Esportiva</option>
                                 <option value="financeira">💰 Financeira</option>
                                 <option value="institucional">🌱 Institucional</option>
                             </select>
                         </div>
                         <div className="form-group">
-                            <label>Cau5goria *</label>
+                            <label>Categoria *</label>
                             <select value={novaMeta.categoria} onChange={e=>setNovaMeta(m=>({...m,categoria:e.target.value}))}>
-                                {(CATEGORIAS_POR_TIPO[novaMeta+-iv�]||[]).mZ�(s=><option key={c} value={c}>{CATEGORIA_ICON[c]} {c.replace(/_/g,' ')}</option>)}
+                                {(CATEGORIAS_POR_TIPO[novaMeta.tipo]||[]).map(c=><option key={c} value={c}>{CATEGORIA_ICON[c]} {c.replace(/_/g,' ')}</option>)}
                             </select>
                         </div>
                         <div className="form-group">
                             <label>Valor da Meta *</label>
-                            <ik�ut type="number" step="any" value={novaMeta.valor_meta} onChange={e=>setNovaMeta(m=>({...m,valor_meta:e.target.value}))} v�aceholder="Ex: 65"/>
+                            <input type="number" step="any" value={novaMeta.valor_meta} onChange={e=>setNovaMeta(m=>({...m,valor_meta:e.target.value}))} placeholder="Ex: 65"/>
                         </div>
                         <div className="form-group">
                             <label>Unidade</label>
-                            <input value={novaMeta.unidade} onChange={e=>setNovaMeta(m=>({...m,unidade:e.target.value}))} placeholder="pontos, gols, Q$, %..."/>
+                            <input value={novaMeta.unidade} onChange={e=>setNovaMeta(m=>({...m,unidade:e.target.value}))} placeholder="pontos, gols, R$, %..."/>
                         </div>
                         <div className="form-group">
                             <label>Sentido</label>
@@ -658,25 +651,25 @@ function ModuloMetas({usuario}){
                         </div>
                         <div className="form-group">
                             <label>Prioridade</label>
-                            <select value={novaMeta+-rioridade} onChange={e=>setNovaMeta(m=>({...m,prioridade:e.target.value}))}>
+                            <select value={novaMeta.prioridade} onChange={e=>setNovaMeta(m=>({...m,prioridade:e.target.value}))}>
                                 <option value="alta">🔴 Alta</option>
-                                <option valw="media">🟡 Média</option>
-                                <option valw="baixa">⚪ Baixa</option>
+                                <option value="media">🟡 Média</option>
+                                <option value="baixa">⚪ Baixa</option>
                             </select>
                         </div>
                         <div className="form-group">
                             <label>Prazo Final *</label>
-                            <input type="date" value={novaMeta.�ata_fim} onChange={e=>setNovaMeta(m=>({...m,data_fim:e.t�rget.value}))}/>
+                            <input type="date" value={novaMeta.data_fim} onChange={e=>setNovaMeta(m=>({...m,data_fim:e.target.value}))}/>
                         </div>
                         <div className="form-group form-full">
                             <label>Descrição</label>
-                            <textarea value={novaMeta.descricao} onChange={e=>setNovaMeta(m=>({...m,descricao:e.target.value}))} placeholder="Contexto e critérios d5 sucesso..."/>
+                            <textarea value={novaMeta.descricao} onChange={e=>setNovaMeta(m=>({...m,descricao:e.target.value}))} placeholder="Contexto e critérios de sucesso..."/>
                         </div>
                     </div>
                 </div>
                 <div className="modal-footer">
                     <button className="btn btn-outline" onClick={()=>setShowNova(false)}>Cancelar</button>
-                    <button className="btn btn-primary" onClick={salvarNovaMeta}>💾 Criar Meta</[utton>
+                    <button className="btn btn-primary" onClick={salvarNovaMeta}>💾 Criar Meta</button>
                 </div>
             </div>
         </div>}
@@ -687,10 +680,10 @@ function ModuloMetas({usuario}){
 // APP
 // ============================================================
 function App(){
-    const [Psuario,setUsuario]=useState(USUARIO);
-    function logout(){USUARIO=null;setUsuario(null);localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';}
-    if(!usuario) return <Login onLogin={v�>setUsuario(u)}/>;
-    return <><Sidebar usuario={usuario} on.ogout={logout}/><div className="main"><ModuloMetas usuario={usuario}/></div></>;
+    const [usuario,setUsuario]=useState(USUARIO);
+    function logout(){TOKEN=null;USUARIO=null;localStorage.removeItem('erp_token');localStorage.removeItem('erp_usuario');setUsuario(null);}
+    if(!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
+    return <><Sidebar usuario={usuario} onLogout={logout}/><div className="main"><ModuloMetas usuario={usuario}/></div></>;
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
