@@ -9,23 +9,30 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   <style>
+    :root {
+      --bg:          #1C1C2E;
+      --sidebar-bg:  #14142B;
+      --card-bg:     #252540;
+      --card-borda:  #3A3A5C;
+      --input-bg:    #14142B;
+      --verde:       #22C55E;
+      --verde-med:   #16A34A;
+      --verde-dark:  #15803D;
+      --vermelho:    #FF5C5C;
+      --dourado:     #F59E0B;
+      --azul:        #3B82F6;
+      --azul-dark:   #1D4ED8;
+      --texto:       #3A3A5C;
+      --texto-leve:  #94A3B8;
+      --roxo:        #8B5CF6;
+      --laranja:     #F97316;
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0e1a2b; color: #e2e8f0; min-height: 100vh; }
+    background: var(--bg); color: #3A3A5C; min-height: 100vh; }
     button { cursor: pointer; font-family: inherit; }
     input, select, textarea { font-family: inherit; }
 
-    :root {
-      --verde:      #155724;
-      --verde-med:  #1e8449;
-      --sidebar-bg: #0a1628;
-      --card-bg:    #152036;
-      --card-borda: #1e3a5f;
-      --input-bg:   #0e1e33;
-      --texto:      #e2e8f0;
-      --texto-leve: #94a3b8;
-      --azul:       #1e40af;
-      --azul-claro: #3b82f6;
-    }
+    
 
     /* LAYOUT */
     .layout { display: flex; min-height: 100vh; }
@@ -34,10 +41,10 @@
     .sidebar {
       width: 220px; min-height: 100vh; background: var(--sidebar-bg);
       display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
-      border-right: 1px solid #1e3a5f;
+      border-right: 1px solid #3A3A5C;
     }
     .sidebar-logo {
-      padding: 18px 16px; border-bottom: 1px solid #1e3a5f;
+      padding: 18px 16px; border-bottom: 1px solid #3A3A5C;
       display: flex; align-items: center; gap: 10px;
     }
     .sidebar-logo .icon { font-size: 26px; }
@@ -112,7 +119,7 @@
     .btn-success:hover { background: #15803d; }
     .btn-ghost { background: transparent; border: 1px solid var(--card-borda); color: var(--texto-leve); }
     .btn-ghost:hover { border-color: #3b82f6; color: #60a5fa; }
-    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-danger { background: #FF5C5C; color: #fff; }
     .btn-danger:hover { background: #b91c1c; }
     .btn-sm { padding: 4px 10px; font-size: 11px; }
 
@@ -142,7 +149,7 @@
     .ab-1  { background: #7f1d1d; }
     .ab-2  { background: #991b1b; }
     .ab-3  { background: #b91c1c; }
-    .ab-4  { background: #dc2626; }
+    .ab-4  { background: #FF5C5C; }
     .ab-5  { background: #ef4444; }
     .ab-6  { background: #f87171; color: #1a1a1a; }
     .ab-7  { background: #ea580c; }
@@ -162,7 +169,7 @@
 
     /* STATUS BADGE */
     .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 700; white-space: nowrap; }
-    .badge-obs      { background: #1e3a5f; color: #60a5fa; }
+    .badge-obs      { background: #3A3A5C; color: #60a5fa; }
     .badge-interesse{ background: #1c3f2a; color: #4ade80; }
     .badge-neg      { background: #3b1f00; color: #fb923c; }
     .badge-proposta { background: #2d1a5f; color: #c4b5fd; }
@@ -191,11 +198,11 @@
       padding: 20px; overflow-y: auto;
     }
     .modal {
-      background: #0e1a2b; border: 1px solid var(--card-borda); border-radius: 12px;
+      background: #1C1C2E; border: 1px solid var(--card-borda); border-radius: 12px;
       width: 100%; max-width: 900px; overflow: hidden; margin: auto;
     }
     .modal-header {
-      background: linear-gradient(135deg, #0a1628 0%, #152036 100%);
+      background: linear-gradient(135deg, #14142B 0%, #252540 100%);
       border-bottom: 1px solid var(--card-borda);
       padding: 20px 24px; display: flex; align-items: center; gap: 16px; position: relative;
     }
@@ -226,7 +233,7 @@
       background: var(--card-bg); border-radius: 6px; padding: 6px 10px;
     }
     .attr-name { flex: 1; font-size: 11px; color: var(--texto-leve); }
-    .attr-bar-wrap { width: 60px; height: 4px; background: #1e3a5f; border-radius: 2px; overflow: hidden; }
+    .attr-bar-wrap { width: 60px; height: 4px; background: #3A3A5C; border-radius: 2px; overflow: hidden; }
     .attr-bar { height: 100%; border-radius: 2px; }
 
     /* FORM */
@@ -284,7 +291,7 @@
     .nota-badge {
       display: inline-flex; align-items: center; justify-content: center;
       width: 32px; height: 32px; border-radius: 6px; font-weight: 800; font-size: 13px;
-      background: #1e3a5f; color: #60a5fa; border: 1px solid #2d5080;
+      background: #3A3A5C; color: #60a5fa; border: 1px solid #2d5080;
     }
   </style>
 </head>
@@ -377,7 +384,7 @@ function fmtVal(n) {
 }
 function attrColor(v) {
   if (!v) return '#2d3748';
-  if (v <= 5) return '#dc2626'; if (v <= 9) return '#ea580c';
+  if (v <= 5) return '#FF5C5C'; if (v <= 9) return '#ea580c';
   if (v <= 12) return '#f59e0b'; if (v <= 15) return '#22c55e';
   if (v <= 18) return '#16a34a'; return '#14532d';
 }
