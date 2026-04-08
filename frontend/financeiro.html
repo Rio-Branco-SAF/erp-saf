@@ -635,6 +635,9 @@ function ModuloFinanceiro(){
           <div className="page-sub">Fluxo de caixa, receitas e despesas da SAF</div>
         </div>
         <div className="page-header-actions">
+          <button className="btn-template" onClick={downloadTemplate}>📥 Template</button>
+          <button className="btn-import" onClick={()=>importInputRef.current?.click()}>📤 Importar Excel</button>
+          <input ref={importInputRef} type="file" accept=".xlsx,.xls" style={{display:'none'}} onChange={handleImportFile}/>
           <button className="btn btn-receita" onClick={()=>setModalForm({tipo:'receita'})}>Ã¢Â¬â Ã¯Â¸Â Nova Receita</button>
           <button className="btn btn-despesa" onClick={()=>setModalForm({tipo:'despesa'})}>Ã¢Â¬â¡Ã¯Â¸Â Nova Despesa</button>
         </div>
