@@ -9,29 +9,30 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   <style>
+    :root {
+      --bg:          #1C1C2E;
+      --sidebar-bg:  #14142B;
+      --card-bg:     #252540;
+      --card-borda:  #3A3A5C;
+      --input-bg:    #14142B;
+      --verde:       #22C55E;
+      --verde-med:   #16A34A;
+      --verde-dark:  #15803D;
+      --vermelho:    #FF5C5C;
+      --dourado:     #F59E0B;
+      --azul:        #3B82F6;
+      --azul-dark:   #1D4ED8;
+      --texto:       #3A3A5C;
+      --texto-leve:  #94A3B8;
+      --roxo:        #8B5CF6;
+      --laranja:     #F97316;
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; }
+    background: var(--bg); color: #E2E8F0; min-height: 100vh; }
     button { cursor: pointer; font-family: inherit; }
     input, select, textarea { font-family: inherit; }
 
-    :root {
-      --verde:       #155724;
-      --verde-med:   #1e8449;
-      --verde-claro: #d4edda;
-      --verde-bg:    #e8f5e9;
-      --cinza:       #f8fafc;
-      --cinza-borda: #e2e8f0;
-      --texto:       #2d3748;
-      --texto-leve:  #718096;
-      --danger:      #c0392b;
-      --warning:     #e67e22;
-      --info:        #2980b9;
-      --receita:     #1e8449;
-      --despesa:     #c0392b;
-      --previsto:    #e67e22;
-      --sombra:      0 1px 3px rgba(0,0,0,.12);
-      --sombra-md:   0 4px 6px rgba(0,0,0,.07);
-    }
+    
 
     .layout { display: flex; min-height: 100vh; }
 
@@ -62,7 +63,7 @@
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; transition: all .15s; line-height: 1; }
     .btn-primary { background: var(--verde-med); color: #fff; }
     .btn-primary:hover { background: var(--verde); }
-    .btn-receita { background: #d4edda; color: #155724; }
+    .btn-receita { background: #16A34A; color: #22C55E; }
     .btn-receita:hover { background: #c3e6cb; }
     .btn-despesa { background: #f8d7da; color: #721c24; }
     .btn-despesa:hover { background: #f5c6cb; }
@@ -104,13 +105,13 @@
     .barra-container { display: flex; gap: 3px; align-items: flex-end; width: 100%; height: 160px; }
     .barra { border-radius: 4px 4px 0 0; flex: 1; min-width: 0; transition: opacity .2s; position: relative; }
     .barra:hover { opacity: .8; }
-    .barra-receita { background: #1e8449; }
+    .barra-receita { background: #16A34A; }
     .barra-despesa { background: #c0392b; }
     .barra-label { font-size: 10px; color: var(--texto-leve); text-align: center; white-space: nowrap; }
     .barra-valor { font-size: 9px; color: #fff; text-align: center; padding: 2px; word-break: break-all; }
     .saldo-linha { display: flex; gap: 12px; margin-top: 8px; }
     .saldo-mes { flex: 1; text-align: center; font-size: 11px; font-weight: 700; padding: 3px; border-radius: 4px; }
-    .saldo-positivo { background: #d4edda; color: #155724; }
+    .saldo-positivo { background: #16A34A; color: #22C55E; }
     .saldo-negativo { background: #f8d7da; color: #721c24; }
 
     /* FILTROS */
@@ -122,7 +123,7 @@
     .filtros select { min-width: 140px; }
     .filtro-tipo-btns { display: flex; gap: 4px; }
     .filtro-tipo-btn { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--cinza-borda); font-size: 12px; font-weight: 600; background: #fff; color: var(--texto-leve); }
-    .filtro-tipo-btn.ativo-receita { background: #d4edda; color: #155724; border-color: #1e8449; }
+    .filtro-tipo-btn.ativo-receita { background: #16A34A; color: #22C55E; border-color: #16A34A; }
     .filtro-tipo-btn.ativo-despesa { background: #f8d7da; color: #721c24; border-color: #c0392b; }
     .filtro-tipo-btn.ativo-todos   { background: var(--cinza); color: var(--texto); border-color: var(--cinza-borda); }
 
@@ -133,7 +134,7 @@
     table { width: 100%; border-collapse: collapse; }
     thead { background: #f7f9fc; }
     th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--texto-leve); border-bottom: 1px solid var(--cinza-borda); white-space: nowrap; }
-    td { padding: 12px 14px; font-size: 13px; color: var(--texto); border-bottom: 1px solid #f0f4f8; vertical-align: middle; }
+    td { padding: 12px 14px; font-size: 13px; color: var(--texto); border-bottom: 1px solid #1C1C2E; vertical-align: middle; }
     tr:hover td { background: #fafbff; }
     tr:last-child td { border-bottom: none; }
     .valor-receita { color: var(--receita); font-weight: 700; }
@@ -141,7 +142,7 @@
 
     /* BADGES */
     .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-    .badge-realizado { background: #d4edda; color: #155724; }
+    .badge-realizado { background: #16A34A; color: #22C55E; }
     .badge-previsto  { background: #fff3cd; color: #856404; }
     .badge-cancelado { background: #e2e3e5; color: #495057; text-decoration: line-through; }
     .cat-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
@@ -167,7 +168,7 @@
     /* FORM */
     .tipo-selector { display: flex; gap: 10px; margin-bottom: 18px; }
     .tipo-btn { flex: 1; padding: 14px; border-radius: 8px; border: 2px solid var(--cinza-borda); background: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s; }
-    .tipo-btn.sel-receita { border-color: #1e8449; background: #d4edda; color: #155724; }
+    .tipo-btn.sel-receita { border-color: #16A34A; background: #16A34A; color: #22C55E; }
     .tipo-btn.sel-despesa { border-color: #c0392b; background: #f8d7da; color: #721c24; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .form-grupo { display: flex; flex-direction: column; gap: 5px; }
@@ -177,7 +178,7 @@
     .form-input, .form-select, .form-textarea { padding: 9px 12px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 13px; color: var(--texto); outline: none; width: 100%; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--verde-med); box-shadow: 0 0 0 3px rgba(30,132,73,.1); }
     .form-textarea { resize: vertical; min-height: 70px; }
-    .form-section-titulo { font-size: 11px; font-weight: 700; color: var(--verde); text-transform: uppercase; letter-spacing: .06em; margin: 16px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #d4edda; }
+    .form-section-titulo { font-size: 11px; font-weight: 700; color: var(--verde); text-transform: uppercase; letter-spacing: .06em; margin: 16px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #16A34A; }
 
     /* LOADING / EMPTY */
     .loading { display: flex; align-items: center; justify-content: center; padding: 50px; }
@@ -189,12 +190,12 @@
     /* TOAST */
     .toast-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
     .toast { padding: 11px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,.15); max-width: 340px; animation: slideIn .2s ease; }
-    .toast.sucesso { background: #155724; color: #fff; }
+    .toast.sucesso { background: #22C55E; color: #fff; }
     .toast.erro    { background: #721c24; color: #fff; }
     @keyframes slideIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
 
     /* LOGIN */
-    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0d4f1e 0%, #1e8449 100%); }
+    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0d4f1e 0%, #16A34A 100%); }
     .login-card { background: #fff; border-radius: 16px; padding: 40px; width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
     .login-logo { text-align: center; margin-bottom: 28px; }
     .login-logo h1 { font-size: 22px; font-weight: 800; color: var(--verde); margin-top: 8px; }
@@ -209,7 +210,7 @@
 
     /* DETALHE MODAL */
     .detalhe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .detalhe-item { padding: 10px 14px; background: #f8fafc; border-radius: 7px; border: 1px solid var(--cinza-borda); }
+    .detalhe-item { padding: 10px 14px; background: #252540; border-radius: 7px; border: 1px solid var(--cinza-borda); }
     .detalhe-item-label { font-size: 10px; font-weight: 700; color: var(--texto-leve); text-transform: uppercase; margin-bottom: 3px; }
     .detalhe-item-valor { font-size: 14px; font-weight: 500; }
   </style>
@@ -298,7 +299,7 @@ function GraficoFluxo({dados}){
       <div className="grafico-titulo">
         Fluxo de Caixa Ã¢â¬â ÃÅ¡ltimos 6 Meses
         <div className="grafico-legenda">
-          <span className="legenda-item"><span className="legenda-dot" style={{background:'#1e8449'}}/> Receitas</span>
+          <span className="legenda-item"><span className="legenda-dot" style={{background:'#16A34A'}}/> Receitas</span>
           <span className="legenda-item"><span className="legenda-dot" style={{background:'#c0392b'}}/> Despesas</span>
         </div>
       </div>
@@ -330,7 +331,7 @@ function GraficoFluxo({dados}){
 
 // Ã¢ââ¬Ã¢ââ¬ Dados DEMO Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬
 const DEMO_CATEGORIAS = [
-  {id:1,nome:'PatrocÃÂ­nio',tipo:'receita',icone:'Ã°Å¸ÂÂ·Ã¯Â¸Â',cor:'#1e8449'},
+  {id:1,nome:'PatrocÃÂ­nio',tipo:'receita',icone:'Ã°Å¸ÂÂ·Ã¯Â¸Â',cor:'#16A34A'},
   {id:2,nome:'Bilheteria',tipo:'receita',icone:'Ã°Å¸Å½Å¸Ã¯Â¸Â',cor:'#2980b9'},
   {id:3,nome:'Direitos de TV',tipo:'receita',icone:'Ã°Å¸âÂº',cor:'#8e44ad'},
   {id:4,nome:'TransferÃÂªncia de Atleta',tipo:'receita',icone:'Ã¢Å¡Â½',cor:'#e67e22'},
@@ -351,7 +352,7 @@ const DEMO_CENTROS = [{id:1,nome:'Futebol Profissional'},{id:2,nome:'Futebol de 
 const DEMO_CONTAS  = [{id:1,nome:'Conta Corrente Principal'},{id:2,nome:'Conta PoupanÃÂ§a Reserva'},{id:3,nome:'Caixa FÃÂ­sico CT'}];
 
 const DEMO_LANCAMENTOS = [
-  {id:1,  tipo:'receita', descricao:'PatrocÃÂ­nio mÃÂ¡ster Ã¢â¬â Empresa ABC',     valor:120000, categoria:'PatrocÃÂ­nio',          categoria_icone:'Ã°Å¸ÂÂ·Ã¯Â¸Â',categoria_cor:'#1e8449',status:'realizado',data_competencia:'2026-03-01',data_pagamento:'2026-03-03',centro_custo:'Diretoria'},
+  {id:1,  tipo:'receita', descricao:'PatrocÃÂ­nio mÃÂ¡ster Ã¢â¬â Empresa ABC',     valor:120000, categoria:'PatrocÃÂ­nio',          categoria_icone:'Ã°Å¸ÂÂ·Ã¯Â¸Â',categoria_cor:'#16A34A',status:'realizado',data_competencia:'2026-03-01',data_pagamento:'2026-03-03',centro_custo:'Diretoria'},
   {id:2,  tipo:'receita', descricao:'Bilheteria Ã¢â¬â 1ÃÂª rodada Campeonato',   valor:31000,  categoria:'Bilheteria',           categoria_icone:'Ã°Å¸Å½Å¸Ã¯Â¸Â',categoria_cor:'#2980b9',status:'realizado',data_competencia:'2026-03-08',data_pagamento:'2026-03-08',centro_custo:'Futebol Profissional'},
   {id:3,  tipo:'receita', descricao:'Cota direitos de TV Ã¢â¬â MarÃÂ§o',         valor:45000,  categoria:'Direitos de TV',       categoria_icone:'Ã°Å¸âÂº',categoria_cor:'#8e44ad',status:'previsto', data_competencia:'2026-03-15',data_pagamento:null,         centro_custo:'Diretoria'},
   {id:4,  tipo:'receita', descricao:'Loja oficial Ã¢â¬â vendas marÃÂ§o',         valor:8200,   categoria:'Loja / Licenciamento', categoria_icone:'Ã°Å¸ââ¢',categoria_cor:'#16a085',status:'previsto', data_competencia:'2026-03-20',data_pagamento:null,         centro_custo:'Marketing'},
@@ -518,7 +519,7 @@ function ModalDetalhe({lanc, onFechar, onEditar, onRealizar}){
               <span className={`badge ${lanc.status==='realizado'?'badge-realizado':lanc.status==='previsto'?'badge-previsto':'badge-cancelado'}`}>
                 {lanc.status==='realizado'?'Ã¢Åâ¦':'Ã¢ÂÂ³'} {lanc.status.charAt(0).toUpperCase()+lanc.status.slice(1)}
               </span>
-              <span className="badge" style={{background:isR?'#d4edda':'#f8d7da',color:isR?'#155724':'#721c24'}}>
+              <span className="badge" style={{background:isR?'#16A34A':'#f8d7da',color:isR?'#22C55E':'#721c24'}}>
                 {isR?'Ã¢Â¬â Ã¯Â¸Â Receita':'Ã¢Â¬â¡Ã¯Â¸Â Despesa'}
               </span>
             </div>
@@ -691,7 +692,7 @@ function ModuloFinanceiro(){
         <div className="tabela-header">
           <div className="tabela-header-titulo">LanÃÂ§amentos</div>
           <div style={{fontSize:12,color:'var(--texto-leve)'}}>
-            Realizado no mÃÂªs: <strong style={{color:'#1e8449'}}>{fmtMoeda(resumo.mes_atual.receitas_realizado)}</strong> receitas ÃÂ· <strong style={{color:'#c0392b'}}>{fmtMoeda(resumo.mes_atual.despesas_realizado)}</strong> despesas
+            Realizado no mÃÂªs: <strong style={{color:'#16A34A'}}>{fmtMoeda(resumo.mes_atual.receitas_realizado)}</strong> receitas ÃÂ· <strong style={{color:'#c0392b'}}>{fmtMoeda(resumo.mes_atual.despesas_realizado)}</strong> despesas
           </div>
         </div>
         {paginados.length===0?(
