@@ -22,19 +22,18 @@
       --dourado:     #F59E0B;
       --azul:        #3B82F6;
       --azul-dark:   #1D4ED8;
-      --texto:       #3A3A5C;
+      --texto:       #E2E8F0;
       --texto-leve:  #94A3B8;
       --roxo:        #8B5CF6;
       --laranja:     #F97316;
     }
+
   *{box-sizing:border-box;margin:0;padding:0}
-  background: var(--bg);color:#E2E8F0}
-  
-  .navbar{background:#E2E8F0;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
-  .navbar-brand{color:#fff;font-weight:700;font-size:18px;text-decoration:none;display:flex;align-items:center;gap:8px}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background: var(--bg);color: var(--texto);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+  .navbar-brand{color:#252540;font-weight:700;font-size:18px;text-decoration:none;display:flex;align-items:center;gap:8px}
   .navbar-nav{display:flex;gap:4px}
   .nav-link{color:rgba(255,255,255,.7);text-decoration:none;padding:8px 12px;border-radius:6px;font-size:13px;transition:.2s}
-  .nav-link:hover,.nav-link.active{color:#fff;background:rgba(255,255,255,.1)}
+  .nav-link:hover,.nav-link.active{color:#252540;background:rgba(255,255,255,.1)}
   .container{max-width:1300px;margin:0 auto;padding:24px}
   .page-header{margin-bottom:24px}
   .page-title{font-size:24px;font-weight:700;color:#E2E8F0}
@@ -88,10 +87,10 @@
   /* Chart bars */
   .bar-chart{display:flex;flex-direction:column;gap:10px}
   .bar-row{display:flex;align-items:center;gap:10px}
-  .bar-label{font-size:12px;color:#64748b;width:110px;text-align:right;flex-shrink:0;white-space:nowraw;overflow:hidden;text-overflow:ellipsis}
+  .bar-label{font-size:12px;color:#64748b;width:110px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .bar-track{flex:1;background:#1C1C2E;border-radius:4px;height:20px;overflow:hidden}
   .bar-fill{height:100%;border-radius:4px;transition:width .5s ease;display:flex;align-items:center;padding:0 6px}
-  .bar-val{font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
+  .bar-val{font-size:11px;font-weight:600;color:#252540;white-space:nowrap}
   .bar-val-out{font-size:11px;font-weight:600;color:#374151;margin-left:6px;flex-shrink:0}
 
   /* Progress bar */
@@ -100,15 +99,15 @@
 
   /* Equity bar */
   .equity-bar{display:flex;height:28px;border-radius:8px;overflow:hidden;margin:12px 0}
-  .equity-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transition:width .5s}
+  .equity-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#252540;transition:width .5s}
 
   /* Filtro */
   .filter-row{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
-  .filter-row select,.filter-row input{padding:7px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#fff;color:#374151}
+  .filter-row select,.filter-row input{padding:7px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#252540;color:#374151}
   .btn{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.2s}
-  .btn-primary{background:var(--azul);color:#fff}
+  .btn-primary{background:var(--azul);color:#252540}
   .btn-primary:hover{background:#0041a8}
-  .btn-outline{background:#fff;color:var(--azul);border:1px solid var(--azul)}
+  .btn-outline{background:#252540;color:var(--azul);border:1px solid var(--azul)}
   .btn-outline:hover{background:var(--azul-light)}
 
   /* Resultado positivo/negativo */
@@ -139,13 +138,12 @@
     <a class="nav-link" href="index.html">Dashboard</a>
     <a class="nav-link" href="financeiro.html">Financeiro</a>
     <a class="nav-link" href="atletas.html">Atletas</a>
-    <a class="nav-link" href="inv_estidores.html">Investidores</a>
+    <a class="nav-link" href="investidores.html">Investidores</a>
     <a class="nav-link" href="pedidos.html">Compras</a>
     <a class="nav-link" href="metas.html">Metas</a>
     <a class="nav-link active" href="relatorios.html">Relatórios</a>
   </div>
 </nav>
-
 
 <div id="root"></div>
 
@@ -185,7 +183,7 @@ const DEMO_EXECUTIVO = {
   metas_ativas: 13, progresso_medio_metas: 58, metas_criticas: 2
 };
 
-const DEMO_EVOLUCAL = Array.from({ length: 12 }, (_, i) => {
+const DEMO_EVOLUCAO = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(); d.setMonth(d.getMonth() - 11 + i);
   const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const receita = 600000 + Math.random() * 400000;
@@ -196,7 +194,7 @@ const DEMO_EVOLUCAL = Array.from({ length: 12 }, (_, i) => {
 const DEMO_FOLHA = [
   { categoria:'atleta',      nome:'Thiago Alemão',     cargo_posicao:'Centroavante',   salario_bruto:42000, salario_carteira:15000, complemento:25000 },
   { categoria:'atleta',      nome:'Diego Costa',       cargo_posicao:'Goleiro',        salario_bruto:38000, salario_carteira:13000, complemento:22000 },
-  { categoria:'atleta',      nome:'Rodrigo Peixoto',   cargo_posicao:'Lateral Direito', salario_bruto:28000, salario_carteira:10000, complemento:16000 },
+  { categoria:'atleta',      nome:'Rodrigo Peixoto',   cargo_posicao:'Lateral Direito',salario_bruto:28000, salario_carteira:10000, complemento:16000 },
   { categoria:'atleta',      nome:'Paulo Freitas',     cargo_posicao:'Volante',        salario_bruto:24000, salario_carteira:9000,  complemento:13000 },
   { categoria:'atleta',      nome:'Marcos Lima',       cargo_posicao:'Zagueiro',       salario_bruto:22000, salario_carteira:8000,  complemento:12000 },
   { categoria:'funcionario', nome:'Carlos Mendes',     cargo_posicao:'Diretor Geral',  salario_bruto:18000, salario_carteira:18000, complemento:0 },
@@ -285,8 +283,8 @@ const DEMO_COMPRAS = {
 };
 
 // ─── Cores para gráficos ────────────────────────────────────────
-const CORES = ['#3B82F6','#22C55E','#8B5CF6','#F59E0B','#FF5C5C','#00b8d9','#36b37e','#ff5630'];
-const CORES_EQUITY = { 'clube':'#334155','socio':'#3B82F6','investidor':'#8B5CF6','patrocinador':'#22C55E','mecenatismo':'#F59E0B' };
+const CORES = ['#0052cc','#00875a','#6554c0','#ff8b00','#de350b','#00b8d9','#36b37e','#ff5630'];
+const CORES_EQUITY = { 'clube':'#334155','socio':'#0052cc','investidor':'#6554c0','patrocinador':'#00875a','mecenatismo':'#ff8b00' };
 const CORES_STATUS = { ativo:'verde', lesionado:'laranja', suspenso:'vermelho', emprestado:'azul', concluido:'verde', cancelado:'vermelho', em_aprovacao:'laranja', em_cotacao:'azul', pendente:'laranja', pago:'verde' };
 
 function statusLabel(s) {
@@ -302,8 +300,8 @@ function SparkBar({ dados, altKey, recKey, despKey, maxVal }) {
       {dados.map((d, i) => (
         <div key={i} style={{ flex:1, display:'flex', flexDirection:'column', gap:2, alignItems:'center' }}>
           <div style={{ width:'100%', display:'flex', gap:1, alignItems:'flex-end', height:50 }}>
-            <div style={{ flex:1, background:'#22C55E', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[recKey]/max)*100}%` : '0%', minHeight:2 }} title={`Receita: R$ ${Number(d[recKey]).toLocaleString('pt-BR')}`}/>
-            <div style={{ flex:1, background:'#FF5C5C', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[despKey]/max)*100}%` : '0%', minHeight:2 }} title={`Despesa: R$ ${Number(d[despKey]).toLocaleString('pt-BR')}`}/>
+            <div style={{ flex:1, background:'#00875a', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[recKey]/max)*100}%` : '0%', minHeight:2 }} title={`Receita: R$ ${Number(d[recKey]).toLocaleString('pt-BR')}`}/>
+            <div style={{ flex:1, background:'#de350b', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[despKey]/max)*100}%` : '0%', minHeight:2 }} title={`Despesa: R$ ${Number(d[despKey]).toLocaleString('pt-BR')}`}/>
           </div>
           <span style={{ fontSize:9, color:'#94a3b8', transform:'rotate(-45deg)', transformOrigin:'top center', display:'block', marginTop:4 }}>{d[altKey]}</span>
         </div>
@@ -437,10 +435,10 @@ function TabExecutivo() {
           <SparkBar dados={evolucao} altKey="mes_label" recKey="receita" despKey="despesa"/>
           <div style={{ display:'flex', gap:16, marginTop:12, justifyContent:'center' }}>
             <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
-              <div style={{ width:12, height:12, background:'#22C55E', borderRadius:2 }}/> Receita
+              <div style={{ width:12, height:12, background:'#00875a', borderRadius:2 }}/> Receita
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
-              <div style={{ width:12, height:12, background:'#FF5C5C', borderRadius:2 }}/> Despesa
+              <div style={{ width:12, height:12, background:'#de350b', borderRadius:2 }}/> Despesa
             </div>
           </div>
           <div style={{ marginTop:16 }}>
@@ -466,12 +464,12 @@ function TabExecutivo() {
             <div className="card-title"><span>🏟️</span> Status do Clube</div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
               {[
-                { label:'Atletas Ativos', val: dados.atletas_ativos, cor:'#3B82F6' },
-                { label:'Contratos Vencendo', val: dados.contratos_vencendo, cor: dados.contratos_vencendo > 3 ? '#FF5C5C' : '#F59E0B' },
-                { label:'Metas Críticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#FF5C5C' : '#22C55E' },
-                { label:'Saldo Devedor', val: fmtK(dados.saldo_devedor_emprestimos), cor:'#8B5CF6', isStr:true },
+                { label:'Atletas Ativos', val: dados.atletas_ativos, cor:'#0052cc' },
+                { label:'Contratos Vencendo', val: dados.contratos_vencendo, cor: dados.contratos_vencendo > 3 ? '#de350b' : '#ff8b00' },
+                { label:'Metas Críticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#de350b' : '#00875a' },
+                { label:'Saldo Devedor', val: fmtK(dados.saldo_devedor_emprestimos), cor:'#6554c0', isStr:true },
               ].map((it, i) => (
-                <div key={i} style={{ background:'#252540', borderRadius:8, padding:12, borderLeft:`3px solid ${it.cor}` }}>
+                <div key={i} style={{ background:'#f8fafc', borderRadius:8, padding:12, borderLeft:`3px solid ${it.cor}` }}>
                   <div style={{ fontSize:11, color:'#64748b', marginBottom:4 }}>{it.label}</div>
                   <div style={{ fontSize:20, fontWeight:700, color:it.cor }}>{it.val}</div>
                 </div>
@@ -484,8 +482,8 @@ function TabExecutivo() {
             <div className="card-title"><span>💰</span> Composição da Folha</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {[
-                { label:'Atletas',      val: dados.folha_atletas,      pct: dados.folha_total > 0 ? (dados.folha_atletas/dados.folha_total*100).toFixed(1) : 0, cor:'#3B82F6' },
-                { label:'Funcionários', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#8B5CF6' },
+                { label:'Atletas',      val: dados.folha_atletas,      pct: dados.folha_total > 0 ? (dados.folha_atletas/dados.folha_total*100).toFixed(1) : 0, cor:'#0052cc' },
+                { label:'Funcionários', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#6554c0' },
               ].map((it, i) => (
                 <div key={i}>
                   <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4, fontSize:13 }}>
@@ -497,7 +495,7 @@ function TabExecutivo() {
                   </div>
                 </div>
               ))}
-              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:8, borderTop:'1px solid #3A3A5C', fontWeight:700 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:8, borderTop:'1px solid #e2e8f0', fontWeight:700 }}>
                 <span>Total</span><span>{fmtK(dados.folha_total)}</span>
               </div>
             </div>
@@ -576,19 +574,18 @@ function TabFinanceiro() {
         {/* Receitas por categoria */}
         <div className="card">
           <div className="card-title"><span>📈</span> Receitas por Categoria</div>
-          <HorBar items={receitas} labelKey="categoria" valKey="total" color="#22C55E"/>
+          <HorBar items={receitas} labelKey="categoria" valKey="total" color="#00875a"/>
         </div>
         {/* Despesas por categoria */}
         <div className="card">
           <div className="card-title"><span>📉</span> Despesas por Categoria</div>
-          <HorBar items={despesas} labelKey="categoria" valKey="total" color="#FF5C5C"/>
+          <HorBar items={despesas} labelKey="categoria" valKey="total" color="#de350b"/>
         </div>
       </div>
 
       {/* Evolução */}
       <div className="card" style={{ marginBottom:20 }}>
-        <div className="card-title"><span>�
-</span> Evolução Mensal</div>
+        <div className="card-title"><span>📊</span> Evolução Mensal</div>
         <div className="table-wrap">
           <table>
             <thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Resultado</th><th>Margem</th></tr></thead>
@@ -662,12 +659,12 @@ function TabFolha() {
         {/* Distribuição atletas */}
         <div className="card">
           <div className="card-title"><span>⚽</span> Folha por Posição (Atletas)</div>
-          <HorBar items={distAtletas} labelKey="grupo" valKey="folha" color="#3B82F6"/>
+          <HorBar items={distAtletas} labelKey="grupo" valKey="folha" color="#0052cc"/>
         </div>
         {/* Distribuição funcionários */}
         <div className="card">
           <div className="card-title"><span>🏢</span> Folha por Departamento (Func.)</div>
-          <HorBar items={distFuncs} labelKey="grupo" valKey="folha" color="#8B5CF6"/>
+          <HorBar items={distFuncs} labelKey="grupo" valKey="folha" color="#6554c0"/>
         </div>
       </div>
 
@@ -748,10 +745,10 @@ function TabEsportivo() {
                   <td><strong>{p.competicao}</strong></td>
                   <td>{p.total_jogos}</td>
                   <td className="pos">{p.total_gols}</td>
-                  <td style={{ color:'#3B82F6', fontWeight:600 }}>{p.total_assistencias}</td>
+                  <td style={{ color:'#0052cc', fontWeight:600 }}>{p.total_assistencias}</td>
                   <td>{p.total_clean_sheets}</td>
-                  <td style={{ color:'#F59E0B', fontWeight:600 }}>{p.total_amarelos}</td>
-                  <td style={{ color:'#FF5C5C', fontWeight:600 }}>{p.total_vermelhos}</td>
+                  <td style={{ color:'#ff8b00', fontWeight:600 }}>{p.total_amarelos}</td>
+                  <td style={{ color:'#de350b', fontWeight:600 }}>{p.total_vermelhos}</td>
                   <td><span className="badge badge-verde">{(p.total_jogos > 0 ? (p.total_gols/p.total_jogos).toFixed(2) : '0.00')}</span></td>
                 </tr>
               ))}
@@ -774,7 +771,7 @@ function TabEsportivo() {
                     <td><strong>{a.nome}</strong></td>
                     <td><span className="badge badge-cinza">{a.posicao?.split(' ')[0]}</span></td>
                     <td><strong className="pos">{a.gols}</strong></td>
-                    <td style={{ color:'#3B82F6' }}>{a.assistencias}</td>
+                    <td style={{ color:'#0052cc' }}>{a.assistencias}</td>
                     <td>{a.jogos}</td>
                   </tr>
                 ))}
@@ -789,9 +786,9 @@ function TabEsportivo() {
           <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
             {(dados.metas || []).map((m, i) => {
               const pct = Number(m.percentual) || 0;
-              const cor = m.status === 'concluida' ? '#22C55E' : pct >= 70 ? '#22C55E' : pct >= 40 ? '#F59E0B' : '#FF5C5C';
+              const cor = m.status === 'concluida' ? '#00875a' : pct >= 70 ? '#00875a' : pct >= 40 ? '#ff8b00' : '#de350b';
               return (
-                <div key={i} style={{ padding:12, background:'#252540', borderRadius:8, borderLeft:`3px solid ${cor}` }}>
+                <div key={i} style={{ padding:12, background:'#f8fafc', borderRadius:8, borderLeft:`3px solid ${cor}` }}>
                   <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
                     <span style={{ fontWeight:600, fontSize:13 }}>{m.titulo}</span>
                     {m.status === 'concluida'
@@ -933,7 +930,7 @@ function TabCompras() {
             {(dados.por_status || []).map((s, i) => {
               const max = Math.max(...(dados.por_status||[]).map(x => Number(x.qtd)));
               const pct = max > 0 ? Math.round((Number(s.qtd)/max)*100) : 0;
-              const cor = { concluido:'#22C55E', cancelado:'#FF5C5C', em_aprovacao:'#F59E0B', em_cotacao:'#3B82F6', rascunho:'#94a3b8' }[s.status] || CORES[i%CORES.length];
+              const cor = { concluido:'#00875a', cancelado:'#de350b', em_aprovacao:'#ff8b00', em_cotacao:'#0052cc', rascunho:'#94a3b8' }[s.status] || CORES[i%CORES.length];
               return (
                 <div className="bar-row" key={i}>
                   <span className="bar-label">{statusLabel(s.status)}</span>
@@ -975,10 +972,10 @@ function TabCompras() {
                     <td><strong>{fmtK(f.volume_total)}</strong></td>
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                        <div style={{ flex:1, background:'#1C1C2E', borderRadius:4, height:6, overflow:'hidden' }}>
-                          <div style={{ height:'100%', background: taxa >= 80 ? '#22C55E' : taxa >= 50 ? '#F59E0B' : '#FF5C5C', width:`${taxa}%`, borderRadius:4 }}/>
+                        <div style={{ flex:1, background:'#f1f5f9', borderRadius:4, height:6, overflow:'hidden' }}>
+                          <div style={{ height:'100%', background: taxa >= 80 ? '#00875a' : taxa >= 50 ? '#ff8b00' : '#de350b', width:`${taxa}%`, borderRadius:4 }}/>
                         </div>
-                        <span style={{ fontSize:11, fontWeight:700, color: taxa >= 80 ? '#22C55E' : taxa >= 50 ? '#F59E0B' : '#FF5C5C' }}>{taxa}%</span>
+                        <span style={{ fontSize:11, fontWeight:700, color: taxa >= 80 ? '#00875a' : taxa >= 50 ? '#ff8b00' : '#de350b' }}>{taxa}%</span>
                       </div>
                     </td>
                   </tr>
