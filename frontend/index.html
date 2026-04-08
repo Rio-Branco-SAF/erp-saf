@@ -99,7 +99,7 @@
     .btn-sm { padding: 5px 10px; font-size: 12px; }
     .btn-icon { padding: 6px 8px; }
 
-    /* ===== PÁGINA ===== */
+    /* ===== PÀJINA ===== */
     .page { padding: 24px; flex: 1; }
     .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .page-titulo { font-size: 22px; font-weight: 700; color: var(--texto); }
@@ -144,7 +144,7 @@
     th {
       padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700;
       text-transform: uppercase; letter-spacing: .06em; color: var(--texto-leve);
-      border-bottom: 1px solid var(--cinza-borda); white-space: nowraw;
+      border-bottom: 1px solid var(--cinza-borda); white-space: nowrap;
     }
     td { padding: 13px 16px; font-size: 13px; color: var(--texto); border-bottom: 1px solid #1C1C2E; }
     tr:hover td { background: #fafbff; }
@@ -372,17 +372,32 @@ function Login({ onLogin }) {
     e.preventDefault();
     setErro(''); setLoading(true);
     try {
-      // DEMO: aceita qualquer login (remova em produção e use a API real)
-      if (email && senha) {
-        const usuario = { nome: 'Administrador', cargo: 'CEO / Presidente', perfil: 'admin' };
+      // Tenta autenticar na API real
+      const data = await fetch(
+        ((window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api') + '/auth/login',
+        { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, senha }) }
+      ).then(r => r.json().then(d => ({ ok: r.ok, ...d })));
+
+      if (data.token) {
+        localStorage.setItem('erp_token', data.token);
+        localStorage.setItem('erp_usuario', JSON.stringify(data.usuario));
+        onLogin(data.usuario);
+      } else if (data.erro) {
+        // Erro real da API (credenciais erradas, inativo etc.)
+        setErro(data.erro);
+      } else {
+        // API fora do ar — modo demo (só aceita enquanto não há backend)
+        const usuario = { nome: 'Administrador Demo', cargo: 'CEO / Presidente', perfil: 'admin' };
         localStorage.setItem('erp_token', 'demo_token');
         localStorage.setItem('erp_usuario', JSON.stringify(usuario));
         onLogin(usuario);
-      } else {
-        setErro('Preencha e-mail e senha.');
       }
-    } catch (err) {
-      setErro(err.message);
+    } catch {
+      // Sem conexão — modo demo
+      const usuario = { nome: 'Administrador Demo', cargo: 'CEO / Presidente', perfil: 'admin' };
+      localStorage.setItem('erp_token', 'demo_token');
+      localStorage.setItem('erp_usuario', JSON.stringify(usuario));
+      onLogin(usuario);
     } finally {
       setLoading(false);
     }
@@ -947,6 +962,433 @@ function ModuloFuncionarios({ usuario }) {
 }
 
 // ============================================================
+// DEMO DATA — Usuários (fallback sem API)
+// ============================================================
+const DEMO_USUARIOS = [
+  { id:1, email:'ceo@saf.com.br',        perfil:'admin',       ativo:true,  nome_completo:'Carlos Eduardo Mendes', cargo:'CEO / Presidente',    ultimo_acesso:'2026-04-08T10:30:00' },
+  { id:2, email:'financeiro@saf.com.br', perfil:'financeiro',  ativo:true,  nome_completo:'Fernanda Lima Costa',   cargo:'Diretora Financeira', ultimo_acesso:'2026-04-07T14:22:00' },
+  { id:3, email:'dof@saf.com.br',        perfil:'gestor',      ativo:true,  nome_completo:'Roberto Alves Neto',    cargo:'Diretor de Futebol',  ultimo_acesso:'2026-04-08T09:15:00' },
+  { id:4, email:'rh@saf.com.br',         perfil:'rh',          ativo:true,  nome_completo:'Ana Paula Santos',      cargo:'Coord. RH',           ultimo_acesso:'2026-04-06T16:45:00' },
+  { id:5, email:'ti@saf.com.br',         perfil:'funcionario', ativo:false, nome_completo:'Rafael Souza',          cargo:'Analista TI',         ultimo_acesso:null },
+];
+
+// ============================================================
+// MÓDULO USUÁRIOS — constantes de perfil
+// ============================================================
+const PERFIS = [
+  { valor:'admin',       label:'Admin',       cor:'#8B5CF6' },
+  { valor:'gestor',      label:'Gestor',      cor:'#3B82F6' },
+  { valor:'financeiro',  label:'Financeiro',  cor:'#F59E0B' },
+  { valor:'rh',          label:'RH',          cor:'#EC4899' },
+  { valor:'funcionario', label:'Funcionário', cor:'#64748B' },
+];
+const PERFIL_DESC = {
+  admin:       'Acesso total + gestão de usuários',
+  gestor:      'Todos os módulos, sem gestão de usuários',
+  financeiro:  'Financeiro, pedidos e relatórios',
+  rh:          'Funcionários, contratos e folha',
+  funcionario: 'Apenas perfil próprio e pedidos',
+};
+
+// ============================================================
+// MODAL — Criar Usuário
+// ============================================================
+function ModalCriarUsuario({ funcionarios, onSalvar, onFechar }) {
+  const [form, setForm] = useState({ funcionario_id:'', email:'', senha:'', confirmar:'', perfil:'funcionario' });
+  const [salvando, setSalvando] = useState(false);
+  function set(k, v) { setForm(f => ({ ...f, [k]: v })); }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (form.senha !== form.confirmar) { toast('As senhas não coincidem.', 'erro'); return; }
+    if (form.senha.length < 8) { toast('A senha deve ter pelo menos 8 caracteres.', 'erro'); return; }
+    setSalvando(true);
+    try {
+      await onSalvar({ funcionario_id: form.funcionario_id || null, email: form.email, senha: form.senha, perfil: form.perfil });
+      toast('Usuário criado com sucesso! ✅');
+      onFechar();
+    } catch (err) { toast(err.message, 'erro'); }
+    finally { setSalvando(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onFechar()}>
+      <div className="modal">
+        <div className="modal-header">
+          <span className="modal-titulo">🔐 Novo Usuário</span>
+          <button className="btn-fechar" onClick={onFechar}>×</button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            <div className="form-section">
+              <div className="form-section-titulo">Dados de Acesso</div>
+              <div className="form-grid">
+                <div className="form-grupo span-2">
+                  <label className="form-label">Funcionário vinculado (opcional)</label>
+                  <select className="form-select" value={form.funcionario_id}
+                    onChange={e => {
+                      const f = funcionarios.find(x => x.id === parseInt(e.target.value));
+                      set('funcionario_id', e.target.value);
+                      if (f?.email_corporativo && !form.email) set('email', f.email_corporativo);
+                    }}>
+                    <option value="">Nenhum (usuário avulso)</option>
+                    {funcionarios.map(f => <option key={f.id} value={f.id}>{f.nome_completo} — {f.cargo}</option>)}
+                  </select>
+                </div>
+                <div className="form-grupo span-2">
+                  <label className="form-label">E-mail corporativo <span className="obrig">*</span></label>
+                  <input className="form-input" type="email" value={form.email} required
+                    onChange={e => set('email', e.target.value)} placeholder="usuario@saf.com.br" />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Perfil de acesso <span className="obrig">*</span></label>
+                  <select className="form-select" value={form.perfil} onChange={e => set('perfil', e.target.value)}>
+                    {PERFIS.map(p => <option key={p.valor} value={p.valor}>{p.label}</option>)}
+                  </select>
+                </div>
+                <div className="form-grupo" style={{alignSelf:'center',paddingTop:20,fontSize:12,color:'var(--texto-leve)'}}>
+                  {PERFIL_DESC[form.perfil]}
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Senha <span className="obrig">*</span></label>
+                  <input className="form-input" type="password" value={form.senha} required
+                    onChange={e => set('senha', e.target.value)} placeholder="Mínimo 8 caracteres" />
+                </div>
+                <div className="form-grupo">
+                  <label className="form-label">Confirmar senha <span className="obrig">*</span></label>
+                  <input className="form-input" type="password" value={form.confirmar} required
+                    onChange={e => set('confirmar', e.target.value)} placeholder="Repita a senha" />
+                </div>
+              </div>
+              <div style={{background:'var(--input-bg)',borderRadius:8,padding:'10px 14px',marginTop:8,fontSize:12,color:'var(--texto-leve)',lineHeight:1.8}}>
+                <strong style={{color:'var(--texto)',display:'block',marginBottom:4}}>Resumo dos perfis:</strong>
+                {PERFIS.map(p => (
+                  <div key={p.valor}>
+                    <span style={{color:p.cor,fontWeight:700,minWidth:90,display:'inline-block'}}>{p.label}:</span>
+                    {PERFIL_DESC[p.valor]}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-secondary" type="button" onClick={onFechar}>Cancelar</button>
+            <button className="btn btn-primary" type="submit" disabled={salvando}>
+              {salvando ? 'Criando...' : '🔐 Criar Usuário'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// MODAL — Redefinir Senha
+// ============================================================
+function ModalResetarSenha({ usuario, onSalvar, onFechar }) {
+  const [senha, setSenha]         = useState('');
+  const [confirmar, setConfirmar] = useState('');
+  const [salvando, setSalvando]   = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (senha !== confirmar) { toast('As senhas não coincidem.', 'erro'); return; }
+    if (senha.length < 8) { toast('A senha deve ter pelo menos 8 caracteres.', 'erro'); return; }
+    setSalvando(true);
+    try {
+      await onSalvar(usuario.id, senha);
+      toast(`Senha de ${usuario.nome_completo || usuario.email} redefinida! 🔑`);
+      onFechar();
+    } catch (err) { toast(err.message, 'erro'); }
+    finally { setSalvando(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onFechar()}>
+      <div className="modal" style={{maxWidth:420}}>
+        <div className="modal-header">
+          <span className="modal-titulo">🔑 Redefinir Senha</span>
+          <button className="btn-fechar" onClick={onFechar}>×</button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            <p style={{marginBottom:16,fontSize:13,color:'var(--texto-leve)'}}>
+              Definindo nova senha para{' '}
+              <strong style={{color:'var(--texto)'}}>{usuario.nome_completo || usuario.email}</strong>.
+            </p>
+            <div className="form-grupo" style={{marginBottom:12}}>
+              <label className="form-label">Nova senha <span className="obrig">*</span></label>
+              <input className="form-input" type="password" value={senha} required autoFocus
+                onChange={e => setSenha(e.target.value)} placeholder="Mínimo 8 caracteres" />
+            </div>
+            <div className="form-grupo">
+              <label className="form-label">Confirmar senha <span className="obrig">*</span></label>
+              <input className="form-input" type="password" value={confirmar} required
+                onChange={e => setConfirmar(e.target.value)} placeholder="Repita a senha" />
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-secondary" type="button" onClick={onFechar}>Cancelar</button>
+            <button className="btn btn-primary" type="submit" disabled={salvando}>
+              {salvando ? 'Salvando...' : '🔑 Redefinir Senha'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// MÓDULO USUÁRIOS
+// ============================================================
+function ModuloUsuarios({ usuario: usuarioLogado }) {
+  const [usuarios, setUsuarios]         = useState([]);
+  const [funcionarios, setFuncionarios] = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [modalCriar, setModalCriar]     = useState(false);
+  const [modalReset, setModalReset]     = useState(null);
+  const [atualizando, setAtualizando]   = useState({});
+  const [busca, setBusca]               = useState('');
+  const [filtroPerfil, setFiltroPerfil] = useState('');
+  const [filtroAtivo, setFiltroAtivo]   = useState('');
+
+  useEffect(() => { carregar(); }, []);
+
+  async function carregar() {
+    setLoading(true);
+    try {
+      const [us, fs] = await Promise.all([
+        apiFetch('/usuarios').catch(() => DEMO_USUARIOS),
+        apiFetch('/funcionarios').catch(() => []),
+      ]);
+      setUsuarios(us);
+      setFuncionarios(fs);
+    } finally { setLoading(false); }
+  }
+
+  async function criarUsuario(dados) {
+    const novo = await apiFetch('/usuarios', { method:'POST', body: dados });
+    await carregar();
+    return novo;
+  }
+
+  async function toggleAtivo(u) {
+    if (u.id === usuarioLogado?.id) return;
+    setAtualizando(a => ({ ...a, [u.id]: true }));
+    try {
+      await apiFetch(`/usuarios/${u.id}`, { method:'PUT', body: { ativo: !u.ativo } });
+      setUsuarios(us => us.map(x => x.id === u.id ? { ...x, ativo: !x.ativo } : x));
+      toast((!u.ativo ? '✅ Acesso liberado: ' : '🚫 Acesso bloqueado: ') + (u.nome_completo || u.email));
+    } catch (err) { toast(err.message, 'erro'); }
+    finally { setAtualizando(a => ({ ...a, [u.id]: false })); }
+  }
+
+  async function alterarPerfil(u, novoPerfil) {
+    if (u.id === usuarioLogado?.id) return;
+    setAtualizando(a => ({ ...a, [`p${u.id}`]: true }));
+    try {
+      await apiFetch(`/usuarios/${u.id}`, { method:'PUT', body: { perfil: novoPerfil } });
+      setUsuarios(us => us.map(x => x.id === u.id ? { ...x, perfil: novoPerfil } : x));
+      const pLabel = PERFIS.find(p => p.valor === novoPerfil)?.label || novoPerfil;
+      toast(`Perfil atualizado para ${pLabel}: ${u.nome_completo || u.email}`);
+    } catch (err) { toast(err.message, 'erro'); }
+    finally { setAtualizando(a => ({ ...a, [`p${u.id}`]: false })); }
+  }
+
+  async function resetarSenha(id, novaSenha) {
+    await apiFetch(`/usuarios/${id}/resetar-senha`, { method:'POST', body: { nova_senha: novaSenha } });
+  }
+
+  const filtrados = usuarios.filter(u => {
+    if (busca && !((u.nome_completo||'') + u.email).toLowerCase().includes(busca.toLowerCase())) return false;
+    if (filtroPerfil && u.perfil !== filtroPerfil) return false;
+    if (filtroAtivo === 'ativo'    && !u.ativo) return false;
+    if (filtroAtivo === 'inativo'  &&  u.ativo) return false;
+    return true;
+  });
+
+  const temFiltro = busca || filtroPerfil || filtroAtivo;
+
+  if (loading) return (
+    <div style={{padding:48,textAlign:'center',color:'var(--texto-leve)',fontSize:14}}>
+      <div style={{fontSize:32,marginBottom:12}}>🔐</div>Carregando usuários...
+    </div>
+  );
+
+  return (
+    <div className="modulo">
+      {/* KPIs */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:24}}>
+        {[
+          { label:'Total de Usuários',  val: usuarios.length,                              icon:'👤', cor:'var(--azul)'    },
+          { label:'Acessos Ativos',     val: usuarios.filter(u => u.ativo).length,         icon:'✅', cor:'var(--verde)'   },
+          { label:'Acessos Bloqueados', val: usuarios.filter(u => !u.ativo).length,        icon:'🚫', cor:'var(--vermelho)'},
+          { label:'Admins',             val: usuarios.filter(u => u.perfil==='admin').length,icon:'🛡️',cor:'var(--roxo)'   },
+        ].map((k,i) => (
+          <div key={i} style={{background:'var(--card-bg)',borderRadius:10,padding:'16px 20px',
+            borderLeft:`3px solid ${k.cor}`,display:'flex',alignItems:'center',gap:14}}>
+            <span style={{fontSize:28}}>{k.icon}</span>
+            <div>
+              <div style={{fontSize:24,fontWeight:800,color:k.cor,lineHeight:1}}>{k.val}</div>
+              <div style={{fontSize:12,color:'var(--texto-leve)',marginTop:3}}>{k.label}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* FILTROS + AÇÃO */}
+      <div className="filtros-row" style={{marginBottom:16,flexWrap:'wrap',gap:8}}>
+        <input className="filtro-input" style={{flex:'1 1 200px',maxWidth:300}}
+          placeholder="🔍 Buscar por nome ou e-mail..." value={busca} onChange={e => setBusca(e.target.value)} />
+        <select className="filtro-select" value={filtroPerfil} onChange={e => setFiltroPerfil(e.target.value)}>
+          <option value="">Todos os perfis</option>
+          {PERFIS.map(p => <option key={p.valor} value={p.valor}>{p.label}</option>)}
+        </select>
+        <select className="filtro-select" value={filtroAtivo} onChange={e => setFiltroAtivo(e.target.value)}>
+          <option value="">Todos os status</option>
+          <option value="ativo">Ativos</option>
+          <option value="inativo">Bloqueados</option>
+        </select>
+        {temFiltro && (
+          <button className="btn btn-secondary btn-sm"
+            onClick={() => { setBusca(''); setFiltroPerfil(''); setFiltroAtivo(''); }}>
+            ✕ Limpar
+          </button>
+        )}
+        <span style={{marginLeft:'auto',fontSize:13,color:'var(--texto-leve)',alignSelf:'center'}}>
+          {filtrados.length} usuário(s)
+        </span>
+        <button className="btn btn-primary" onClick={() => setModalCriar(true)}>
+          🔐 Novo Usuário
+        </button>
+      </div>
+
+      {/* TABELA */}
+      <div className="tabela-wrap">
+        {filtrados.length === 0 ? (
+          <div className="vazio">
+            <div className="icon">🔍</div>
+            <p>Nenhum usuário encontrado com os filtros aplicados.</p>
+          </div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Último Acesso</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtrados.map(u => {
+                const isMe = u.id === usuarioLogado?.id;
+                const perfil = PERFIS.find(p => p.valor === u.perfil) || { label: u.perfil, cor:'#64748B' };
+                return (
+                  <tr key={u.id} style={{opacity: u.ativo ? 1 : .5}}>
+                    {/* Nome */}
+                    <td>
+                      <div style={{display:'flex',alignItems:'center',gap:10}}>
+                        <div className="avatar" style={{background: u.ativo ? corAvatar(u.nome_completo||u.email) : '#4B5563'}}>
+                          {iniciais(u.nome_completo||u.email)}
+                        </div>
+                        <div>
+                          <div style={{fontWeight:600,display:'flex',alignItems:'center',gap:6}}>
+                            {u.nome_completo || '—'}
+                            {isMe && <span style={{fontSize:10,background:'#3B82F622',color:'var(--azul)',borderRadius:4,padding:'1px 6px',fontWeight:700}}>Você</span>}
+                          </div>
+                          <div style={{fontSize:11,color:'var(--texto-leve)'}}>{u.cargo || u.departamento || ''}</div>
+                        </div>
+                      </div>
+                    </td>
+                    {/* E-mail */}
+                    <td style={{fontSize:13,color:'var(--texto-leve)'}}>{u.email}</td>
+                    {/* Perfil (dropdown editável) */}
+                    <td>
+                      <select
+                        value={u.perfil}
+                        disabled={isMe || !!atualizando[`p${u.id}`]}
+                        onChange={e => alterarPerfil(u, e.target.value)}
+                        title={isMe ? 'Não é possível alterar o próprio perfil' : 'Alterar perfil'}
+                        style={{
+                          background: perfil.cor + '18',
+                          color: perfil.cor,
+                          border: `1px solid ${perfil.cor}55`,
+                          borderRadius: 6,
+                          padding: '4px 8px',
+                          fontSize: 12,
+                          fontWeight: 700,
+                          cursor: isMe ? 'not-allowed' : 'pointer',
+                          opacity: atualizando[`p${u.id}`] ? .5 : 1,
+                          minWidth: 110,
+                        }}
+                      >
+                        {PERFIS.map(p => <option key={p.valor} value={p.valor} style={{background:'#252540',color:'var(--texto)'}}>{p.label}</option>)}
+                      </select>
+                    </td>
+                    {/* Último acesso */}
+                    <td style={{fontSize:12,color:'var(--texto-leve)',whiteSpace:'nowrap'}}>
+                      {u.ultimo_acesso
+                        ? new Date(u.ultimo_acesso).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})
+                        : <em>Nunca acessou</em>}
+                    </td>
+                    {/* Toggle Ativo */}
+                    <td>
+                      <button
+                        onClick={() => toggleAtivo(u)}
+                        disabled={isMe || !!atualizando[u.id]}
+                        title={isMe ? 'Não é possível bloquear a própria conta' : (u.ativo ? 'Bloquear acesso' : 'Liberar acesso')}
+                        style={{
+                          display:'inline-flex',alignItems:'center',gap:5,
+                          padding:'5px 12px',borderRadius:20,border:'none',
+                          fontSize:12,fontWeight:700,cursor: isMe ? 'not-allowed' : 'pointer',
+                          background: u.ativo ? '#16A34A22' : '#DC262622',
+                          color: u.ativo ? '#22C55E' : '#FF5C5C',
+                          transition:'all .2s',
+                          opacity: atualizando[u.id] ? .5 : 1,
+                        }}
+                      >
+                        {atualizando[u.id] ? '...' : (u.ativo ? '✅ Ativo' : '🚫 Bloqueado')}
+                      </button>
+                    </td>
+                    {/* Ações */}
+                    <td>
+                      <button className="btn btn-secondary btn-sm" title="Redefinir senha"
+                        onClick={() => setModalReset(u)}>
+                        🔑 Senha
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {modalCriar && (
+        <ModalCriarUsuario
+          funcionarios={funcionarios}
+          onSalvar={criarUsuario}
+          onFechar={() => setModalCriar(false)}
+        />
+      )}
+      {modalReset && (
+        <ModalResetarSenha
+          usuario={modalReset}
+          onSalvar={resetarSenha}
+          onFechar={() => setModalReset(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ============================================================
 // APP PRINCIPAL
 // ============================================================
 function App() {
@@ -966,12 +1408,13 @@ function App() {
 
   const navItems = [
     { id:'funcionarios', icon:'👥', label:'Funcionários' },
-    { id:'financeiro',   icon:'💰', label:'Financeiro',   disabled:true },
-    { id:'pedidos',      icon:'🛒', label:'Pedidos de Compra', disabled:true },
-    { id:'atletas',      icon:'⚽', label:'Contratos de Atletas', disabled:true },
-    { id:'investidores', icon:'📈', label:'Investidores',  disabled:true },
-    { id:'metas',        icon:'🎯', label:'Metas',         disabled:true },
-    { id:'relatorios',   icon:'📊', label:'Relatórios',    disabled:true },
+    { id:'financeiro',   icon:'💰', label:'Financeiro',         disabled:true },
+    { id:'pedidos',      icon:'🛒', label:'Pedidos de Compra',  disabled:true },
+    { id:'atletas',      icon:'⚽', label:'Contratos de Atletas',disabled:true },
+    { id:'investidores', icon:'📈', label:'Investidores',       disabled:true },
+    { id:'metas',        icon:'🎯', label:'Metas',              disabled:true },
+    { id:'relatorios',   icon:'📊', label:'Relatórios',         disabled:true },
+    ...(usuario?.perfil === 'admin' ? [{ id:'usuarios', icon:'🔐', label:'Usuários', separador:true }] : []),
   ];
 
   return (
@@ -988,16 +1431,23 @@ function App() {
         <nav className="sidebar-nav">
           <div className="nav-label">Módulos</div>
           {navItems.map(item => (
-            <div key={item.id}
-              className={`nav-item ${pagina===item.id?'ativo':''} ${item.disabled?'':''}` }
-              style={item.disabled ? {opacity:.45,cursor:'not-allowed'} : {cursor:'pointer'}}
-              onClick={() => !item.disabled && setPagina(item.id)}
-              title={item.disabled ? 'Em breve' : ''}
-            >
-              <span className="icon">{item.icon}</span>
-              <span>{item.label}</span>
-              {item.disabled && <span style={{marginLeft:'auto',fontSize:10,opacity:.7}}>em breve</span>}
-            </div>
+            <React.Fragment key={item.id}>
+              {item.separador && (
+                <div style={{margin:'10px 0 4px',borderTop:'1px solid rgba(255,255,255,.12)',paddingTop:10}}>
+                  <div className="nav-label" style={{paddingTop:0}}>Administração</div>
+                </div>
+              )}
+              <div
+                className={`nav-item ${pagina===item.id?'ativo':''}` }
+                style={item.disabled ? {opacity:.45,cursor:'not-allowed'} : {cursor:'pointer'}}
+                onClick={() => !item.disabled && setPagina(item.id)}
+                title={item.disabled ? 'Em breve' : ''}
+              >
+                <span className="icon">{item.icon}</span>
+                <span>{item.label}</span>
+                {item.disabled && <span style={{marginLeft:'auto',fontSize:10,opacity:.7}}>em breve</span>}
+              </div>
+            </React.Fragment>
           ))}
         </nav>
         <div className="sidebar-footer">
@@ -1016,7 +1466,8 @@ function App() {
       <main className="main">
         <div className="topbar">
           <span className="topbar-title">
-            {navItems.find(n=>n.id===pagina)?.icon} {navItems.find(n=>n.id===pagina)?.label}
+            {navItems.find(n=>n.id===pagina)?.icon}{' '}
+            {pagina === 'usuarios' ? 'Gestão de Usuários e Acessos' : navItems.find(n=>n.id===pagina)?.label}
           </span>
           <div className="topbar-actions">
             <span style={{fontSize:13,color:'var(--texto-leve)'}}>
@@ -1025,6 +1476,7 @@ function App() {
           </div>
         </div>
         {pagina === 'funcionarios' && <ModuloFuncionarios usuario={usuario} />}
+        {pagina === 'usuarios'    && <ModuloUsuarios    usuario={usuario} />}
       </main>
 
       <Toast toasts={toasts} />
