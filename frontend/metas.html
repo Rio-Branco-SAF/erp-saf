@@ -9,69 +9,87 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="config.js"></script>
 <style>
+    :root {
+      --bg:          #1C1C2E;
+      --sidebar-bg:  #14142B;
+      --card-bg:     #252540;
+      --card-borda:  #3A3A5C;
+      --input-bg:    #14142B;
+      --verde:       #22C55E;
+      --verde-med:   #16A34A;
+      --verde-dark:  #15803D;
+      --vermelho:    #FF5C5C;
+      --dourado:     #F59E0B;
+      --azul:        #3B82F6;
+      --azul-dark:   #1D4ED8;
+      --texto:       #3A3A5C;
+      --texto-leve:  #94A3B8;
+      --roxo:        #8B5CF6;
+      --laranja:     #F97316;
+    }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex;min-height:100vh}
+background: var(--bg);color:#E2E8F0;display:flex;min-height:100vh}
 .sidebar{width:220px;background:#0f172a;color:#94a3b8;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
-.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#fff;border-bottom:1px solid #1e293b}
+.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#fff;border-bottom:1px solid #E2E8F0}
 .sidebar-logo span{color:#f59e0b}
 .sidebar nav{flex:1;padding:12px 0}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s}
-.nav-item:hover{background:#1e293b;color:#e2e8f0}
+.nav-item:hover{background:#E2E8F0;color:#3A3A5C}
 .nav-item.active{background:#1d4ed8;color:#fff}
 .nav-item .icon{font-size:16px;width:20px;text-align:center}
-.sidebar-footer{padding:14px 16px;border-top:1px solid #1e293b}
+.sidebar-footer{padding:14px 16px;border-top:1px solid #E2E8F0}
 .user-chip{display:flex;align-items:center;gap:8px}
 .ua{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
 .main{margin-left:220px;flex:1;display:flex;flex-direction:column}
-.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar{background:#fff;border-bottom:1px solid #3A3A5C;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
 .topbar h1{font-size:18px;font-weight:700;color:#0f172a}
 .topbar-sub{font-size:12px;color:#64748b;margin-top:2px}
 .content{padding:24px 28px;flex:1}
 .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
 .btn-primary{background:#1d4ed8;color:#fff}.btn-primary:hover{background:#1e40af}
-.btn-outline{background:#fff;color:#475569;border:1px solid #e2e8f0}.btn-outline:hover{background:#f8fafc}
+.btn-outline{background:#fff;color:#475569;border:1px solid #3A3A5C}.btn-outline:hover{background:#252540}
 .btn-sm{padding:5px 12px;font-size:12px}
 .btn-ghost{background:transparent;color:#64748b;border:none;font-size:13px;cursor:pointer;padding:4px 8px}
 .btn-success{background:#16a34a;color:#fff}
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
-.kpi-card{background:#fff;border-radius:12px;padding:14px 18px;border:1px solid #e2e8f0}
+.kpi-card{background:#fff;border-radius:12px;padding:14px 18px;border:1px solid #3A3A5C}
 .kpi-label{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 .kpi-value{font-size:24px;font-weight:800;margin:5px 0 2px;color:#0f172a}
 .kpi-sub{font-size:11px;color:#94a3b8}
 .kpi-card.ok .kpi-value{color:#16a34a}
 .kpi-card.alerta .kpi-value{color:#d97706}
-.kpi-card.urgente .kpi-value{color:#dc2626}
+.kpi-card.urgente .kpi-value{color:#FF5C5C}
 
 /* FILTERS */
 .filters-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#475569;transition:.15s}
+.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #3A3A5C;background:#fff;color:#475569;transition:.15s}
 .filter-btn.active{border-color:transparent}
 .filter-btn.tipo-esportiva.active{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
 .filter-btn.tipo-financeira.active{background:#dcfce7;color:#16a34a;border-color:#bbf7d0}
 .filter-btn.tipo-institucional.active{background:#f3e8ff;color:#7c3aed;border-color:#ddd6fe}
 .filter-btn.tipo-all.active{background:#0f172a;color:#fff;border-color:#0f172a}
-.search-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;width:200px;outline:none}
+.search-input{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;width:200px;outline:none}
 .search-input:focus{border-color:#1d4ed8}
-select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
+select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;background:#fff;outline:none;color:#475569;cursor:pointer}
 
 /* PILLS */
 .pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
-.pill-alta{background:#fee2e2;color:#dc2626}
+.pill-alta{background:#fee2e2;color:#FF5C5C}
 .pill-media{background:#fef9c3;color:#a16207}
-.pill-baixa{background:#f1f5f9;color:#64748b}
+.pill-baixa{background:#1C1C2E;color:#64748b}
 .pill-ativa{background:#dbeafe;color:#1d4ed8}
 .pill-concluida{background:#dcfce7;color:#16a34a}
-.pill-nao_atingida{background:#fee2e2;color:#dc2626}
-.pill-cancelada{background:#f1f5f9;color:#94a3b8}
+.pill-nao_atingida{background:#fee2e2;color:#FF5C5C}
+.pill-cancelada{background:#1C1C2E;color:#94a3b8}
 .tipo-badge-esportiva{background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
 .tipo-badge-financeira{background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
 .tipo-badge-institucional{background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
 
 /* META CARD */
 .metas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
-.meta-card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;padding:18px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.meta-card{background:#fff;border-radius:14px;border:1px solid #3A3A5C;padding:18px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
 .meta-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px}
 .meta-card.esportiva::before{background:#1d4ed8}
 .meta-card.financeira::before{background:#16a34a}
@@ -88,23 +106,23 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 .progress-info{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .progress-valores{font-size:12.5px;color:#475569}
 .progress-pct{font-size:18px;font-weight:800}
-.progress-bar{height:10px;background:#f1f5f9;border-radius:100px;overflow:hidden}
+.progress-bar{height:10px;background:#1C1C2E;border-radius:100px;overflow:hidden}
 .progress-fill{height:100%;border-radius:100px;transition:width .6s ease}
-.pct-low{color:#dc2626}
+.pct-low{color:#FF5C5C}
 .pct-mid{color:#d97706}
 .pct-high{color:#16a34a}
-.fill-low{background:linear-gradient(90deg,#fca5a5,#dc2626)}
+.fill-low{background:linear-gradient(90deg,#fca5a5,#FF5C5C)}
 .fill-mid{background:linear-gradient(90deg,#fcd34d,#d97706)}
 .fill-high{background:linear-gradient(90deg,#86efac,#16a34a)}
 .fill-done{background:linear-gradient(90deg,#34d399,#059669)}
 
 /* META FOOTER */
-.meta-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9;font-size:12px;color:#94a3b8}
+.meta-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #1C1C2E;font-size:12px;color:#94a3b8}
 .dias-badge{padding:3px 8px;border-radius:100px;font-size:11px;font-weight:700}
 .dias-ok{background:#dcfce7;color:#16a34a}
 .dias-warning{background:#fef9c3;color:#a16207}
-.dias-urgent{background:#fee2e2;color:#dc2626}
-.dias-vencido{background:#f1f5f9;color:#64748b}
+.dias-urgent{background:#fee2e2;color:#FF5C5C}
+.dias-vencido{background:#1C1C2E;color:#64748b}
 
 /* CONQUISTA BANNER */
 .conquista-banner{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:3px}
@@ -112,13 +130,13 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
 .modal{background:#fff;border-radius:16px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
-.modal-header{padding:20px 24px;border-bottom:1px solid #e2e8f0;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10}
+.modal-header{padding:20px 24px;border-bottom:1px solid #3A3A5C;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10}
 .modal-body{padding:24px}
-.modal-footer{padding:14px 24px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
+.modal-footer{padding:14px 24px;border-top:1px solid #3A3A5C;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff}
 .close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;margin-top:2px}
 .close-btn:hover{color:#0f172a}
 .detail-section{margin-bottom:20px}
-.detail-section h3{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9}
+.detail-section h3{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1C1C2E}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .detail-item label{display:block;font-size:10.5px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
 .detail-item span{font-size:14px;font-weight:600;color:#0f172a}
@@ -130,16 +148,16 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 /* TIMELINE */
 .timeline{list-style:none}
 .tl-item{display:flex;gap:10px;padding-bottom:14px;position:relative}
-.tl-item:not(:last-child)::before{content:'';position:absolute;left:10px;top:22px;bottom:0;width:2px;background:#f1f5f9}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:10px;top:22px;bottom:0;width:2px;background:#1C1C2E}
 .tl-dot{width:22px;height:22px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px;color:#1d4ed8;font-weight:800}
 .tl-dot.up{background:#dcfce7;color:#16a34a}
-.tl-dot.down{background:#fee2e2;color:#dc2626}
+.tl-dot.down{background:#fee2e2;color:#FF5C5C}
 .tl-acao{font-size:13px;font-weight:600;color:#0f172a}
 .tl-desc{font-size:12px;color:#64748b;margin-top:1px}
 .tl-data{font-size:11px;color:#94a3b8;margin-top:2px}
 .tl-delta{font-size:11.5px;font-weight:700;margin-top:2px}
 .tl-delta.pos{color:#16a34a}
-.tl-delta.neg{color:#dc2626}
+.tl-delta.neg{color:#FF5C5C}
 
 /* FORM */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -147,16 +165,16 @@ select.filter-sel{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;fo
 .form-full{grid-column:1/-1}
 .form-group{display:flex;flex-direction:column;gap:4px}
 .form-group label{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
-.form-group input,.form-group select,.form-group textarea{padding:8px 11px;border:1px solid #e2e8f0;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit}
+.form-group input,.form-group select,.form-group textarea{padding:8px 11px;border:1px solid #3A3A5C;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit}
 .form-group input:focus,.form-group select:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(29,78,216,.08)}
 .form-group textarea{resize:vertical;min-height:60px}
 
 /* LOGIN */
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;width:100%}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1C1C2E;width:100%}
 .login-card{background:#fff;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
 .login-logo{text-align:center;margin-bottom:28px}
 .login-logo h2{font-size:22px;font-weight:800;color:#0f172a;margin-top:10px}
-.login-err{background:#fee2e2;color:#dc2626;border-radius:8px;padding:10px;font-size:13px;margin-bottom:14px}
+.login-err{background:#fee2e2;color:#FF5C5C;border-radius:8px;padding:10px;font-size:13px;margin-bottom:14px}
 .empty-state{text-align:center;padding:50px 20px;color:#94a3b8}
 .empty-icon{font-size:44px;margin-bottom:10px}
 
@@ -290,7 +308,7 @@ function Sidebar({usuario,onLogout}){
         </nav>
     0   <div className="sidebar-footer">
             <div className="user-chip"><div className="ua">{ini}</div>
-                <div><div style={{fontSize:12,color:'#e2e8f0',fontWeight:600}}>{usuario?.nome}</div+<div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
+                <div><div style={{fontSize:12,color:'#3A3A5C',fontWeight:600}}>{usuario?.nome}</div+<div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
             </div>
             <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>Sair ‚Üí</button>
         </div>
@@ -351,7 +369,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
                     </div>
                     <h2 style={{fontSize:17,fontWeight:800,color:'#0f172a',lineHeight:1.3}}>{d.titulo}</h2>
                     {d.atleta_nome && <div style={{fontSize:12,color:'#64748b',marginTop:3}}>‚öΩ {d.atleta_nome}{d.atleta_guerra?' "'+d.atleta_guerra+'"':''}</div>}
- ¿              </div>
+ ÔøΩ              </div>
                 <button className="close-btn" onClick={onClose}>‚úï</button>
             </div>
             <div className="modal-body">
@@ -359,14 +377,14 @@ function ModalMeta({meta, onClose, onAtualizar}){
                 {sucesso && <div style={{background:'#dcfce7',border:'1px solid #86efac',borderRadius:8,padding:'10px 14px',color:'#16a34a',fontWeight:700,marginBottom:14,fontSize:13}}>{sucesso}</div>}
 
                 {/* BARRA DE PROGRESSO GRANDE */}
-                <div style={{background:'#f8fafc',borderRadius:12,padding:'16px 18px',marginBottom:20}}>
+                <div style={{background:'#252540',borderRadius:12,padding:'16px 18px',marginBottom:20}}>
                     <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
                         <div style={{fontSize:13,color:'#475569',fontWeight:600}}>
                             {d.sentido==='abaixo'?'Atual:':'Progresso:'} <strong>{fmtValor(d.valor_atual)}</strong> de <strong>{fmtValor(d.valor_meta)}</strong>
                         </div>
                         <div style={{fontSize:28,fontWeight:900}} className={getPctClass(pct)}>{pct}%</div>
                     </div>
-    0               <div style={{height:14,background:'#e2e8f0',borderRadius:100,overflow:'hidden'}}>
+    0               <div style={{height:14,background:'#3A3A5C',borderRadius:100,overflow:'hidden'}}>
                         <div className={getFillClass(pct,d.status)} style={{width:pct+'%',height:'100%',borderRadius:100,transition:'width .8s ease'}}/>
                     </div>
     0               <div style={{display:'flex',justifyContent:'space-between',marginTop:8,fontSize:11.5,color:'#94a3b8'}}>
@@ -403,7 +421,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
                         <div className="detail-item"><label>Categoria</label><span>{CATEGORIA_ICON[d.categoria]} {d.categoria?.replace(/_/g,' ')}</span></div>
                         <div className="detail-item"><label>Respons√°vel</label><span>{d.responsavel_nome||'‚Äî'}</span></div>
                     </div>
-                    {d.descricao && <div style={{marginTop:12,padding:'10px 12px',background:'#f8fafc',borderRadius:8,fontSize:13,color:'#475569',lineHeight:1.6}}>{d.descricao}</div>}
+                    {d.descricao && <div style={{marginTop:12,padding:'10px 12px',background:'#252540',borderRadius:8,fontSize:13,color:'#475569',lineHeight:1.6}}>{d.descricao}</div>}
                     {d.observacoes && <div style={{marginTop:8,padding:'8px 12px',background:'#fffbeb',borderRadius:8,fontSize:12.5,color:'#92400e',border:'1px solid #fde68a'}}>üí° {d.observacoes}</div>}
                 </div>
 
@@ -412,7 +430,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
                     <h3>üìÖ Hist√≥rico de Atualiza√ß√µes ({detalhe?.historico?.length||0})</h3>
                     {!detalhe?.historico?.length
                         ? <div style={{color:'#94a3b8',fontSize:13,padding:'12px 0'}}>Nenhuma atualiza√ß√£o registrada ainda.</div>
-                        : <ul className="tÈmeline">
+                        : <ul className="tÔøΩmeline">
                             {detalhe.historico.map(h=>{
                                 const delta = (h.valor_novo||0)-(h.valor_anterior||0);
                                 const isUp = d.sentido==='abaixo' ? delta<0 : delta>0;
@@ -442,10 +460,10 @@ function ModalMeta({meta, onClose, onAtualizar}){
 // ============================================================
 function ModuloMetas({usuario}){
     const [metas,setMetas]=useState([]);
- ¿  const [resumo,setResumo]=useState(DEMO_RESUMO);
+ ÔøΩ  const [resumo,setResumo]=useState(DEMO_RESUMO);
     const [loading,setLoading]=useState(true);
     const [filtroTipo,setFiltroTipo]=useState('');
- ¿  const [filtroStatus,setFiltroStatus]=useState('ativa');
+ ÔøΩ  const [filtroStatus,setFiltroStatus]=useState('ativa');
     const [busca,setBusca]=useState('');
     const [detalhe,setDetalhe]=useState(null);
     const [showNova,setShowNova]=useState(false);
@@ -464,8 +482,8 @@ function ModuloMetas({usuario}){
         ]);
 
     0   if(Array.isArray(listData)){ setMetas(listData); }
- ¿      else {
-    ¿0      let f=DEMO_METAS;
+ ÔøΩ      else {
+    ÔøΩ0      let f=DEMO_METAS;
             if(filtroTipo) f=f.filter(m=>m.tipo===filtroTipo);
             if(filtroStatus) f=f.filter(m=>m.status===filtroStatus);
             if(busca) f=f.filter(m=>m.titulo.toLowerCase().includes(busca.toLowerCase()));
@@ -538,7 +556,7 @@ function ModuloMetas({usuario}){
                 <button className={'filter-btn tipo-esportiva'+(filtroTipo==='esportiva'?' active':'')} onClick={()=>setFiltroTipo('esportiva')}>üèÜ Esportivas</button>
                 <button className={'filter-btn tipo-financeira'+(filtroTipo==='financeira'?' active':'')} onClick={()=>setFiltroTipo('financeira')}>üí∞ Financeiras</button>
                 <button className={'filter-btn tipo-institucional'+(filtroTipo==='institucional'?' active':'')} onClick={()=>setFiltroTipo('institucional')}>üå± Institucionais</button>
-                <div style={{width:1,background:'#e2e8f0',height:30,margin:'0 4px'}}/>
+                <div style={{width:1,background:'#3A3A5C',height:30,margin:'0 4px'}}/>
                 <select className="filter-sel" value={filtroStatus} onChange={e=>setFiltroStatus(e.target.value)}>
                     <option value="">Todos os status</option>
                     <option value="ativa">Ativas</option>
@@ -558,7 +576,7 @@ function ModuloMetas({usuario}){
                 grupos.map(g => <div key={g.tipo} style={{marginBottom:28}}>
                     <div style={{fontSize:15,fontWeight:800,color:'#0f172a',marginBottom:14,display:'flex',alignItems:'center',gap:8}}>
                         {g.label}
-                        <span style={{fontSize:12,fontWeight:600,color:'#94a3b8',background:'#f1f5f9',padding:'2px 8px',borderRadius:100}}>{g.metas.length}</span>
+                        <span style={{fontSize:12,fontWeight:600,color:'#94a3b8',background:'#1C1C2E',padding:'2px 8px',borderRadius:100}}>{g.metas.length}</span>
                     </div>
                     <div className="metas-grid">
                         {g.metas.map(m=>{
@@ -571,7 +589,7 @@ function ModuloMetas({usuario}){
                                         <div className="meta-titulo">{CATEGORIA_ICON[m.categoria]||'üéØ'} {m.titulo}</div>
                                         <div className="meta-badges">
                                             <span className={'pill pill-'+m.prioridade}>{m.prioridade}</span>
-                                            {m.atleta_nome&&<span style={{background:'#f1f5f9',color:'#475569',padding:'2px 7px',borderRadius:100,fontSize:10.5,fontWeight:600}}>‚öΩ {m.atleta_nome.split(' ')[0]}</span>}
+                                            {m.atleta_nome&&<span style={{background:'#1C1C2E',color:'#475569',padding:'2px 7px',borderRadius:100,fontSize:10.5,fontWeight:600}}>‚öΩ {m.atleta_nome.split(' ')[0]}</span>}
                                         </div>
                                     </div>
                                 </div>
@@ -608,10 +626,10 @@ function ModuloMetas({usuario}){
                 </div>
                 <div className="modal-body">
                     <div className="form-grid" style={{marginBottom:12}}>
-                        <div className="form-group form-full"><label>T√≠tulo *</label><input value={novaMeta.titulo} onChange={e=>setNovaMeta(m=>({...m,titulo:e.t·rget.value}))} placeholder="Ex: Atingir 70 pontos na S√©rie B"/></div>
+                        <div className="form-group form-full"><label>T√≠tulo *</label><input value={novaMeta.titulo} onChange={e=>setNovaMeta(m=>({...m,titulo:e.tÔøΩrget.value}))} placeholder="Ex: Atingir 70 pontos na S√©rie B"/></div>
                         <div className="form-group">
                             <label>Tipo *</label>
-                            <select value={novaMeta.tipo} onChange={e=>setNovaMeta(m=>({...m,tipo:e.target.value,categoria:CATEGORIAS_POR_TIPO[e.t·rget.value][0]}))}>
+                            <select value={novaMeta.tipo} onChange={e=>setNovaMeta(m=>({...m,tipo:e.target.value,categoria:CATEGORIAS_POR_TIPO[e.tÔøΩrget.value][0]}))}>
                                 <option value="esportiva">üèÜ Esportiva</option>
                                 <option value="financeira">üí∞ Financeira</option>
                                 <option value="institucional">üå± Institucional</option>
@@ -620,12 +638,12 @@ function ModuloMetas({usuario}){
                         <div className="form-group">
                             <label>Cau5goria *</label>
                             <select value={novaMeta.categoria} onChange={e=>setNovaMeta(m=>({...m,categoria:e.target.value}))}>
-                                {(CATEGORIAS_POR_TIPO[novaMeta+-ivÔ]||[]).mZÑ(s=><option key={c} value={c}>{CATEGORIA_ICON[c]} {c.replace(/_/g,' ')}</option>)}
+                                {(CATEGORIAS_POR_TIPO[novaMeta+-ivÔøΩ]||[]).mZÔøΩ(s=><option key={c} value={c}>{CATEGORIA_ICON[c]} {c.replace(/_/g,' ')}</option>)}
                             </select>
                         </div>
                         <div className="form-group">
                             <label>Valor da Meta *</label>
-                            <ik∞ut type="number" step="any" value={novaMeta.valor_meta} onChange={e=>setNovaMeta(m=>({...m,valor_meta:e.target.value}))} vÏaceholder="Ex: 65"/>
+                            <ikÔøΩut type="number" step="any" value={novaMeta.valor_meta} onChange={e=>setNovaMeta(m=>({...m,valor_meta:e.target.value}))} vÔøΩaceholder="Ex: 65"/>
                         </div>
                         <div className="form-group">
                             <label>Unidade</label>
@@ -648,7 +666,7 @@ function ModuloMetas({usuario}){
                         </div>
                         <div className="form-group">
                             <label>Prazo Final *</label>
-                            <input type="date" value={novaMeta.§ata_fim} onChange={e=>setNovaMeta(m=>({...m,data_fim:e.t·rget.value}))}/>
+                            <input type="date" value={novaMeta.ÔøΩata_fim} onChange={e=>setNovaMeta(m=>({...m,data_fim:e.tÔøΩrget.value}))}/>
                         </div>
                         <div className="form-group form-full">
                             <label>Descri√ß√£o</label>
@@ -671,7 +689,7 @@ function ModuloMetas({usuario}){
 function App(){
     const [Psuario,setUsuario]=useState(USUARIO);
     function logout(){USUARIO=null;setUsuario(null);localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';}
-    if(!usuario) return <Login onLogin={v›>setUsuario(u)}/>;
+    if(!usuario) return <Login onLogin={vÔøΩ>setUsuario(u)}/>;
     return <><Sidebar usuario={usuario} on.ogout={logout}/><div className="main"><ModuloMetas usuario={usuario}/></div></>;
 }
 
