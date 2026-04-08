@@ -9,25 +9,35 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="config.js"></script>
 <style>
+    :root {
+      --bg:          #1C1C2E;
+      --sidebar-bg:  #14142B;
+      --card-bg:     #252540;
+      --card-borda:  #3A3A5C;
+      --input-bg:    #14142B;
+      --verde:       #22C55E;
+      --verde-med:   #16A34A;
+      --verde-dark:  #15803D;
+      --vermelho:    #FF5C5C;
+      --dourado:     #F59E0B;
+      --azul:        #3B82F6;
+      --azul-dark:   #1D4ED8;
+      --texto:       #3A3A5C;
+      --texto-leve:  #94A3B8;
+      --roxo:        #8B5CF6;
+      --laranja:     #F97316;
+    }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a2e}
-  :root{
-    --verde:#00875a;--verde-light:#e3f9f0;
-    --azul:#0052cc;--azul-light:#e3f2ff;
-    --roxo:#6554c0;--roxo-light:#f0eeff;
-    --laranja:#ff8b00;--laranja-light:#fff3e0;
-    --vermelho:#de350b;--vermelho-light:#fff0ed;
-    --cinza:#42526e;--bg:#f0f2f5;--white:#fff;
-    --border:#e2e8f0;--shadow:0 1px 4px rgba(0,0,0,.1);
-  }
-  .navbar{background:#1a1a2e;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+  background: var(--bg);color:#E2E8F0}
+  
+  .navbar{background:#E2E8F0;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
   .navbar-brand{color:#fff;font-weight:700;font-size:18px;text-decoration:none;display:flex;align-items:center;gap:8px}
   .navbar-nav{display:flex;gap:4px}
   .nav-link{color:rgba(255,255,255,.7);text-decoration:none;padding:8px 12px;border-radius:6px;font-size:13px;transition:.2s}
   .nav-link:hover,.nav-link.active{color:#fff;background:rgba(255,255,255,.1)}
   .container{max-width:1300px;margin:0 auto;padding:24px}
   .page-header{margin-bottom:24px}
-  .page-title{font-size:24px;font-weight:700;color:#1a1a2e}
+  .page-title{font-size:24px;font-weight:700;color:#E2E8F0}
   .page-subtitle{color:#64748b;margin-top:4px;font-size:14px}
 
   /* Tabs */
@@ -41,7 +51,7 @@
   .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:24px}
   .kpi-card{background:var(--white);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
   .kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:6px}
-  .kpi-value{font-size:22px;font-weight:700;color:#1a1a2e;line-height:1.2}
+  .kpi-value{font-size:22px;font-weight:700;color:#E2E8F0;line-height:1.2}
   .kpi-sub{font-size:12px;color:#64748b;margin-top:4px}
   .kpi-card.verde .kpi-value{color:var(--verde)}
   .kpi-card.azul  .kpi-value{color:var(--azul)}
@@ -56,15 +66,15 @@
 
   /* Cards */
   .card{background:var(--white);border-radius:10px;padding:20px;box-shadow:var(--shadow)}
-  .card-title{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .card-title{font-size:14px;font-weight:700;color:#E2E8F0;margin-bottom:16px;display:flex;align-items:center;gap:8px}
   .card-title span{font-size:16px}
 
   /* Tabelas */
   .table-wrap{overflow-x:auto}
   table{width:100%;border-collapse:collapse;font-size:13px}
-  th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+  th{background:#252540;padding:10px 12px;text-align:left;font-weight:600;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
   td{padding:10px 12px;border-bottom:1px solid var(--border);color:#374151}
-  tr:hover td{background:#f8fafc}
+  tr:hover td{background:#252540}
 
   /* Badges */
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
@@ -73,19 +83,19 @@
   .badge-roxo{background:var(--roxo-light);color:var(--roxo)}
   .badge-laranja{background:var(--laranja-light);color:var(--laranja)}
   .badge-vermelho{background:var(--vermelho-light);color:var(--vermelho)}
-  .badge-cinza{background:#f1f5f9;color:#64748b}
+  .badge-cinza{background:#1C1C2E;color:#64748b}
 
   /* Chart bars */
   .bar-chart{display:flex;flex-direction:column;gap:10px}
   .bar-row{display:flex;align-items:center;gap:10px}
   .bar-label{font-size:12px;color:#64748b;width:110px;text-align:right;flex-shrink:0;white-space:nowraw;overflow:hidden;text-overflow:ellipsis}
-  .bar-track{flex:1;background:#f1f5f9;border-radius:4px;height:20px;overflow:hidden}
+  .bar-track{flex:1;background:#1C1C2E;border-radius:4px;height:20px;overflow:hidden}
   .bar-fill{height:100%;border-radius:4px;transition:width .5s ease;display:flex;align-items:center;padding:0 6px}
   .bar-val{font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
   .bar-val-out{font-size:11px;font-weight:600;color:#374151;margin-left:6px;flex-shrink:0}
 
   /* Progress bar */
-  .progress-wrap{background:#f1f5f9;border-radius:6px;height:8px;overflow:hidden;margin-top:6px}
+  .progress-wrap{background:#1C1C2E;border-radius:6px;height:8px;overflow:hidden;margin-top:6px}
   .progress-bar{height:100%;border-radius:6px;transition:width .5s}
 
   /* Equity bar */
@@ -114,7 +124,7 @@
   @keyframes spin{to{transform:rotate(360deg)}}
 
   /* Stat pill */
-  .stat-pill{display:inline-flex;align-items:center;gap:4px;background:#f8fafc;border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#374151}
+  .stat-pill{display:inline-flex;align-items:center;gap:4px;background:#252540;border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#374151}
 
   /* Conquista */
   .conquista{background:linear-gradient(135deg,#ffd700,#ffa500);color:#7b4f00;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
@@ -275,8 +285,8 @@ const DEMO_COMPRAS = {
 };
 
 // ─── Cores para gráficos ────────────────────────────────────────
-const CORES = ['#0052cc','#00875a','#6554c0','#ff8b00','#de350b','#00b8d9','#36b37e','#ff5630'];
-const CORES_EQUITY = { 'clube':'#334155','socio':'#0052cc','investidor':'#6554c0','patrocinador':'#00875a','mecenatismo':'#ff8b00' };
+const CORES = ['#3B82F6','#22C55E','#8B5CF6','#F59E0B','#FF5C5C','#00b8d9','#36b37e','#ff5630'];
+const CORES_EQUITY = { 'clube':'#334155','socio':'#3B82F6','investidor':'#8B5CF6','patrocinador':'#22C55E','mecenatismo':'#F59E0B' };
 const CORES_STATUS = { ativo:'verde', lesionado:'laranja', suspenso:'vermelho', emprestado:'azul', concluido:'verde', cancelado:'vermelho', em_aprovacao:'laranja', em_cotacao:'azul', pendente:'laranja', pago:'verde' };
 
 function statusLabel(s) {
@@ -292,8 +302,8 @@ function SparkBar({ dados, altKey, recKey, despKey, maxVal }) {
       {dados.map((d, i) => (
         <div key={i} style={{ flex:1, display:'flex', flexDirection:'column', gap:2, alignItems:'center' }}>
           <div style={{ width:'100%', display:'flex', gap:1, alignItems:'flex-end', height:50 }}>
-            <div style={{ flex:1, background:'#00875a', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[recKey]/max)*100}%` : '0%', minHeight:2 }} title={`Receita: R$ ${Number(d[recKey]).toLocaleString('pt-BR')}`}/>
-            <div style={{ flex:1, background:'#de350b', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[despKey]/max)*100}%` : '0%', minHeight:2 }} title={`Despesa: R$ ${Number(d[despKey]).toLocaleString('pt-BR')}`}/>
+            <div style={{ flex:1, background:'#22C55E', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[recKey]/max)*100}%` : '0%', minHeight:2 }} title={`Receita: R$ ${Number(d[recKey]).toLocaleString('pt-BR')}`}/>
+            <div style={{ flex:1, background:'#FF5C5C', borderRadius:'2px 2px 0 0', height: max > 0 ? `${(d[despKey]/max)*100}%` : '0%', minHeight:2 }} title={`Despesa: R$ ${Number(d[despKey]).toLocaleString('pt-BR')}`}/>
           </div>
           <span style={{ fontSize:9, color:'#94a3b8', transform:'rotate(-45deg)', transformOrigin:'top center', display:'block', marginTop:4 }}>{d[altKey]}</span>
         </div>
@@ -427,10 +437,10 @@ function TabExecutivo() {
           <SparkBar dados={evolucao} altKey="mes_label" recKey="receita" despKey="despesa"/>
           <div style={{ display:'flex', gap:16, marginTop:12, justifyContent:'center' }}>
             <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
-              <div style={{ width:12, height:12, background:'#00875a', borderRadius:2 }}/> Receita
+              <div style={{ width:12, height:12, background:'#22C55E', borderRadius:2 }}/> Receita
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
-              <div style={{ width:12, height:12, background:'#de350b', borderRadius:2 }}/> Despesa
+              <div style={{ width:12, height:12, background:'#FF5C5C', borderRadius:2 }}/> Despesa
             </div>
           </div>
           <div style={{ marginTop:16 }}>
@@ -456,12 +466,12 @@ function TabExecutivo() {
             <div className="card-title"><span>🏟️</span> Status do Clube</div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
               {[
-                { label:'Atletas Ativos', val: dados.atletas_ativos, cor:'#0052cc' },
-                { label:'Contratos Vencendo', val: dados.contratos_vencendo, cor: dados.contratos_vencendo > 3 ? '#de350b' : '#ff8b00' },
-                { label:'Metas Críticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#de350b' : '#00875a' },
-                { label:'Saldo Devedor', val: fmtK(dados.saldo_devedor_emprestimos), cor:'#6554c0', isStr:true },
+                { label:'Atletas Ativos', val: dados.atletas_ativos, cor:'#3B82F6' },
+                { label:'Contratos Vencendo', val: dados.contratos_vencendo, cor: dados.contratos_vencendo > 3 ? '#FF5C5C' : '#F59E0B' },
+                { label:'Metas Críticas', val: dados.metas_criticas, cor: dados.metas_criticas > 0 ? '#FF5C5C' : '#22C55E' },
+                { label:'Saldo Devedor', val: fmtK(dados.saldo_devedor_emprestimos), cor:'#8B5CF6', isStr:true },
               ].map((it, i) => (
-                <div key={i} style={{ background:'#f8fafc', borderRadius:8, padding:12, borderLeft:`3px solid ${it.cor}` }}>
+                <div key={i} style={{ background:'#252540', borderRadius:8, padding:12, borderLeft:`3px solid ${it.cor}` }}>
                   <div style={{ fontSize:11, color:'#64748b', marginBottom:4 }}>{it.label}</div>
                   <div style={{ fontSize:20, fontWeight:700, color:it.cor }}>{it.val}</div>
                 </div>
@@ -474,8 +484,8 @@ function TabExecutivo() {
             <div className="card-title"><span>💰</span> Composição da Folha</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {[
-                { label:'Atletas',      val: dados.folha_atletas,      pct: dados.folha_total > 0 ? (dados.folha_atletas/dados.folha_total*100).toFixed(1) : 0, cor:'#0052cc' },
-                { label:'Funcionários', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#6554c0' },
+                { label:'Atletas',      val: dados.folha_atletas,      pct: dados.folha_total > 0 ? (dados.folha_atletas/dados.folha_total*100).toFixed(1) : 0, cor:'#3B82F6' },
+                { label:'Funcionários', val: dados.folha_funcionarios, pct: dados.folha_total > 0 ? (dados.folha_funcionarios/dados.folha_total*100).toFixed(1) : 0, cor:'#8B5CF6' },
               ].map((it, i) => (
                 <div key={i}>
                   <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4, fontSize:13 }}>
@@ -487,7 +497,7 @@ function TabExecutivo() {
                   </div>
                 </div>
               ))}
-              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:8, borderTop:'1px solid #e2e8f0', fontWeight:700 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:8, borderTop:'1px solid #3A3A5C', fontWeight:700 }}>
                 <span>Total</span><span>{fmtK(dados.folha_total)}</span>
               </div>
             </div>
@@ -566,12 +576,12 @@ function TabFinanceiro() {
         {/* Receitas por categoria */}
         <div className="card">
           <div className="card-title"><span>📈</span> Receitas por Categoria</div>
-          <HorBar items={receitas} labelKey="categoria" valKey="total" color="#00875a"/>
+          <HorBar items={receitas} labelKey="categoria" valKey="total" color="#22C55E"/>
         </div>
         {/* Despesas por categoria */}
         <div className="card">
           <div className="card-title"><span>📉</span> Despesas por Categoria</div>
-          <HorBar items={despesas} labelKey="categoria" valKey="total" color="#de350b"/>
+          <HorBar items={despesas} labelKey="categoria" valKey="total" color="#FF5C5C"/>
         </div>
       </div>
 
@@ -652,12 +662,12 @@ function TabFolha() {
         {/* Distribuição atletas */}
         <div className="card">
           <div className="card-title"><span>⚽</span> Folha por Posição (Atletas)</div>
-          <HorBar items={distAtletas} labelKey="grupo" valKey="folha" color="#0052cc"/>
+          <HorBar items={distAtletas} labelKey="grupo" valKey="folha" color="#3B82F6"/>
         </div>
         {/* Distribuição funcionários */}
         <div className="card">
           <div className="card-title"><span>🏢</span> Folha por Departamento (Func.)</div>
-          <HorBar items={distFuncs} labelKey="grupo" valKey="folha" color="#6554c0"/>
+          <HorBar items={distFuncs} labelKey="grupo" valKey="folha" color="#8B5CF6"/>
         </div>
       </div>
 
@@ -738,10 +748,10 @@ function TabEsportivo() {
                   <td><strong>{p.competicao}</strong></td>
                   <td>{p.total_jogos}</td>
                   <td className="pos">{p.total_gols}</td>
-                  <td style={{ color:'#0052cc', fontWeight:600 }}>{p.total_assistencias}</td>
+                  <td style={{ color:'#3B82F6', fontWeight:600 }}>{p.total_assistencias}</td>
                   <td>{p.total_clean_sheets}</td>
-                  <td style={{ color:'#ff8b00', fontWeight:600 }}>{p.total_amarelos}</td>
-                  <td style={{ color:'#de350b', fontWeight:600 }}>{p.total_vermelhos}</td>
+                  <td style={{ color:'#F59E0B', fontWeight:600 }}>{p.total_amarelos}</td>
+                  <td style={{ color:'#FF5C5C', fontWeight:600 }}>{p.total_vermelhos}</td>
                   <td><span className="badge badge-verde">{(p.total_jogos > 0 ? (p.total_gols/p.total_jogos).toFixed(2) : '0.00')}</span></td>
                 </tr>
               ))}
@@ -764,7 +774,7 @@ function TabEsportivo() {
                     <td><strong>{a.nome}</strong></td>
                     <td><span className="badge badge-cinza">{a.posicao?.split(' ')[0]}</span></td>
                     <td><strong className="pos">{a.gols}</strong></td>
-                    <td style={{ color:'#0052cc' }}>{a.assistencias}</td>
+                    <td style={{ color:'#3B82F6' }}>{a.assistencias}</td>
                     <td>{a.jogos}</td>
                   </tr>
                 ))}
@@ -779,9 +789,9 @@ function TabEsportivo() {
           <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
             {(dados.metas || []).map((m, i) => {
               const pct = Number(m.percentual) || 0;
-              const cor = m.status === 'concluida' ? '#00875a' : pct >= 70 ? '#00875a' : pct >= 40 ? '#ff8b00' : '#de350b';
+              const cor = m.status === 'concluida' ? '#22C55E' : pct >= 70 ? '#22C55E' : pct >= 40 ? '#F59E0B' : '#FF5C5C';
               return (
-                <div key={i} style={{ padding:12, background:'#f8fafc', borderRadius:8, borderLeft:`3px solid ${cor}` }}>
+                <div key={i} style={{ padding:12, background:'#252540', borderRadius:8, borderLeft:`3px solid ${cor}` }}>
                   <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
                     <span style={{ fontWeight:600, fontSize:13 }}>{m.titulo}</span>
                     {m.status === 'concluida'
@@ -923,7 +933,7 @@ function TabCompras() {
             {(dados.por_status || []).map((s, i) => {
               const max = Math.max(...(dados.por_status||[]).map(x => Number(x.qtd)));
               const pct = max > 0 ? Math.round((Number(s.qtd)/max)*100) : 0;
-              const cor = { concluido:'#00875a', cancelado:'#de350b', em_aprovacao:'#ff8b00', em_cotacao:'#0052cc', rascunho:'#94a3b8' }[s.status] || CORES[i%CORES.length];
+              const cor = { concluido:'#22C55E', cancelado:'#FF5C5C', em_aprovacao:'#F59E0B', em_cotacao:'#3B82F6', rascunho:'#94a3b8' }[s.status] || CORES[i%CORES.length];
               return (
                 <div className="bar-row" key={i}>
                   <span className="bar-label">{statusLabel(s.status)}</span>
@@ -965,10 +975,10 @@ function TabCompras() {
                     <td><strong>{fmtK(f.volume_total)}</strong></td>
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                        <div style={{ flex:1, background:'#f1f5f9', borderRadius:4, height:6, overflow:'hidden' }}>
-                          <div style={{ height:'100%', background: taxa >= 80 ? '#00875a' : taxa >= 50 ? '#ff8b00' : '#de350b', width:`${taxa}%`, borderRadius:4 }}/>
+                        <div style={{ flex:1, background:'#1C1C2E', borderRadius:4, height:6, overflow:'hidden' }}>
+                          <div style={{ height:'100%', background: taxa >= 80 ? '#22C55E' : taxa >= 50 ? '#F59E0B' : '#FF5C5C', width:`${taxa}%`, borderRadius:4 }}/>
                         </div>
-                        <span style={{ fontSize:11, fontWeight:700, color: taxa >= 80 ? '#00875a' : taxa >= 50 ? '#ff8b00' : '#de350b' }}>{taxa}%</span>
+                        <span style={{ fontSize:11, fontWeight:700, color: taxa >= 80 ? '#22C55E' : taxa >= 50 ? '#F59E0B' : '#FF5C5C' }}>{taxa}%</span>
                       </div>
                     </td>
                   </tr>
