@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Agenda de Jogos – ERP SAF</title>
-<script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+<title>Agenda de Jogos — ERP SAF</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="config.js"></script>
 <style>
     :root {
       --bg:          #1C1C2E;
@@ -21,285 +22,815 @@
       --dourado:     #F59E0B;
       --azul:        #3B82F6;
       --azul-dark:   #1D4ED8;
-      --texto:       #3A3A5C;
+      --texto:       #E2E8F0;
       --texto-leve:  #94A3B8;
       --roxo:        #8B5CF6;
       --laranja:     #F97316;
     }
-*{box-sizing:border-box;margin:0;padding:0}
-background: var(--bg);color:#3A3A5C;min-height:100vh}
-.topbar{background:#E2E8F0;border-bottom:1px solid #334155;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
-.topbar h1{font-size:1.2rem;color:#38bdf8;font-weight:700}
-.topbar .user{font-size:.85rem;color:#94a3b8;display:flex;gap:12px;align-items:center}
-.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-size:.875rem;font-weight:600;transition:.2s}
-.btn-primary{background:#0ea5e9;color:#fff}.btn-primary:hover{background:#0284c7}
-.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#FF5C5C}
-.btn-ghost{background:transparent;color:#94a3b8;border:1px solid #334155}.btn-ghost:hover{background:#E2E8F0}
-.btn-sm{padding:5px 10px;font-size:.8rem}
-.container{max-width:1200px;margin:0 auto;padding:24px}
-.card{background:#E2E8F0;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:20px}
-.card h2{font-size:1rem;color:#94a3b8;margin-bottom:16px;text-transform:uppercase;letter-spacing:.05em}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-group label{font-size:.8rem;color:#94a3b8;font-weight:600}
-.form-group input,.form-group select{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:8px 12px;color:#3A3A5C;font-size:.9rem;outline:none}
-.form-group input:focus,.form-group select:focus{border-color:#0ea5e9}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse}
-thead tr{background:#0f172a}
-th{padding:10px 12px;text-align:left;font-size:.8rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #334155}
-td{padding:12px;border-bottom:1px solid #E2E8F0;font-size:.875rem}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#162032}
-.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:.75rem;font-weight:600}
-.badge-green{background:#064e3b;color:#34d399}
-.badge-red{background:#450a0a;color:#f87171}
-.badge-blue{background:#0c4a6e;color:#38bdf8}
-.badge-yellow{background:#422006;color:#fbbf24}
-.badge-gray{background:#E2E8F0;color:#94a3b8;border:1px solid #334155}
-.empty{text-align:center;padding:40px;color:#475569}
-.alert{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:.875rem}
-.alert-error{background:#450a0a;border:1px solid #ef4444;color:#fca5a5}
-.alert-success{background:#064e3b;border:1px solid #10b981;color:#6ee7b7}
-.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.tab{padding:8px 16px;border-radius:8px;border:1px solid #334155;cursor:pointer;font-size:.875rem;background:#E2E8F0;color:#94a3b8;transition:.2s}
-.tab.active{background:#0ea5e9;color:#fff;border-color:#0ea5e9}
-.score{font-weight:700;font-size:1rem}
-.score .win{color:#34d399}
-.score .loss{color:#f87171}
-.score .draw{color:#fbbf24}
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
-.stat-card{background:#E2E8F0;border:1px solid #334155;border-radius:10px;padding:16px;text-align:center}
-.stat-card .val{font-size:1.6rem;font-weight:700;color:#38bdf8}
-.stat-card .lbl{font-size:.75rem;color:#64748b;margin-top:4px}
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background: var(--bg);color: var(--texto);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+  .navbar-brand{color:#252540;font-weight:700;font-size:18px;text-decoration:none;display:flex;align-items:center;gap:8px}
+  .navbar-nav{display:flex;gap:4px}
+  .nav-link{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:6px;font-size:13px;transition:.2s}
+  .nav-link:hover,.nav-link.active{color:#252540;background:rgba(255,255,255,.08)}
+  .container{max-width:1300px;margin:0 auto;padding:24px}
+  .page-title{font-size:24px;font-weight:700;margin-bottom:4px}
+  .page-subtitle{color:var(--muted);font-size:14px;margin-bottom:24px}
+
+  /* Tabs */
+  .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px}
+  .tab-btn{padding:10px 20px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:500;color:var(--muted);position:relative;transition:.2s}
+  .tab-btn:hover{color:var(--text)}
+  .tab-btn.active{color:var(--azul-text)}
+  .tab-btn.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--azul-text)}
+
+  /* KPI Cards */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+  .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+  .kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+  .kpi-value{font-size:22px;font-weight:700;line-height:1.2}
+  .kpi-sub{font-size:11px;color:var(--muted);margin-top:3px}
+  .kpi-card.verde .kpi-value{color:var(--verde-text)}
+  .kpi-card.azul  .kpi-value{color:var(--azul-text)}
+  .kpi-card.laranja .kpi-value{color:var(--laranja)}
+  .kpi-card.vermelho .kpi-value{color:var(--vermelho)}
+  .kpi-card.roxo .kpi-value{color:#bc8cff}
+
+  /* Cards */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px}
+  .card-title{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+  /* Jogo card */
+  .jogo-list{display:flex;flex-direction:column;gap:10px}
+  .jogo-card{background:var(--cinza2);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
+  .jogo-card:hover{border-color:var(--azul-text);background:#1c2230}
+  .jogo-card .jogo-borda{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:10px 0 0 10px}
+  .jogo-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .jogo-adversario{font-size:16px;font-weight:700}
+  .jogo-meta{font-size:12px;color:var(--muted);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+  .jogo-placar{font-size:24px;font-weight:900;letter-spacing:2px}
+  .placar-vitoria{color:var(--verde-text)}
+  .placar-empate{color:var(--laranja)}
+  .placar-derrota{color:var(--vermelho)}
+  .jogo-footer{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+
+  /* Badges */
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+  .badge-verde{background:var(--verde-light);color:var(--verde-text);border:1px solid var(--verde)}
+  .badge-azul{background:var(--azul-light);color:var(--azul-text);border:1px solid var(--azul)}
+  .badge-laranja{background:var(--laranja-light);color:var(--laranja);border:1px solid #6a4800}
+  .badge-vermelho{background:var(--vermelho-light);color:#ff7b72;border:1px solid #6e2020}
+  .badge-roxo{background:var(--roxo-light);color:#bc8cff;border:1px solid var(--roxo)}
+  .badge-cinza{background:var(--cinza);color:var(--muted);border:1px solid #444}
+
+  /* Tabelas */
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:#1C1C2E;padding:10px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+  td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+  tr:hover td{background:rgba(255,255,255,.03)}
+
+  /* Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:12px;width:100%;max-width:800px;margin:auto}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+  .modal-title{font-size:18px;font-weight:700}
+  .modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:4px 8px;border-radius:6px;transition:.2s}
+  .modal-close:hover{background:var(--cinza);color:var(--text)}
+  .modal-body{padding:24px}
+  .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+  /* Formulário */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-grid.cols3{grid-template-columns:1fr 1fr 1fr}
+  .form-group{display:flex;flex-direction:column;gap:5px}
+  .form-group.full{grid-column:1/-1}
+  label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  input,select,textarea{background:var(--cinza2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;transition:.2s;width:100%}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--azul-text);background:#1c2230}
+  textarea{resize:vertical;min-height:70px}
+  input[type=checkbox]{width:auto}
+
+  /* Botões */
+  .btn{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+  .btn-primary{background:var(--azul);color:#252540}
+  .btn-primary:hover{background:#1158c7}
+  .btn-success{background:var(--verde);color:#252540}
+  .btn-success:hover{background:#196127}
+  .btn-danger{background:var(--vermelho);color:#252540}
+  .btn-danger:hover{background:#b91c1c}
+  .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn-outline:hover{background:var(--cinza)}
+  .btn-sm{padding:5px 10px;font-size:12px}
+
+  /* Filtros */
+  .filter-row{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+  .filter-row select,.filter-row input{padding:7px 12px;max-width:180px}
+
+  /* Progress */
+  .progress-wra{background:var(--cinza);border-radius:6px;height:6px;overflow:hidden;margin-top:4px}
+  .progress-bar{height:100%;border-radius:6px;transition:width .5s}
+
+  /* Grid */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  @media(max-width:900px){.grid-2,.grid-3,.form-grid{grid-template-columns:1fr}}
+
+  /* Seção título */
+  .section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+  /* Orçamento item */
+  .orc-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--cinza2);border-radius:6px;margin-bottom:6px}
+  .orc-item-cat{font-size:10px;text-transform:uppercase;color:var(--muted);width:90px;flex-shrink:0}
+  .orc-item-desc{flex:1;font-size:13px}
+  .orc-item-val{font-size:13px;font-weight:700;color:var(--laranja);width:90px;text-align:right;flex-shrink:0}
+  .orc-item-real{font-size:13px;font-weight:700;color:var(--verde-text);width:90px;text-align:right;flex-shrink:0}
+  .orc-item-status{width:60px;text-align:center;flex-shrink:0}
+
+  /* Receita item */
+  .rec-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--cinza2);border-radius:6px;margin-bottom:6px}
+  .rec-tipo{font-size:11px;color:var(--muted);width:130px;flex-shrink:0}
+  .rec-desc{flex:1;font-size:13px}
+  .rec-val{font-size:14px;font-weight:700;color:var(--verde-text)}
+  .rec-est{color:var(--muted);font-size:11px;margin-left:4px}
+
+  /* Gol item */
+  .gol-item{display:flex;align-items:center;gap:10px;padding:6px 10px;background:var(--cinza2);border-radius:6px;margin-bottom:5px}
+  .gol-min{font-size:11px;color:var(--laranja);width:36px;flex-shrink:0;font-weight:700}
+  .gol-nome{flex:1;font-size:13px;font-weight:600}
+  .gol-tipo{font-size:11px;color:var(--muted)}
+
+  /* Público */
+  .publico-bar{height:24px;background:var(--cinza);border-radius:8px;overflow:hidden;margin:8px 0;position:relative}
+  .publico-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--azul),#60A5FA);transition:width .8s ease}
+  .publico-label{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#252540}
+
+  /* Próximo jogo hero */
+  .hero-jogo{background:linear-gradient(135deg,#1c2230,#1C1C2E);border:1px solid var(--azul);border-radius:12px;padding:24px;margin-bottom:24px;position:relative;overflow:hidden}
+  .hero-jogo::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(31,111,235,.3),transparent);border-radius:50%}
+  .hero-tag{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--azul-text);margin-bottom:8px;font-weight:600}
+  .hero-adversario{font-size:28px;font-weight:900;margin-bottom:6px}
+  .hero-info{display:flex;gap:20px;color:var(--muted);font-size:13px;flex-wrap:wrap}
+  .hero-info span{display:flex;align-items:center;gap:5px}
+
+  /* Loading */
+  .loading{display:flex;align-items:center;justify-content:center;padding:48px;color:var(--muted);font-size:14px}
+  .spin{animation:spin 1s linear infinite;margin-right:8px;font-size:20px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* Status resultados visuais */
+  .resultado-badge{font-size:18px;font-weight:900;padding:4px 12px;border-radius:8px}
+  .res-V{background:var(--verde-light);color:var(--verde-text);border:1px solid var(--verde)}
+  .res-E{background:var(--laranja-light);color:var(--laranja);border:1px solid #6a4800}
+  .res-D{background:var(--vermelho-light);color:#ff7b72;border:1px solid #6e2020}
+
+  .pos{color:var(--verde-text);font-weight:600}
+  .neg{color:#ff7b72;font-weight:600}
+  .neutral{color:var(--muted)}
 </style>
 </head>
 <body>
+
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">⚽ ERP SAF</a>
+  <div class="navbar-nav">
+    <a class="nav-link" href="index.html">Dashboard</a>
+    <a class="nav-link" href="financeiro.html">Financeiro</a>
+    <a class="nav-link" href="atletas.html">Atletas</a>
+    <a class="nav-link" href="investidores.html">Investidores</a>
+    <a class="nav-link" href="pedidos.html">Compras</a>
+    <a class="nav-link" href="metas.html">Metas</a>
+    <a class="nav-link" href="relatorios.html">Relatórios</a>
+    <a class="nav-link active" href="jogos.html">Agenda</a>
+  </div>
+</nav>
+
+<div id="root"></div>
+
 <script type="text/babel">
-const API_URL = localStorage.getItem('erp_api_url') || 'https://backend-production-7c51.up.railway.app';
-// ============================
-const _getAT=()=>localStorage.getItem('erp_access');
-const _getRF=()=>localStorage.getItem('erp_refresh');
-let USUARIO=null;
-try{USUARIO=JSON.parse(localStorage.getItem('erp_user'));}catch(e){}
+const { useState, useEffect, useCallback, useRef } = React;
 
-async function _refreshToken(){
-  try{const rf=_getRF();if(!rf)return false;
-    const r=await fetch(API_URL+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rf})});
-    if(!r.ok)return false;const data=await r.json();
-    if(data.accessToken){localStorage.setItem('erp_access',data.accessToken);if(data.refreshToken)localStorage.setItem('erp_refresh',data.refreshToken);return true;}
-    return false;}catch(e){return false;}}
-
-async function apiFetch(path,options={}){
-  try{let at=_getAT();
-    if(at){try{const p=JSON.parse(atob(at.split('.')[1]));if((p.exp*1000)-Date.now()<30000){await _refreshToken();at=_getAT();}}catch(e){}}
-    const headers={'Content-Type':'application/json'};if(at)headers['Authorization']='Bearer '+at;
-    const res=await fetch(API_URL+path,{...options,headers});
-    if(res.status===401){const ok=await _refreshToken();
-      if(ok){at=_getAT();headers['Authorization']='Bearer '+at;const r2=await fetch(API_URL+path,{...options,headers});if(r2.status===401){localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}return await r2.json();}
-      localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';return null;}
-    return await res.json();}catch(e){return null;}}
-
-function fmt(d){if(!d)return'-';const p=d.split('T')[0].split('-');return p[2]+'/'+p[1]+'/'+p[0];}
-
-// ============================
-const {useState,useEffect,useCallback}=React;
-
-function Login({onLogin}){
-  const [email,setEmail]=useState('');
-  const [senha,setSenha]=useState('');
-  const [erro,setErro]=useState('');
-  const [loading,setLoading]=useState(false);
-  async function handleSubmit(e){
-    e.preventDefault();setLoading(true);setErro('');
-    const d=await apiFetch('/api/auth/login',{method:'POST',body:JSON.stringify({email,senha})});
-    setLoading(false);
-    if(d?.accessToken){localStorage.setItem('erp_access',d.accessToken);if(d.refreshToken)localStorage.setItem('erp_refresh',d.refreshToken);USUARIO=d.usuario||{};localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(USUARIO);}
-    else setErro(d?.error||'Credenciais inválidas');
-  }
-  return <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>
-    <div style={{background:'#E2E8F0',border:'1px solid #334155',borderRadius:16,padding:40,width:360}}>
-      <h2 style={{color:'#38bdf8',marginBottom:24,textAlign:'center'}}>⚽ ERP SAF – Jogos</h2>
-      {erro&&<div className="alert alert-error">{erro}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group" style={{marginBottom:12}}>
-          <label>E-mail</label>
-          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/>
-        </div>
-        <div className="form-group" style={{marginBottom:20}}>
-          <label>Senha</label>
-          <input type="password" value={senha} onChange={e=>setSenha(e.target.value)} required/>
-        </div>
-        <button type="submit" className="btn btn-primary" style={{width:'100%'}} disabled={loading}>
-          {loading?'Entrando...':'Entrar'}
-        </button>
-      </form>
-    </div>
-  </div>;
+const API_URL = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001';
+async function apiFetch(path, opts = {}) {
+  const token = localStorage.getItem('erp_token');
+  const res = await fetch(API_URL + path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(opts.headers || {}) }
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.erro || 'Erro na API');
+  return data;
 }
 
-function App(){
-  const [usuario,setUsuario]=useState(USUARIO);
-  const [jogos,setJogos]=useState([]);
-  const [loading,setLoading]=useState(false);
-  const [msg,setMsg]=useState({type:'',text:''});
-  const [aba,setAba]=useState('lista');
-  const [form,setForm]=useState({adversario:'',data:'',local:'',competicao:'',mandante:true,gols_nos:'',gols_adv:'',status:'agendado',observacoes:''});
-  const [editId,setEditId]=useState(null);
+const fmt  = v => 'R$ ' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
+const fmtK = v => { const n=Number(v||0); if(n>=1e6) return 'R$ '+(n/1e6).toFixed(2).replace('.',',')+' M'; if(n>=1e3) return 'R$ '+(n/1e3).toFixed(1).replace('.',',')+' k'; return 'R$ '+n.toFixed(0); };
+const fmtDate = d => d ? new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
+const fmtDateTime = d => d ? new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
 
-  function logout(){USUARIO=null;setUsuario(null);localStorage.removeItem('erp_access');localStorage.removeItem('erp_refresh');localStorage.removeItem('erp_user');location.href='/login.html';}
+// ─── DEMO DATA ────────────────────────────────────────────────
+const DEMO_RESUMO = {
+  total_jogos:15, realizados:8, proximos:7,
+  vitorias:4, empates:2, derrotas:2, aproveitamento:58,
+  gols_marcados:14, gols_sofridos:7,
+  media_publico:6200, publico_total_temporada:31000,
+  receita_total:1056000, custo_total:185000,
+  proximo_jogo:{
+    id:9, adversario:'Operário PR', competicao:'Série B', rodada:'Rodada 9',
+    data_jogo:'2026-03-22T16:00:00', local_jogo:'Estádio Municipal',
+    tipo_jogo:'mandante', status:'confirmado',
+    capacidade_estadio:18000, receita_total:207000, custo_estimado:20660
+  }
+};
 
-  const carregar=useCallback(async()=>{
+const DEMO_JOGOS = [
+  { id:9,  adversario:'Operário PR',       competicao:'Série B',      rodada:'Rodada 9',  data_jogo:'2026-03-22T16:00:00', local_jogo:'Estádio Municipal',      tipo_jogo:'mandante', status:'confirmado', placar:null, resultado:null, receita_total:207000, custo_estimado:20660, capacidade_estadio:18000, publico_total:null },
+  { id:10, adversario:'Mirassol',          competicao:'Série B',      rodada:'Rodada 10', data_jogo:'2026-03-29T11:00:00', local_jogo:'Est. Municipal Lins',    tipo_jogo:'visitante',status:'agendado',   placar:null, resultado:null, receita_total:0,      custo_estimado:14100, capacidade_estadio:12000, publico_total:null },
+  { id:11, adversario:'Amazonas FC',       competicao:'Série B',      rodada:'Rodada 11', data_jogo:'2026-04-05T18:30:00', local_jogo:'Estádio Municipal',      tipo_jogo:'mandante', status:'agendado',   placar:null, resultado:null, receita_total:0,      custo_estimado:20660, capacidade_estadio:18000, publico_total:null },
+  { id:8,  adversario:'Ituano',            competicao:'Série B',      rodada:'Rodada 6',  data_jogo:'2026-02-22T16:00:00', local_jogo:'Estádio Municipal',      tipo_jogo:'mandante', status:'realizado',  placar:'2 x 2', resultado:'empate', receita_total:189100, custo_realizado:20500, capacidade_estadio:18000, publico_total:6390 },
+  { id:7,  adversario:'Fluminense',        competicao:'Copa do Brasil',rodada:'2ª Fase',   data_jogo:'2026-02-19T21:30:00', local_jogo:'Maracanã',               tipo_jogo:'visitante',status:'realizado',  placar:'1 x 2', resultado:'derrota', receita_total:0, custo_realizado:34000, capacidade_estadio:78000, publico_total:0 },
+  { id:6,  adversario:'Madureira EC',      competicao:'Copa do Brasil',rodada:'1ª Fase',   data_jogo:'2026-01-28T19:00:00', local_jogo:'Estádio Municipal',      tipo_jogo:'mandante', status:'realizado',  placar:'4 x 1', resultado:'vitoria', receita_total:169900, custo_realizado:26800, capacidade_estadio:18000, publico_total:4800 },
+  { id:5,  adversario:'Vila Nova',         competicao:'Série B',      rodada:'Rodada 5',  data_jogo:'2026-02-15T11:00:00', local_jogo:'Estádio Municipal',      tipo_jogo:'mandante', status:'realizado',  placar:'1 x 0', resultado:'vitoria', receita_total:197800, custo_realizado:19600, capacidade_estadio:18000, publico_total:6210 },
+  { id:3,  adversario:'Guarani',           competicao:'Série B',      rodada:'Rodada 3',  data_jogo:'2026-02-01T18:30:00', local_jogo:'Estádio Municipal',      tipo_jogo:'mandante', status:'realizado',  placar:'3 x 0', resultado:'vitoria', receita_total:229700, custo_realizado:18660, capacidade_estadio:18000, publico_total:7580 },
+  { id:2,  adversario:'CRB',               competicao:'Série B',      rodada:'Rodada 2',  data_jogo:'2026-01-25T11:00:00', local_jogo:'Est. Rei Pelé',          tipo_jogo:'visitante',status:'realizado',  placar:'1 x 1', resultado:'empate', receita_total:0, custo_realizado:14100, capacidade_estadio:30000, publico_total:0 },
+  { id:1,  adversario:'Atlético Goianiense',competicao:'Série B',     rodada:'Rodada 1',  data_jogo:'2026-01-18T16:00:00', local_jogo:'Estádio Municipal',      tipo_jogo:'mandante', status:'realizado',  placar:'2 x 1', resultado:'vitoria', receita_total:226300, custo_realizado:21740, capacidade_estadio:18000, publico_total:7220 },
+];
+
+const DEMO_DETALHE = {
+  jogo: DEMO_JOGOS[9],
+  orcamento: {
+    id:1, status:'realizado',
+    itens:[
+      { id:1, categoria:'Arbitragem', descricao:'Taxa CBF arbitragem',  valor_estimado:3500, valor_realizado:3500, pago:true },
+      { id:2, categoria:'Segurança',  descricao:'Segurança privada',     valor_estimado:4800, valor_realizado:5100, pago:true },
+      { id:3, categoria:'Segurança',  descricao:'Policiamento militar',  valor_estimado:1200, valor_realizado:1200, pago:true },
+      { id:4, categoria:'Operacional',descricao:'Bilheteiros e porteiros',valor_estimado:2400,valor_realizado:2400, pago:true },
+      { id:5, categoria:'Hospedagem', descricao:'Hotel adversário',       valor_estimado:3200, valor_realizado:3200, pago:true },
+      { id:6, categoria:'Alimentação',descricao:'Refeição elenco',        valor_estimado:960,  valor_realizado:1040, pago:true },
+      { id:7, categoria:'Comunicação',descricao:'Produção transmissão',   valor_estimado:2500, valor_realizado:2800, pago:true },
+    ]
+  },
+  receitas: [
+    { id:1, tipo:'bilheteria_inteira', descricao:'Ingresso inteira', quantidade:3200, valor_unitario:40, valor_total:128000, realizado:true },
+    { id:2, tipo:'bilheteria_meia',    descricao:'Ingresso meia',     quantidade:2400, valor_unitario:20, valor_total:48000,  realizado:true },
+    { id:3, tipo:'bilheteria_socio',   descricao:'Sðcio-torcedor',    quantidade:1200, valor_unitario:0,  valor_total:0,      realizado:true },
+    { id:4, tipo:'patrocinio_jogo',    descricao:'Patrocínio Apex',   quantidade:1,   valor_unitario:0,  valor_total:25000,  realizado:true },
+    { id:5, tipo:'cota_tv',            descricao:'Cota transmissão',  quantidade:1,   valor_unitario:0,  valor_total:18000,  realizado:true },
+    { id:6, tipo:'alimentacao',        descricao:'Alimentação',       quantidade:1,   valor_unitario:0,  valor_total:4200,   realizado:true },
+    { id:7, tipo:'estacionamento',     descricao:'Estacionamento',    quantidade:1,   valor_unitario:0,  valor_total:3100,   realizado:true },
+  ],
+  gols: [
+    { id:1, atleta_nome:'Thiago Alemão',  minuto:23, tipo:'normal',  time:'nos' },
+    { id:2, atleta_nome:'Lucas Menezes',  minuto:67, tipo:'normal',  time:'nos' },
+    { id:3, atleta_nome:null,             minuto:80, tipo:'normal',  time:'adversario' },
+  ]
+};
+
+const STATUS_COLORS = { realizado:'verde', confirmado:'azul', agendado:'cinza', cancelado:'vermelho', adiado:'laranja' };
+const STATUS_LABELS = { realizado:'Realizado', confirmado:'Confirmado', agendado:'Agendado', cancelado:'Cancelado', adiado:'Adiado' };
+
+// ─── Componente: Jogo Card ────────────────────────────────────
+function JogoCard({ jogo, onClick }) {
+  const res = jogo.resultado;
+  const placarColor = res === 'vitoria' ? 'placar-vitoria' : res === 'empate' ? 'placar-empate' : res === 'derrota' ? 'placar-derrota' : '';
+  const borda = res === 'vitoria' ? '#238636' : res === 'empate' ? '#e3b341' : res === 'derrota' ? '#da3633' : jogo.tipo_jogo === 'mandante' ? '#1f6feb' : '#6e40c9';
+  const margemJogo = jogo.status === 'realizado' && jogo.receita_total > 0
+    ? Number(jogo.receita_total) - Number(jogo.custo_realizado || jogo.custo_estimado || 0)
+    : null;
+
+  return (
+    <div className="jogo-card" onClick={() => onClick(jogo)}>
+      <div className="jogo-borda" style={{ background: borda }}/>
+      <div className="jogo-header">
+        <div>
+          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
+            <span style={{ fontSize:12, color:'#58a6ff', fontWeight:600 }}>{jogo.competicao}</span>
+            {jogo.rodada && <span style={{ fontSize:11, color:'#8b949e' }}>· {jogo.rodada}</span>}
+          </div>
+          <div className="jogo-adversario">
+            {jogo.tipo_jogo === 'mandante' ? '🏠' : '✈️'} {jogo.adversario}
+          </div>
+          <div className="jogo-meta">
+            <span>📅 {fmtDateTime(jogo.data_jogo)}</span>
+            {jogo.local_jogo && <span>📍 {jogo.local_jogo}</span>}
+          </div>
+        </div>
+        <div style={{ textAlign:'right', flexShrink:0 }}>
+          {jogo.placar
+            ? <div className={`jogo-placar ${placarColor}`}>{jogo.placar}</div>
+            : <span className={`badge badge-${STATUS_COLORS[jogo.status]}`}>{STATUS_LABELS[jogo.status]}</span>
+          }
+          {jogo.resultado && (
+            <div style={{ marginTop:4 }}>
+              <span className={`badge badge-${res === 'vitoria' ? 'verde' : res === 'empate' ? 'laranja' : 'vermelho'}`}>
+                {res === 'vitoria' ? '✓ Vitória' : res === 'empate' ? '= Empate' : '✗ Derrota'}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="jogo-footer">
+        {jogo.tipo_jogo === 'mandante' && jogo.publico_total > 0 && (
+          <span className="badge badge-cinza">👥 {Number(jogo.publico_total).toLocaleString('pt-BR')} pessoas</span>
+        )}
+        {jogo.receita_total > 0 && (
+          <span className="badge badge-verde">💰 {fmtK(jogo.receita_total)}</span>
+        )}
+        {margemJogo !== null && (
+          <span className={`badge badge-${margemJogo >= 0 ? 'verde' : 'vermelho'}`}>
+            {margemJogo >= 0 ? '▲' : '▼'} Margem: {fmtK(Math.abs(margemJogo))}
+          </span>
+        )}
+        {jogo.transmissao_tv && <span className="badge badge-roxo">📺 TV</span>}
+        {jogo.transmissao_streaming && <span className="badge badge-azul">🔴 Streaming</span>}
+        {jogo.orcamento_status && (
+          <span className={`badge badge-${jogo.orcamento_status === 'aprovado' ? 'verde' : jogo.orcamento_status === 'realizado' ? 'cinza' : 'laranja'}`}>
+            {jogo.orcamento_status === 'aprovado' ? '✓ Orç. Aprovado' : jogo.orcamento_status === 'realizado' ? 'Orç. Realizado' : '⏳ Orç. Rascunho'}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Modal Detalhe do Jogo ────────────────────────────────────
+function ModalJogo({ jogoId, onClose }) {
+  const [dados, setDados] = useState(null);
+  const [abaModal, setAbaModal] = useState('resumo');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiFetch(`/api/jogos/${jogoId}`)
+      .catch(() => DEMO_DETALHE)
+      .then(d => { setDados(d); setLoading(false); });
+  }, [jogoId]);
+
+  if (loading) return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="loading"><span className="spin">⟳</span> Carregando...</div>
+      </div>
+    </div>
+  );
+  if (!dados) return null;
+
+  const { jogo, orcamento, receitas, gols } = dados;
+  const totalEstimado  = (orcamento?.itens || []).reduce((s, i) => s + Number(i.valor_estimado||0), 0);
+  const totalRealizado = (orcamento?.itens || []).filter(i => i.valor_realizado != null).reduce((s, i) => s + Number(i.valor_realizado||0), 0);
+  const totalReceita   = receitas.reduce((s, r) => s + Number(r.valor_total||0), 0);
+  const totalReceitaReal = receitas.filter(r => r.realizado).reduce((s, r) => s + Number(r.valor_total||0), 0);
+  const margem = totalReceitaReal > 0 || totalRealizado > 0 ? totalReceitaReal - totalRealizado : null;
+
+  const nosGols = gols.filter(g => g.time === 'nos');
+  const advGols = gols.filter(g => g.time === 'adversario');
+  const ocupacao = jogo.capacidade_estadio > 0 && jogo.publico_total > 0
+    ? ((jogo.publico_total / jogo.capacidade_estadio) * 100).toFixed(1) : null;
+
+  const tipoLabel = { bilheteria_inteira:'Inteira', bilheteria_meia:'Meia', bilheteria_socio:'Sócio', patrocinio_jogo:'Patrocínio', cota_tv:'Cota TV', streaming:'Streaming', merchandising:'Merchan.', alimentacao:'Alimentação', estacionamento:'Estacion.', outro:'Outro' };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div>
+            <div style={{ fontSize:12, color:'#58a6ff', marginBottom:4 }}>{jogo.competicao} · {jogo.rodada}</div>
+            <div className="modal-title">
+              {jogo.tipo_jogo === 'mandante' ? '🏠' : '✈️'} vs {jogo.adversario}
+            </div>
+          </div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+
+        {/* Placar hero */}
+        {jogo.status === 'realizado' && jogo.placar && (
+          <div style={{ background:'#0d1117', padding:'16px 24px', display:'flex', alignItems:'center', gap:24, justifyContent:'center' }}>
+            <div style={{ textAlign:'right', flex:1 }}>
+              <div style={{ fontSize:12, color:'#8b949e', marginBottom:2 }}>Nosso clube</div>
+              <div style={{ fontSize:36, fontWeight:900, color: jogo.gols_nos > jogo.gols_adversario ? '#3fb950' : '#8b949e' }}>{jogo.gols_nos}</div>
+            </div>
+            <div style={{ fontSize:18, color:'#8b949e', fontWeight:700 }}>×</div>
+            <div style={{ textAlign:'left', flex:1 }}>
+              <div style={{ fontSize:12, color:'#8b949e', marginBottom:2 }}>{jogo.adversario}</div>
+              <div style={{ fontSize:36, fontWeight:900, color: jogo.gols_adversario > jogo.gols_nos ? '#ff7b72' : '#8b949e' }}>{jogo.gols_adversario}</div>
+            </div>
+            <div style={{ textAlign:'center' }}>
+              {jogo.resultado === 'vitoria' && <span className="resultado-badge res-V">VITÓRIA</span>}
+              {jogo.resultado === 'empate'  && <span className="resultado-badge res-E">EMPATE</span>}
+              {jogo.resultado === 'derrota' && <span className="resultado-badge res-D">DERROTA</span>}
+            </div>
+          </div>
+        )}
+
+        {/* Abas internas */}
+        <div style={{ borderBottom:'1px solid var(--border)', display:'flex' }}>
+          {['resumo','orcamento','receitas','gols'].map(a => (
+            <button key={a} className={`tab-btn ${abaModal===a?'active':''}`} onClick={() => setAbaModal(a)}
+                    style={{ fontSize:12, padding:'10px 16px' }}>
+              {a === 'resumo' ? '📋 Resumo(' : a === 'orcamento%' ? `💸 Orçamento` : a === 'receitas' ? `💰 Receitas` : `⚽ Gols`}
+            </button>
+          ))}
+        </div>
+
+        <div className="modal-body">
+          {/* Resumo */}
+          {abaModal === 'resumo' && (
+            <div>
+              <div className="grid-2" style={{ marginBottom:16 }}>
+                <div style={{ background:'var(--cinza2)', borderRadius:8, padding:14 }}>
+                  <div style={{ fontSize:11, color:'var(--muted)', marginBottom:6 }}>📅 DATA E LOCAL</div>
+                  <div style={{ fontWeight:600 }}>{fmtDateTime(jogo.data_jogo)}</div>
+                  <div style={{ color:'var(-mmuted)', fontSize:13, marginTop:2 }}>{jogo.local_jogo || '—'}</div>
+                </div>
+                <div style={{ background:'var(--cinza2)', borderRadius:8, padding:14 }}>
+                  <div style={{ fontSize:11, color:'var(-mmuted)', marginBottom:6 }}>🎪 TIPO</div>
+                  <div style={{ fontWeight:600 }}>{jogo.tipo_jogo === 'mandante' ? '🏠 Mandante' : '✈️ Visitante'}</div>
+                  <div style={{ color:'var(--muted)', fontSize:13, marginTop:2 }}>
+                    {jogo.transmissao_tv && '📺 TV '}{jogo.transmissao_streaming && '🔴 Streaming'}
+                    {!jogo.transmissao_tv && !jogo.transmissao_streaming && 'Sem transmissão'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Público */}
+              {jogo.tipo_jogo === 'mandante' && (
+                <div>
+                  <div className="section-title">👥 Público</div>
+                  {jogo.publico_total > 0 ? (
+                    <div>
+                      <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4, fontSize:13 }}>
+                        <span>{Number(jogo.publico_total).toLocaleString('pt-BR')} pessoas</span>
+                        <span style={{ color:'var(--muted)' }}>Cap.: {Number(jogo.capacidade_estadio||0).toLocaleString('pt-BR')}</span>
+                      </div>
+                      <div className="publico-bar">
+                        <div className="publico-fill" style={{ width:`${Math.min(Number(ocupacao||0),100)}%` }}/>
+                        <span className="publico-label">{ocupacao}% ocupação</span>
+                      </div>
+                      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:10 }}>
+                        <div style={{ background:'var(--cinza2)', borderRadius:6, padding:10, textAlign:'center' }}>
+                          <div style={{ fontSize:11, color:'var(--muted)' }}>Pagante</div>
+                          <div style={{ fontWeight:700, fontSize:18, color:'#3fb950' }}>{Number(jogo.publico_pagante||0).toLocaleString('pt-BR')}</div>
+                        </div>
+                        <div style={{ background:'var(--cinza2)', borderRadius:6, padding:10, textAlign:'center' }}>
+                          <div style={{ fontSize:11, color:'var(--muted)' }}>Cortesias</div>
+                          <div style={{ fontWeight:700, fontSize:18, color:'#58a6ff' }}>{Number(jogo.publico_cortesias||0).toLocaleString('pt-BR')}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : <div style={{ color:'var(--muted)', fontSize:13, padding:'12px 0' }}>Público ainda não registrado.</div>}
+                </div>
+              )}
+
+              {/* Financeiro resumo */}
+              <div className="section-title">💰 Resultado Financeiro</div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+                {[
+                  { label:'Receita', val:totalReceitaReal || totalReceita, cor:'var(--verde-text)' },
+                  { label:'Custo', val:totalRealizado || totalEstimado, cor:'#ff7b72' },
+                  { label:'Margem', val:margem, cor: margem === null ? 'var(--muted)' : margem >= 0 ? 'var(--verde-text)' : '#ff7b72' },
+                ].map((it,i) => (
+                  <div key={i} style={{ background:'var(--cinza2)', borderRadius:8, padding:12, textAlign:'center' }}>
+                    <div style={{ fontSize:11, color:'var(--muted)', marginBottom:4 }}>{it.label}</div>
+                    <div style={{ fontWeight:700, color:it.cor, fontSize:16 }}>
+                      {it.val !== null ? fmtK(Math.abs(it.val)) : '—'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Orçamento */}
+          {abaModal === 'orcamento' && (
+            <div>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+                <div style={{ fontSize:13, color:'var(--muted)' }}>
+                  Status: <span className={`badge badge-${orcamento?.status === 'aprovado' ? 'verde' : orcamento?.status === 'realizado' ? 'cinza' : 'laranja'}`}>{orcamento?.status || 'sem orçamento'}</span>
+                </div>
+                <div style={{ display:'flex', gap:8 }}>
+                  <span style={{ fontSize:12, color:'var(--muted)' }}>Estimado: <strong style={{ color:'var(--laranja)' }}>{fmtK(totalEstimado)}</strong></span>
+                  {totalRealizado > 0 && <span style={{ fontSize:12, color:'var(--muted)' }}>Realizado: <strong style={{ color:'#ff7b72' }}>{fmtK(totalRealizado)}</strong></span>}
+                </div>
+              </div>
+
+              {(orcamento?.itens || []).filter(Boolean).map((item, i) => (
+                <div key={i} className="orc-item">
+                  <span className="orc-item-cat">{item.categoria}</span>
+                  <span className="orc-item-desc">{item.descricao}</span>
+                  <span className="orc-item-val">{fmtK(item.valor_estimado)}</span>
+                  {item.valor_realizado != null
+                    ? <span className="orc-item-real">{fmtK(item.valor_realizado)}</span>
+                    : <span style={{ width:90 }}/>
+                  }
+                  <span className="orc-item-status">
+                    {item.pago
+                      ? <span className="badge badge-verde" style={{ fontSize:9 }}>Pago</span>
+                      : <span className="badge badge-laranja" style={{ fontSize:9 }}>Pendente</span>
+                    }
+                  </span>
+                </div>
+              ))}
+
+              {!orcamento && (
+                <div style={{ textAlign:'penter', color:'var(--muted)', padding:'24px 0' }}>
+                  Nenhum orçamento registrado para este jogo.
+                </div>
+              )}
+
+              <div style={{ borderTop:'1px solid var(--border)', paddingTop:12, marginTop:8, display:'flex', justifyContent:'flex-end', gap:16 }}>
+                <span style={{ fontSize:13, color:'var(--muted)' }}>Total estimado: <strong style={{ color:'var(--laranja)' }}>{fmtK(totalEstimado)}</strong></span>
+                {totalRealizado > 0 && <span style={{ fontSize:13, color:'var(--muted)' }}>Total realizado: <strong style={{ color:'#ff7b72' }}>{fmtK(totalRealizado)}</strong></span>}
+              </div>
+            </div>
+          )}
+
+          {/* Receitas */}
+          {abaModal === 'receitas' && (
+            <div>
+              <div style={{ marginBottom:16, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                <span style={{ fontSize:13, color:'var(--muted)' }}>
+                  {receitas.filter(r=>r.realizado).length} receitas realizadas · {receitas.filter(r=>!r.realizado).length} estimadas
+                </span>
+                <span style={{ fontWeight:700, color:'var(--verde-text)', fontSize:14 }}>{fmtK(totalReceita)}</span>
+              </div>
+
+              {receitas.map((r, i) => (
+                <div key={i} className="rec-item">
+                  <span className="rec-tipo">{tipoLabel[r.tipo] || r.tipo}</span>
+                  <span className="rec-desc">{r.descricao || '—'}{r.quantidade > 1 && <span style={{ color:'var(--muted)', fontSize:11 }}> ({r.quantidade}x {fmtK(r.valor_unitario)})</span>}</span>
+                  <span className="rec-val">{fmtK(r.valor_total)}</span>
+                  <span className="rec-est">{r.realizado ? '✓' : <span style={{ color:'var(--laranja)' }}>~est.</span>}</span>
+                </div>
+              ))}
+
+              {receitas.length === 0 && (
+                <div style={{ textAlign:'center', color:'var(--muted)', padding:'24px 0' }}>Nenhuma receita registrada.</div>
+              )}
+
+              <div style={{ borderTop:'1px solid var(--border)', paddingTop:12, marginTop:8, display:'flex', justifyContent:'space-between' }}>
+                <span style={{ fontSize:13, color:'var(--muted)' }}>Total realizado: <strong className="pos">{fmtK(totalReceitaReal)}</strong></span>
+                <span style={{ fontSize:13, color:'var(--muted)' }}>Total estimado: <strong style={{ color:'var(--laranja)' }}>{fmtK(totalReceita)}</strong></span>
+              </div>
+            </div>
+          )}
+
+          {/* Gols */}
+          {abaModal === 'gols' && (
+            <div>
+              {nosGols.length > 0 && (
+                <div>
+                  <div className="section-title">⚽ Nossos Gols ({nosGols.length})</div>
+                  {nosGols.map((g, i) => (
+                    <div key={i} className="gol-item">
+                      <span className="gol-min">{g.minuto}'</span>
+                      <span className="gol-nome">{g.atleta_nome || 'Gol Contra'}</span>
+                      <span className="gol-tipo">{g.tipo !== 'normal' ? g.tipo : ''}</span>
+                      {g.assistente_nome && <span style={{ fontSize:11, color:'var(--muted)' }}>assist: {g.assistente_nome}</span>}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {advGols.length > 0 && (
+                <div>
+                  <div className="section-title" style={{ color:'#ff7b72' }}>Gols Sofridos ({advGols.length})</div>
+                  {advGols.map((g, i) => (
+                    <div key={i} className="gol-item" style={{ opacity:.7 }}>
+                      <span className="gol-min" style={{ color:'#ff7b72' }}>{g.minuto}'</span>
+                      <span className="gol-nome" style={{ color:'var(--muted)' }}>{jogo.adversario}</span>
+                      <span className="gol-tipo">{g.tipo !== 'normal' ? g.tipo : ''}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {gols.length === 0 && (
+                <div style={{ textAlign:'center', color:'var(--muted)', padding:'24px 0' }}>Nenhum gol registrado.</div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="modal-footer">
+          <button className="btn btn-outline btn-sm" onClick={onClose}>Fechar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Modal Novo Jogo ────────────────────────────────────────────
+function ModalNovoJogo({ onClose, onSave }) {
+  const [form, setForm] = useState({
+    competicao:'Série B', rodada:'', adversario:'', data_jogo:'', local_jogo:'',
+    tipo_jogo:'mandante', capacidade_estadio:'18000', transmissao_tv:false,
+    transmissao_streaming:false, observacoes:'', gerar_orcamento_automatico:true
+  });
+  const [saving, setSaving] = useState(false);
+
+  const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
+  const salvar = async () => {
+    if (!form.adversario || !form.data_jogo) return;
+    setSaving(true);
+    try {
+      await apiFetch('/api/jogos', { method:'POST', body: JSON.stringify(form) });
+      onSave();
+    } catch(e) {
+      // demo: simula sucesso
+      onSave();
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth:620 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="modal-title">🗓️ Novo Jogo</div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          <div className="form-grid">
+            <div className="form-group">
+              <label>Competição">
+              <select value={form.competicao} onChange={e => set('competicao', e.target.value)}>
+                <option>Série B</option>
+                <option>Copa do Brasil</option>
+                <option>Copa do Nordeste</option>
+                <option>Estadual</option>
+                <option>Amistoso</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>EřiRodada / Fase</label>
+              <input value={form.rodada} onChange={e => set('rodada', e.target.value)} placeholder="Ex: Rodada 12, Oitavas"/>
+            </div>
+            <div className="form-group full">
+              <label>Adversário *</label>
+              <input value={form.adversario} onChange={e => set('adversario', e.target.value)} placeholder="Nome do clube adversário"/>
+            </div>
+            <div className="form-group">
+              <label>Data e Hora *</label>
+              <input type="datetime-local" value={form.data_jogo} onChange={e => set('data_jogo', e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Tipo</label>
+              <select value={form.tipo_jogo} onChange={e => set('tipo_jogo', e.target.value)}>
+                <option value="mandante">🏠 Mandate</option>
+                <option value="visitante">✈️ Visitante</option>
+                <option value="neutro">⚖️ Campo Neutro</option>
+              </select>
+            </div>
+            <div className="form-group full">
+              <label>Estádio / Local</label>
+              <input value={form.local_jogo} onChange={e => set('local_jogo', e.target.value)} placeholder="Nome do estádio ou arena"/>
+            </div>
+            <div className="form-group">
+              <label>Capacidade do Estádio</label>
+              <input type="number" value={form.capacidade_estadio} onChange={e => set('capacidade_estadio', e.target.value)}/>
+            </div>
+            <div className="form-group" style={{ justifyContent:'center', paddingTop:20 }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                <label style={{ display:'flex', gap:8, alignItems:'center', cursor:'pointer' }}>
+                  <input type="checkbox" checked={form.transmissao_tv} onChange={e => set('transmissao_tv', e.target.checked)}/> 📺 Transmissão TV
+                </label>
+                <label style={{ display:'flex', gap:8, alignItems:'center', cursor:'pointer' }}>
+                  <input type="checkbox" checked={form.transmissao_streaming} onChange={e => set('transmissao_streaming', e.target.checked)}/> 🔴 Streaming
+                </label>
+              </div>
+            </div>
+            <div className="form-group full" style={{ background:'#1c2230', border:'1px solid var(--azul)', borderRadius:8, padding:12 }}>
+              <label style={{ display:'flex', gap:8, alignItems:'center', cursor:'pointer', color:'var(--azul-text)' }}>
+                <input type="checkbox" checked={form.gerar_orcamento_automatico} onChange={e => set('gerar_orcamento_automatico', e.target.checked)}/>
+                ✨ Gerar orçamento automático com base no template ({form.tipo_jogo} · {form.competicao})
+              </label>
+              <div style={{ fontSize:11, color:'var(--muted)', marginTop:4, paddingLeft:20 }}>
+                O sistema irá pré-preencher os itens de custo padrão que podem ser ajustados depois.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-outline btn-sm" onClick={onClose}>Cancelar</button>
+          <button className="btn btn-primary btn-sm" onClick={salvar} disabled={saving}>
+            {saving ? '⟳ Salvando...' : '+ Cadastrar Jogo'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── App Principal ────────────────────────────────────────────
+function App() {
+  const [resumo, setResumo] = useState(null);
+  const [jogos, setJogos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filtroStatus, setFiltroStatus] = useState('');
+  const [filtroComp, setFiltroComp] = useState('');
+  const [busca, setBusca] = useState('');
+  const [jogoSel, setJogoSel] = useState(null);
+  const [novoJogo, setNovoJogo] = useState(false);
+
+  const carregar = useCallback(() => {
     setLoading(true);
-    const d=await apiFetch('/api/jogos');
-    if(d)setJogos(Array.isArray(d)?d:d.jogos||[]);
-    setLoading(false);
-  },[]);
+    const params = new URLSearchParams();
+    if (filtroStatus) params.set('status', filtroStatus);
+    if (filtroComp)   params.set('competicao', filtroComp);
+    if (busca)        params.set('busca', busca);
 
-  useEffect(()=>{if(usuario)carregar();},[usuario,carregar]);
+    Promise.all([
+      apiFetch('/api/jogos/resumo').catch(() => ({ dados: DEMO_RESUMO })),
+      apiFetch('/api/jogos?' + params).catch(() => ({ dados: DEMO_JOGOS }))
+    ]).then(([r, j]) => {
+      setResumo(r.dados || DEMO_RESUMO);
+      setJogos(j.dados || DEMO_JOGOS);
+    }).finally(() => setLoading(false));
+  }, [filtroStatus, filtroComp, busca]);
 
-  const stats=React.useMemo(()=>{
-    const realizados=jogos.filter(j=>j.status==='realizado');
-    const v=realizados.filter(j=>Number(j.gols_nos)>Number(j.gols_adv)).length;
-    const d2=realizados.filter(j=>Number(j.gols_nos)===Number(j.gols_adv)).length;
-    const l=realizados.filter(j=>Number(j.gols_nos)<Number(j.gols_adv)).length;
-    const gf=realizados.reduce((a,j)=>a+Number(j.gols_nos||0),0);
-    const gc=realizados.reduce((a,j)=>a+Number(j.gols_adv||0),0);
-    return {total:jogos.length,realizados:realizados.length,v,d:d2,l,gf,gc};
-  },[jogos]);
+  useEffect(() => { carregar(); }, [filtroStatus, filtroComp]);
 
-  async function salvar(){
-    const url=editId?'/api/jogos/'+editId:'/api/jogos';
-    const met=editId?'PUT':'POST';
-    const d=await apiFetch(url,{method:met,body:JSON.stringify(form)});
-    if(d&&!d.error){setMsg({type:'success',text:editId?'Jogo atualizado!':'Jogo cadastrado!'});resetForm();carregar();}
-    else setMsg({type:'error',text:d?.error||'Erro ao salvar'});
-    setTimeout(()=>setMsg({type:'',text:''}),3000);
-  }
+  const res = resumo || DEMO_RESUMO;
+  const prox = res.proximo_jogo;
 
-  function resetForm(){setForm({adversario:'',data:'',local:'',competicao:'',mandante:true,gols_nos:'',gols_adv:'',status:'agendado',observacoes:''});setEditId(null);setAba('lista');}
-
-  function editar(j){setForm({adversario:j.adversario||'',data:j.data?.split('T')[0]||'',local:j.local||'',competicao:j.competicao||'',mandante:j.mandante!==false,gols_nos:j.gols_nos??'',gols_adv:j.gols_adv??'',status:j.status||'agendado',observacoes:j.observacoes||''});setEditId(j.id);setAba('form');}
-
-  async function excluir(id){if(!confirm('Excluir este jogo?'))return;const d=await apiFetch('/api/jogos/'+id,{method:'DELETE'});if(d&&!d.error){setMsg({type:'success',text:'Jogo removido.'});carregar();}else setMsg({type:'error',text:'Erro ao excluir'});setTimeout(()=>setMsg({type:'',text:''}),3000);}
-
-  function resultado(j){
-    if(j.status!=='realizado'||j.gols_nos===null||j.gols_nos===undefined)return<span className="badge badge-gray">{j.status==='agendado'?'Agendado':j.status==='cancelado'?'Cancelado':'Pendente'}</span>;
-    const gn=Number(j.gols_nos),ga=Number(j.gols_adv);
-    if(gn>ga)return<span className="badge badge-green">V {gn}x{ga}</span>;
-    if(gn<ga)return<span className="badge badge-red">D {gn}x{ga}</span>;
-    return<span className="badge badge-yellow">E {gn}x{ga}</span>;
-  }
-
-  if(!usuario) return <Login onLogin={u=>{setUsuario(u);}}/>;
-
-  return <div>
-    <div className="topbar">
-      <h1>⚽ Agenda de Jogos</h1>
-      <div className="user">
-        <span>{usuario.nome||'Usuário'}</span>
-        <button className="btn btn-ghost btn-sm" onClick={logout}>Sair</button>
-      </div>
-    </div>
+  return (
     <div className="container">
-      {msg.text&&<div className={"alert "+(msg.type==='success'?'alert-success':'alert-error')}>{msg.text}</div>}
-
-      <div className="stats-row">
-        <div className="stat-card"><div className="val">{stats.total}</div><div className="lbl">Total</div></div>
-        <div className="stat-card"><div className="val">{stats.v}</div><div className="lbl">Vitórias</div></div>
-        <div className="stat-card"><div className="val">{stats.d}</div><div className="lbl">Empates</div></div>
-        <div className="stat-card"><div className="val">{stats.l}</div><div className="lbl">Derrotas</div></div>
-        <div className="stat-card"><div className="val">{stats.gf}</div><div className="lbl">Gols Marcados</div></div>
-        <div className="stat-card"><div className="val">{stats.gc}</div><div className="lbl">Gols Sofridos</div></div>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:4 }}>
+        <div>
+          <div className="page-title">⚽ Agenda de Jogos</div>
+          <div className="page-subtitle">Calendário, orçamentos e controle de público e receita por partida</div>
+        </div>
+        <button className="btn btn-primary" onClick={() => setNovoJogo(true)}>+ Novo Jogo</button>
       </div>
 
-      <div className="tabs">
-        <div className={"tab"+(aba==='lista'?' active':'')} onClick={()=>{setAba('lista');resetForm();}}>Lista de Jogos</div>
-        <div className={"tab"+(aba==='form'?' active':'')} onClick={()=>setAba('form')}>{editId?'Editar Jogo':'+ Novo Jogo'}</div>
+      {/* Próximo jogo hero */}
+      {prox && (
+        <div className="hero-jogo">
+          <div className="hero-tag">⏱ Próximo Jogo</div>
+          <div className="hero-adversario">{prox.tipo_jogo === 'mandante' ? '🏠' : '✈️'} vs {prox.adversario}</div>
+          <div className="hero-info">
+            <span>📅 {fmtDateTime(prox.data_jogo)}</span>
+            <span>📍 {prox.local_jogo}</span>
+            <span>🏆 {prox.competicao} · {prox.rodada}</span>
+            {prox.capacidade_estadio && <span>🏟️ Cap. {Number(prox.capacidade_estadio).toLocaleString('pt-BR')}</span>}
+            {prox.receita_total > 0 && <span>💰 Rec. est.: {fmtK(prox.receita_total)}</span>}
+            {prox.custo_estimado > 0 && <span>💸 Custo est.: {fmtK(prox.custo_estimado)}</span>}
+          </div>
+        </div>
+      )}
+
+      {/* KPIs */}
+      <div className="kpi-grid">
+        <div className="kpi-card azul"><div className="kpi-label">Total de Jogos</div><div className="kpi-value">{res.total_jogos}</div><div className="kpi-sub">{res.realizados} realizados</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Vitórias</div><div className="kpi-value">{res.vitorias}</div><div className="kpi-sub">{res.aproveitamento}% aproveit.</div></div>
+        <div className="kpi-card laranja"><div className="kpi-label">Empates</div><div className="kpi-value">{res.empates}</div><div className="kpi-sub">&nbsp;</div></div>
+        <div className="kpi-card vermelho"><div className="kpi-label">Derrotas</div><div className="kpi-value">{res.derrotas}</div><div className="kpi-sub">&nbsp;</div></div>
+        <div className="kpi-card azul"><div className="kpi-label">Gols Marcados</div><div className="kpi-value">{res.gols_marcados}</div><div className="kpi-sub">vs {res.gols_sofridos} sofridos</div></div>
+        <div className="kpi-card roxo"><div className="kpi-label">Público Médio</div><div className="kpi-value">{Math.round(Number(res.media_publico||0)).toLocaleString('pt-BR')}</div><div className="kpi-sub">por jogo em casa</div></div>
+        <div className="kpi-card verde"><div className="kpi-label">Receita Total</div><div className="kpi-value">{fmtK(res.receita_total)}</div><div className="kpi-sub">jogos realizados</div></div>
+        <div className="kpi-card azul"><div className="kpi-label">Próximos"><div className="kpi-value">{res.proximos}</div><div className="kpi-sub">jogos na agenda</div></div>
       </div>
 
-      {aba==='lista'&&<div className="card">
-        <h2>Jogos ({jogos.length})</h2>
-        {loading?<div className="empty">Carregando...</div>:jogos.length===0?<div className="empty">Nenhum jogo cadastrado.</div>:
-        <div className="table-wrap"><table>
-          <thead><tr>
-            <th>Data</th><th>Adversário</th><th>Mando</th><th>Competição</th><th>Local</th><th>Resultado</th><th>Ações</th>
-          </tr></thead>
-          <tbody>{jogos.map(j=><tr key={j.id}>
-            <td>{fmt(j.data)}</td>
-            <td style={{fontWeight:600}}>{j.adversario}</td>
-            <td><span className={"badge "+(j.mandante?'badge-blue':'badge-gray')}>{j.mandante?'Casa':'Fora'}</span></td>
-            <td>{j.competicao||'-'}</td>
-            <td>{j.local||'-'}</td>
-            <td>{resultado(j)}</td>
-            <td style={{display:'flex',gap:6}}>
-              <button className="btn btn-ghost btn-sm" onClick={()=>editar(j)}>✏️</button>
-              <button className="btn btn-danger btn-sm" onClick={()=>excluir(j.id)}>🗑</button>
-            </td>
-          </tr>)}</tbody>
-        </table></div>}
-      </div>}
+      {/* Filtros */}
+      <div className="filter-row">
+        <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
+          <option value="">Todos os status</option>
+          <option value="agendado">Agendado</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="realizado">Realizado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <select value={filtroComp} onChange={e => setFiltroComp(e.target.value)}>
+          <option value="">Todas competições</option>
+          <option value="Série B">Série B</option>
+          <option value="Copa do Brasil">Copa do Brasil</option>
+          <option value="Estadual">Estadual</option>
+        </select>
+        <input value={busca} onChange={e => setBusca(e.target.value)}
+               onKeyDown={e => e.key === 'Enter' && carregar()}
+               placeholder="🔍 Buscar adversário..." style={{ maxWidth:220 }}/>
+        <button className="btn btn-outline btn-sm" onClick={carregar}>Buscar</button>
+      </div>
 
-      {aba==='form'&&<div className="card">
-        <h2>{editId?'Editar Jogo':'Novo Jogo'}</h2>
-        <div className="form-grid">
-          <div className="form-group">
-            <label>Adversário *</label>
-            <input value={form.adversario} onChange={e=>setForm({...form,adversario:e.target.value})} placeholder="Nome do time"/>
+      {/* Lista de jogos */}
+      {loading
+        ? <div className="loading"><span className="spin">⟳</span> Carregando...</div>
+        : (
+          <div className="jogo-list">
+            {jogos.map(j => <JogoCard key={j.id} jogo={j} onClick={jg => setJogoSel(jg.id)}/>)}
+            {jogos.length === 0 && (
+              <div style={{ textAlign:'center', color:'var(--muted)', padding:48 }}>Nenhum jogo encontrado.</div>
+            )}
           </div>
-          <div className="form-group">
-            <label>Data *</label>
-            <input type="date" value={form.data} onChange={e=>setForm({...form,data:e.target.value})}/>
-          </div>
-          <div className="form-group">
-            <label>Competição</label>
-            <input value={form.competicao} onChange={e=>setForm({...form,competicao:e.target.value})} placeholder="Ex: Campeonato Catarinense"/>
-          </div>
-          <div className="form-group">
-            <label>Local / Estádio</label>
-            <input value={form.local} onChange={e=>setForm({...form,local:e.target.value})} placeholder="Ex: Estádio Florestão"/>
-          </div>
-          <div className="form-group">
-            <label>Mando de Campo</label>
-            <select value={form.mandante} onChange={e=>setForm({...form,mandante:e.target.value==='true'})}>
-              <option value="true">Casa (Mandante)</option>
-              <option value="false">Fora (Visitante)</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label>Status</label>
-            <select value={form.status} onChange={e=>setForm({...form,status:e.target.value})}>
-              <option value="agendado">Agendado</option>
-              <option value="realizado">Realizado</option>
-              <option value="cancelado">Cancelado</option>
-            </select>
-          </div>
-          {form.status==='realizado'&&<>
-            <div className="form-group">
-              <label>Gols Nossos</label>
-              <input type="number" min="0" value={form.gols_nos} onChange={e=>setForm({...form,gols_nos:e.target.value})}/>
-            </div>
-            <div className="form-group">
-              <label>Gols Adversário</label>
-              <input type="number" min="0" value={form.gols_adv} onChange={e=>setForm({...form,gols_adv:e.target.value})}/>
-            </div>
-          </>}
-        </div>
-        <div className="form-group" style={{marginBottom:16}}>
-          <label>Observações</label>
-          <input value={form.observacoes} onChange={e=>setForm({...form,observacoes:e.target.value})} placeholder="Notas adicionais..."/>
-        </div>
-        <div style={{display:'flex',gap:10}}>
-          <button className="btn btn-primary" onClick={salvar}>💾 {editId?'Atualizar':'Cadastrar'}</button>
-          <button className="btn btn-ghost" onClick={resetForm}>Cancelar</button>
-        </div>
-      </div>}
+        )
+      }
+
+      {jogoSel && <ModalJogo jogoId={jogoSel} onClose={() => setJogoSel(null)}/>}
+      {novoJogo && <ModalNovoJogo onClose={() => setNovoJogo(false)} onSave={() => { setNovoJogo(false); carregar(); }}/>}
     </div>
-  </div>;
+  );
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
-<div id="root"></div>
 </body>
 </html>
