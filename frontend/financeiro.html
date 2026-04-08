@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
       --bg:          #1C1C2E;
@@ -156,6 +157,19 @@
     .paginacao-btns button:disabled { opacity: .4; cursor: not-allowed; }
 
     /* MODAL */
+    .btn-import{background:var(--card-bg);border:1px solid var(--card-borda);color:var(--texto);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;}
+    .btn-import:hover{background:var(--card-borda);}
+    .btn-template{background:transparent;border:1px solid var(--dourado);color:var(--dourado);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;}
+    .btn-template:hover{background:rgba(245,158,11,.12);}
+    .import-table{width:100%;border-collapse:collapse;font-size:12px;}
+    .import-table th{background:var(--card-borda);color:var(--texto-leve);padding:7px 10px;text-align:left;font-weight:600;}
+    .import-table td{padding:6px 10px;border-bottom:1px solid var(--card-borda);color:var(--texto);}
+    .import-table tr.erro td{color:var(--vermelho);background:rgba(255,92,92,.07);}
+    .import-resumo{display:flex;gap:12px;margin-bottom:14px;}
+    .import-badge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+    .import-badge.ok{background:rgba(34,197,94,.15);color:var(--verde);}
+    .import-badge.err{background:rgba(255,92,92,.15);color:var(--vermelho);}
+    .modal-import{max-width:860px;}
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
     .modal { background: #fff; border-radius: 12px; width: 100%; max-width: 620px; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
     .modal-header { padding: 18px 22px; border-bottom: 1px solid var(--cinza-borda); display: flex; align-items: center; justify-content: space-between; }
@@ -219,7 +233,7 @@
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState, useEffect, useCallback } = React;
+const { useState, useEffect, useCallback, useRef } = React;
 const API = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api';
 
 // Ã¢ââ¬Ã¢ââ¬ helpers Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬Ã¢ââ¬
@@ -572,6 +586,14 @@ function ModuloFinanceiro(){
   const [pagina,       setPagina]       = useState(1);
   const [modalForm,    setModalForm]    = useState(null);
   const [modalDetalhe, setModalDetalhe] = useState(null);
+  const [modalImport,setModalImport]=useState(false);
+  const [importRows,setImportRows]=useState([]);
+  const [importErros,setImportErros]=useState([]);
+  const importInputRef=useRef(null);
+  function parseDateBR(val){if(!val)return null;const s=String(val).trim();const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m)return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;if(!isNaN(Number(s))){const d=new Date(Math.round((Number(s)-25569)*86400*1000));return d.toISOString().slice(0,10);}return null;}
+  function downloadTemplate(){const X=window.XLSX,wb=X.utils.book_new();const wi=X.utils.aoa_to_sheet([['Rio Branco SAF - Template Financeiro'],[],['tipo','receita ou despesa'],['descricao','Texto livre'],['valor','Numero positivo'],['categoria','Patrocinio|Bilheteria|Salarios CLT|etc'],['status','realizado ou previsto'],['data_competencia','DD/MM/AAAA'],['data_pagamento','DD/MM/AAAA ou vazio'],['centro_custo','Futebol Profissional|Administrativo|etc']]);X.utils.book_append_sheet(wb,wi,'Instrucoes');const h=['tipo','descricao','valor','categoria','status','data_competencia','data_pagamento','centro_custo'];const ex=[['receita','Patrocinio master',120000,'Patrocinio','realizado','01/03/2026','03/03/2026','Diretoria'],['despesa','Folha CLT',198000,'Salarios CLT','previsto','31/03/2026','','Administrativo']];const ws=X.utils.aoa_to_sheet([h,...ex]);ws['!cols']=[14,42,14,28,12,18,18,26].map(w=>({wch:w}));X.utils.book_append_sheet(wb,ws,'Lancamentos');X.writeFile(wb,'template_financeiro_saf.xlsx');toast('Template baixado!');}
+  function handleImportFile(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=(ev)=>{try{const data=new Uint8Array(ev.target.result);const wb=window.XLSX.read(data,{type:'array'});const sn=wb.SheetNames.find(s=>s.toLowerCase().includes('lan'))||wb.SheetNames[0];const rows=window.XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''});const validos=[],erros=[];rows.forEach((row,idx)=>{const tipo=String(row.tipo||'').toLowerCase().trim();const desc=String(row.descricao||'').trim();const vr=parseFloat(String(row.valor||'').replace(/[R$\s.]/g,'').replace(',','.'));const cat=String(row.categoria||'').trim();const st=String(row.status||'previsto').toLowerCase().trim();const dc=parseDateBR(row.data_competencia);const dp=parseDateBR(row.data_pagamento)||null;const cc=String(row.centro_custo||'').trim();const err=[];if(!['receita','despesa'].includes(tipo))err.push('tipo invalido');if(!desc)err.push('sem descricao');if(isNaN(vr)||vr<=0)err.push('valor invalido');if(!dc)err.push('data invalida');if(err.length){erros.push({linha:idx+2,descricao:desc||'(vazio)',erro:err.join(', ')});}else{const catObj=categorias.find(c=>c.nome.toLowerCase()===cat.toLowerCase())||{};validos.push({id:Date.now()+idx+Math.random(),tipo,descricao:desc,valor:vr,categoria:catObj.nome||cat,categoria_icone:catObj.icone||'📌',categoria_cor:catObj.cor||'#94A3B8',status:st,data_competencia:dc,data_pagamento:dp,centro_custo:cc});}});setImportRows(validos);setImportErros(erros);setModalImport(true);}catch(err){toast('Erro ao ler o arquivo.','erro');}};reader.readAsArrayBuffer(file);e.target.value='';}
+  function confirmarImport(){setLancamentos(prev=>[...importRows,...prev]);setModalImport(false);setImportRows([]);setImportErros([]);toast(`${importRows.length} lancamento(s) importado(s)!`);}
   const LIMITE = 10;
 
   const filtrados = lancamentos.filter(l=>{
@@ -766,6 +788,57 @@ function ModuloFinanceiro(){
           onEditar={l=>{setModalForm(l);setModalDetalhe(null);}}
           onRealizar={realizarLancamento}
         />
+      )}
+      
+      {modalImport&&(
+        <div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget){setModalImport(false);setImportRows([]);setImportErros([]);}}}>
+          <div className="modal modal-import">
+            <div className="modal-header">
+              <span className="modal-titulo">📤 Importar Lançamentos via Excel</span>
+              <button className="btn-fechar" onClick={()=>{setModalImport(false);setImportRows([]);setImportErros([]);}}>✕</button>
+            </div>
+            <div className="modal-body" style={{overflowY:'auto',maxHeight:'65vh'}}>
+              <div className="import-resumo">
+                <span className="import-badge ok">✅ {importRows.length} válido{importRows.length!==1?'s':''}</span>
+                {importErros.length>0&&<span className="import-badge err">⚠️ {importErros.length} com erro</span>}
+              </div>
+              {importRows.length>0&&(
+                <div style={{marginBottom:16}}>
+                  <div style={{fontSize:12,color:'var(--texto-leve)',fontWeight:600,marginBottom:8}}>LANÇAMENTOS A IMPORTAR</div>
+                  <div style={{overflowX:'auto'}}><table className="import-table">
+                    <thead><tr><th>Tipo</th><th>Descrição</th><th>Valor</th><th>Categoria</th><th>Status</th><th>Data</th><th>Centro</th></tr></thead>
+                    <tbody>{importRows.map((r,i)=>(
+                      <tr key={i} className={r.tipo}>
+                        <td style={{color:r.tipo==='receita'?'var(--verde)':'var(--vermelho)',fontWeight:700}}>{r.tipo==='receita'?'⬆️':'⬇️'} {r.tipo}</td>
+                        <td>{r.descricao}</td>
+                        <td style={{textAlign:'right',fontFamily:'monospace'}}>{fmtMoeda(r.valor)}</td>
+                        <td>{r.categoria}</td>
+                        <td><span style={{background:r.status==='realizado'?'rgba(34,197,94,.15)':'rgba(245,158,11,.15)',color:r.status==='realizado'?'var(--verde)':'var(--dourado)',padding:'2px 8px',borderRadius:10,fontSize:11,fontWeight:700}}>{r.status}</span></td>
+                        <td>{fmtData(r.data_competencia)}</td>
+                        <td>{r.centro_custo||'—'}</td>
+                      </tr>
+                    ))}</tbody>
+                  </table></div>
+                </div>
+              )}
+              {importErros.length>0&&(
+                <div>
+                  <div style={{fontSize:12,color:'var(--vermelho)',fontWeight:600,marginBottom:8}}>LINHAS COM ERRO</div>
+                  <table className="import-table"><thead><tr><th>Linha</th><th>Descrição</th><th>Problema</th></tr></thead>
+                    <tbody>{importErros.map((e,i)=>(<tr key={i} className="erro"><td>{e.linha}</td><td>{e.descricao}</td><td>{e.erro}</td></tr>))}</tbody>
+                  </table>
+                </div>
+              )}
+              {importRows.length===0&&importErros.length===0&&(
+                <div style={{textAlign:'center',padding:'40px 0',color:'var(--texto-leve)'}}>Nenhum lançamento encontrado. Use a aba "Lancamentos" do template.</div>
+              )}
+            </div>
+            <div className="modal-footer" style={{display:'flex',gap:10,justifyContent:'flex-end',padding:'14px 22px',borderTop:'1px solid var(--card-borda)'}}>
+              <button className="btn-import" onClick={()=>{setModalImport(false);setImportRows([]);setImportErros([]);}}>Cancelar</button>
+              {importRows.length>0&&(<button className="btn btn-receita" style={{background:'var(--verde)',color:'#111'}} onClick={confirmarImport}>✅ Importar {importRows.length} lançamento{importRows.length!==1?'s':''}</button>)}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
