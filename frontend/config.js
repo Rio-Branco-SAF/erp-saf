@@ -12,7 +12,7 @@
 // ============================================================
 window.ERP_CONFIG = {
   // URL do backend no Railway:
-  API_URL: "https://backend-production-7c51.up.railway.app",
+  API_URL: "https://backend-production-7c51.up.railway.app/api",
 
   // Nome da SAF (aparece na tela de login e no topo do sistema)
   NOME_SAF: "SAF — Sistema de Gestão",
