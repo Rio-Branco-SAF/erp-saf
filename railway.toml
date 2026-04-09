@@ -1,13 +1,10 @@
 # ============================================================
 # Configuração Railway — ERP SAF Backend
-# O Railway lê este arquivo automaticamente ao fazer deploy
+# NOTA: O serviço Railway usa Root Directory = backend/
+# A configuração efetiva está em: backend/railway.json
 # ============================================================
-[build]
-builder = "NIXPACKS"
-buildCommand = "cd backend && npm install --omit=dev"
 
 [deploy]
-startCommand = "cd backend && node server.js"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
