@@ -29,18 +29,19 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 app.use(cors({
-  origin: (origin, cb) => {
-    // Permitir chamadas sem origin (mobile / curl / Postman)
-    if (!origin) return cb(null, true);
-    // Permitir qualquer subdomínio *.netlify.app em produção
-    if (origin.endsWith('.netlify.app') || allowedOrigins.includes(origin)) {
-      return cb(null, true);
-    }
-    cb(new Error(`CORS: origem não permitida → ${origin}`));
+  origin: (origin, callback) => {
+    const allowed = [
+      process.env.FRONTEND_URL,
+      'https://erp-saf.vercel.app',
+      'https://erp-saf-git-main-rio-branco-saf.vercel.app',
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ].filter(Boolean);
+    if (!origin || allowed.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS: origem nao permitida'));
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // ── Segurança ─────────────────────────────────────────────────────────────────
