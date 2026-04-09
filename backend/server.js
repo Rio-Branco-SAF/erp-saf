@@ -19,6 +19,7 @@ const relatoriosRouter  = require('./routes/relatorios');
 const jogosRouter       = require('./routes/jogos');
 
 const app  = express();
+app.set('trust proxy', 1); // Railway/Vercel rodam atrás de proxy
 const PORT = process.env.PORT || 3001;
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
