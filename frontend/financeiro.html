@@ -627,6 +627,16 @@ function ModuloFinanceiro(){
   const [importRows,    setImportRows]    = useState([]);
   const [importErros,   setImportErros]   = useState([]);
   const importInputRef = useRef(null);
+    // Extrato bancário — novo fluxo API
+      const [modalExtrato,      setModalExtrato]      = useState(null);
+        const [importacaoAtiva,   setImportacaoAtiva]   = useState(null);
+          const [lancamentosRev,    setLancamentosRev]    = useState([]);
+            const [categoriasAPI,     setCategoriasAPI]     = useState([]);
+              const [contasAPI,         setContasAPI]         = useState([]);
+                const [contaSelecionada,  setContaSelecionada]  = useState('');
+                  const [processando,       setProcessando]       = useState(false);
+                    const [dragOver,          setDragOver]          = useState(false);
+                      const extratoInputRef = useRef(null);
 
   function parseDateBR(val){
     if(!val) return null;
@@ -737,6 +747,42 @@ function ModuloFinanceiro(){
     setImportErros([]);
     toast(`✅ ${importRows.length} lançamento(s) importado(s) com sucesso!`);
   }
+    async function abrirModalExtrato() {
+          try { const d=await apiFetch('/extrato/aux/categorias'); setCategoriasAPI(d.categorias||[]); setContasAPI(d.contas||[]); } catch(e){ setCategoriasAPI([]); setContasAPI([]); }
+              setModalExtrato('upload');
+                }
+                  async function handleUploadExtrato(file) {
+                      if(!file) return;
+                          const ext=file.name.split('.').pop().toLowerCase();
+                              if(!['ofx','qif','csv','pdf'].includes(ext)){ toast('Formato invalido. Use OFX, CSV ou PDF.','erro'); return; }
+                                  setProcessando(true);
+                                      try {
+                                            const token=localStorage.getItem('erp_token');
+                                                  const fd=new FormData(); fd.append('arquivo',file);
+                                                        if(contaSelecionada) fd.append('conta_bancaria_id',contaSelecionada);
+                                                              const res=await fetch(API+'/extrato/upload',{method:'POST',headers:{Authorization:'Bearer '+token},body:fd});
+                                                                    const data=await res.json();
+                                                                          if(!res.ok) throw new Error(data.erro||'Erro no upload');
+                                                                                setImportacaoAtiva(data.importacao);
+                                                                                      setLancamentosRev((data.lancamentos||[]).map(l=>({...l,categoria_id:l.categoria_id||l.categoria_sugerida_id})));
+                                                                                            setModalExtrato('revisao');
+                                                                                                } catch(err){ toast('Erro: '+err.message,'erro'); }
+                                                                                                    finally{ setProcessando(false); if(extratoInputRef.current) extratoInputRef.current.value=''; }
+                                                                                                      }
+                                                                                                        function atualizarLancamentoRev(id,campo,valor){ setLancamentosRev(prev=>prev.map(l=>l.id===id?{...l,[campo]:valor}:l)); }
+                                                                                                          function marcarTodos(status){ setLancamentosRev(prev=>prev.map(l=>({...l,status}))); }
+                                                                                                            async function confirmarExtrato() {
+                                                                                                                if(!importacaoAtiva) return; setProcessando(true);
+                                                                                                                    try {
+                                                                                                                          const ats=lancamentosRev.map(l=>({id:l.id,categoria_id:l.categoria_id,status:l.status}));
+                                                                                                                                await apiFetch('/extrato/'+importacaoAtiva.id+'/lancamentos/bulk',{method:'PUT',body:{atualizacoes:ats}});
+                                                                                                                                      const result=await apiFetch('/extrato/'+importacaoAtiva.id+'/confirmar',{method:'POST'});
+                                                                                                                                            toast('✅ '+result.total_confirmados+' lancamentos confirmados!');
+                                                                                                                                                  setModalExtrato(null); setImportacaoAtiva(null); setLancamentosRev([]);
+                                                                                                                                                      } catch(err){ toast('Erro: '+err.message,'erro'); }
+                                                                                                                                                          finally{ setProcessando(false); }
+                                                                                                                                                            }
+    }
 
   function sincronizarFolha(){
     const d=new Date(); const mesRef=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
@@ -795,6 +841,8 @@ function ModuloFinanceiro(){
           <button className="btn-template" onClick={downloadTemplate} title="Baixar modelo .xlsx para preenchimento">📥 Baixar Template</button>
           <button className="btn-import" onClick={()=>importInputRef.current?.click()} title="Importar lançamentos via Excel">📤 Importar Excel</button>
           <input ref={importInputRef} type="file" accept=".xlsx,.xls" style={{display:'none'}} onChange={handleImportFile}/>
+                    <button className="btn-import" onClick={abrirModalExtrato} title="Importar extrato bancario OFX/CSV/PDF">🏦 Importar Extrato</button>
+                              <input ref={extratoInputRef} type="file" accept=".ofx,.qif,.csv,.pdf" style={{display:'none'}} onChange={e=>handleUploadExtrato(e.target.files[0])}/>
           <button className="btn btn-receita" onClick={()=>setModalForm({tipo:'receita'})}>⬆️ Nova Receita</button>
           <button className="btn btn-despesa" onClick={()=>setModalForm({tipo:'despesa'})}>⬇️ Nova Despesa</button>
         </div>
@@ -1027,6 +1075,7 @@ function ModuloFinanceiro(){
         </div>
       )}
     </div>
+          {modalExtrato==='upload'&&(<div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget)setModalExtrato(null);}}><div className="modal" style={{maxWidth:520}}><div className="modal-header"><span className="modal-titulo">🏦 Importar Extrato Bancário</span><button className="btn-fechar" onClick={()=>setModalExtrato(null)}>✕</button></div><div className="modal-body"><div style={{marginBottom:16}}><label style={{display:'block',fontSize:12,color:'var(--texto-leve)',marginBottom:6}}>Conta bancária (opcional)</label><select value={contaSelecionada} onChange={e=>setContaSelecionada(e.target.value)} style={{width:'100%',background:'var(--input-bg)',border:'1px solid var(--card-borda)',borderRadius:6,padding:'8px 10px',color:'var(--texto)',fontSize:13}}><option value="">— Selecionar conta —</option>{contasAPI.map(c=><option key={c.id} value={c.id}>{c.nome}{c.banco?' · '+c.banco:''}</option>)}</select></div><div className={'import-drop'+(dragOver?' drag-over':'')} onDragOver={e=>{e.preventDefault();setDragOver(true);}} onDragLeave={()=>setDragOver(false)} onDrop={e=>{e.preventDefault();setDragOver(false);handleUploadExtrato(e.dataTransfer.files[0]);}} onClick={()=>!processando&&extratoInputRef.current?.click()} style={{cursor:processando?'wait':'pointer'}}>{processando?(<div style={{color:'var(--verde)',fontSize:15,textAlign:'center',padding:'32px'}}>⏳ Processando...</div>):(<><div style={{fontSize:36,marginBottom:8,textAlign:'center'}}>📂</div><div style={{fontSize:15,fontWeight:600,color:'var(--texto)',marginBottom:4,textAlign:'center'}}>Arraste o arquivo aqui</div><div style={{fontSize:12,color:'var(--texto-leve)',marginBottom:12,textAlign:'center'}}>ou clique para selecionar</div><div style={{display:'flex',gap:8,justifyContent:'center'}}>{'OFX,CSV,PDF'.split(',').map(f=><span key={f})})})}
   );
 }
 
