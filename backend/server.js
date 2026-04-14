@@ -17,6 +17,7 @@ const investidoresRouter = require('./routes/investidores');
 const metasRouter       = require('./routes/metas');
 const relatoriosRouter  = require('./routes/relatorios');
 const jogosRouter       = require('./routes/jogos');
+const projetosRouter     = require('./routes/projetos');
 
 const app  = express();
 app.set('trust proxy', 1); // Railway/Vercel rodam atrás de proxy
@@ -102,6 +103,7 @@ app.use('/api/investidores', investidoresRouter);
 app.use('/api/metas',        metasRouter);
 app.use('/api/relatorios',   relatoriosRouter);
 app.use('/api/jogos',        jogosRouter);
+app.use('/api/projetos',     projetosRouter);
 
 // ── 404 ───────────────────────────────────────────────────────────────────────
 app.use((_req, res) => {
