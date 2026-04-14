@@ -18,6 +18,7 @@ const metasRouter       = require('./routes/metas');
 const relatoriosRouter  = require('./routes/relatorios');
 const jogosRouter       = require('./routes/jogos');
 const projetosRouter     = require('./routes/projetos');
+const extratoRouter      = require('./routes/extrato');
 
 const app  = express();
 app.set('trust proxy', 1); // Railway/Vercel rodam atrás de proxy
@@ -104,6 +105,7 @@ app.use('/api/metas',        metasRouter);
 app.use('/api/relatorios',   relatoriosRouter);
 app.use('/api/jogos',        jogosRouter);
 app.use('/api/projetos',     projetosRouter);
+app.use('/api/extrato',      extratoRouter);
 
 // ── 404 ───────────────────────────────────────────────────────────────────────
 app.use((_req, res) => {
