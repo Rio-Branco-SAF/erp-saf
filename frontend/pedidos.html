@@ -516,7 +516,7 @@ function Sidebar({ usuario, onLogout }) {
                 <div className="nav-item active">
                     <span className="icon">🛒</span> Pedidos de Compra
                 </div>
-                <div className="nav-item" style={{opacity:.4,cursor:'~ot-allowed'}}>
+                <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
                     <span className="icon">⚽</span> Atletas
                 </div>
                 <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}>
@@ -1052,7 +1052,7 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
                                 ✅ Aprovar Pedido
                             </button>
                             <button className="btn btn-danger" onClick={() => setShowRejeicao(true)}>
-                                 ❌ Rejeitar
+                                ❌ Rejeitar
                             </button>
                         </>
                     )}
@@ -1070,7 +1070,7 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
 }
 
 // ============================================================
-// MÓDuLO PRINCIPAL
+// MÓDULO PRINCIPAL
 // ============================================================
 function ModuloPedidos({ usuario }) {
     const [pedidos, setPedidos] = useState([]);
@@ -1088,7 +1088,7 @@ function ModuloPedidos({ usuario }) {
 
     const carregar = useCallback(async () => {
         setLoading(true);
-        const params = new URLStarchParams({ pagina, por_pagina: POR_PAGINA });
+        const params = new URLSearchParams({ pagina, por_pagina: POR_PAGINA });
         if (busca) params.set('busca', busca);
         if (filtroStatus) params.set('status', filtroStatus);
         if (filtroPrio) params.set('prioridade', filtroPrio);
@@ -1129,10 +1129,10 @@ function ModuloPedidos({ usuario }) {
                 <button className="btn btn-primary" onClick={() => setModalNovo(true)}>+ Novo Pedido</button>
             </div>
             <div className="content">
-                <Kpi Cards resumo={resumo}/>
+                <KpiCards resumo={resumo}/>
 
                 <div className="filters-row">
-                    <input className="search-input" placeholder="Buscar por nítulo ou núiero..." value={busca} onChange={e => { setBusca(e.target.value); setPagina(1); }}/>
+                    <input className="search-input" placeholder="Buscar por título ou número..." value={busca} onChange={e => { setBusca(e.target.value); setPagina(1); }}/>
                     <select className="filter-sel" value={filtroStatus} onChange={e => { setFiltroStatus(e.target.value); setPagina(1); }}>
                         <option value="">Todos os status</option>
                         {Object.entries(STATUS_LABEL).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
@@ -1164,7 +1164,7 @@ function ModuloPedidos({ usuario }) {
                                 <th style={{textAlign:'right'}}>Valor Est.</th>
                                 <th style={{textAlign:'center'}}>Cotações</th>
                                 <th></th>
-                             </tr>
+                            </tr>
                         </thead>
                         <tbody>
                             {loading ? (
@@ -1214,7 +1214,7 @@ function ModuloPedidos({ usuario }) {
                                 {Array.from({length: Math.min(totalPages, 5)}, (_,i) => i+1).map(n => (
                                     <button key={n} className={'page-btn' + (n===pagina?' active':'')} onClick={() => setPagina(n)}>{n}</button>
                                 ))}
-                                <button className="page-btn" disabled={pagina===totalPages} onClick={() => setPagina(p => p+1)}>Pr̳z^ ›</button>
+                                <button className="page-btn" disabled={pagina===totalPages} onClick={() => setPagina(p => p+1)}>Próx. ›</button>
                             </div>
                         </div>
                     )}

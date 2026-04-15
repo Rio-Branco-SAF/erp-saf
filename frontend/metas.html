@@ -229,7 +229,7 @@ let TOKEN = localStorage.getItem('erp_token');
 let USUARIO = null;
 try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
 
-async function apiFetch(path,Loptions={}) {
+async function apiFetch(path, options={}) {
     try {
         const headers={'Content-Type':'application/json'};
         if(TOKEN) headers['Authorization']='Bearer '+TOKEN;
@@ -449,7 +449,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
 }
 
 // ============================================================
-// MÓDULE PRINCIPAL
+// MÓDULO PRINCIPAL
 // ============================================================
 function ModuloMetas({usuario}){
     const [metas,setMetas]=useState([]);
@@ -570,7 +570,7 @@ function ModuloMetas({usuario}){
                     <div style={{fontSize:15,fontWeight:800,color:'#0f172a',marginBottom:14,display:'flex',alignItems:'center',gap:8}}>
                         {g.label}
                         <span style={{fontSize:12,fontWeight:600,color:'#94a3b8',background:'#f1f5f9',padding:'2px 8px',borderRadius:100}}>{g.metas.length}</span>
-                      </div>
+                    </div>
                     <div className="metas-grid">
                         {g.metas.map(m=>{
                             const pct=m.percentual||0;
