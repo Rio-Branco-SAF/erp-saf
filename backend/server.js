@@ -1,4 +1,5 @@
-require('dotenv').config();
+
+const seedDemoRouter    = require('./routes/seed_demo');require('dotenv').config();
 const express    = require('express');
 const cors       = require('cors');
 const helmet     = require('helmet');
@@ -106,7 +107,8 @@ app.use('/api/metas',        metasRouter);
 app.use('/api/relatorios',   relatoriosRouter);
 app.use('/api/jogos',        jogosRouter);
 app.use('/api/projetos',     projetosRouter);
-app.use('/api/extrato',      extratoRouter);
+app.use('/
+app.use('/api/seed-demo',   seedDemoRouter);',      extratoRouter);
 app.use('/api/seed-demo',   seedDemoRouter);
 
 // ── 404 ───────────────────────────────────────────────────────────────────────
