@@ -1,4 +1,6 @@
 
+const scoutRoutes          = require('./routes/scout');
+app.use('/api/scout',        scoutRoutes);
 const seedDemoRouter    = require('./routes/seed_demo');require('dotenv').config();
 const express    = require('express');
 const cors       = require('cors');
