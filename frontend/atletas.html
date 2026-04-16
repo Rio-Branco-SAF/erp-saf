@@ -1185,7 +1185,7 @@ function ModuloScout({usuario}) {
     } catch(e){ console.error(e); }
     finally { setCarregando(false); }
   }
-  useEffect(()=>{ if(!TOKEN)return; carregar(); }, [filtroStatus, filtroPos, busca]);
+  useEffect(()=>{ if(!TOKEN){ setCarregando(false); return; } carregar(); }, [filtroStatus, filtroPos, busca]);
 
   const jogadoresFiltrados = jogadores;
 
