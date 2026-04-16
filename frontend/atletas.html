@@ -883,12 +883,12 @@ function ModuloAtletas({ usuario }) {
 
 // ============================================================
 // SCOUT COMPONENT
-// MÃDULO SCOUT â BANCO DE TALENTOS
+// MÓDULO SCOUT — BANCO DE TALENTOS
 // ============================================================
 const STATUS_SCOUT = {
   monitorando: { label:'Monitorando', cor:'#3b82f6', bg:'#eff6ff' },
   interesse:   { label:'Interesse',   cor:'#f59e0b', bg:'#fffbeb' },
-  negociacao:  { label:'NegociaÃ§Ã£o',  cor:'#8b5cf6', bg:'#f5f3ff' },
+  negociacao:  { label:'Negociação',  cor:'#8b5cf6', bg:'#f5f3ff' },
   proposta:    { label:'Proposta',    cor:'#f97316', bg:'#fff7ed' },
   contratado:  { label:'Contratado',  cor:'#16a34a', bg:'#f0fdf4' },
   descartado:  { label:'Descartado',  cor:'#64748b', bg:'#f8fafc' },
@@ -916,15 +916,15 @@ function CardJogador({j, onClick}) {
         }
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontWeight:700,fontSize:14,color:'#0f172a',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{j.nome}</div>
-          <div style={{fontSize:11,color:'#64748b'}}>{j.posicao_principal?.replace(/_/g,' ')} Â· {j.nacionalidade||'â'}</div>
+          <div style={{fontSize:11,color:'#64748b'}}>{j.posicao_principal?.replace(/_/g,' ')} · {j.nacionalidade||'—'}</div>
         </div>
         <span style={{fontSize:10,fontWeight:600,padding:'2px 8px',borderRadius:99,background:st.bg,color:st.cor}}>{st.label}</span>
       </div>
       <div style={{fontSize:12,color:'#475569',marginBottom:8}}>
-        ðï¸ {j.clube_atual||'Sem clube'} {j.liga?`Â· ${j.liga}`:''}
+        ðï¸ {j.clube_atual||'Sem clube'} {j.liga?`· ${j.liga}`:''}
       </div>
       {j.contrato_fim && <div style={{fontSize:11,color:'#94a3b8',marginBottom:8}}>
-        ð Contrato atÃ© {new Date(j.contrato_fim).toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}
+        ð Contrato até {new Date(j.contrato_fim).toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}
       </div>}
       <div style={{display:'flex',gap:6,marginBottom:10,flexWrap:'wrap'}}>
         {[['â½',j.gols,'gols'],['ð°ï¸',j.assistencias,'ast'],['ð®',j.jogos,'jogos']].map(([ic,v,lb])=>(
@@ -942,7 +942,7 @@ function CardJogador({j, onClick}) {
         </div>
       )}
       <div style={{marginTop:8,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <span style={{fontSize:10,color:pr.cor,fontWeight:600}}>â {pr.label}</span>
+        <span style={{fontSize:10,color:pr.cor,fontWeight:600}}>● {pr.label}</span>
         {j.orcamento_max && <span style={{fontSize:11,color:'#16a34a',fontWeight:600}}>â¬{Number(j.orcamento_max).toLocaleString('pt-BR')}</span>}
       </div>
     </div>
@@ -978,7 +978,7 @@ function PerfilScout({jogador, onClose, onUpdate, usuario}) {
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',zIndex:1000,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'20px',overflowY:'auto'}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
       <div style={{background:'#fff',borderRadius:16,width:'100%',maxWidth:700,padding:28,position:'relative'}}>
-        <button onClick={onClose} style={{position:'absolute',top:16,right:16,background:'#f1f5f9',border:'none',borderRadius:8,padding:'6px 12px',cursor:'pointer',fontSize:18,color:'#64748b'}}>â</button>
+        <button onClick={onClose} style={{position:'absolute',top:16,right:16,background:'#f1f5f9',border:'none',borderRadius:8,padding:'6px 12px',cursor:'pointer',fontSize:18,color:'#64748b'}}>✕</button>
 
         {/* Header */}
         <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:20}}>
@@ -987,7 +987,7 @@ function PerfilScout({jogador, onClose, onUpdate, usuario}) {
           </div>
           <div>
             <h2 style={{margin:0,fontSize:20,color:'#0f172a'}}>{j.nome}</h2>
-            <div style={{color:'#64748b',fontSize:13}}>{j.posicao_principal?.replace(/_/g,' ')} {j.posicao_secundaria?`/ ${j.posicao_secundaria?.replace(/_/g,' ')}`:''}  Â· {j.nacionalidade||'â'} Â· {j.pe_dominante||'â'}</div>
+            <div style={{color:'#64748b',fontSize:13}}>{j.posicao_principal?.replace(/_/g,' ')} {j.posicao_secundaria?`/ ${j.posicao_secundaria?.replace(/_/g,' ')}`:''}  · {j.nacionalidade||'—'} · {j.pe_dominante||'—'}</div>
           </div>
           <div style={{marginLeft:'auto',display:'flex',gap:8,flexWrap:'wrap'}}>
             <span style={{padding:'4px 12px',borderRadius:99,background:st.bg,color:st.cor,fontWeight:600,fontSize:12}}>{st.label}</span>
@@ -1008,13 +1008,13 @@ function PerfilScout({jogador, onClose, onUpdate, usuario}) {
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:20}}>
           <div style={{background:'#f8fafc',borderRadius:10,padding:14}}>
             <div style={{fontSize:11,color:'#94a3b8',fontWeight:600,marginBottom:8,textTransform:'uppercase',letterSpacing:.5}}>Clube & Contrato</div>
-            <div style={{fontSize:14,fontWeight:600,color:'#0f172a'}}>{j.clube_atual||'â'}</div>
-            <div style={{fontSize:12,color:'#64748b'}}>{j.liga||'â'} Â· {j.pais_clube||'â'}</div>
+            <div style={{fontSize:14,fontWeight:600,color:'#0f172a'}}>{j.clube_atual||'—'}</div>
+            <div style={{fontSize:12,color:'#64748b'}}>{j.liga||'—'} · {j.pais_clube||'—'}</div>
             {j.contrato_fim&&<div style={{fontSize:12,color:'#f59e0b',marginTop:4}}>ð Vence: {new Date(j.contrato_fim).toLocaleDateString('pt-BR')}</div>}
-            {j.salario_estimado&&<div style={{fontSize:12,color:'#16a34a',marginTop:4}}>ð° ~â¬{Number(j.salario_estimado).toLocaleString('pt-BR')}/mÃªs</div>}
+            {j.salario_estimado&&<div style={{fontSize:12,color:'#16a34a',marginTop:4}}>ð° ~â¬{Number(j.salario_estimado).toLocaleString('pt-BR')}/mês</div>}
           </div>
           <div style={{background:'#f8fafc',borderRadius:10,padding:14}}>
-            <div style={{fontSize:11,color:'#94a3b8',fontWeight:600,marginBottom:8,textTransform:'uppercase',letterSpacing:.5}}>Temporada {j.temporada||'â'}</div>
+            <div style={{fontSize:11,color:'#94a3b8',fontWeight:600,marginBottom:8,textTransform:'uppercase',letterSpacing:.5}}>Temporada {j.temporada||'—'}</div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:6,textAlign:'center'}}>
               {[['â½',j.gols,'Gols'],['ð°ï¸',j.assistencias,'Ast.'],['ð®',j.jogos,'Jogos'],['â±ï¸',Math.round((j.minutos_jogados||0)/90),'90min']].map(([ic,v,lb])=>(
                 <div key={lb}><div style={{fontWeight:700,fontSize:18,color:'#0f172a'}}>{v||0}</div><div style={{fontSize:10,color:'#94a3b8'}}>{ic} {lb}</div></div>
@@ -1030,16 +1030,16 @@ function PerfilScout({jogador, onClose, onUpdate, usuario}) {
             </div>
           </div>
           <div style={{background:'#f8fafc',borderRadius:10,padding:14}}>
-            <div style={{fontSize:11,color:'#94a3b8',fontWeight:600,marginBottom:4,textTransform:'uppercase',letterSpacing:.5}}>Dados FÃ­sicos</div>
-            <div style={{fontSize:13,color:'#334155'}}>{j.altura_cm?`${j.altura_cm}cm`:''} {j.peso_kg?`Â· ${j.peso_kg}kg`:''} {j.data_nascimento?`Â· ${new Date().getFullYear()-new Date(j.data_nascimento).getFullYear()} anos`:''}</div>
+            <div style={{fontSize:11,color:'#94a3b8',fontWeight:600,marginBottom:4,textTransform:'uppercase',letterSpacing:.5}}>Dados Físicos</div>
+            <div style={{fontSize:13,color:'#334155'}}>{j.altura_cm?`${j.altura_cm}cm`:''} {j.peso_kg?`· ${j.peso_kg}kg`:''} {j.data_nascimento?`· ${new Date().getFullYear()-new Date(j.data_nascimento).getFullYear()} anos`:''}</div>
           </div>
         </div>
 
-        {/* AvaliaÃ§Ã£o */}
+        {/* Avaliação */}
         {(j.pontos_fortes||j.pontos_fracos||j.observacoes)&&(
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:16}}>
             {j.pontos_fortes&&<div style={{background:'#f0fdf4',borderRadius:10,padding:12,borderLeft:'3px solid #16a34a'}}>
-              <div style={{fontSize:11,fontWeight:700,color:'#16a34a',marginBottom:4}}>â Pontos Fortes</div>
+              <div style={{fontSize:11,fontWeight:700,color:'#16a34a',marginBottom:4}}>✅ Pontos Fortes</div>
               <div style={{fontSize:13,color:'#334155'}}>{j.pontos_fortes}</div>
             </div>}
             {j.pontos_fracos&&<div style={{background:'#fff7ed',borderRadius:10,padding:12,borderLeft:'3px solid #f59e0b'}}>
@@ -1047,27 +1047,27 @@ function PerfilScout({jogador, onClose, onUpdate, usuario}) {
               <div style={{fontSize:13,color:'#334155'}}>{j.pontos_fracos}</div>
             </div>}
             {j.observacoes&&<div style={{background:'#f8fafc',borderRadius:10,padding:12,borderLeft:'3px solid #3b82f6',gridColumn:'1/-1'}}>
-              <div style={{fontSize:11,fontWeight:700,color:'#3b82f6',marginBottom:4}}>ð ObservaÃ§Ãµes</div>
+              <div style={{fontSize:11,fontWeight:700,color:'#3b82f6',marginBottom:4}}>ð Observações</div>
               <div style={{fontSize:13,color:'#334155'}}>{j.observacoes}</div>
             </div>}
           </div>
         )}
 
-        {/* VÃ­deos */}
+        {/* Vídeos */}
         {(j.video_url_1||j.video_url_2||j.video_url_3)&&(
           <div style={{marginBottom:16}}>
-            <div style={{fontSize:12,fontWeight:700,color:'#64748b',marginBottom:8}}>ð¥ VÃ­deos de anÃ¡lise</div>
+            <div style={{fontSize:12,fontWeight:700,color:'#64748b',marginBottom:8}}>ð¥ Vídeos de análise</div>
             <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
               {[j.video_url_1,j.video_url_2,j.video_url_3].filter(Boolean).map((url,i)=>(
-                <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{padding:'6px 14px',background:'#1e3a5f',color:'#fff',borderRadius:8,fontSize:12,textDecoration:'none'}}>â¶ VÃ­deo {i+1}</a>
+                <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{padding:'6px 14px',background:'#1e3a5f',color:'#fff',borderRadius:8,fontSize:12,textDecoration:'none'}}>â¶ Vídeo {i+1}</a>
               ))}
             </div>
           </div>
         )}
 
-        {/* OrÃ§amento */}
+        {/* Orçamento */}
         {j.orcamento_max&&<div style={{background:'#f0fdf4',borderRadius:10,padding:12,textAlign:'center',fontSize:14,fontWeight:700,color:'#16a34a'}}>
-          ð¶ OrÃ§amento mÃ¡ximo: â¬{Number(j.orcamento_max).toLocaleString('pt-BR')}
+          ð¶ Orçamento máximo: â¬{Number(j.orcamento_max).toLocaleString('pt-BR')}
         </div>}
       </div>
     </div>
@@ -1104,47 +1104,47 @@ function NovoJogadorForm({onClose, onSalvo}) {
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',zIndex:1100,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'20px',overflowY:'auto'}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
       <div style={{background:'#fff',borderRadius:16,width:'100%',maxWidth:680,padding:28}}>
-        <h3 style={{margin:'0 0 20px',color:'#0f172a'}}>â Adicionar Jogador ao Scout</h3>
+        <h3 style={{margin:'0 0 20px',color:'#0f172a'}}>➕ Adicionar Jogador ao Scout</h3>
         <form onSubmit={salvar}>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:12}}>
             <div style={{gridColumn:'1/-1'}}>{inp('Nome *','nome','text',{required:true,placeholder:'Nome completo'})}</div>
-            {sel('PosiÃ§Ã£o Principal *','posicao_principal',POSICOES_SCOUT.map(p=>({v:p,l:p.replace(/_/g,' ')})))}
-            {sel('PosiÃ§Ã£o SecundÃ¡ria','posicao_secundaria',POSICOES_SCOUT.map(p=>({v:p,l:p.replace(/_/g,' ')})))}
+            {sel('Posição Principal *','posicao_principal',POSICOES_SCOUT.map(p=>({v:p,l:p.replace(/_/g,' ')})))}
+            {sel('Posição Secundária','posicao_secundaria',POSICOES_SCOUT.map(p=>({v:p,l:p.replace(/_/g,' ')})))}
             {inp('Clube Atual','clube_atual')}
             {inp('Liga','liga')}
-            {inp('PaÃ­s do Clube','pais_clube')}
+            {inp('País do Clube','pais_clube')}
             {inp('Data Nasc.','data_nascimento','date')}
             {inp('Nacionalidade','nacionalidade')}
-            {sel('PÃ© Dominante','pe_dominante',[{v:'direito',l:'Direito'},{v:'esquerdo',l:'Esquerdo'},{v:'ambidestro',l:'Ambidestro'}])}
+            {sel('Pé Dominante','pe_dominante',[{v:'direito',l:'Direito'},{v:'esquerdo',l:'Esquerdo'},{v:'ambidestro',l:'Ambidestro'}])}
             {inp('Altura (cm)','altura_cm','number',{min:150,max:220})}
             {inp('Peso (kg)','peso_kg','number',{min:50,max:120,step:0.1})}
-            {inp('Contrato atÃ©','contrato_fim','date')}
-            {inp('SalÃ¡rio Estimado (â¬/mÃªs)','salario_estimado','number')}
+            {inp('Contrato até','contrato_fim','date')}
+            {inp('Salário Estimado (â¬/mês)','salario_estimado','number')}
             {inp('Temporada','temporada','text',{placeholder:'2025/26'})}
             {inp('Jogos','jogos','number',{min:0})}
             {inp('Gols','gols','number',{min:0})}
-            {inp('AssistÃªncias','assistencias','number',{min:0})}
+            {inp('Assistências','assistencias','number',{min:0})}
             {inp('Min. Jogados','minutos_jogados','number',{min:0})}
             {inp('Nota SofaScore','nota_sofascore','number',{min:0,max:10,step:0.1})}
             {inp('Nota WhoScored','nota_whoscored','number',{min:0,max:10,step:0.1})}
             {inp('Nota Scout (1-10)','nota_scout','number',{min:1,max:10})}
-            {inp('OrÃ§amento MÃ¡x (â¬)','orcamento_max','number')}
+            {inp('Orçamento Máx (â¬)','orcamento_max','number')}
             {sel('Status','status',Object.entries(STATUS_SCOUT).map(([v,o])=>({v,l:o.label})))}
             {sel('Prioridade','prioridade',Object.entries(PRIORIDADE_SCOUT).map(([v,o])=>({v,l:o.label})))}
             <div style={{gridColumn:'1/-1',display:'flex',flexDirection:'column',gap:3}}>
               <label style={{fontSize:11,fontWeight:600,color:'#64748b'}}>Pontos Fortes</label>
-              <textarea value={form.pontos_fortes||''} onChange={e=>set('pontos_fortes',e.target.value)} rows={2} style={{border:'1px solid #e2e8f0',borderRadius:7,padding:'6px 10px',fontSize:13,resize:'vertical'}} placeholder="FinalizaÃ§Ã£o, velocidade, visÃ£o de jogo..."/>
+              <textarea value={form.pontos_fortes||''} onChange={e=>set('pontos_fortes',e.target.value)} rows={2} style={{border:'1px solid #e2e8f0',borderRadius:7,padding:'6px 10px',fontSize:13,resize:'vertical'}} placeholder="Finalização, velocidade, visão de jogo..."/>
             </div>
             <div style={{gridColumn:'1/-1',display:'flex',flexDirection:'column',gap:3}}>
               <label style={{fontSize:11,fontWeight:600,color:'#64748b'}}>Pontos a Melhorar</label>
               <textarea value={form.pontos_fracos||''} onChange={e=>set('pontos_fracos',e.target.value)} rows={2} style={{border:'1px solid #e2e8f0',borderRadius:7,padding:'6px 10px',fontSize:13,resize:'vertical'}}/>
             </div>
             <div style={{gridColumn:'1/-1',display:'flex',flexDirection:'column',gap:3}}>
-              <label style={{fontSize:11,fontWeight:600,color:'#64748b'}}>ObservaÃ§Ãµes do Scout</label>
+              <label style={{fontSize:11,fontWeight:600,color:'#64748b'}}>Observações do Scout</label>
               <textarea value={form.observacoes||''} onChange={e=>set('observacoes',e.target.value)} rows={3} style={{border:'1px solid #e2e8f0',borderRadius:7,padding:'6px 10px',fontSize:13,resize:'vertical'}}/>
             </div>
-            {inp('VÃ­deo URL 1','video_url_1','url',{placeholder:'https://youtube.com/...'})}
-            {inp('VÃ­deo URL 2','video_url_2','url',{placeholder:'https://youtube.com/...'})}
+            {inp('Vídeo URL 1','video_url_1','url',{placeholder:'https://youtube.com/...'})}
+            {inp('Vídeo URL 2','video_url_2','url',{placeholder:'https://youtube.com/...'})}
           </div>
           <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
             <button type="button" onClick={onClose} style={{padding:'8px 20px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',cursor:'pointer',fontSize:13}}>Cancelar</button>
@@ -1193,7 +1193,7 @@ function ModuloScout({usuario}) {
     <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20,flexWrap:'wrap',gap:10}}>
       <div>
         <h2 style={{margin:0,fontSize:20,color:'#0f172a'}}>ð­ Banco de Talentos</h2>
-        <p style={{margin:0,fontSize:13,color:'#64748b'}}>ProspecÃ§Ã£o e acompanhamento de atletas de interesse</p>
+        <p style={{margin:0,fontSize:13,color:'#64748b'}}>Prospecção e acompanhamento de atletas de interesse</p>
       </div>
       <button onClick={()=>setModalNovo(true)} style={{padding:'8px 18px',background:'#1e3a5f',color:'#fff',border:'none',borderRadius:8,fontWeight:600,cursor:'pointer',fontSize:13}}>
         + Adicionar Jogador
@@ -1214,7 +1214,7 @@ function ModuloScout({usuario}) {
     <div style={{display:'flex',gap:10,marginBottom:20,flexWrap:'wrap'}}>
       <input value={busca} onChange={e=>setBusca(e.target.value)} placeholder="ð Buscar por nome ou clube..." style={{flex:1,minWidth:200,border:'1px solid #e2e8f0',borderRadius:8,padding:'7px 12px',fontSize:13,outline:'none'}}/>
       <select value={filtroPos} onChange={e=>setFiltroPos(e.target.value)} style={{border:'1px solid #e2e8f0',borderRadius:8,padding:'7px 12px',fontSize:13,outline:'none'}}>
-        <option value="">Todas as posiÃ§Ãµes</option>
+        <option value="">Todas as posições</option>
         {POSICOES_SCOUT.map(p=><option key={p} value={p}>{p.replace(/_/g,' ')}</option>)}
       </select>
     </div>
