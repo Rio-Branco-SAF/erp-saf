@@ -231,7 +231,7 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a"><div style="color:#64748b;font-size:15px;font-family:sans-serif;letter-spacing:.5px">Carregando ERP SAF…</div></div></div>
 
 <script type="text/babel">
 const { useState, useEffect, useCallback } = React;
@@ -323,9 +323,10 @@ try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
 async function apiFetch(path, options={}) {
     try {
         const headers = { 'Content-Type': 'application/json' };
+        const hadToken = !!TOKEN;
         if (TOKEN) headers['Authorization'] = 'Bearer ' + TOKEN;
         const res = await fetch(API_URL + path, { ...options, headers });
-        if (res.status === 401) { TOKEN=null; localStorage.removeItem('erp_token'); window.location.reload(); }
+        if (res.status === 401 && hadToken) { TOKEN=null; localStorage.removeItem('erp_token'); window.location.reload(); }
         return await res.json();
     } catch(e) { return null; }
 }
