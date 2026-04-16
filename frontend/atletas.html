@@ -744,6 +744,7 @@ function ModuloAtletas({ usuario }) {
     const [total, setTotal] = useState(0);
 
     const carregar = useCallback(async () => {
+        if(!TOKEN) return;
         setLoading(true);
         const params = new URLSearchParams({ pagina:1, por_pagina:50 });
         if (busca) params.set('busca', busca);
@@ -817,7 +818,14 @@ function ModuloAtletas({ usuario }) {
             </div>
 
             {/* GRID DE CARDS */}
-            {loading ? (
+            {!TOKEN ? (
+                <div style={{textAlign:'center',padding:'80px 20px',color:'#94a3b8'}}>
+                  <div style={{fontSize:'48px',marginBottom:'12px'}}>🔒</div>
+                  <div style={{fontSize:'18px',fontWeight:'600',marginBottom:'8px',color:'#e2e8f0'}}>Elenco requer autentição</div>
+                  <div style={{fontSize:'14px',marginBottom:'24px'}}>Faça login para acessar e gerenciar o elenco do Rio Branco</div>
+                  <a href="login.html" style={{display:'inline-block',background:'#3b82f6',color:'#fff',padding:'10px 28px',borderRadius:'8px',textDecoration:'none',fontWeight:'600',fontSize:'15px'}}>Fazer Login →</a>
+                </div>
+            ) : loading ? (
                 <div style={{textAlign:'center',padding:'60px',color:'#94a3b8',fontSize:14}}>Carregando elenco...</div>
             ) : atletas.length === 0 ? (
                 <div className="empty-state"><div className="empty-icon">🔍</div><p>Nenhum atleta encontrado.</p></div>
@@ -1159,7 +1167,7 @@ function NovoJogadorForm({onClose, onSalvo}) {
   );
 }
 
-function ModuloScout({usuario}) {
+function ModuloScout({usuario, onIrParaElenco}) {
   const [jogadores, setJogadores] = useState([]);
   const [resumo, setResumo] = useState({});
   const [filtroStatus, setFiltroStatus] = useState('');
@@ -1205,7 +1213,7 @@ const [naoAutorizado, setNaoAutorizado] = React.useState(false);
     {/* Resumo por status */}
     <div style={{display:'flex',gap:10,marginBottom:20,overflowX:'auto',paddingBottom:4}}>
       {Object.entries(STATUS_SCOUT).map(([k,v])=>(
-        <div key={k} onClick={()=>setFiltroStatus(filtroStatus===k?'':k)} style={{background:filtroStatus===k?v.bg:'#fff',border:`1px solid ${filtroStatus===k?v.cor:'#e2e8f0'}`,borderRadius:10,padding:'10px 16px',cursor:'pointer',whiteSpace:'nowrap',minWidth:90,textAlign:'center',transition:'all .15s'}}>
+        <div key={k} onClick={()=>{ if(k==='contratado'&&onIrParaElenco){onIrParaElenco();return;} setFiltroStatus(filtroStatus===k?'':k); }} style={{background:filtroStatus===k?v.bg:'#fff',border:`1px solid ${filtroStatus===k?v.cor:'#e2e8f0'}`,borderRadius:10,padding:'10px 16px',cursor:'pointer',whiteSpace:'nowrap',minWidth:90,textAlign:'center',transition:'all .15s'}}>
           <div style={{fontSize:18,fontWeight:800,color:filtroStatus===k?v.cor:'#0f172a'}}>{resumo[k]||0}</div>
           <div style={{fontSize:11,color:filtroStatus===k?v.cor:'#64748b',fontWeight:600}}>{v.label}</div>
         </div>
@@ -1268,7 +1276,7 @@ function App() {
               </button>
             ))}
           </div>
-          {aba==='elenco' ? <ModuloAtletas usuario={usuario}/> : <ModuloScout usuario={usuario}/>}
+          {aba==='elenco' ? <ModuloAtletas usuario={usuario}/> : <ModuloScout usuario={usuario} onIrParaElenco={()=>setAba('elenco')}/>}
         </div>
     </>;
 }
