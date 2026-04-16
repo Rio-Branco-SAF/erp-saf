@@ -1176,7 +1176,7 @@ function ModuloScout({usuario}) {
       if (busca) params.set('busca', busca);
       const [rj, rr] = await Promise.all([
         fetch(`${API}/scout?${params}`, {headers:{'Authorization':`Bearer ${TOKEN}`}}).then(r=>r.json()),
-        fetch(`${API}/scout/stats/resumo`, {headers:{'Authorization':`Bearer ${TOKEN}`}}).then(r=>r.json(),
+        fetch(`${API}/scout/stats/resumo`, {headers:{'Authorization':`Bearer ${TOKEN}`}}).then(r=>r.json()),
        ]);
       setJogadores(rj.jogadores || []);
       setResumo(rr);
