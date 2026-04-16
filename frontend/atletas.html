@@ -1108,7 +1108,7 @@ function NovoJogadorForm({onClose, onSalvo}) {
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:12}}>
             <div style={{gridColumn:'1/-1'}}>{inp('Nome *','nome','text',{required:true,placeholder:'Nome completo'})}</div>
             {sel('PosiÃ§Ã£o Principal *','posicao_principal',POSICOES_SCOUT.map(p=>({v:p,l:p.replace(/_/g,' ')})))}
-            {sel('PosiÃ§Ã£o SecundÃ¡ria','posicao_secundaria',[{v:'g,' ')}))])}
+            {sel('PosiÃ§Ã£o SecundÃ¡ria','posicao_secundaria',POSICOES_SCOUT.map(p=>({v:p,l:p.replace(/_/g,' ')})))}
             {inp('Clube Atual','clube_atual')}
             {inp('Liga','liga')}
             {inp('PaÃ­s do Clube','pais_clube')}
