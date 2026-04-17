@@ -246,7 +246,7 @@ function fmtData(d)  { if(!d)return'—'; return new Date(d+'T00:00:00').toLocal
 function iniciais(n) { return (n||'?').split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase(); }
 
 async function apiFetch(path, opts={}) {
-  const token = localStorage.getItem('erp_token');
+  const token = localStorage.getItem('erp_access');
   const res = await fetch(API+path,{
     headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},
     ...opts, body:opts.body?JSON.stringify(opts.body):undefined,
@@ -271,8 +271,8 @@ function Login({onLogin}){
     try{
       if(email&&senha){
         const u={nome:'Administrador',cargo:'CEO',perfil:'admin'};
-        localStorage.setItem('erp_token','demo_token');
-        localStorage.setItem('erp_usuario',JSON.stringify(u));
+        localStorage.setItem('erp_access','demo_token');
+        localStorage.setItem('erp_user',JSON.stringify(u));
         onLogin(u);
       } else setErro('Preencha e-mail e senha.');
     }catch(err){setErro(err.message);}finally{setLoading(false);}
@@ -1277,11 +1277,11 @@ function ModuloFinanceiro(){
 
 // ── App ──────────────────────────────────────────────────────
 function App(){
-  const [usuario,setUsuario]=useState(()=>{try{return JSON.parse(localStorage.getItem('erp_usuario'));}catch{return null;}});
+  const [usuario,setUsuario]=useState(()=>{try{return JSON.parse(localStorage.getItem('erp_user'));}catch{return null;}});
   const [pagina,setPagina]=useState('financeiro');
   const toasts=useToast();
 
-  function logout(){ localStorage.removeItem('erp_token'); localStorage.removeItem('erp_usuario'); setUsuario(null); }
+  function logout(){ localStorage.removeItem('erp_access'); localStorage.removeItem('erp_user'); setUsuario(null); }
   if(!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
 
   const navItems=[

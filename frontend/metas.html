@@ -225,16 +225,16 @@ const DEMO_HIST = {
 // ============================================================
 // HELPERS
 // ============================================================
-let TOKEN = localStorage.getItem('erp_token');
+let TOKEN = localStorage.getItem('erp_access');
 let USUARIO = null;
-try { USUARIO = JSON.parse(localStorage.getItem('erp_usuario')); } catch(e){}
+try { USUARIO = JSON.parse(localStorage.getItem('erp_user')); } catch(e){}
 
 async function apiFetch(path, options={}) {
     try {
         const headers={'Content-Type':'application/json'};
         if(TOKEN) headers['Authorization']='Bearer '+TOKEN;
         const res = await fetch(API_URL+path,{...options,headers});
-        if(res.status===401){TOKEN=null;localStorage.removeItem('erp_token');window.location.reload();}
+        if(res.status===401){TOKEN=null;localStorage.removeItem('erp_access');window.location.reload();}
         return await res.json();
     } catch(e){return null;}
 }
@@ -267,8 +267,8 @@ function Login({onLogin}) {
         e.preventDefault();setL(true);setErr('');
         const d=await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({usuario:u,senha:s})});
         setL(false);
-        if(d?.token){TOKEN=d.token;USUARIO=d.usuario;localStorage.setItem('erp_token',TOKEN);localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(d.usuario);}
-        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_usuario',JSON.stringify(USUARIO));onLogin(USUARIO);}
+        if(d?.token){TOKEN=d.token;USUARIO=d.usuario;localStorage.setItem('erp_access',TOKEN);localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(d.usuario);}
+        else if(u==='admin'&&s==='admin123'){USUARIO={id:1,nome:'Administrador',perfil:'admin'};localStorage.setItem('erp_user',JSON.stringify(USUARIO));onLogin(USUARIO);}
         else setErr('Usuário ou senha incorretos.');
     }
     return <div className="login-wrap"><div className="login-card">
@@ -681,7 +681,7 @@ function ModuloMetas({usuario}){
 // ============================================================
 function App(){
     const [usuario,setUsuario]=useState(USUARIO);
-    function logout(){TOKEN=null;USUARIO=null;localStorage.removeItem('erp_token');localStorage.removeItem('erp_usuario');setUsuario(null);}
+    function logout(){TOKEN=null;USUARIO=null;localStorage.removeItem('erp_access');localStorage.removeItem('erp_user');setUsuario(null);}
     if(!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
     return <><Sidebar usuario={usuario} onLogout={logout}/><div className="main"><ModuloMetas usuario={usuario}/></div></>;
 }

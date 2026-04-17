@@ -333,7 +333,7 @@ function corAvatar(nome) {
 // API HELPERS
 // ============================================================
 async function apiFetch(path, opts = {}) {
-  const token = localStorage.getItem('erp_token');
+  const token = localStorage.getItem('erp_access');
   const res = await fetch(API + path, {
     headers: {
       'Content-Type': 'application/json',
@@ -390,8 +390,8 @@ function Login({ onLogin }) {
       ).then(r => r.json().then(d => ({ ok: r.ok, ...d })));
 
       if (data.token) {
-        localStorage.setItem('erp_token', data.token);
-        localStorage.setItem('erp_usuario', JSON.stringify(data.usuario));
+        localStorage.setItem('erp_access', data.token);
+        localStorage.setItem('erp_user', JSON.stringify(data.usuario));
         onLogin(data.usuario);
       } else if (data.erro) {
         // Erro real da API (credenciais erradas, inativo etc.)
@@ -399,15 +399,15 @@ function Login({ onLogin }) {
       } else {
         // API fora do ar — modo demo (só aceita enquanto não há backend)
         const usuario = { nome: 'Administrador Demo', cargo: 'CEO / Presidente', perfil: 'admin' };
-        localStorage.setItem('erp_token', 'demo_token');
-        localStorage.setItem('erp_usuario', JSON.stringify(usuario));
+        localStorage.setItem('erp_access', 'demo_token');
+        localStorage.setItem('erp_user', JSON.stringify(usuario));
         onLogin(usuario);
       }
     } catch {
       // Sem conexão — modo demo
       const usuario = { nome: 'Administrador Demo', cargo: 'CEO / Presidente', perfil: 'admin' };
-      localStorage.setItem('erp_token', 'demo_token');
-      localStorage.setItem('erp_usuario', JSON.stringify(usuario));
+      localStorage.setItem('erp_access', 'demo_token');
+      localStorage.setItem('erp_user', JSON.stringify(usuario));
       onLogin(usuario);
     } finally {
       setLoading(false);
@@ -1450,14 +1450,14 @@ function ModuloProjetos({ usuario }) {
 // ============================================================
 function App() {
   const [usuario, setUsuario] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('erp_usuario')); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem('erp_user')); } catch { return null; }
   });
   const [pagina, setPagina] = useState('funcionarios');
   const toasts = useToast();
 
   function logout() {
-    localStorage.removeItem('erp_token');
-    localStorage.removeItem('erp_usuario');
+    localStorage.removeItem('erp_access');
+    localStorage.removeItem('erp_user');
     setUsuario(null);
   }
 

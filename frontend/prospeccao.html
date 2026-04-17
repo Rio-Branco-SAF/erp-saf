@@ -305,7 +305,7 @@ const { useState, useEffect, useCallback, useRef } = React;
 const API = (window._ENV?.API_URL || '') + '/api';
 
 async function apiFetch(path, opts = {}) {
-  const token = localStorage.getItem('erp_token');
+  const token = localStorage.getItem('erp_access');
   const res = await fetch(API + path, {
     headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
     ...opts,
