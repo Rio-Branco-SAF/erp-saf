@@ -1,9 +1,9 @@
 const express = require('express');
 const router  = express.Router();
 const db      = require('../config/database');
-const { autenticarToken, autorizarPerfis } = require('../middleware/auth');
+const { autenticar, autorizarPerfis } = require('../middleware/auth');
 
-router.use(autenticarToken);
+router.use(autenticar);
 
 // ── RESUMO ──────────────────────────────────────────────────────
 router.get('/resumo', async (req, res) => {
@@ -132,7 +132,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // ── CRIAR JOGO ──────────────────────────────────────────────────
-router.post('/', autorizarPerfis(['admin','gestor']), async (req, res) => {
+router.post('/', autorizarPerfis('admin','gestor'), async (req, res) => {
   const client = await db.connect();
   try {
     await client.query('BEGIN');
@@ -192,7 +192,7 @@ router.post('/', autorizarPerfis(['admin','gestor']), async (req, res) => {
 });
 
 // ── ATUALIZAR JOGO ──────────────────────────────────────────────
-router.put('/:id', autorizarPerfis(['admin','gestor']), async (req, res) => {
+router.put('/:id', autorizarPerfis('admin','gestor'), async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -221,7 +221,7 @@ router.put('/:id', autorizarPerfis(['admin','gestor']), async (req, res) => {
 });
 
 // ── REGISTRAR RESULTADO ─────────────────────────────────────────
-router.patch('/:id/resultado', autorizarPerfis(['admin','gestor']), async (req, res) => {
+router.patch('/:id/resultado', autorizarPerfis('admin','gestor'), async (req, res) => {
   const client = await db.connect();
   try {
     await client.query('BEGIN');
@@ -317,7 +317,7 @@ router.put('/:id/orcamento/itens/:itemId', async (req, res) => {
 });
 
 // ── ORÇAMENTO: APROVAR ──────────────────────────────────────────
-router.patch('/:id/orcamento/aprovar', autorizarPerfis(['admin','gestor','financeiro']), async (req, res) => {
+router.patch('/:id/orcamento/aprovar', autorizarPerfis('admin','gestor','financeiro'), async (req, res) => {
   try {
     const { id } = req.params;
     await db.query(

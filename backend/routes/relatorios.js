@@ -1,9 +1,9 @@
 const express = require('express');
 const router  = express.Router();
 const db      = require('../config/database');
-const { autenticarToken, autorizarPerfis } = require('../middleware/auth');
+const { autenticar, autorizarPerfis } = require('../middleware/auth');
 
-router.use(autenticarToken);
+router.use(autenticar);
 
 // ── RESUMO EXECUTIVO ────────────────────────────────────────────
 router.get('/executivo', async (req, res) => {
