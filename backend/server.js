@@ -15,6 +15,8 @@ const jogosRoutes        = require('./routes/jogos');
 const extratoRoutes      = require('./routes/extrato');
 const projetosRoutes     = require('./routes/projetos');
 const scoutRoutes        = require('./routes/scout');
+const prospeccaoRoutes   = require('./routes/prospeccao');
+
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
@@ -64,6 +66,7 @@ app.use('/api/jogos',        jogosRoutes);
 app.use('/api/extrato',      extratoRoutes);
 app.use('/api/projetos',     projetosRoutes);
 app.use('/api/scout',        scoutRoutes);
+app.use('/api/prospeccao',  prospeccaoRoutes);
 const seedDemoRoutes = require('./routes/seed_demo');
 app.use('/api/seed-demo',    seedDemoRoutes);
 
