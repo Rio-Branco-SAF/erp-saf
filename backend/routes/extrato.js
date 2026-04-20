@@ -30,7 +30,7 @@ router.post('/upload',autorizarPerfis('admin','financeiro'),upload.single('arqui
     const ir=await client.query('INSERT INTO importacoes_extrato (conta_bancaria_id,nome_arquivo,formato,total_lancamentos,valor_total_credito,valor_total_debito,periodo_inicio,periodo_fim,importado_por) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id',[conta_bancaria_id||null,req.file.originalname,formato,cat.length,cred,deb,datas[0]||null,datas[datas.length-1]||null,req.usuario.id]);
     const iid=ir.rows[0].id;
     for(const l of cat){
-      await client.query('INSERT INTO lancamentos_importados (importacao_id,data_lancamento,descricao,valor,tipo,referencia_banco,saldo_apos,categoria_id,categoria_sugerida_id,confianca_sugestao,keywords_match,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$8,$9,$10,$11)',[iid,l.data_lancamento,l.descricao,l.valor,l.tipo,l.referencia_banco||null,l.saldo_apos||null,l.categoria_sugerida_id||null,l.confianca_sugestao||0,l.keywords_match||null,l.duplicado?'ignorado':'pendente']);
+      await client.query('INSERT INTO lancamentos_importados (importacao_id,data_lancamento,descricao,valor,tipo,referencia_banco,saldo_apos,categoria_id,categoria_sugerida_id,confianca_sugestao,keywords_match,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)',[iid,l.data_lancamento,l.descricao,l.valor,l.tipo,l.referencia_banco||null,l.saldo_apos||null,null,l.categoria_sugerida_id||null,l.confianca_sugestao||0,l.keywords_match||null,l.duplicado?'ignorado':'pendente']);
     }
     await client.query('COMMIT');
     const result=await pool.query('SELECT i.*,cb.nome AS conta_nome FROM importacoes_extrato i LEFT JOIN contas_bancarias cb ON cb.id=i.conta_bancaria_id WHERE i.id=$1',[iid]);
