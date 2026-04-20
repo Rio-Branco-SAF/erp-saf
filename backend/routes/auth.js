@@ -258,5 +258,30 @@ router.post('/redefinir-senha',
     }
   }
 );
-
+// — POST /api/auth/primeiro-acesso —————————————————————————————
+router.post('/primeiro-acesso', autenticar, async (req, res) => {
+  const { nova_senha } = req.body;
+    if (!nova_senha || nova_senha.length < 8) {
+        return res.status(400).json({ erro: 'A nova senha deve ter pelo menos 8 caracteres.' });
+          }
+            try {
+                const { rows } = await pool.query(
+                      'SELECT primeiro_acesso FROM usuarios WHERE id = $1',
+                            [req.usuario.id]
+                                );
+                                    if (!rows[0] || !rows[0].primeiro_acesso) {
+                                          return res.status(400).json({ erro: 'Ação não permitida.' });
+                                              }
+                                                  const hash = await bcrypt.hash(nova_senha, SALT_ROUNDS);
+                                                      await pool.query(
+                                                            'UPDATE usuarios SET senha_hash = $1, primeiro_acesso = false, updated_at = NOW() WHERE id = $2',
+                                                                  [hash, req.usuario.id]
+                                                                      );
+                                                                          res.json({ mensagem: 'Senha definida com sucesso. Bem-vindo!' });
+                                                                            } catch (err) {
+                                                                                console.error('[auth/primeiro-acesso]', err.message);
+                                                                                    res.status(500).json({ erro: 'Erro interno.' });
+                                                                                      }
+                                                                                      });
+                                                                                      
 module.exports = router;

@@ -297,6 +297,7 @@
     .login-btn { width: 100%; padding: 11px; background: var(--dourado); color: #0a0a0a; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; margin-top: 8px; }
     .login-btn:hover { background: var(--dourado-vivo); }
     .login-erro { background: #f8d7da; color: #721c24; border-radius: 6px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; }
+    .primeiro-acesso-aviso { background: #fff3cd; color: #856404; border-radius: 6px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; border: 1px solid #ffc107; }
   </style>
 </head>
 <body>
@@ -441,6 +442,65 @@ function Login({ onLogin }) {
       </div>
     </div>
   );
+}
+
+// ============================================================
+// PRIMEIRO ACESSO — troca obrigatória de senha
+// ============================================================
+function TrocarSenhaPrimeiroAcesso({ usuario, onConcluido }) {
+const [novaSenha, setNovaSenha] = React.useState('');
+const [confirmar, setConfirmar] = React.useState('');
+const [erro, setErro] = React.useState('');
+const [loading, setLoading] = React.useState(false);
+const API = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api';
+async function handleSubmit(e) {
+e.preventDefault(); setErro('');
+if (novaSenha.length < 8) { setErro('A nova senha deve ter pelo menos 8 caracteres.'); return; }
+if (novaSenha !== confirmar) { setErro('As senhas não coincidem.'); return; }
+setLoading(true);
+try {
+const res = await fetch(API + '/auth/primeiro-acesso', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('erp_access') },
+body: JSON.stringify({ nova_senha: novaSenha })
+});
+const data = await res.json();
+if (res.ok) {
+const atualizado = { ...usuario, primeiro_acesso: false };
+localStorage.setItem('erp_user', JSON.stringify(atualizado));
+onConcluido(atualizado);
+} else { setErro(data.erro || 'Erro ao definir senha.'); }
+} catch { setErro('Sem conexão com o servidor.'); }
+finally { setLoading(false); }
+}
+return (
+<div className="login-wrap">
+<div className="login-card">
+<div className="login-logo">
+<div className="icon">🔐</div>
+<h1>Rio Branco SAF</h1>
+<p>Primeiro acesso — defina sua senha</p>
+</div>
+<div className="primeiro-acesso-aviso">
+⚠️ Este é seu primeiro acesso. Por segurança, crie uma senha pessoal antes de continuar.
+</div>
+{erro && <div className="login-erro">⚠️ {erro}</div>}
+<form onSubmit={handleSubmit}>
+<div className="login-grupo">
+<label className="login-label">Nova senha</label>
+<input className="login-input" type="password" value={novaSenha} autoFocus required onChange={e => setNovaSenha(e.target.value)} placeholder="Mínimo 8 caracteres" />
+</div>
+<div className="login-grupo">
+<label className="login-label">Confirmar nova senha</label>
+<input className="login-input" type="password" value={confirmar} required onChange={e => setConfirmar(e.target.value)} placeholder="Repita a senha" />
+</div>
+<button className="login-btn" type="submit" disabled={loading}>
+{loading ? 'Salvando...' : 'Definir senha e entrar'}
+</button>
+</form>
+</div>
+</div>
+);
 }
 
 // ============================================================
@@ -1462,6 +1522,7 @@ function App() {
   }
 
   if (!usuario) return <Login onLogin={u => setUsuario(u)} />;
+if (usuario.primeiro_acesso) return <TrocarSenhaPrimeiroAcesso usuario={usuario} onConcluido={u => setUsuario(u)} />;
 
   const navItems = [
     { id:'funcionarios', icon:'👥', label:'Funcionários' },

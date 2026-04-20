@@ -113,6 +113,7 @@ CREATE TABLE usuarios (
   perfil         VARCHAR(20)  NOT NULL DEFAULT 'funcionario'
                  CHECK (perfil IN ('admin', 'gestor', 'financeiro', 'funcionario', 'rh')),
   ativo          BOOLEAN      NOT NULL DEFAULT true,
+    primeiro_acesso  BOOLEAN      NOT NULL DEFAULT true,
   ultimo_acesso  TIMESTAMP,
   created_at     TIMESTAMP    NOT NULL DEFAULT NOW()
 );
