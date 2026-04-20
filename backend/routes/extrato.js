@@ -36,7 +36,7 @@ router.post('/upload',autorizarPerfis('admin','financeiro'),upload.single('arqui
     const result=await pool.query('SELECT i.*,cb.nome AS conta_nome FROM importacoes_extrato i LEFT JOIN contas_bancarias cb ON cb.id=i.conta_bancaria_id WHERE i.id=$1',[iid]);
     const lancs=await pool.query('SELECT li.*,c.nome AS categoria_nome,c.cor AS categoria_cor,c.icone AS categoria_icone,cs.nome AS categoria_sugerida_nome FROM lancamentos_importados li LEFT JOIN categorias_financeiras c ON c.id=li.categoria_id LEFT JOIN categorias_financeiras cs ON cs.id=li.categoria_sugerida_id WHERE li.importacao_id=$1 ORDER BY li.data_lancamento,li.id',[iid]);
     res.status(201).json({importacao:result.rows[0],lancamentos:lancs.rows});
-  }catch(err){await client.query('ROLLBACK');console.error(err);res.status(500).json({erro:err.message||'Erro ao processar'});}
+  }catch(err){await client.query('ROLLBACK');console.error(err);res.status(500).json({erro:'Erro ao processar extrato bancário.'});}
   finally{client.release();}
 });
 
