@@ -22,7 +22,7 @@ router.get('/executivo', async (req, res) => {
     res.json({ sucesso: true, dados });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno ao gerar relatório.' });
   }
 });
 
@@ -84,7 +84,7 @@ router.get('/financeiro', async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno ao gerar relatório.' });
   }
 });
 
@@ -137,7 +137,7 @@ router.get('/folha', async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno ao gerar relatório.' });
   }
 });
 
@@ -192,7 +192,7 @@ router.get('/esportivo', async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno ao gerar relatório.' });
   }
 });
 
@@ -258,7 +258,7 @@ router.get('/investidores', async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno ao gerar relatório.' });
   }
 });
 
@@ -312,7 +312,7 @@ router.get('/compras', async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno ao gerar relatório.' });
   }
 });
 
@@ -327,7 +327,7 @@ router.post('/log', async (req, res) => {
     );
     res.json({ sucesso: true });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno ao gerar relatório.' });
   }
 });
 
