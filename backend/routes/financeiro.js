@@ -93,7 +93,7 @@ router.get('/resumo', async (req, res) => {
     });
   } catch (err) {
     console.error('Erro no resumo financeiro:', err);
-    res.status(500).json({ erro: 'Erro ao buscar resumo financeiro.', detalhe: err.message, codigo: err.code });
+    res.status(500).json({ erro: 'Erro ao buscar resumo financeiro.' });
   }
 });
 
