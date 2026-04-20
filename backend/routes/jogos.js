@@ -59,7 +59,7 @@ router.get('/resumo', async (req, res) => {
     res.json({ sucesso: true, dados });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -83,7 +83,7 @@ router.get('/', async (req, res) => {
     );
     res.json({ sucesso: true, dados: rows });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -127,7 +127,7 @@ router.get('/:id', async (req, res) => {
       gols: gols.rows
     });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -185,7 +185,7 @@ router.post('/', autorizarPerfis('admin','gestor'), async (req, res) => {
     res.status(201).json({ sucesso: true, jogo });
   } catch (err) {
     await client.query('ROLLBACK');
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   } finally {
     client.release();
   }
@@ -216,7 +216,7 @@ router.put('/:id', autorizarPerfis('admin','gestor'), async (req, res) => {
     if (!rows.length) return res.status(404).json({ sucesso: false, erro: 'Jogo não encontrado.' });
     res.json({ sucesso: true, jogo: rows[0] });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -268,7 +268,7 @@ router.patch('/:id/resultado', autorizarPerfis('admin','gestor'), async (req, re
     res.json({ sucesso: true, mensagem: 'Resultado registrado.' });
   } catch (err) {
     await client.query('ROLLBACK');
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   } finally {
     client.release();
   }
@@ -294,7 +294,7 @@ router.post('/:id/orcamento/itens', async (req, res) => {
     );
     res.status(201).json({ sucesso: true, item });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -312,7 +312,7 @@ router.put('/:id/orcamento/itens/:itemId', async (req, res) => {
     if (!rows.length) return res.status(404).json({ sucesso: false, erro: 'Item não encontrado.' });
     res.json({ sucesso: true, item: rows[0] });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -327,7 +327,7 @@ router.patch('/:id/orcamento/aprovar', autorizarPerfis('admin','gestor','finance
     );
     res.json({ sucesso: true, mensagem: 'Orçamento aprovado.' });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -343,7 +343,7 @@ router.post('/:id/receitas', async (req, res) => {
     );
     res.status(201).json({ sucesso: true, receita: rec });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -361,7 +361,7 @@ router.put('/:id/receitas/:recId', async (req, res) => {
     if (!rows.length) return res.status(404).json({ sucesso: false, erro: 'Receita não encontrada.' });
     res.json({ sucesso: true, receita: rows[0] });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -381,7 +381,7 @@ router.get('/aux/templates', async (req, res) => {
     );
     res.json({ sucesso: true, dados: tmpl.rows });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
@@ -405,7 +405,7 @@ router.get('/aux/calendario', async (req, res) => {
     });
     res.json({ sucesso: true, dados: meses, total: rows.length });
   } catch (err) {
-    res.status(500).json({ sucesso: false, erro: err.message });
+    res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor.' });
   }
 });
 
