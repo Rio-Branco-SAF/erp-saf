@@ -122,7 +122,7 @@ router.post('/:id/resetar-senha', autorizarPerfis('admin'), async (req, res) => 
   try {
     const hash = await bcrypt.hash(nova_senha, 12);
     const resultado = await pool.query(
-      'UPDATE usuarios SET senha_hash = $1 WHERE id = $2 RETURNING id, email',
+      'UPDATE usuarios SET senha_hash = $1, primeiro_acesso = true WHERE id = $2 RETURNING id, email',
       [hash, req.params.id]
     );
 
