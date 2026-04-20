@@ -768,7 +768,7 @@ function ModuloFinanceiro(){
     }
     setProcessando(true);
     try {
-      const token = localStorage.getItem('erp_token');
+      const token = localStorage.getItem('erp_access');
       const fd = new FormData();
       fd.append('arquivo', file);
       if (contaSelecionada) fd.append('conta_bancaria_id', contaSelecionada);

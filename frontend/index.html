@@ -1465,7 +1465,7 @@ function ModuloUsuarios({ usuario: usuarioLogado }) {
 // ============================================================
 function ModuloProjetos({ usuario }) {
   const API = window.APP_CONFIG?.API_URL || 'http://localhost:3001';
-  const token = localStorage.getItem('erp_token');
+  const token = localStorage.getItem('erp_access');
   const hdrs = { 'Content-Type':'application/json', Authorization:'Bearer '+token };
   const [view, setView] = useState('lista');
   const [projetos, setProjetos] = useState([]);
