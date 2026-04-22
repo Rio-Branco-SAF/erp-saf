@@ -460,7 +460,7 @@ function ModuloMetas({usuario}){
     const [busca,setBusca]=useState('');
     const [detalhe,setDetalhe]=useState(null);
     const [showNova,setShowNova]=useState(false);
-    const [novaMeta,setNovaMeta]=useState({titulo:'',tipo:'esportiva',categoria:'vitorias',prioridade:'media',valor_meta:'',unidade:'',sentido:'acima',data_fim:'',descricao:''});
+    const [novaMeta,setNovaMeta]=useState({titulo:'',tipo:'esportiva',categoria:'vitorias',prioridade:'media',valor_meta:'',unidade:'',sentido:'acima',data_fim:'',descricao:'',temporada:new Date().getFullYear().toString(),valor_atual:0,data_inicio:'',responsavel_id:'',atleta_id:'',observacoes:''});
 
     const carregar=useCallback(async()=>{
         setLoading(true);
