@@ -39,7 +39,8 @@ router.get('/', async (req, res) => {
       await pool.query(sql);
       results[seedFile] = '✅ ok';
     } catch (err) {
-      results[seedFile] = `⚠️ ${err.message.slice(0, 100)}`;
+      console.error('[seed_demo] Erro:', err.message);
+      results[seedFile] = '⚠ Erro ao executar seed.';
     }
   }
 
