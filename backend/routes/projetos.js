@@ -60,7 +60,7 @@ router.put('/:pId/epics/:eId', async (req, res) => {
     res.json({ epic: r.rows[0] });
   } catch(e) { res.status(500).json({ erro: 'Erro' }); }
 });
-router.delete('/:pId/epics/:eId', async (req, res) => {
+router.delete('/:pId/epics/:eId', autorizarPerfis('admin', 'gestor'), async (req, res) => {
   try { await pool.query('DELETE FROM epics WHERE id=$1 AND projeto_id=$2',[req.params.eId,req.params.pId]); res.json({ mensagem: 'OK' }); }
   catch(e) { res.status(500).json({ erro: 'Erro' }); }
 });
@@ -116,7 +116,7 @@ router.put('/tarefas/:id', async (req, res) => {
   } catch(e) { await client.query('ROLLBACK'); console.error(e); res.status(500).json({ erro: 'Erro' }); }
   finally { client.release(); }
 });
-router.delete('/tarefas/:id', async (req, res) => {
+router.delete('/tarefas/:id', autorizarPerfis('admin', 'gestor'), async (req, res) => {
   try { await pool.query('DELETE FROM tarefas WHERE id=$1',[req.params.id]); res.json({ mensagem: 'OK' }); }
   catch(e) { res.status(500).json({ erro: 'Erro' }); }
 });
