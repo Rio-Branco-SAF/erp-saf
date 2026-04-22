@@ -89,8 +89,10 @@ router.post('/', async (req, res) => {
 // PUT /api/scout/:id
 router.put('/:id', async (req, res) => {
   try {
-    const fields = Object.keys(req.body).map((k,i) => `${k}=$${i+1}`).join(',');
-    const vals   = Object.values(req.body);
+    const ALLOWED_FIELDS=['nome','data_nascimento','nacionalidade','pe_dominante','altura_cm','peso_kg','foto_url','posicao_principal','posicao_secundaria','clube_atual','liga','pais_clube','salario_estimado','contrato_fim','temporada','jogos','gols','assistencias','minutos_jogados','nota_sofascore','nota_whoscored','nota_scout','pontos_fortes','pontos_fracos','observacoes','video_url_1','video_url_2','video_url_3','status','prioridade','orcamento_max'];
+    const entries=Object.entries(req.body).filter(([k])=>ALLOWED_FIELDS.includes(k));
+    const fields=entries.map(([k],i)=>`${k}=$${i+1}`).join(',');
+    const vals=entries.map(([,v])=>v);
     if (!fields) return res.status(400).json({ erro: 'Nenhum campo' });
     vals.push(req.params.id);
     const r = await pool.query(
