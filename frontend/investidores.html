@@ -351,7 +351,7 @@ function ModalInvestidor({ inv, onClose, onAtualizar }) {
     const [detalhe, setDetalhe] = useState(null);
     const [aba, setAba] = useState('perfil');
     const [showNovoAporte, setShowNovoAporte] = useState(false);
-    const [novoAp, setNovoAp] = useState({ tipo:'aporte_capital', descricao:'', valor:'', data_aporte:new Date().toISOString().split('T')[0], percentual_concedido:'', taxa_juros_anual:'', data_vencimento:'', contrapartida:'', observacoes:'' });
+    const [novoAp, setNovoAp] = useState({ tipo:'aporte_capital', descricao:'', valor:'', data_aporte:new Date().toISOString().split('T')[0], percentual_concedido:'', taxa_juros_anual:'', data_vencimento:'', contrapartida:'', observacoes:'', competencia:'' });
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
