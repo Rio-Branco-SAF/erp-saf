@@ -53,6 +53,19 @@ const { autenticar, autorizarPerfis } = require('../middleware/auth');
         stats_temporada     TEXT,
         stats_jogos         INTEGER DEFAULT 0,
         stats_gols          INTEGER DEFAULT 0,
+        stats_assistencias  INTEGER DEFAULT 0,
+        stats_clean_sheets  INTEGER DEFAULT 0,
+        stats_amarelos      INTEGER DEFAULT 0,
+        stats_vermelhos     INTEGER DEFAULT 0,
+        nome_guerra         TEXT DEFAULT '',
+        posicao_secundaria  TEXT DEFAULT '',
+        pe_dominante        TEXT DEFAULT 'direito',
+        altura_cm           NUMERIC(5,2),
+        peso_kg             NUMERIC(5,2),
+        liga_atual          TEXT DEFAULT '',
+        nota_olheiro        INTEGER DEFAULT 5,
+        pontos_fortes       TEXT DEFAULT '',
+        pontos_fracos       TEXT DEFAULT '',
         criado_em           TIMESTAMP DEFAULT NOW(),
         atualizado_em       TIMESTAMP DEFAULT NOW()
       )
@@ -119,7 +132,11 @@ router.post('/', autenticar, autorizarPerfis('admin', 'gestor', 'scout'), async 
       attr_agilidade = 0, attr_salto = 0, attr_visao = 0, attr_decisao = 0,
       attr_posicionamento = 0, attr_criatividade = 0, attr_dedicacao = 0, attr_trabalho = 0,
       attr_defesas = 0, attr_reflexos = 0, attr_saida = 0, attr_comando = 0, attr_distribuicao = 0,
-      stats_temporada, stats_jogos = 0, stats_gols = 0 } = req.body;
+      stats_temporada, stats_jogos = 0, stats_gols = 0,
+      stats_assistencias = 0, stats_clean_sheets = 0, stats_amarelos = 0, stats_vermelhos = 0,
+      nome_guerra = '', posicao_secundaria = '', pe_dominante = 'direito',
+      altura_cm, peso_kg, liga_atual = '',
+      nota_olheiro = 5, pontos_fortes = '', pontos_fracos = '' } = req.body;
     if (!nome) return res.status(400).json({ sucesso: false, erro: 'Nome e obrigatorio.' });
     const r = await db.query(
       `INSERT INTO prospeccao (nome,posicao,clube_atual,data_nascimento,nacionalidade,agente,observacoes,
@@ -129,10 +146,14 @@ router.post('/', autenticar, autorizarPerfis('admin', 'gestor', 'scout'), async 
        attr_forca,attr_resistencia,attr_agilidade,attr_salto,attr_visao,attr_decisao,
        attr_posicionamento,attr_criatividade,attr_dedicacao,attr_trabalho,
        attr_defesas,attr_reflexos,attr_saida,attr_comando,attr_distribuicao,
-       stats_temporada,stats_jogos,stats_gols)
+       stats_temporada,stats_jogos,stats_gols,
+       stats_assistencias,stats_clean_sheets,stats_amarelos,stats_vermelhos,
+       nome_guerra,posicao_secundaria,pe_dominante,altura_cm,peso_kg,liga_atual,
+       nota_olheiro,pontos_fortes,pontos_fracos)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,
        $14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,
-       $31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42) RETURNING *`,
+       $31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,
+       $43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53,$54,$55) RETURNING *`,
       [nome,posicao||null,clube_atual||null,data_nascimento||null,nacionalidade||null,agente||null,observacoes||null,
        status_prospeccao,prioridade,avaliacao_geral,valor_mercado,salario_atual,contrato_ate||null,
        attr_finalizacao,attr_passe_curto,attr_passe_longo,attr_drible,attr_cruzamento,
@@ -140,7 +161,10 @@ router.post('/', autenticar, autorizarPerfis('admin', 'gestor', 'scout'), async 
        attr_forca,attr_resistencia,attr_agilidade,attr_salto,attr_visao,attr_decisao,
        attr_posicionamento,attr_criatividade,attr_dedicacao,attr_trabalho,
        attr_defesas,attr_reflexos,attr_saida,attr_comando,attr_distribuicao,
-       stats_temporada||null,stats_jogos,stats_gols]);
+       stats_temporada||null,stats_jogos,stats_gols,
+        stats_assistencias||0,stats_clean_sheets||0,stats_amarelos||0,stats_vermelhos||0,
+        nome_guerra||'',posicao_secundaria||'',pe_dominante||'direito',altura_cm||null,peso_kg||null,liga_atual||'',
+        nota_olheiro||5,pontos_fortes||'',pontos_fracos||'']);
     res.status(201).json({ sucesso: true, dados: r.rows[0] });
   } catch (err) {
     console.error('[prospeccao] POST /:', err);
@@ -158,7 +182,11 @@ router.put('/:id', autenticar, autorizarPerfis('admin', 'gestor', 'scout'), asyn
       attr_forca, attr_resistencia, attr_agilidade, attr_salto, attr_visao, attr_decisao,
       attr_posicionamento, attr_criatividade, attr_dedicacao, attr_trabalho,
       attr_defesas, attr_reflexos, attr_saida, attr_comando, attr_distribuicao,
-      stats_temporada, stats_jogos, stats_gols } = req.body;
+      stats_temporada, stats_jogos, stats_gols,
+      stats_assistencias = 0, stats_clean_sheets = 0, stats_amarelos = 0, stats_vermelhos = 0,
+      nome_guerra = '', posicao_secundaria = '', pe_dominante = 'direito',
+      altura_cm, peso_kg, liga_atual = '',
+      nota_olheiro = 5, pontos_fortes = '', pontos_fracos = '' } = req.body;
     const r = await db.query(
       `UPDATE prospeccao SET nome=$1,posicao=$2,clube_atual=$3,data_nascimento=$4,nacionalidade=$5,
        agente=$6,observacoes=$7,status_prospeccao=$8,prioridade=$9,avaliacao_geral=$10,
@@ -168,8 +196,11 @@ router.put('/:id', autenticar, autorizarPerfis('admin', 'gestor', 'scout'), asyn
        attr_forca=$25,attr_resistencia=$26,attr_agilidade=$27,attr_salto=$28,attr_visao=$29,attr_decisao=$30,
        attr_posicionamento=$31,attr_criatividade=$32,attr_dedicacao=$33,attr_trabalho=$34,
        attr_defesas=$35,attr_reflexos=$36,attr_saida=$37,attr_comando=$38,attr_distribuicao=$39,
-       stats_temporada=$40,stats_jogos=$41,stats_gols=$42,atualizado_em=NOW()
-       WHERE id=$43 RETURNING *`,
+       stats_temporada=$40,stats_jogos=$41,stats_gols=$42,
+       stats_assistencias=$43,stats_clean_sheets=$44,stats_amarelos=$45,stats_vermelhos=$46,
+       nome_guerra=$47,posicao_secundaria=$48,pe_dominante=$49,altura_cm=$50,peso_kg=$51,liga_atual=$52,
+       nota_olheiro=$53,pontos_fortes=$54,pontos_fracos=$55,atualizado_em=NOW()
+       WHERE id=$56 RETURNING *`,
       [nome,posicao||null,clube_atual||null,data_nascimento||null,nacionalidade||null,agente||null,observacoes||null,
        status_prospeccao,prioridade,avaliacao_geral,valor_mercado,salario_atual,contrato_ate||null,
        attr_finalizacao,attr_passe_curto,attr_passe_longo,attr_drible,attr_cruzamento,
@@ -177,7 +208,10 @@ router.put('/:id', autenticar, autorizarPerfis('admin', 'gestor', 'scout'), asyn
        attr_forca,attr_resistencia,attr_agilidade,attr_salto,attr_visao,attr_decisao,
        attr_posicionamento,attr_criatividade,attr_dedicacao,attr_trabalho,
        attr_defesas,attr_reflexos,attr_saida,attr_comando,attr_distribuicao,
-       stats_temporada||null,stats_jogos,stats_gols,id]);
+       stats_temporada||null,stats_jogos,stats_gols,
+        stats_assistencias||0,stats_clean_sheets||0,stats_amarelos||0,stats_vermelhos||0,
+        nome_guerra||'',posicao_secundaria||'',pe_dominante||'direito',altura_cm||null,peso_kg||null,liga_atual||'',
+        nota_olheiro||5,pontos_fortes||'',pontos_fracos||'',id]);
     if (!r.rows.length) return res.status(404).json({ sucesso: false, erro: 'Prospeccao nao encontrada.' });
     res.json({ sucesso: true, dados: r.rows[0] });
   } catch (err) {
