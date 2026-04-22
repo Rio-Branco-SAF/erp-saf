@@ -15,7 +15,7 @@ router.use(autenticar, autorizarPerfis('admin'));
 router.get('/', async (req, res) => {
   // Proteção básica
   const secret = req.query.secret;
-  if (secret !== process.env.SEED_SECRET && secret !== 'saf2026seed') {
+    if (secret !== process.env.SEED_SECRET) {
     return res.status(403).json({ erro: 'Não autorizado' });
   }
 
