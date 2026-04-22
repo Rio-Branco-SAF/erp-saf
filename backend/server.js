@@ -1,5 +1,7 @@
 require('dotenv').config();
 const express = require('express');
+const helmet  = require('helmet');
+const rateLimit = require('express-rate-limit');
 const cors    = require('cors');
 
 const authRoutes         = require('./routes/auth');
@@ -39,7 +41,8 @@ app.use(cors({
   },
   credentials: true,
 }));
-app.use(express.json());
+app.use(helmet());
+app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Log de requisições em desenvolvimento
@@ -53,6 +56,15 @@ if (process.env.NODE_ENV !== 'production') {
 // ============================================================
 // Rotas
 // ============================================================
+// Rate limit: máx 20 tentativas de login por 15 min por IP
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { erro: 'Muitas tentativas. Tente novamente em 15 minutos.' },
+});
+app.use('/api/auth/login', loginLimiter);
 app.use('/api/auth',         authRoutes);
 app.use('/api/funcionarios', funcionariosRoutes);
 app.use('/api/usuarios',     usuariosRoutes);
