@@ -6,8 +6,10 @@ const express = require('express');
 const pool    = require('../config/database');
 const fs      = require('fs');
 const path    = require('path');
+const { autenticar, autorizarPerfis } = require('../middleware/auth');
 
 const router = express.Router();
+router.use(autenticar, autorizarPerfis('admin'));
 
 // GET /api/seed-demo — executa todos os seeds de módulos
 router.get('/', async (req, res) => {
@@ -40,7 +42,7 @@ router.get('/', async (req, res) => {
       results[seedFile] = '✅ ok';
     } catch (err) {
       console.error('[seed_demo] Erro:', err.message);
-      results[seedFile] = '⚠ Erro ao executar seed.';
+      results[seedFile] = 'error';
     }
   }
 
