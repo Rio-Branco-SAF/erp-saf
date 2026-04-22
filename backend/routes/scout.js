@@ -83,7 +83,7 @@ router.post('/', async (req, res) => {
        status||'monitorando',prioridade||'normal',orcamento_max||null,req.usuario.id]
     );
     res.status(201).json({ jogador: r.rows[0] });
-  } catch(err) { console.error(err); res.status(500).json({ erro: err.message }); }
+  } catch(err) { console.error(err); res.status(500).json({ erro: 'Erro ao cadastrar scout.' }); }
 });
 
 // PUT /api/scout/:id
@@ -97,7 +97,7 @@ router.put('/:id', async (req, res) => {
       `UPDATE jogadores_scout SET ${fields},updated_at=NOW() WHERE id=$${vals.length} RETURNING *`, vals
     );
     res.json({ jogador: r.rows[0] });
-  } catch(err) { res.status(500).json({ erro: err.message }); }
+  } catch(err) { res.status(500).json({ erro: 'Erro ao atualizar scout.' }); }
 });
 
 // DELETE /api/scout/:id
