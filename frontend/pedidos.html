@@ -579,7 +579,7 @@ function KpiCards({ resumo }) {
 // MODAL NOVO PEDIDO
 // ============================================================
 function ModalNovoPedido({ onClose, onSalvo }) {
-    const [form, setForm] = useState({ titulo:'', descricao:'', prioridade:'normal', data_necessidade:'', departamento_id:'', centro_custo_id:'', valor_estimado:'', observacoes:'' });
+    const [form, setForm] = useState({ titulo:'', descricao:'', prioridade:'normal', data_necessidade:'', departamento_id:'', centro_custo_id:'', valor_estimado:'', observacoes:'', categoria_financeira_id:'' });
     const [itens, setItens] = useState([{ descricao:'', quantidade:1, unidade:'un', valor_unitario_estimado:'' }]);
     const [loading, setLoading] = useState(false);
 
