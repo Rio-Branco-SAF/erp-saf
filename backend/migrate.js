@@ -36,16 +36,20 @@ async function migrate() {
         console.log('[MIGRATE] Aviso em ' + file + ' : ' + e.message.split('\n')[0]);
       }
     }
-    // Fix admin password if still placeholder
+  // Atualiza senha do admin via ADMIN_SEED_PASSWORD (nunca hardcoded)
+  if (process.env.ADMIN_SEED_PASSWORD) {
     try {
+      const bcrypt = require('bcrypt');
+      const hash = await bcrypt.hash(process.env.ADMIN_SEED_PASSWORD, 12);
       await client.query(
-        `UPDATE usuarios SET senha_hash = $1 WHERE email = 'ceo@saf.com.br' AND (senha_hash LIKE '$2b$12$placeholder%' OR senha_hash NOT LIKE '$2b$%')`,
-        ['$2b$12$TloT5M3H0reeCGxowKoLd.W9G/xPN2.oZ1C43QLgEroMsLX4gpo3G']
+        `UPDATE usuarios SET senha_hash = $1 WHERE email = $2`,
+        [hash, process.env.ADMIN_EMAIL || 'ceo@riobrancosaf.com.br']
       );
       console.log('[MIGRATE] Admin password hash atualizado');
     } catch (e) {
       console.log('[MIGRATE] Admin password fix: ' + e.message.split('\n')[0]);
     }
+  }
     console.log('[MIGRATE] Concluido com sucesso');
   } finally {
     client.release();
