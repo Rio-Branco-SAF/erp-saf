@@ -608,20 +608,28 @@ function gerarFolhaMensal(atletasArr, mesRef){
 
 // ── Módulo Financeiro ─────────────────────────────────────────
 function ModuloFinanceiro(){
-  const [lancamentos, setLancamentos] = useState(()=>{
-    const d=new Date(); const mesRef=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    try{
-      const raw=localStorage.getItem('erp_atletas');
-      if(raw){ const novos=gerarFolhaMensal(JSON.parse(raw),mesRef); return [...novos,...DEMO_LANCAMENTOS]; }
-    }catch(e){}
-    return DEMO_LANCAMENTOS;
-  });
+const [lancamentos, setLancamentos] = useState([]);
   const [resumo]    = useState(DEMO_RESUMO);
   const [fluxo]     = useState(DEMO_FLUXO);
   const [categorias]= useState(DEMO_CATEGORIAS);
   const [centros]   = useState(DEMO_CENTROS);
   const [contas]    = useState(DEMO_CONTAS);
 
+useEffect(()=>{
+  async function carregar(){
+    try{
+      const d = await apiFetch('/financeiro/lancamentos?limit=500');
+      if(d.lancamentos) setLancamentos(d.lancamentos);
+      const cats = await apiFetch('/financeiro/categorias');
+      if(cats.categorias) setCategorias(cats.categorias);
+      const cc = await apiFetch('/financeiro/centros-custo');
+      if(cc.centros_custo) setCentros(cc.centros_custo);
+      const cb = await apiFetch('/financeiro/contas-bancarias');
+      if(cb.contas_bancarias) setContas(cb.contas_bancarias);
+    }catch(e){ console.error('[Financeiro] Erro ao carregar dados:', e.message); }
+  }
+  carregar();
+},[]);
   const [filtroTipo,   setFiltroTipo]   = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroCat,    setFiltroCat]    = useState('');
@@ -858,15 +866,23 @@ function ModuloFinanceiro(){
   const totalPags = Math.ceil(filtrados.length/LIMITE);
   const paginados = filtrados.slice((pagina-1)*LIMITE, pagina*LIMITE);
 
-  function salvar(payload, editando){
-    const cat = categorias.find(c=>c.id==payload.categoria_id)||{};
+async function salvar(payload, editando){
+  try {
     if(editando){
-      setLancamentos(prev=>prev.map(l=>l.id===payload.id?{...l,...payload,categoria:cat.nome,categoria_icone:cat.icone,categoria_cor:cat.cor}:l));
+      const r = await apiFetch('/financeiro/lancamentos/'+payload.id, {method:'PUT', body:payload});
+      const atualizado = r.lancamento || {...payload};
+      setLancamentos(prev=>prev.map(l=>l.id===payload.id ? atualizado : l));
     } else {
-      const novo={...payload,id:Date.now(),categoria:cat.nome,categoria_icone:cat.icone,categoria_cor:cat.cor,centro_custo:centros.find(c=>c.id==payload.centro_custo_id)?.nome||'',conta_bancaria:contas.find(c=>c.id==payload.conta_bancaria_id)?.nome||''};
-      setLancamentos(prev=>[novo,...prev]);
+      const r = await apiFetch('/financeiro/lancamentos', {method:'POST', body:payload});
+      const novo = r.lancamento || {...payload, id:Date.now()};
+      setLancamentos(prev=>[novo, ...prev]);
     }
+    toast('Lançamento salvo com sucesso!');
+    setModalNovoLancamento(null);
+  } catch(e) {
+    toast('Erro ao salvar: ' + (e.message||'verifique a conexão'), 'erro');
   }
+}
 
   function realizarLancamento(lanc){
     setLancamentos(prev=>prev.map(l=>l.id===lanc.id?{...l,status:'realizado',data_pagamento:new Date().toISOString().slice(0,10)}:l));
