@@ -368,8 +368,8 @@ function TabExecutivo() {
 
   useEffect(() => {
     Promise.all([
-      apiFetch('/api/relatorios/executivo').catch(() => ({ dados: DEMO_EXECUTIVO })),
-      apiFetch('/api/relatorios/financeiro').catch(() => ({ evolucao: DEMO_EVOLUCAO }))
+      apiFetch('/relatorios/executivo').catch(() => ({ dados: DEMO_EXECUTIVO })),
+      apiFetch('/relatorios/financeiro').catch(() => ({ evolucao: DEMO_EVOLUCAO }))
     ]).then(([exec, fin]) => {
       setDados(exec.dados || DEMO_EXECUTIVO);
       setEvolucao(fin.evolucao || DEMO_EVOLUCAO);
@@ -517,7 +517,7 @@ function TabFinanceiro() {
     const params = new URLSearchParams();
     if (filtro.ini) params.set('periodo_ini', filtro.ini);
     if (filtro.fim) params.set('periodo_fim', filtro.fim);
-    apiFetch('/api/relatorios/financeiro?' + params).catch(() => ({
+    apiFetch('/relatorios/financeiro?' + params).catch(() => ({
       evolucao: DEMO_EVOLUCAO,
       kpis: { receita_total:5200000, despesa_total:4380000, qtd_receitas:48, qtd_despesas:92 },
       por_categoria: [
@@ -620,7 +620,7 @@ function TabFolha() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (filtro) params.set('categoria', filtro);
-    apiFetch('/api/relatorios/folha?' + params).catch(() => ({
+    apiFetch('/relatorios/folha?' + params).catch(() => ({
       pessoas: DEMO_FOLHA, totais: DEMO_FOLHA_TOTAIS, distribuicao: DEMO_FOLHA_DIST
     })).then(d => { setDados(d); setLoading(false); });
   }, [filtro]);
@@ -701,7 +701,7 @@ function TabEsportivo() {
   const [temporada, setTemporada] = useState(new Date().getFullYear().toString());
 
   useEffect(() => {
-    apiFetch('/api/relatorios/esportivo?temporada=' + temporada)
+    apiFetch('/relatorios/esportivo?temporada=' + temporada)
       .catch(() => DEMO_ESPORTIVO)
       .then(d => { setDados(d.dados || d); setLoading(false); });
   }, [temporada]);
@@ -817,7 +817,7 @@ function TabInvestidores() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch('/api/relatorios/investidores')
+    apiFetch('/relatorios/investidores')
       .catch(() => DEMO_INVESTIDORES)
       .then(d => { setDados(d); setLoading(false); });
   }, []);
@@ -898,7 +898,7 @@ function TabCompras() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch('/api/relatorios/compras')
+    apiFetch('/relatorios/compras')
       .catch(() => DEMO_COMPRAS)
       .then(d => { setDados(d); setLoading(false); });
   }, []);
