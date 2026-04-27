@@ -749,6 +749,29 @@ function ModuloAtletas({ usuario }) {
     const [filtroPosicao, setFiltroPosicao] = useState('');
     const [detalhe, setDetalhe] = useState(null);
     const [total, setTotal] = useState(0);
+    const [modalCadastro, setModalCadastro] = useState(false);
+    const [salvandoAtleta, setSalvandoAtleta] = useState(false);
+    const [formAtleta, setFormAtleta] = useState({
+        nome:'', nome_guerra:'', posicao:'', data_nascimento:'',
+        nacionalidade:'Brasileira', pe_dominante:'direito',
+        altura_cm:'', peso_kg:'', agente:'', observacoes:''
+    });
+
+    const salvarAtleta = async () => {
+        if (!formAtleta.nome || !formAtleta.posicao) { alert('Nome e posição são obrigatórios.'); return; }
+        setSalvandoAtleta(true);
+        try {
+            const payload = { ...formAtleta,
+                altura_cm: formAtleta.altura_cm ? Number(formAtleta.altura_cm) : null,
+                peso_kg:   formAtleta.peso_kg   ? Number(formAtleta.peso_kg)   : null };
+            await apiFetch('/atletas', { method:'POST', body: JSON.stringify(payload) });
+            setModalCadastro(false);
+            setFormAtleta({ nome:'', nome_guerra:'', posicao:'', data_nascimento:'',
+                nacionalidade:'Brasileira', pe_dominante:'direito', altura_cm:'', peso_kg:'', agente:'', observacoes:'' });
+            await carregar();
+        } catch(e) { alert('Erro ao cadastrar: ' + (e.message||'verifique a conexão')); }
+        finally { setSalvandoAtleta(false); }
+    };
 
     const carregar = useCallback(async () => {
         if(!TOKEN) return;
@@ -786,7 +809,7 @@ function ModuloAtletas({ usuario }) {
     return <>
         <div className="topbar">
             <div><h1>⚽ Atletas</h1><div className="topbar-sub">Elenco, contratos, estatísticas e metas de performance</div></div>
-            <button className="btn btn-primary">+ Cadastrar Atleta</button>
+            <button className="btn btn-primary" onClick={()=>setModalCadastro(true)}>+ Cadastrar Atleta</button>
         </div>
         <div className="content">
             {/* KPIs */}
@@ -894,6 +917,45 @@ function ModuloAtletas({ usuario }) {
         </div>
 
         {detalhe && <ModalAtleta atleta={detalhe} onClose={()=>setDetalhe(null)} onAtualizar={carregar} usuario={usuario}/>}
+
+        {modalCadastro && <div className="modal-overlay" onClick={()=>setModalCadastro(false)}>
+          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:520}}>
+            <div className="modal-header"><span>Cadastrar Atleta</span><button onClick={()=>setModalCadastro(false)}>✕</button></div>
+            <div className="modal-body" style={{maxHeight:'70vh',overflowY:'auto'}}>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+                <div style={{gridColumn:'1/-1'}}><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Nome completo *</label>
+                  <input className="form-input" value={formAtleta.nome} onChange={e=>setFormAtleta(p=>({...p,nome:e.target.value}))} placeholder="Ex: João da Silva"/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Nome de guerra</label>
+                  <input className="form-input" value={formAtleta.nome_guerra} onChange={e=>setFormAtleta(p=>({...p,nome_guerra:e.target.value}))} placeholder="Joãozinho"/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Posição *</label>
+                  <select className="form-input" value={formAtleta.posicao} onChange={e=>setFormAtleta(p=>({...p,posicao:e.target.value}))}>
+                    <option value="">Selecione...</option>
+                    {['Goleiro','Lateral Direito','Lateral Esquerdo','Zagueiro','Volante','Meia Central','Meia Atacante','Ponta Direita','Ponta Esquerda','Centroavante'].map(pos=><option key={pos}>{pos}</option>)}
+                  </select></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Nascimento</label>
+                  <input className="form-input" type="date" value={formAtleta.data_nascimento} onChange={e=>setFormAtleta(p=>({...p,data_nascimento:e.target.value}))}/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Pé Dominante</label>
+                  <select className="form-input" value={formAtleta.pe_dominante} onChange={e=>setFormAtleta(p=>({...p,pe_dominante:e.target.value}))}>
+                    <option value="direito">Direito</option><option value="esquerdo">Esquerdo</option><option value="ambidestro">Ambidestro</option>
+                  </select></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Nacionalidade</label>
+                  <input className="form-input" value={formAtleta.nacionalidade} onChange={e=>setFormAtleta(p=>({...p,nacionalidade:e.target.value}))}/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Altura (cm)</label>
+                  <input className="form-input" type="number" value={formAtleta.altura_cm} onChange={e=>setFormAtleta(p=>({...p,altura_cm:e.target.value}))} placeholder="182"/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Peso (kg)</label>
+                  <input className="form-input" type="number" value={formAtleta.peso_kg} onChange={e=>setFormAtleta(p=>({...p,peso_kg:e.target.value}))} placeholder="76"/></div>
+                <div style={{gridColumn:'1/-1'}}><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Agente</label>
+                  <input className="form-input" value={formAtleta.agente} onChange={e=>setFormAtleta(p=>({...p,agente:e.target.value}))} placeholder="Nome do agente"/></div>
+                <div style={{gridColumn:'1/-1'}}><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Observações</label>
+                  <textarea className="form-input" rows={3} value={formAtleta.observacoes} onChange={e=>setFormAtleta(p=>({...p,observacoes:e.target.value}))} style={{resize:'vertical'}}/></div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={()=>setModalCadastro(false)}>Cancelar</button>
+              <button className="btn btn-primary" disabled={salvandoAtleta} onClick={salvarAtleta}>{salvandoAtleta?'Salvando...':'Cadastrar Atleta'}</button>
+            </div>
+          </div>
+        </div>}
     </>;
 }
 
