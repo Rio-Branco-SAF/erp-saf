@@ -10,33 +10,40 @@
 <script src="config.js"></script>
 <style>
     :root {
-      --bg:          #1C1C2E;
-      --sidebar-bg:  #14142B;
-      --card-bg:     #252540;
-      --card-borda:  #3A3A5C;
-      --input-bg:    #14142B;
-      --verde:       #22C55E;
-      --verde-med:   #16A34A;
-      --verde-dark:  #15803D;
-      --vermelho:    #FF5C5C;
-      --dourado:     #F59E0B;
-      --azul:        #3B82F6;
-      --azul-dark:   #1D4ED8;
-      --texto:       #E2E8F0;
-      --texto-leve:  #94A3B8;
-      --roxo:        #8B5CF6;
-      --laranja:     #F97316;
-    }
+    --bg:          #141414;
+    --sidebar-bg:  #1a1a1a;
+    --card-bg:     #242424;
+    --card-borda:  #363636;
+    --input-bg:    #1f1f1f;
+    --verde:       #22C55E;
+    --verde-med:   #16A34A;
+    --verde-dark:  #15803D;
+    --vermelho:    #FF5C5C;
+    --dourado:     #D4A017;
+    --dourado-vivo:#F0B429;
+    --azul:        #3B82F6;
+    --azul-dark:   #1D4ED8;
+    --texto:       #F0F0F0;
+    --texto-leve:  #9CA3AF;
+    --roxo:        #8B5CF6;
+    --laranja:     #F97316;
+    --cinza:       #2e2e2e;
+    --danger:      #EF4444;
+    --warning:     #F59E0B;
+    --info:        #3B82F6;
+    --verde-bg:    rgba(34,197,94,.1);
+    --sombra:      0 2px 8px rgba(0,0,0,.4);
+  }
 
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background: var(--bg);color: var(--texto);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
-  .navbar-brand{color:#252540;font-weight:700;font-size:18px;text-decoration:none;display:flex;align-items:center;gap:8px}
+  .navbar-brand{color:var(--card-bg);font-weight:700;font-size:18px;text-decoration:none;display:flex;align-items:center;gap:8px}
   .navbar-nav{display:flex;gap:4px}
   .nav-link{color:rgba(255,255,255,.7);text-decoration:none;padding:8px 12px;border-radius:6px;font-size:13px;transition:.2s}
-  .nav-link:hover,.nav-link.active{color:#252540;background:rgba(255,255,255,.1)}
+  .nav-link:hover,.nav-link.active{color:var(--card-bg);background:rgba(255,255,255,.1)}
   .container{max-width:1300px;margin:0 auto;padding:24px}
   .page-header{margin-bottom:24px}
-  .page-title{font-size:24px;font-weight:700;color:#E2E8F0}
+  .page-title{font-size:24px;font-weight:700;color:var(--texto)}
   .page-subtitle{color:#64748b;margin-top:4px;font-size:14px}
 
   /* Tabs */
@@ -50,7 +57,7 @@
   .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:24px}
   .kpi-card{background:var(--white);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
   .kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:6px}
-  .kpi-value{font-size:22px;font-weight:700;color:#E2E8F0;line-height:1.2}
+  .kpi-value{font-size:22px;font-weight:700;color:var(--texto);line-height:1.2}
   .kpi-sub{font-size:12px;color:#64748b;margin-top:4px}
   .kpi-card.verde .kpi-value{color:var(--verde)}
   .kpi-card.azul  .kpi-value{color:var(--azul)}
@@ -65,15 +72,15 @@
 
   /* Cards */
   .card{background:var(--white);border-radius:10px;padding:20px;box-shadow:var(--shadow)}
-  .card-title{font-size:14px;font-weight:700;color:#E2E8F0;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .card-title{font-size:14px;font-weight:700;color:var(--texto);margin-bottom:16px;display:flex;align-items:center;gap:8px}
   .card-title span{font-size:16px}
 
   /* Tabelas */
   .table-wrap{overflow-x:auto}
   table{width:100%;border-collapse:collapse;font-size:13px}
-  th{background:#252540;padding:10px 12px;text-align:left;font-weight:600;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+  th{background:var(--card-bg);padding:10px 12px;text-align:left;font-weight:600;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
   td{padding:10px 12px;border-bottom:1px solid var(--border);color:#374151}
-  tr:hover td{background:#252540}
+  tr:hover td{background:var(--card-bg)}
 
   /* Badges */
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
@@ -82,32 +89,32 @@
   .badge-roxo{background:var(--roxo-light);color:var(--roxo)}
   .badge-laranja{background:var(--laranja-light);color:var(--laranja)}
   .badge-vermelho{background:var(--vermelho-light);color:var(--vermelho)}
-  .badge-cinza{background:#1C1C2E;color:#64748b}
+  .badge-cinza{background:var(--bg);color:#64748b}
 
   /* Chart bars */
   .bar-chart{display:flex;flex-direction:column;gap:10px}
   .bar-row{display:flex;align-items:center;gap:10px}
   .bar-label{font-size:12px;color:#64748b;width:110px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .bar-track{flex:1;background:#1C1C2E;border-radius:4px;height:20px;overflow:hidden}
+  .bar-track{flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden}
   .bar-fill{height:100%;border-radius:4px;transition:width .5s ease;display:flex;align-items:center;padding:0 6px}
-  .bar-val{font-size:11px;font-weight:600;color:#252540;white-space:nowrap}
+  .bar-val{font-size:11px;font-weight:600;color:var(--card-bg);white-space:nowrap}
   .bar-val-out{font-size:11px;font-weight:600;color:#374151;margin-left:6px;flex-shrink:0}
 
   /* Progress bar */
-  .progress-wrap{background:#1C1C2E;border-radius:6px;height:8px;overflow:hidden;margin-top:6px}
+  .progress-wrap{background:var(--bg);border-radius:6px;height:8px;overflow:hidden;margin-top:6px}
   .progress-bar{height:100%;border-radius:6px;transition:width .5s}
 
   /* Equity bar */
   .equity-bar{display:flex;height:28px;border-radius:8px;overflow:hidden;margin:12px 0}
-  .equity-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#252540;transition:width .5s}
+  .equity-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--card-bg);transition:width .5s}
 
   /* Filtro */
   .filter-row{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
-  .filter-row select,.filter-row input{padding:7px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#252540;color:#374151}
+  .filter-row select,.filter-row input{padding:7px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--card-bg);color:#374151}
   .btn{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.2s}
-  .btn-primary{background:var(--azul);color:#252540}
+  .btn-primary{background:var(--azul);color:var(--card-bg)}
   .btn-primary:hover{background:#0041a8}
-  .btn-outline{background:#252540;color:var(--azul);border:1px solid var(--azul)}
+  .btn-outline{background:var(--card-bg);color:var(--azul);border:1px solid var(--azul)}
   .btn-outline:hover{background:var(--azul-light)}
 
   /* Resultado positivo/negativo */
@@ -123,7 +130,7 @@
   @keyframes spin{to{transform:rotate(360deg)}}
 
   /* Stat pill */
-  .stat-pill{display:inline-flex;align-items:center;gap:4px;background:#252540;border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#374151}
+  .stat-pill{display:inline-flex;align-items:center;gap:4px;background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#374151}
 
   /* Conquista */
   .conquista{background:linear-gradient(135deg,#ffd700,#ffa500);color:#7b4f00;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
@@ -495,7 +502,7 @@ function TabExecutivo() {
                   </div>
                 </div>
               ))}
-              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:8, borderTop:'1px solid #e2e8f0', fontWeight:700 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:8, borderTop:'1px solid var(--texto)', fontWeight:700 }}>
                 <span>Total</span><span>{fmtK(dados.folha_total)}</span>
               </div>
             </div>
