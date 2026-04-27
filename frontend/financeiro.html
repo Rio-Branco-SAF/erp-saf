@@ -216,7 +216,8 @@
     .toast-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
     .toast { padding: 11px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,.15); max-width: 340px; animation: slideIn .2s ease; }
     .toast.sucesso { background: #22C55E; color: #252540; }
-    .toast.erro    { background: #721c24; color: #252540; }
+    .toast.erro    { background: #721c24; color: #f8d7da; }
+    .toast.aviso   { background: #F59E0B; color: #252540; }
     @keyframes slideIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
 
     /* LOGIN */
@@ -737,10 +738,13 @@ useEffect(()=>{
           if(erroRow.length>0){
             erros.push({linha:idx+2, descricao:descricao||'(vazio)', erro:erroRow.join(', ')});
           } else {
-            const cat = categorias.find(c=>c.nome.toLowerCase()===categoriaStr.toLowerCase())||{};
+            const cat = categorias.find(c=>c.nome&&c.nome.toLowerCase()===categoriaStr.toLowerCase())||{};
+            const cc  = centros.find(c=>c.nome&&c.nome.toLowerCase()===centro.toLowerCase())||{};
             validos.push({id:Date.now()+idx+Math.random(), tipo, descricao, valor,
+              categoria_id: cat.id||null,
               categoria:cat.nome||categoriaStr, categoria_icone:cat.icone||'📌',
-              categoria_cor:cat.cor||'#94A3B8', status,
+              categoria_cor:cat.cor||'#94A3B8',
+              centro_custo_id: cc.id||null, status,
               data_competencia:dataComp, data_pagamento:dataPag, centro_custo:centro});
           }
         });
@@ -755,12 +759,40 @@ useEffect(()=>{
     e.target.value='';
   }
 
-  function confirmarImport(){
-    setLancamentos(prev=>[...importRows,...prev]);
+  async function confirmarImport(){
     setModalImport(false);
+    let ok=0, falha=0, semCat=0;
+    for(const row of importRows){
+      try{
+        if(!row.categoria_id){ semCat++; falha++; continue; }
+        const payload={
+          tipo:            row.tipo,
+          descricao:       row.descricao,
+          valor:           row.valor,
+          categoria_id:    row.categoria_id,
+          centro_custo_id: row.centro_custo_id||null,
+          status:          row.status,
+          data_competencia:row.data_competencia,
+          data_pagamento:  row.data_pagamento||null,
+          observacoes:     row.observacoes||'',
+          origem_tipo:     'importacao_excel',
+        };
+        const r = await apiFetch('/financeiro/lancamentos', {method:'POST', body:payload});
+        const novo = r.lancamento||{...payload, id:Date.now()+ok};
+        setLancamentos(prev=>[novo,...prev]);
+        ok++;
+      }catch(e){
+        falha++;
+      }
+    }
     setImportRows([]);
     setImportErros([]);
-    toast(`✅ ${importRows.length} lançamento(s) importado(s) com sucesso!`);
+    if(falha===0){
+      toast('✅ '+ok+' lançamento(s) importado(s) com sucesso!');
+    } else {
+      const aviso = semCat>0 ? ' ('+semCat+' sem categoria cadastrada)' : '';
+      toast('⚠️ '+ok+' importado(s), '+falha+' com erro'+aviso+'.', 'aviso');
+    }
   }
 
   // ── Extrato Bancário (OFX / CSV / PDF) ───────────────────
