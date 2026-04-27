@@ -10,96 +10,103 @@
 <script src="config.js"></script>
 <style>
     :root {
-      --bg:          #1C1C2E;
-      --sidebar-bg:  #14142B;
-      --card-bg:     #252540;
-      --card-borda:  #3A3A5C;
-      --input-bg:    #14142B;
-      --verde:       #22C55E;
-      --verde-med:   #16A34A;
-      --verde-dark:  #15803D;
-      --vermelho:    #FF5C5C;
-      --dourado:     #F59E0B;
-      --azul:        #3B82F6;
-      --azul-dark:   #1D4ED8;
-      --texto:       #E2E8F0;
-      --texto-leve:  #94A3B8;
-      --roxo:        #8B5CF6;
-      --laranja:     #F97316;
-    }
+    --bg:          #141414;
+    --sidebar-bg:  #1a1a1a;
+    --card-bg:     #242424;
+    --card-borda:  #363636;
+    --input-bg:    #1f1f1f;
+    --verde:       #22C55E;
+    --verde-med:   #16A34A;
+    --verde-dark:  #15803D;
+    --vermelho:    #FF5C5C;
+    --dourado:     #D4A017;
+    --dourado-vivo:#F0B429;
+    --azul:        #3B82F6;
+    --azul-dark:   #1D4ED8;
+    --texto:       #F0F0F0;
+    --texto-leve:  #9CA3AF;
+    --roxo:        #8B5CF6;
+    --laranja:     #F97316;
+    --cinza:       #2e2e2e;
+    --danger:      #EF4444;
+    --warning:     #F59E0B;
+    --info:        #3B82F6;
+    --verde-bg:    rgba(34,197,94,.1);
+    --sombra:      0 2px 8px rgba(0,0,0,.4);
+  }
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background: var(--bg);color: var(--texto);display:flex;min-height:100vh}
-.sidebar{width:220px;background:#0f172a;color:#94a3b8;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
-.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#252540;border-bottom:1px solid #E2E8F0}
+.sidebar{width:220px;background:var(--sidebar-bg);color:var(--texto-leve);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:var(--card-bg);border-bottom:1px solid var(--card-borda)}
 .sidebar-logo span{color:#f59e0b}
 .sidebar nav{flex:1;padding:12px 0}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s}
-.nav-item:hover{background:#E2E8F0;color:#3A3A5C}
-.nav-item.active{background:#1d4ed8;color:#252540}
+.nav-item:hover{background:var(--card-borda);color:var(--card-borda)}
+.nav-item.active{background:var(--azul-dark);color:var(--card-bg)}
 .nav-item .icon{font-size:16px;width:20px;text-align:center}
-.sidebar-footer{padding:14px 16px;border-top:1px solid #E2E8F0}
+.sidebar-footer{padding:14px 16px;border-top:1px solid var(--card-borda)}
 .user-chip{display:flex;align-items:center;gap:8px}
-.ua{width:30px;height:30px;background:#1d4ed8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#252540}
+.ua{width:30px;height:30px;background:var(--azul-dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--card-bg)}
 .main{margin-left:220px;flex:1;display:flex;flex-direction:column}
-.topbar{background:#252540;border-bottom:1px solid #3A3A5C;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
-.topbar h1{font-size:18px;font-weight:700;color:#0f172a}
+.topbar{background:var(--card-bg);border-bottom:1px solid var(--card-borda);padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:18px;font-weight:700;color:var(--sidebar-bg)}
 .topbar-sub{font-size:12px;color:#64748b;margin-top:2px}
 .content{padding:24px 28px;flex:1}
 .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
-.btn-primary{background:#1d4ed8;color:#252540}.btn-primary:hover{background:#1e40af}
-.btn-outline{background:#252540;color:#475569;border:1px solid #3A3A5C}.btn-outline:hover{background:#252540}
+.btn-primary{background:var(--azul-dark);color:var(--card-bg)}.btn-primary:hover{background:#1e40af}
+.btn-outline{background:var(--card-bg);color:#475569;border:1px solid var(--card-borda)}.btn-outline:hover{background:var(--card-bg)}
 .btn-sm{padding:5px 12px;font-size:12px}
 .btn-ghost{background:transparent;color:#64748b;border:none;font-size:13px;cursor:pointer;padding:4px 8px}
-.btn-success{background:#16a34a;color:#252540}
+.btn-success{background:#16a34a;color:var(--card-bg)}
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
-.kpi-card{background:#252540;border-radius:12px;padding:14px 18px;border:1px solid #3A3A5C}
+.kpi-card{background:var(--card-bg);border-radius:12px;padding:14px 18px;border:1px solid var(--card-borda)}
 .kpi-label{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.kpi-value{font-size:24px;font-weight:800;margin:5px 0 2px;color:#0f172a}
-.kpi-sub{font-size:11px;color:#94a3b8}
+.kpi-value{font-size:24px;font-weight:800;margin:5px 0 2px;color:var(--sidebar-bg)}
+.kpi-sub{font-size:11px;color:var(--texto-leve)}
 .kpi-card.ok .kpi-value{color:#16a34a}
 .kpi-card.alerta .kpi-value{color:#d97706}
 .kpi-card.urgente .kpi-value{color:#FF5C5C}
 
 /* FILTERS */
 .filters-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #3A3A5C;background:#252540;color:#475569;transition:.15s}
+.filter-btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--card-borda);background:var(--card-bg);color:#475569;transition:.15s}
 .filter-btn.active{border-color:transparent}
-.filter-btn.tipo-esportiva.active{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
+.filter-btn.tipo-esportiva.active{background:#dbeafe;color:var(--azul-dark);border-color:#bfdbfe}
 .filter-btn.tipo-financeira.active{background:#dcfce7;color:#16a34a;border-color:#bbf7d0}
 .filter-btn.tipo-institucional.active{background:#f3e8ff;color:#7c3aed;border-color:#ddd6fe}
-.filter-btn.tipo-all.active{background:#0f172a;color:#252540;border-color:#0f172a}
-.search-input{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;width:200px;outline:none}
-.search-input:focus{border-color:#1d4ed8}
-select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;font-size:13px;background:#252540;outline:none;color:#475569;cursor:pointer}
+.filter-btn.tipo-all.active{background:var(--sidebar-bg);color:var(--card-bg);border-color:var(--sidebar-bg)}
+.search-input{padding:8px 12px;border:1px solid var(--card-borda);border-radius:8px;font-size:13px;width:200px;outline:none}
+.search-input:focus{border-color:var(--azul-dark)}
+select.filter-sel{padding:8px 12px;border:1px solid var(--card-borda);border-radius:8px;font-size:13px;background:var(--card-bg);outline:none;color:#475569;cursor:pointer}
 
 /* PILLS */
 .pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
 .pill-alta{background:#fee2e2;color:#FF5C5C}
 .pill-media{background:#fef9c3;color:#a16207}
-.pill-baixa{background:#1C1C2E;color:#64748b}
-.pill-ativa{background:#dbeafe;color:#1d4ed8}
+.pill-baixa{background:var(--bg);color:#64748b}
+.pill-ativa{background:#dbeafe;color:var(--azul-dark)}
 .pill-concluida{background:#dcfce7;color:#16a34a}
 .pill-nao_atingida{background:#fee2e2;color:#FF5C5C}
-.pill-cancelada{background:#1C1C2E;color:#94a3b8}
-.tipo-badge-esportiva{background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.pill-cancelada{background:var(--bg);color:var(--texto-leve)}
+.tipo-badge-esportiva{background:#dbeafe;color:var(--azul-dark);padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
 .tipo-badge-financeira{background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
 .tipo-badge-institucional{background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
 
 /* META CARD */
 .metas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
-.meta-card{background:#252540;border-radius:14px;border:1px solid #3A3A5C;padding:18px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.meta-card{background:var(--card-bg);border-radius:14px;border:1px solid var(--card-borda);padding:18px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
 .meta-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px}
-.meta-card.esportiva::before{background:#1d4ed8}
+.meta-card.esportiva::before{background:var(--azul-dark)}
 .meta-card.financeira::before{background:#16a34a}
 .meta-card.institucional::before{background:#7c3aed}
 .meta-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09)}
 .meta-card.concluida{opacity:.85;background:#f0fdf4}
-.meta-card.nao_atingida{opacity:.8;background:#2525405f5}
+.meta-card.nao_atingida{opacity:.8;background:var(--card-bg)5f5}
 .meta-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px}
-.meta-titulo{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;flex:1}
+.meta-titulo{font-size:14px;font-weight:700;color:var(--sidebar-bg);line-height:1.4;flex:1}
 .meta-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
 
 /* BARRA DE PROGRESSO */
@@ -107,7 +114,7 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 .progress-info{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .progress-valores{font-size:12.5px;color:#475569}
 .progress-pct{font-size:18px;font-weight:800}
-.progress-bar{height:10px;background:#1C1C2E;border-radius:100px;overflow:hidden}
+.progress-bar{height:10px;background:var(--bg);border-radius:100px;overflow:hidden}
 .progress-fill{height:100%;border-radius:100px;transition:width .6s ease}
 .pct-low{color:#FF5C5C}
 .pct-mid{color:#d97706}
@@ -118,44 +125,44 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 .fill-done{background:linear-gradient(90deg,#34d399,#059669)}
 
 /* META FOOTER */
-.meta-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #1C1C2E;font-size:12px;color:#94a3b8}
+.meta-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--bg);font-size:12px;color:var(--texto-leve)}
 .dias-badge{padding:3px 8px;border-radius:100px;font-size:11px;font-weight:700}
 .dias-ok{background:#dcfce7;color:#16a34a}
 .dias-warning{background:#fef9c3;color:#a16207}
 .dias-urgent{background:#fee2e2;color:#FF5C5C}
-.dias-vencido{background:#1C1C2E;color:#64748b}
+.dias-vencido{background:var(--bg);color:#64748b}
 
 /* CONQUISTA BANNER */
-.conquista-banner{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#252540;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:3px}
+.conquista-banner{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:var(--card-bg);padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:3px}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
-.modal{background:#252540;border-radius:16px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
-.modal-header{padding:20px 24px;border-bottom:1px solid #3A3A5C;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#252540;z-index:10}
+.modal{background:var(--card-bg);border-radius:16px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--card-borda);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--card-bg);z-index:10}
 .modal-body{padding:24px}
-.modal-footer{padding:14px 24px;border-top:1px solid #3A3A5C;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#252540}
-.close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;margin-top:2px}
-.close-btn:hover{color:#0f172a}
+.modal-footer{padding:14px 24px;border-top:1px solid var(--card-borda);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:var(--card-bg)}
+.close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--texto-leve);margin-top:2px}
+.close-btn:hover{color:var(--sidebar-bg)}
 .detail-section{margin-bottom:20px}
-.detail-section h3{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1C1C2E}
+.detail-section h3{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bg)}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.detail-item label{display:block;font-size:10.5px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.detail-item span{font-size:14px;font-weight:600;color:#0f172a}
+.detail-item label{display:block;font-size:10.5px;color:var(--texto-leve);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.detail-item span{font-size:14px;font-weight:600;color:var(--sidebar-bg)}
 
 /* ATUALIZAR PROGRESSO */
 .update-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:18px}
-.update-box h4{font-size:13px;font-weight:700;color:#1d4ed8;margin-bottom:10px}
+.update-box h4{font-size:13px;font-weight:700;color:var(--azul-dark);margin-bottom:10px}
 
 /* TIMELINE */
 .timeline{list-style:none}
 .tl-item{display:flex;gap:10px;padding-bottom:14px;position:relative}
-.tl-item:not(:last-child)::before{content:'';position:absolute;left:10px;top:22px;bottom:0;width:2px;background:#1C1C2E}
-.tl-dot{width:22px;height:22px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px;color:#1d4ed8;font-weight:800}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:10px;top:22px;bottom:0;width:2px;background:var(--bg)}
+.tl-dot{width:22px;height:22px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px;color:var(--azul-dark);font-weight:800}
 .tl-dot.up{background:#dcfce7;color:#16a34a}
 .tl-dot.down{background:#fee2e2;color:#FF5C5C}
-.tl-acao{font-size:13px;font-weight:600;color:#0f172a}
+.tl-acao{font-size:13px;font-weight:600;color:var(--sidebar-bg)}
 .tl-desc{font-size:12px;color:#64748b;margin-top:1px}
-.tl-data{font-size:11px;color:#94a3b8;margin-top:2px}
+.tl-data{font-size:11px;color:var(--texto-leve);margin-top:2px}
 .tl-delta{font-size:11.5px;font-weight:700;margin-top:2px}
 .tl-delta.pos{color:#16a34a}
 .tl-delta.neg{color:#FF5C5C}
@@ -166,22 +173,22 @@ select.filter-sel{padding:8px 12px;border:1px solid #3A3A5C;border-radius:8px;fo
 .form-full{grid-column:1/-1}
 .form-group{display:flex;flex-direction:column;gap:4px}
 .form-group label{font-size:11.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
-.form-group input,.form-group select,.form-group textarea{padding:8px 11px;border:1px solid #3A3A5C;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit}
-.form-group input:focus,.form-group select:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+.form-group input,.form-group select,.form-group textarea{padding:8px 11px;border:1px solid var(--card-borda);border-radius:8px;font-size:13.5px;outline:none;font-family:inherit}
+.form-group input:focus,.form-group select:focus{border-color:var(--azul-dark);box-shadow:0 0 0 3px rgba(29,78,216,.08)}
 .form-group textarea{resize:vertical;min-height:60px}
 
 /* LOGIN */
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1C1C2E;width:100%}
-.login-card{background:#252540;border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);width:100%}
+.login-card{background:var(--card-bg);border-radius:16px;padding:40px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
 .login-logo{text-align:center;margin-bottom:28px}
-.login-logo h2{font-size:22px;font-weight:800;color:#0f172a;margin-top:10px}
+.login-logo h2{font-size:22px;font-weight:800;color:var(--sidebar-bg);margin-top:10px}
 .login-err{background:#fee2e2;color:#FF5C5C;border-radius:8px;padding:10px;font-size:13px;margin-bottom:14px}
-.empty-state{text-align:center;padding:50px 20px;color:#94a3b8}
+.empty-state{text-align:center;padding:50px 20px;color:var(--texto-leve)}
 .empty-icon{font-size:44px;margin-bottom:10px}
 
 /* NOVA META MODAL */
 .nova-meta-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px}
-.nova-meta-modal{background:#252540;border-radius:16px;width:100%;max-width:660px;max-height:88vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
+.nova-meta-modal{background:var(--card-bg);border-radius:16px;width:100%;max-width:660px;max-height:88vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.2)}
 </style>
 </head>
 <body>
@@ -279,7 +286,7 @@ function Login({onLogin}) {
             <div className="form-group" style={{marginBottom:20}}><label>Senha</label><input type="password" value={s} onChange={e=>setS(e.target.value)} required/></div>
             <button type="submit" className="btn btn-primary" style={{width:'100%',padding:11}} disabled={l}>{l?'Entrando...':'Entrar'}</button>
         </form>
-        <div style={{textAlign:'center',marginTop:16,fontSize:12,color:'#94a3b8'}}>Demo: admin / admin123</div>
+        <div style={{textAlign:'center',marginTop:16,fontSize:12,color:'var(--texto-leve)'}}>Demo: admin / admin123</div>
     </div></div>;
 }
 
@@ -301,7 +308,7 @@ function Sidebar({usuario,onLogout}){
         </nav>
         <div className="sidebar-footer">
             <div className="user-chip"><div className="ua">{ini}</div>
-                <div><div style={{fontSize:12,color:'#e2e8f0',fontWeight:600}}>{usuario?.nome}</div><div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
+                <div><div style={{fontSize:12,color:'var(--card-borda)',fontWeight:600}}>{usuario?.nome}</div><div style={{fontSize:11,color:'#64748b'}}>{usuario?.perfil}</div></div>
             </div>
             <button onClick={onLogout} style={{marginTop:10,background:'none',border:'none',color:'#64748b',fontSize:12,cursor:'pointer',padding:0}}>Sair →</button>
         </div>
@@ -360,7 +367,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
                         <span className={'pill pill-'+d.prioridade}>{d.prioridade}</span>
                         <span className={'pill pill-'+d.status}>{d.status.replace('_',' ')}</span>
                     </div>
-                    <h2 style={{fontSize:17,fontWeight:800,color:'#0f172a',lineHeight:1.3}}>{d.titulo}</h2>
+                    <h2 style={{fontSize:17,fontWeight:800,color:'var(--sidebar-bg)',lineHeight:1.3}}>{d.titulo}</h2>
                     {d.atleta_nome && <div style={{fontSize:12,color:'#64748b',marginTop:3}}>⚽ {d.atleta_nome}{d.atleta_guerra?' "'+d.atleta_guerra+'"':''}</div>}
                 </div>
                 <button className="close-btn" onClick={onClose}>✕</button>
@@ -377,10 +384,10 @@ function ModalMeta({meta, onClose, onAtualizar}){
                         </div>
                         <div style={{fontSize:28,fontWeight:900}} className={getPctClass(pct)}>{pct}%</div>
                     </div>
-                    <div style={{height:14,background:'#e2e8f0',borderRadius:100,overflow:'hidden'}}>
+                    <div style={{height:14,background:'var(--card-borda)',borderRadius:100,overflow:'hidden'}}>
                         <div className={getFillClass(pct,d.status)} style={{width:pct+'%',height:'100%',borderRadius:100,transition:'width .8s ease'}}/>
                     </div>
-                    <div style={{display:'flex',justifyContent:'space-between',marginTop:8,fontSize:11.5,color:'#94a3b8'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',marginTop:8,fontSize:11.5,color:'var(--texto-leve)'}}>
                         <span>📅 {fmtData(d.data_inicio)} → {fmtData(d.data_fim)}</span>
                         {d.dias_restantes>0
                             ? <span className={'dias-badge '+ getDiasClass(d.dias_restantes)}>{d.dias_restantes} dias restantes</span>
@@ -422,7 +429,7 @@ function ModalMeta({meta, onClose, onAtualizar}){
                 <div className="detail-section">
                     <h3>📅 Histórico de Atualizações ({detalhe?.historico?.length||0})</h3>
                     {!detalhe?.historico?.length
-                        ? <div style={{color:'#94a3b8',fontSize:13,padding:'12px 0'}}>Nenhuma atualização registrada ainda.</div>
+                        ? <div style={{color:'var(--texto-leve)',fontSize:13,padding:'12px 0'}}>Nenhuma atualização registrada ainda.</div>
                         : <ul className="timeline">
                             {detalhe.historico.map(h=>{
                                 const delta = (h.valor_novo||0)-(h.valor_anterior||0);
@@ -549,7 +556,7 @@ function ModuloMetas({usuario}){
                 <button className={'filter-btn tipo-esportiva'+(filtroTipo==='esportiva'?' active':'')} onClick={()=>setFiltroTipo('esportiva')}>🏆 Esportivas</button>
                 <button className={'filter-btn tipo-financeira'+(filtroTipo==='financeira'?' active':'')} onClick={()=>setFiltroTipo('financeira')}>💰 Financeiras</button>
                 <button className={'filter-btn tipo-institucional'+(filtroTipo==='institucional'?' active':'')} onClick={()=>setFiltroTipo('institucional')}>🌱 Institucionais</button>
-                <div style={{width:1,background:'#e2e8f0',height:30,margin:'0 4px'}}/>
+                <div style={{width:1,background:'var(--card-borda)',height:30,margin:'0 4px'}}/>
                 <select className="filter-sel" value={filtroStatus} onChange={e=>setFiltroStatus(e.target.value)}>
                     <option value="">Todos os status</option>
                     <option value="ativa">Ativas</option>
@@ -558,18 +565,18 @@ function ModuloMetas({usuario}){
                 </select>
                 <input className="search-input" placeholder="Buscar meta..." value={busca} onChange={e=>setBusca(e.target.value)}/>
                 {(busca||filtroStatus!=='ativa')&&<button className="btn-ghost" onClick={()=>{setBusca('');setFiltroStatus('ativa');}}>✕ Limpar</button>}
-                <div style={{marginLeft:'auto',fontSize:13,color:'#94a3b8'}}>{metas.length} meta{metas.length!==1?'s':''}</div>
+                <div style={{marginLeft:'auto',fontSize:13,color:'var(--texto-leve)'}}>{metas.length} meta{metas.length!==1?'s':''}</div>
             </div>
 
             {loading ? (
-                <div style={{textAlign:'center',padding:'60px',color:'#94a3b8'}}>Carregando...</div>
+                <div style={{textAlign:'center',padding:'60px',color:'var(--texto-leve)'}}>Carregando...</div>
             ) : metas.length===0 ? (
                 <div className="empty-state"><div className="empty-icon">🎯</div><p>Nenhuma meta encontrada.</p></div>
             ) : (
                 grupos.map(g => <div key={g.tipo} style={{marginBottom:28}}>
-                    <div style={{fontSize:15,fontWeight:800,color:'#0f172a',marginBottom:14,display:'flex',alignItems:'center',gap:8}}>
+                    <div style={{fontSize:15,fontWeight:800,color:'var(--sidebar-bg)',marginBottom:14,display:'flex',alignItems:'center',gap:8}}>
                         {g.label}
-                        <span style={{fontSize:12,fontWeight:600,color:'#94a3b8',background:'#f1f5f9',padding:'2px 8px',borderRadius:100}}>{g.metas.length}</span>
+                        <span style={{fontSize:12,fontWeight:600,color:'var(--texto-leve)',background:'#f1f5f9',padding:'2px 8px',borderRadius:100}}>{g.metas.length}</span>
                     </div>
                     <div className="metas-grid">
                         {g.metas.map(m=>{
