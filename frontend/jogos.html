@@ -360,7 +360,7 @@ function ModalJogo({ jogoId, onClose }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch(`/api/jogos/${jogoId}`)
+    apiFetch(`/jogos/${jogoId}`)
       .catch(() => DEMO_DETALHE)
       .then(d => { setDados(d); setLoading(false); });
   }, [jogoId]);
@@ -633,7 +633,7 @@ function ModalNovoJogo({ onClose, onSave }) {
     if (!form.adversario || !form.data_jogo) return;
     setSaving(true);
     try {
-      await apiFetch('/api/jogos', { method:'POST', body: JSON.stringify(form) });
+      await apiFetch('/jogos', { method:'POST', body: JSON.stringify(form) });
       onSave();
     } catch(e) {
       // demo: simula sucesso
@@ -739,8 +739,8 @@ function App() {
     if (busca)        params.set('busca', busca);
 
     Promise.all([
-      apiFetch('/api/jogos/resumo').catch(() => ({ dados: DEMO_RESUMO })),
-      apiFetch('/api/jogos?' + params).catch(() => ({ dados: DEMO_JOGOS }))
+      apiFetch('/jogos/resumo').catch(() => ({ dados: DEMO_RESUMO })),
+      apiFetch('/jogos?' + params).catch(() => ({ dados: DEMO_JOGOS }))
     ]).then(([r, j]) => {
       setResumo(r.dados || DEMO_RESUMO);
       setJogos(j.dados || DEMO_JOGOS);
