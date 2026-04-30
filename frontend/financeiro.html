@@ -609,28 +609,50 @@ function gerarFolhaMensal(atletasArr, mesRef){
 
 // ── Módulo Financeiro ─────────────────────────────────────────
 function ModuloFinanceiro(){
-const [lancamentos, setLancamentos] = useState([]);
-  const [resumo]    = useState(DEMO_RESUMO);
-  const [fluxo]     = useState(DEMO_FLUXO);
-  const [categorias]= useState(DEMO_CATEGORIAS);
-  const [centros]   = useState(DEMO_CENTROS);
-  const [contas]    = useState(DEMO_CONTAS);
+  const [lancamentos, setLancamentos] = useState(DEMO_LANCAMENTOS);
+  const [resumo,      setResumo]      = useState(DEMO_RESUMO);
+  const [fluxo,       setFluxo]       = useState(DEMO_FLUXO);
+  const [categorias,  setCategorias]  = useState(DEMO_CATEGORIAS);
+  const [centros,     setCentros]     = useState(DEMO_CENTROS);
+  const [contas,      setContas]      = useState(DEMO_CONTAS);
+  const [carregando,  setCarregando]  = useState(false);
 
-useEffect(()=>{
-  async function carregar(){
-    try{
-      const d = await apiFetch('/financeiro/lancamentos?limit=500');
-      if(d.lancamentos) setLancamentos(d.lancamentos);
-      const cats = await apiFetch('/financeiro/categorias');
-      if(cats.categorias) setCategorias(cats.categorias);
-      const cc = await apiFetch('/financeiro/centros-custo');
-      if(cc.centros_custo) setCentros(cc.centros_custo);
-      const cb = await apiFetch('/financeiro/contas-bancarias');
-      if(cb.contas_bancarias) setContas(cb.contas_bancarias);
-    }catch(e){ console.error('[Financeiro] Erro ao carregar dados:', e.message); }
-  }
-  carregar();
-},[]);
+  // ── Carregar dados reais da API (fallback para DEMO em caso de erro) ──
+  useEffect(()=>{
+    let ativo = true;
+    async function carregar(){
+      setCarregando(true);
+      try{
+        const [rLanc, rRes, rCats, rCentros, rContas] = await Promise.allSettled([
+          apiFetch('/financeiro/lancamentos?limite=200'),
+          apiFetch('/financeiro/resumo'),
+          apiFetch('/financeiro/categorias'),
+          apiFetch('/financeiro/centros-custo'),
+          apiFetch('/financeiro/contas-bancarias'),
+        ]);
+        if(!ativo) return;
+        if(rLanc.status==='fulfilled' && Array.isArray(rLanc.value.dados) && rLanc.value.dados.length){
+          setLancamentos(rLanc.value.dados);
+        } else {
+          try{
+            const d=new Date(); const mesRef=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+            const raw=localStorage.getItem('erp_atletas');
+            if(raw){ const novos=gerarFolhaMensal(JSON.parse(raw),mesRef); setLancamentos([...novos,...DEMO_LANCAMENTOS]); }
+          }catch(e){}
+        }
+        if(rRes.status==='fulfilled' && rRes.value && rRes.value.mes_atual) setResumo(rRes.value);
+        if(rCats.status==='fulfilled' && Array.isArray(rCats.value) && rCats.value.length) setCategorias(rCats.value);
+        if(rCentros.status==='fulfilled' && Array.isArray(rCentros.value) && rCentros.value.length) setCentros(rCentros.value);
+        if(rContas.status==='fulfilled' && Array.isArray(rContas.value) && rContas.value.length) setContas(rContas.value);
+      }catch(e){
+        console.warn('[Financeiro] usando dados demo:', e.message);
+      }finally{
+        if(ativo) setCarregando(false);
+      }
+    }
+    carregar();
+    return ()=>{ ativo=false; };
+  },[]);
   const [filtroTipo,   setFiltroTipo]   = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroCat,    setFiltroCat]    = useState('');
@@ -893,7 +915,7 @@ useEffect(()=>{
     const okStatus = !filtroStatus || l.status===filtroStatus;
     const okCat    = !filtroCat    || l.categoria===categorias.find(c=>c.id==filtroCat)?.nome;
     return okBusca&&okTipo&&okStatus&&okCat;
-  }).sort((a,b)=>b.data_competencia.localeCompare(a.data_competencia));
+  }).sort((a,b)=>(b.data_competencia||"").localeCompare(a.data_competencia||""));
 
   const totalPags = Math.ceil(filtrados.length/LIMITE);
   const paginados = filtrados.slice((pagina-1)*LIMITE, pagina*LIMITE);
