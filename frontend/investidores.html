@@ -349,6 +349,27 @@ function EquityBar({ investidores, equityTotal }) {
 // ============================================================
 function ModalInvestidor({ inv, onClose, onAtualizar }) {
     const [detalhe, setDetalhe] = useState(null);
+    const [modalCadInv, setModalCadInv] = useState(false);
+    const [salvandoInv, setSalvandoInv] = useState(false);
+    const [formInv, setFormInv] = useState({
+        nome:'', nome_fantasia:'', tipo:'pessoa_fisica', perfil:'socio',
+        cpf_cnpj:'', email:'', telefone:'', percentual_participacao:'', observacoes:''
+    });
+
+    const salvarInvestidor = async () => {
+        if (!formInv.nome || !formInv.perfil) { alert('Nome e perfil são obrigatórios.'); return; }
+        setSalvandoInv(true);
+        try {
+            const payload = { ...formInv,
+                percentual_participacao: formInv.percentual_participacao ? parseFloat(formInv.percentual_participacao) : 0 };
+            await apiFetch('/investidores', { method:'POST', body: JSON.stringify(payload) });
+            setModalCadInv(false);
+            setFormInv({ nome:'', nome_fantasia:'', tipo:'pessoa_fisica', perfil:'socio',
+                cpf_cnpj:'', email:'', telefone:'', percentual_participacao:'', observacoes:'' });
+            await carregar();
+        } catch(e) { alert('Erro: ' + (e.message||'verifique a conexão')); }
+        finally { setSalvandoInv(false); }
+    };
     const [aba, setAba] = useState('perfil');
     const [showNovoAporte, setShowNovoAporte] = useState(false);
     const [novoAp, setNovoAp] = useState({ tipo:'aporte_capital', descricao:'', valor:'', data_aporte:new Date().toISOString().split('T')[0], percentual_concedido:'', taxa_juros_anual:'', data_vencimento:'', contrapartida:'', observacoes:'', competencia:'' });
@@ -611,7 +632,7 @@ function ModuloInvestidores({ usuario }) {
     return <>
         <div className="topbar">
             <div><h1>💼 Investidores & Aportes</h1><div className="topbar-sub">Sócios, patrocinadores, empréstimos e dividendos</div></div>
-            <button className="btn btn-primary">+ Cadastrar Investidor</button>
+            <button className="btn btn-primary" onClick={()=>setModalCadInv(true)}>+ Cadastrar Investidor</button>
         </div>
         <div className="content">
             {/* KPIs */}
@@ -698,6 +719,43 @@ function ModuloInvestidores({ usuario }) {
         </div>
 
         {detalhe && <ModalInvestidor inv={detalhe} onClose={()=>setDetalhe(null)} onAtualizar={carregar}/>}
+
+        {modalCadInv && <div className="modal-overlay" onClick={()=>setModalCadInv(false)}>
+          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:500}}>
+            <div className="modal-header"><span>Cadastrar Investidor</span><button onClick={()=>setModalCadInv(false)}>✕</button></div>
+            <div className="modal-body" style={{maxHeight:'70vh',overflowY:'auto'}}>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+                <div style={{gridColumn:'1/-1'}}><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Nome / Razão Social *</label>
+                  <input className="form-input" value={formInv.nome} onChange={e=>setFormInv(p=>({...p,nome:e.target.value}))} placeholder="Ex: Roberto Andrade Menezes"/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Nome Fantasia</label>
+                  <input className="form-input" value={formInv.nome_fantasia} onChange={e=>setFormInv(p=>({...p,nome_fantasia:e.target.value}))} placeholder="Opcional"/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Tipo *</label>
+                  <select className="form-input" value={formInv.tipo} onChange={e=>setFormInv(p=>({...p,tipo:e.target.value}))}>
+                    <option value="pessoa_fisica">Pessoa Física</option><option value="pessoa_juridica">Pessoa Jurídica</option>
+                  </select></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Perfil *</label>
+                  <select className="form-input" value={formInv.perfil} onChange={e=>setFormInv(p=>({...p,perfil:e.target.value}))}>
+                    <option value="socio">Sócio</option><option value="investidor">Investidor</option>
+                    <option value="patrocinador">Patrocinador</option><option value="mecenatismo">Mecenato</option>
+                  </select></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>CPF / CNPJ</label>
+                  <input className="form-input" value={formInv.cpf_cnpj} onChange={e=>setFormInv(p=>({...p,cpf_cnpj:e.target.value}))} placeholder="000.000.000-00"/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Participação (%)</label>
+                  <input className="form-input" type="number" step="0.01" value={formInv.percentual_participacao} onChange={e=>setFormInv(p=>({...p,percentual_participacao:e.target.value}))} placeholder="Ex: 25"/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>E-mail</label>
+                  <input className="form-input" type="email" value={formInv.email} onChange={e=>setFormInv(p=>({...p,email:e.target.value}))} placeholder="email@exemplo.com"/></div>
+                <div><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Telefone</label>
+                  <input className="form-input" value={formInv.telefone} onChange={e=>setFormInv(p=>({...p,telefone:e.target.value}))} placeholder="(11) 99999-9999"/></div>
+                <div style={{gridColumn:'1/-1'}}><label style={{fontSize:12,color:'var(--texto-leve)',marginBottom:4,display:'block'}}>Observações</label>
+                  <textarea className="form-input" rows={3} value={formInv.observacoes} onChange={e=>setFormInv(p=>({...p,observacoes:e.target.value}))} style={{resize:'vertical'}}/></div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={()=>setModalCadInv(false)}>Cancelar</button>
+              <button className="btn btn-primary" disabled={salvandoInv} onClick={salvarInvestidor}>{salvandoInv?'Salvando...':'Cadastrar Investidor'}</button>
+            </div>
+          </div>
+        </div>}
     </>;
 }
 
