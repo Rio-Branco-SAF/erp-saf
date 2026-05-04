@@ -1362,13 +1362,15 @@ function App(){
   if(!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
 
   const navItems=[
-    {id:'funcionarios',icon:'👥',label:'Funcionários',href:'index.html'},
+    {id:'funcionarios',icon:'👥',label:'Funcionários',      href:'index.html'},
     {id:'financeiro',  icon:'💰',label:'Financeiro'},
-    {id:'pedidos',     icon:'🛒',label:'Pedidos de Compra',disabled:true},
-    {id:'atletas',     icon:'⚽',label:'Contratos de Atletas',disabled:true},
-    {id:'investidores',icon:'📈',label:'Investidores',disabled:true},
-    {id:'metas',       icon:'🎯',label:'Metas',disabled:true},
-    {id:'relatorios',  icon:'📊',label:'Relatórios',disabled:true},
+    {id:'pedidos',     icon:'🛒',label:'Pedidos de Compra', href:'pedidos.html'},
+    {id:'atletas',     icon:'⚽',label:'Atletas',            href:'atletas.html'},
+    {id:'investidores',icon:'📈',label:'Investidores',       href:'investidores.html'},
+    {id:'metas',       icon:'🎯',label:'Metas',              href:'metas.html'},
+    {id:'relatorios',  icon:'📊',label:'Relatórios',         href:'relatorios.html'},
+    {id:'jogos',       icon:'🏆',label:'Jogos / Agenda',     href:'jogos.html'},
+    {id:'prospeccao',  icon:'🔭',label:'Prospecção',         href:'prospeccao.html'},
   ];
 
   return(
