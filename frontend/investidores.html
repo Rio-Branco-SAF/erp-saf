@@ -309,8 +309,10 @@ function Sidebar({ usuario, onLogout }) {
             <div className="nav-item" onClick={()=>window.location.href='pedidos.html'}><span className="icon">🛒</span> Pedidos de Compra</div>
             <div className="nav-item" onClick={()=>window.location.href='atletas.html'}><span className="icon">⚽</span> Atletas</div>
             <div className="nav-item active"><span className="icon">💼</span> Investidores</div>
-            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">🎯</span> Metas</div>
-            <div className="nav-item" style={{opacity:.4,cursor:'not-allowed'}}><span className="icon">📊</span> Relatórios</div>
+            <div className="nav-item" onClick={()=>window.location.href='metas.html'}><span className="icon">🎯</span> Metas</div>
+            <div className="nav-item" onClick={()=>window.location.href='relatorios.html'}><span className="icon">📊</span> Relatórios</div>
+            <div className="nav-item" onClick={()=>window.location.href='jogos.html'}><span className="icon">🏆</span> Jogos / Agenda</div>
+            <div className="nav-item" onClick={()=>window.location.href='prospeccao.html'}><span className="icon">🔭</span> Prospecção</div>
         </nav>
         <div className="sidebar-footer">
             <div className="user-chip"><div className="ua">{ini}</div>
