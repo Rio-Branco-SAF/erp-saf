@@ -160,7 +160,7 @@
 const { useState, useEffect, useCallback } = React;
 
 // ─── Config ────────────────────────────────────────────────────
-const API_URL = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001';
+const API_URL = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api';
 async function apiFetch(path, opts = {}) {
   const token = localStorage.getItem('erp_access');
   const res = await fetch(API_URL + path, {
