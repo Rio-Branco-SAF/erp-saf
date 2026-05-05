@@ -45,4 +45,4 @@ VALUES
 -- Senha: Admin@SAF2026 (troque imediatamente em produção!)
 -- Hash gerado com bcrypt (12 rounds)
 INSERT INTO usuarios (funcionario_id, email, senha_hash, perfil)
-VALUES (1, 'ceo@saf.com.br', '$2b$12$placeholder_hash_troque_em_producao', 'admin');
+VALUES (1, 'ceo@saf.com.br', '$2b$12$oURfm9PrxyADroBRZDsdFu/RYVUFVK0FHCI0pW8QHfqcMNx.3wmLW', 'admin');
