@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projetos / Kanban — ERP SAF</title>
+  <script src="config.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg:          #0f172a;
+      --sidebar-bg:  #0f172a;
+      --card-bg:     #1e293b;
+      --card-borda:  #334155;
+      --input-bg:    #1e293b;
+      --verde:       #22C55E;
+      --verde-med:   #16A34A;
+      --azul:        #3B82F6;
+      --azul-dark:   #1d4ed8;
+      --amarelo:     #F59E0B;
+      --vermelho:    #EF4444;
+      --roxo:        #8B5CF6;
+      --texto:       #e2e8f0;
+      --texto-sub:   #94a3b8;
+      --borda:       #334155;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--texto);min-height:100vh}
+    .layout{display:flex;min-height:100vh}
+    /* ── Sidebar ── */
+    .sidebar{width:220px;background:var(--sidebar-bg);border-right:1px solid var(--borda);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+    .sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:#e2e8f0;border-bottom:1px solid var(--borda)}
+    .sidebar-logo span{color:#f59e0b}
+    .sidebar nav{flex:1;padding:12px 0;overflow-y:auto}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s;color:var(--texto-sub)}
+    .nav-item:hover{background:#1e293b;color:var(--texto)}
+    .nav-item.active{background:var(--azul-dark);color:#fff}
+    .nav-item .icon{font-size:16px;width:20px;text-align:center}
+    .sidebar-footer{padding:14px 16px;border-top:1px solid var(--borda)}
+    /* ── Main ── */
+    .main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+    /* ── Header ── */
+    .header{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .header-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .page-title{font-size:22px;font-weight:700;color:var(--texto)}
+    .project-select{background:var(--card-bg);border:1px solid var(--borda);color:var(--texto);padding:7px 12px;border-radius:8px;font-size:13px;cursor:pointer;min-width:200px}
+    .project-select:focus{outline:none;border-color:var(--azul)}
+    .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:var(--azul);color:#fff}
+    .btn-primary:hover{background:var(--azul-dark)}
+    .btn-success{background:var(--verde);color:#fff}
+    .btn-success:hover{background:var(--verde-med)}
+    .btn-ghost{background:transparent;color:var(--texto-sub);border:1px solid var(--borda)}
+    .btn-ghost:hover{background:var(--card-bg);color:var(--texto)}
+    .btn-danger{background:#7f1d1d;color:#fca5a5}
+    .btn-danger:hover{background:#991b1b}
+    /* ── Kanban ── */
+    .kanban-wrap{padding:20px 24px;overflow-x:auto;flex:1}
+    .kanban-board{display:grid;grid-template-columns:repeat(4,minmax(260px,1fr));gap:16px;min-width:1040px}
+    .kanban-col{background:var(--card-bg);border:1px solid var(--borda);border-radius:12px;display:flex;flex-direction:column;max-height:calc(100vh - 130px)}
+    .col-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--borda);flex-shrink:0}
+    .col-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+    .col-count{background:#334155;color:var(--texto-sub);font-size:11px;font-weight:700;padding:2px 7px;border-radius:12px}
+    .col-body{padding:12px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:10px}
+    /* ── Cards ── */
+    .task-card{background:#0f172a;border:1px solid var(--borda);border-radius:10px;padding:12px;cursor:pointer;transition:.15s}
+    .task-card:hover{border-color:var(--azul);transform:translateY(-1px)}
+    .task-card.dragging{opacity:.5}
+    .card-title{font-size:13.5px;font-weight:600;color:var(--texto);margin-bottom:6px;line-height:1.4}
+    .card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+    .badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;text-transform:uppercase}
+    .badge-urgente{background:#7f1d1d;color:#fca5a5}
+    .badge-alta{background:#7c2d12;color:#fdba74}
+    .badge-media{background:#1c3a5e;color:#93c5fd}
+    .badge-baixa{background:#14532d;color:#86efac}
+    .card-footer{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--texto-sub)}
+    .card-footer .prazo{display:flex;align-items:center;gap:4px}
+    .prazo.vencido{color:#ef4444}
+    .avatar{width:22px;height:22px;border-radius:50%;background:var(--azul-dark);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center}
+    .btn-add-card{width:100%;background:transparent;border:1px dashed var(--borda);color:var(--texto-sub);padding:8px;border-radius:8px;cursor:pointer;font-size:12px;transition:.15s;margin-top:4px}
+    .btn-add-card:hover{background:var(--card-bg);color:var(--texto);border-color:var(--azul)}
+    /* ── Empty state ── */
+    .empty-state{text-align:center;padding:60px 24px;color:var(--texto-sub)}
+    .empty-state .icon{font-size:48px;margin-bottom:12px}
+    /* ── Modal ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+    .modal{background:#1e293b;border:1px solid var(--borda);border-radius:14px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+    .modal-header{padding:20px 24px;border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:space-between}
+    .modal-title{font-size:16px;font-weight:700}
+    .modal-body{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+    .modal-footer{padding:16px 24px;border-top:1px solid var(--borda);display:flex;justify-content:flex-end;gap:10px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-label{font-size:12px;font-weight:600;color:var(--texto-sub)}
+    .form-input,.form-select,.form-textarea{background:var(--bg);border:1px solid var(--borda);color:var(--texto);padding:8px 12px;border-radius:8px;font-size:13px;width:100%}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--azul)}
+    .form-textarea{resize:vertical;min-height:80px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    /* ── Login ── */
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);padding:20px}
+    .login-card{background:var(--card-bg);border:1px solid var(--borda);border-radius:16px;padding:40px;width:100%;max-width:380px}
+    .login-title{font-size:22px;font-weight:700;margin-bottom:24px;text-align:center}
+    /* ── Project cards (selector) ── */
+    .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;padding:20px 24px}
+    .project-card{background:var(--card-bg);border:1px solid var(--borda);border-radius:12px;padding:20px;cursor:pointer;transition:.15s}
+    .project-card:hover{border-color:var(--azul);transform:translateY(-2px)}
+    .project-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+    .progress-bar{height:4px;background:#334155;border-radius:2px;overflow:hidden;margin-top:10px}
+    .progress-fill{height:100%;border-radius:2px;transition:.3s}
+    /* ── Drag over ── */
+    .col-body.drag-over{background:rgba(59,130,246,.08);border-radius:8px}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+const API_URL = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api';
+let TOKEN = localStorage.getItem('erp_access');
+let USUARIO = null;
+try { USUARIO = JSON.parse(localStorage.getItem('erp_user')); } catch(e){}
+
+async function apiFetch(path, opts = {}) {
+  const res = await fetch(API_URL + path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', ...(TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {}), ...(opts.headers || {}) },
+  });
+  if (res.status === 401) { TOKEN = null; localStorage.removeItem('erp_access'); window.location.reload(); }
+  if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.erro || 'Erro ' + res.status); }
+  return res.json();
+}
+
+// ── Demo data ──────────────────────────────────────────────
+const DEMO_PROJETOS = [
+  { id:1, nome:'Pré-Temporada 2026', descricao:'Preparação física e técnica', status:'ativo', cor:'#3B82F6', total_tarefas:8, tarefas_concluidas:3 },
+  { id:2, nome:'Campanha de Marketing', descricao:'Redes sociais e patrocínios', status:'ativo', cor:'#F59E0B', total_tarefas:6, tarefas_concluidas:1 },
+  { id:3, nome:'Infraestrutura CT', descricao:'Reforma do centro de treinamento', status:'pausado', cor:'#8B5CF6', total_tarefas:12, tarefas_concluidas:5 },
+];
+const DEMO_TAREFAS = [
+  { id:1, titulo:'Definir grade de treinos', status:'a_fazer',      prioridade:'alta',    data_prazo:'2026-05-20', responsavel_nome:'Carlos Mendes' },
+  { id:2, titulo:'Exames médicos - elenco', status:'a_fazer',      prioridade:'urgente', data_prazo:'2026-05-10', responsavel_nome:'Dra. Juliana' },
+  { id:3, titulo:'Contratação preparador',  status:'em_andamento', prioridade:'media',   data_prazo:'2026-05-15', responsavel_nome:'Carlos Mendes' },
+  { id:4, titulo:'Reserva de campo externo',status:'em_andamento', prioridade:'baixa',   data_prazo:'2026-05-25', responsavel_nome:null },
+  { id:5, titulo:'Relatório físico inicial',status:'em_revisao',   prioridade:'media',   data_prazo:'2026-05-08', responsavel_nome:'Bruno Costa' },
+  { id:6, titulo:'Reunião com patrocinador', status:'concluido',   prioridade:'alta',    data_prazo:'2026-04-30', responsavel_nome:'Carlos Mendes' },
+  { id:7, titulo:'Avaliação técnica',        status:'concluido',   prioridade:'media',   data_prazo:'2026-04-28', responsavel_nome:'Marcelo Santos' },
+  { id:8, titulo:'Lista de convocados',      status:'a_fazer',     prioridade:'alta',    data_prazo:'2026-05-18', responsavel_nome:null },
+];
+
+const COLS = [
+  { id:'a_fazer',      label:'A Fazer',      color:'#64748b' },
+  { id:'em_andamento', label:'Em Andamento', color:'#3B82F6' },
+  { id:'em_revisao',   label:'Em Revisão',   color:'#F59E0B' },
+  { id:'concluido',    label:'Concluído',    color:'#22C55E' },
+];
+
+// ── Utils ──────────────────────────────────────────────────
+function fmtDate(d) {
+  if (!d) return null;
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+}
+function isVencido(d) {
+  if (!d) return false;
+  return new Date(d + 'T00:00:00') < new Date();
+}
+function initials(nome) {
+  if (!nome) return '?';
+  return nome.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+}
+
+// ── TaskCard ───────────────────────────────────────────────
+function TaskCard({ task, onEdit, onDragStart }) {
+  return (
+    <div
+      className="task-card"
+      draggable
+      onDragStart={e => onDragStart(e, task)}
+      onClick={() => onEdit(task)}
+    >
+      <div className="card-title">{task.titulo}</div>
+      <div className="card-meta">
+        <span className={`badge badge-${task.prioridade}`}>{task.prioridade}</span>
+      </div>
+      <div className="card-footer">
+        <span className={`prazo${isVencido(task.data_prazo) ? ' vencido' : ''}`}>
+          {task.data_prazo ? '📅 ' + fmtDate(task.data_prazo) : ''}
+        </span>
+        {task.responsavel_nome &&
+          <div className="avatar" title={task.responsavel_nome}>{initials(task.responsavel_nome)}</div>
+        }
+      </div>
+    </div>
+  );
+}
+
+// ── KanbanBoard ────────────────────────────────────────────
+function KanbanBoard({ projeto, usuario }) {
+  const [tarefas, setTarefas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dragOver, setDragOver]  = useState(null);
+  const [dragging, setDragging]  = useState(null);
+  const [modal, setModal] = useState(null); // null | 'new' | task obj
+  const [form, setForm]   = useState({});
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState('');
+
+  const carregar = useCallback(async () => {
+    setLoading(true);
+    try {
+      const d = await apiFetch('/projetos/' + projeto.id + '/tarefas');
+      setTarefas(d.tarefas || []);
+    } catch {
+      setTarefas(DEMO_TAREFAS);
+    } finally { setLoading(false); }
+  }, [projeto.id]);
+
+  useEffect(() => { carregar(); }, [carregar]);
+
+  // Drag & drop
+  function handleDragStart(e, task) {
+    setDragging(task);
+    e.dataTransfer.effectAllowed = 'move';
+  }
+  async function handleDrop(e, colId) {
+    e.preventDefault();
+    setDragOver(null);
+    if (!dragging || dragging.status === colId) return;
+    const prev = tarefas;
+    setTarefas(t => t.map(x => x.id === dragging.id ? {...x, status: colId} : x));
+    try {
+      await apiFetch('/projetos/tarefas/' + dragging.id, {
+        method: 'PUT',
+        body: JSON.stringify({ ...dragging, status: colId }),
+      });
+    } catch { setTarefas(prev); }
+    setDragging(null);
+  }
+
+  // Modal helpers
+  function abrirNova(colId) {
+    setForm({ status: colId, prioridade: 'media', titulo: '', data_prazo: '', responsavel_nome: '' });
+    setErro('');
+    setModal('new');
+  }
+  function abrirEditar(task) {
+    setForm({ ...task });
+    setErro('');
+    setModal(task);
+  }
+  async function salvar() {
+    if (!form.titulo?.trim()) { setErro('Título obrigatório'); return; }
+    setSalvando(true);
+    try {
+      if (modal === 'new') {
+        const d = await apiFetch('/projetos/' + projeto.id + '/tarefas', {
+          method: 'POST',
+          body: JSON.stringify({ ...form, projeto_id: projeto.id }),
+        });
+        setTarefas(t => [...t, d.tarefa]);
+      } else {
+        const d = await apiFetch('/projetos/tarefas/' + modal.id, {
+          method: 'PUT',
+          body: JSON.stringify(form),
+        });
+        setTarefas(t => t.map(x => x.id === modal.id ? d.tarefa : x));
+      }
+      setModal(null);
+    } catch(e) {
+      // demo mode
+      if (modal === 'new') {
+        setTarefas(t => [...t, { ...form, id: Date.now(), projeto_id: projeto.id }]);
+      } else {
+        setTarefas(t => t.map(x => x.id === modal.id ? { ...x, ...form } : x));
+      }
+      setModal(null);
+    } finally { setSalvando(false); }
+  }
+  async function excluir() {
+    if (!window.confirm('Excluir esta tarefa?')) return;
+    setSalvando(true);
+    try {
+      await apiFetch('/projetos/tarefas/' + modal.id, { method: 'DELETE' });
+    } catch {}
+    setTarefas(t => t.filter(x => x.id !== modal.id));
+    setModal(null);
+    setSalvando(false);
+  }
+
+  if (loading) return <div style={{padding:40,textAlign:'center',color:'#64748b'}}>Carregando tarefas…</div>;
+
+  return (
+    <>
+      <div className="kanban-board">
+        {COLS.map(col => {
+          const cards = tarefas.filter(t => t.status === col.id);
+          return (
+            <div
+              key={col.id}
+              className="kanban-col"
+              onDragOver={e => { e.preventDefault(); setDragOver(col.id); }}
+              onDragLeave={() => setDragOver(null)}
+              onDrop={e => handleDrop(e, col.id)}
+            >
+              <div className="col-header">
+                <span className="col-title" style={{color: col.color}}>{col.label}</span>
+                <span className="col-count">{cards.length}</span>
+              </div>
+              <div className={`col-body${dragOver === col.id ? ' drag-over' : ''}`}>
+                {cards.map(t => (
+                  <TaskCard key={t.id} task={t} onEdit={abrirEditar} onDragStart={handleDragStart} />
+                ))}
+                <button className="btn-add-card" onClick={() => abrirNova(col.id)}>+ Adicionar tarefa</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {modal && (
+        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(null)}>
+          <div className="modal">
+            <div className="modal-header">
+              <span className="modal-title">{modal === 'new' ? 'Nova Tarefa' : 'Editar Tarefa'}</span>
+              <button className="btn btn-ghost" style={{padding:'4px 8px'}} onClick={() => setModal(null)}>✕</button>
+            </div>
+            <div className="modal-body">
+              {erro && <div style={{background:'#7f1d1d',color:'#fca5a5',padding:'8px 12px',borderRadius:8,fontSize:13}}>{erro}</div>}
+              <div className="form-group">
+                <label className="form-label">Título *</label>
+                <input className="form-input" value={form.titulo||''} onChange={e => setForm(f=>({...f,titulo:e.target.value}))} placeholder="Descreva a tarefa..." autoFocus/>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Status</label>
+                  <select className="form-select" value={form.status||'a_fazer'} onChange={e => setForm(f=>({...f,status:e.target.value}))}>
+                    {COLS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Prioridade</label>
+                  <select className="form-select" value={form.prioridade||'media'} onChange={e => setForm(f=>({...f,prioridade:e.target.value}))}>
+                    <option value="baixa">Baixa</option>
+                    <option value="media">Média</option>
+                    <option value="alta">Alta</option>
+                    <option value="urgente">Urgente</option>
+                  </select>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Data Prazo</label>
+                  <input type="date" className="form-input" value={form.data_prazo||''} onChange={e => setForm(f=>({...f,data_prazo:e.target.value}))}/>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Responsável (nome)</label>
+                  <input className="form-input" value={form.responsavel_nome||''} onChange={e => setForm(f=>({...f,responsavel_nome:e.target.value}))} placeholder="Nome do responsável"/>
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Descrição</label>
+                <textarea className="form-textarea" value={form.descricao||''} onChange={e => setForm(f=>({...f,descricao:e.target.value}))} placeholder="Detalhes opcionais..."/>
+              </div>
+            </div>
+            <div className="modal-footer">
+              {modal !== 'new' &&
+                <button className="btn btn-danger" onClick={excluir} disabled={salvando}>🗑 Excluir</button>
+              }
+              <button className="btn btn-ghost" onClick={() => setModal(null)}>Cancelar</button>
+              <button className="btn btn-primary" onClick={salvar} disabled={salvando}>{salvando ? 'Salvando…' : 'Salvar'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ── ProjectSelector ────────────────────────────────────────
+function ProjectSelector({ onSelect, usuario }) {
+  const [projetos, setProjetos] = useState([]);
+  const [loading, setLoading]   = useState(true);
+  const [modal, setModal]       = useState(false);
+  const [form, setForm]         = useState({ nome:'', descricao:'', cor:'#3B82F6' });
+  const [salvando, setSalvando] = useState(false);
+
+  async function carregar() {
+    setLoading(true);
+    try {
+      const d = await apiFetch('/projetos');
+      setProjetos(d.projetos || []);
+    } catch {
+      setProjetos(DEMO_PROJETOS);
+    } finally { setLoading(false); }
+  }
+  useEffect(() => { carregar(); }, []);
+
+  async function criarProjeto() {
+    if (!form.nome.trim()) return;
+    setSalvando(true);
+    try {
+      const d = await apiFetch('/projetos', { method:'POST', body: JSON.stringify(form) });
+      setProjetos(p => [d.projeto, ...p]);
+      setModal(false);
+      setForm({ nome:'', descricao:'', cor:'#3B82F6' });
+    } catch {
+      setProjetos(p => [{ ...form, id: Date.now(), total_tarefas:0, tarefas_concluidas:0 }, ...p]);
+      setModal(false);
+    } finally { setSalvando(false); }
+  }
+
+  if (loading) return <div style={{padding:60,textAlign:'center',color:'#64748b'}}>Carregando projetos…</div>;
+
+  return (
+    <>
+      <div className="header">
+        <div className="header-left">
+          <span className="page-title">📋 Projetos</span>
+          <span style={{color:'#64748b',fontSize:13}}>{projetos.length} projeto{projetos.length!==1?'s':''}</span>
+        </div>
+        <button className="btn btn-success" onClick={() => setModal(true)}>＋ Novo Projeto</button>
+      </div>
+
+      {projetos.length === 0 ? (
+        <div className="empty-state">
+          <div className="icon">📋</div>
+          <div style={{fontWeight:600,fontSize:16,marginBottom:8}}>Nenhum projeto ainda</div>
+          <div style={{fontSize:13}}>Crie o primeiro projeto para começar</div>
+        </div>
+      ) : (
+        <div className="projects-grid">
+          {projetos.map(p => {
+            const pct = p.total_tarefas > 0 ? Math.round(p.tarefas_concluidas / p.total_tarefas * 100) : 0;
+            return (
+              <div key={p.id} className="project-card" onClick={() => onSelect(p)}>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}>
+                  <div className="project-dot" style={{background:p.cor}}/>
+                  <span style={{fontWeight:700,fontSize:15}}>{p.nome}</span>
+                </div>
+                {p.descricao && <div style={{fontSize:12,color:'#64748b',marginBottom:10}}>{p.descricao}</div>}
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:12,color:'#94a3b8'}}>
+                  <span>{p.total_tarefas} tarefa{p.total_tarefas!==1?'s':''}</span>
+                  <span>{pct}% concluído</span>
+                </div>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{width:pct+'%',background:p.cor}}/>
+                </div>
+                <div style={{marginTop:8,fontSize:11}}>
+                  <span style={{
+                    background: p.status==='ativo'?'#14532d':p.status==='pausado'?'#1c3a5e':'#1e293b',
+                    color: p.status==='ativo'?'#86efac':p.status==='pausado'?'#93c5fd':'#94a3b8',
+                    padding:'2px 8px',borderRadius:6,fontWeight:700,textTransform:'uppercase',fontSize:10
+                  }}>{p.status}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {modal && (
+        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+          <div className="modal">
+            <div className="modal-header">
+              <span className="modal-title">Novo Projeto</span>
+              <button className="btn btn-ghost" style={{padding:'4px 8px'}} onClick={() => setModal(false)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Nome *</label>
+                <input className="form-input" value={form.nome} onChange={e=>setForm(f=>({...f,nome:e.target.value}))} placeholder="Ex: Pré-Temporada 2027" autoFocus/>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Descrição</label>
+                <textarea className="form-textarea" value={form.descricao} onChange={e=>setForm(f=>({...f,descricao:e.target.value}))} placeholder="Objetivo do projeto..."/>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Cor</label>
+                  <input type="color" className="form-input" style={{height:40,padding:4}} value={form.cor} onChange={e=>setForm(f=>({...f,cor:e.target.value}))}/>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Prazo</label>
+                  <input type="date" className="form-input" value={form.data_fim||''} onChange={e=>setForm(f=>({...f,data_fim:e.target.value}))}/>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancelar</button>
+              <button className="btn btn-success" onClick={criarProjeto} disabled={salvando||!form.nome.trim()}>{salvando?'Criando…':'Criar Projeto'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ── Sidebar ────────────────────────────────────────────────
+function Sidebar({ usuario, onLogout }) {
+  return (
+    <div className="sidebar">
+      <div className="sidebar-logo">🏟️ ERP <span>SAF</span></div>
+      <nav>
+        <div className="nav-item" onClick={()=>window.location.href='index.html'}><span className="icon">👥</span> Funcionários</div>
+        <div className="nav-item" onClick={()=>window.location.href='financeiro.html'}><span className="icon">💰</span> Financeiro</div>
+        <div className="nav-item" onClick={()=>window.location.href='pedidos.html'}><span className="icon">🛒</span> Pedidos de Compra</div>
+        <div className="nav-item" onClick={()=>window.location.href='atletas.html'}><span className="icon">⚽</span> Atletas</div>
+        <div className="nav-item" onClick={()=>window.location.href='investidores.html'}><span className="icon">💼</span> Investidores</div>
+        <div className="nav-item" onClick={()=>window.location.href='metas.html'}><span className="icon">🎯</span> Metas</div>
+        <div className="nav-item" onClick={()=>window.location.href='relatorios.html'}><span className="icon">📊</span> Relatórios</div>
+        <div className="nav-item" onClick={()=>window.location.href='jogos.html'}><span className="icon">🏆</span> Jogos / Agenda</div>
+        <div className="nav-item" onClick={()=>window.location.href='prospeccao.html'}><span className="icon">🔭</span> Prospecção</div>
+        <div className="nav-item active"><span className="icon">📋</span> Projetos</div>
+      </nav>
+      <div className="sidebar-footer">
+        <div style={{fontSize:12,color:'#64748b',marginBottom:8}}>{usuario?.nome || usuario?.email || 'Usuário'}</div>
+        <button className="btn btn-ghost" style={{width:'100%',fontSize:12}} onClick={onLogout}>Sair</button>
+      </div>
+    </div>
+  );
+}
+
+// ── Login ──────────────────────────────────────────────────
+function Login({ onLogin }) {
+  const [email, setEmail]   = useState('');
+  const [senha, setSenha]   = useState('');
+  const [erro, setErro]     = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e) {
+    e.preventDefault();
+    setErro(''); setLoading(true);
+    try {
+      const d = await apiFetch('/auth/login', { method:'POST', body: JSON.stringify({ email, senha }) });
+      if (d?.token) {
+        TOKEN = d.token;
+        localStorage.setItem('erp_access', TOKEN);
+        localStorage.setItem('erp_user', JSON.stringify(d.usuario));
+        onLogin(d.usuario);
+      }
+    } catch(ex) {
+      setErro(ex.message || 'Credenciais inválidas');
+    } finally { setLoading(false); }
+  }
+
+  return (
+    <div className="login-wrap">
+      <div className="login-card">
+        <div className="login-title">🏟️ ERP SAF</div>
+        <form onSubmit={submit} style={{display:'flex',flexDirection:'column',gap:14}}>
+          <div className="form-group">
+            <label className="form-label">E-mail</label>
+            <input className="form-input" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="seu@saf.com.br" required/>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Senha</label>
+            <input className="form-input" type="password" value={senha} onChange={e=>setSenha(e.target.value)} placeholder="••••••••" required/>
+          </div>
+          {erro && <div style={{background:'#7f1d1d',color:'#fca5a5',padding:'8px 12px',borderRadius:8,fontSize:13}}>{erro}</div>}
+          <button className="btn btn-primary" type="submit" style={{width:'100%',justifyContent:'center',padding:'10px'}} disabled={loading}>
+            {loading ? 'Entrando…' : 'Entrar'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── App ────────────────────────────────────────────────────
+function App() {
+  const [usuario, setUsuario]     = useState(USUARIO);
+  const [projeto, setProjeto]     = useState(null);
+
+  function logout() {
+    TOKEN = null; USUARIO = null;
+    localStorage.removeItem('erp_access');
+    localStorage.removeItem('erp_user');
+    setUsuario(null);
+  }
+
+  if (!usuario) return <Login onLogin={u => setUsuario(u)}/>;
+
+  return (
+    <div className="layout">
+      <Sidebar usuario={usuario} onLogout={logout}/>
+      <div className="main">
+        {projeto ? (
+          <>
+            <div className="header">
+              <div className="header-left">
+                <button className="btn btn-ghost" onClick={() => setProjeto(null)}>← Projetos</button>
+                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                  <div style={{width:10,height:10,borderRadius:'50%',background:projeto.cor}}/>
+                  <span className="page-title">{projeto.nome}</span>
+                </div>
+              </div>
+            </div>
+            <div className="kanban-wrap">
+              <KanbanBoard projeto={projeto} usuario={usuario}/>
+            </div>
+          </>
+        ) : (
+          <ProjectSelector onSelect={setProjeto} usuario={usuario}/>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
