@@ -82,7 +82,7 @@ router.post('/:id/tarefas', async (req, res) => {
     const { titulo, descricao, epic_id, prioridade, responsavel_id, data_prazo } = req.body;
     if (!titulo) return res.status(400).json({ erro: 'Titulo obrigatorio' });
     const posR = await client.query("SELECT COALESCE(MAX(posicao),-1)+1 AS pos FROM tarefas WHERE projeto_id=$1 AND status='a_fazer'",[req.params.id]);
-    const r = await client.query('INSERT INTO tarefas (projeto_id,epic_id,titulo,descricao,prioridade,responsavel_id,data_prazo,posicao,criado_por) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *',[req.params.id,epic_id||null,titulo,descricao||null,prioridade||'media',responsavel_id||null,data_prazo||null,posR.rows[0].pos,req.usuario.id]);
+    const r = await client.query('INSERT INTO tarefas (projeto_id,epic_id,titulo,descricao,prioridade,responsavel_id,responsavel_nome,data_prazo,posicao,criado_por) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *',[req.params.id,epic_id||null,titulo,descricao||null,prioridade||'media',responsavel_id||null,responsavel_nome||null,data_prazo||null,posR.rows[0].pos,req.usuario.id]);
     const tarefa = r.rows[0];
     if (responsavel_id) {
       const uRes = await client.query('SELECT u.id FROM usuarios u JOIN funcionarios f ON f.id=u.funcionario_id WHERE f.id=$1 AND u.ativo=true LIMIT 1',[responsavel_id]);
@@ -102,7 +102,7 @@ router.put('/tarefas/:id', async (req, res) => {
     const at = await client.query('SELECT * FROM tarefas WHERE id=$1',[req.params.id]);
     if (!at.rows.length) return res.status(404).json({ erro: 'Nao encontrada' });
     const old = at.rows[0];
-    const r = await client.query("UPDATE tarefas SET titulo=COALESCE($1,titulo),descricao=COALESCE($2,descricao),epic_id=CASE WHEN $3::int IS NOT NULL THEN $3::int ELSE epic_id END,prioridade=COALESCE($4,prioridade),responsavel_id=CASE WHEN $5::int IS NOT NULL THEN $5::int ELSE responsavel_id END,data_prazo=COALESCE($6,data_prazo),status=COALESCE($7,status),posicao=COALESCE($8,posicao),data_conclusao=CASE WHEN $7='concluido' AND status<>'concluido' THEN CURRENT_DATE ELSE data_conclusao END,updated_at=NOW() WHERE id=$9 RETURNING *",[titulo,descricao,epic_id,prioridade,responsavel_id,data_prazo,status,posicao,req.params.id]);
+    const r = await client.query("UPDATE tarefas SET titulo=COALESCE($1,titulo),descricao=COALESCE($2,descricao),epic_id=CASE WHEN $3::int IS NOT NULL THEN $3::int ELSE epic_id END,prioridade=COALESCE($4,prioridade),responsavel_id=CASE WHEN $5::int IS NOT NULL THEN $5::int ELSE responsavel_id END,responsavel_nome=COALESCE($6,responsavel_nome),data_prazo=COALESCE($7,data_prazo),status=COALESCE($8,status),posicao=COALESCE($9,posicao),data_conclusao=CASE WHEN $8='concluido' AND status<>'concluido' THEN CURRENT_DATE ELSE data_conclusao END,updated_at=NOW() WHERE id=$10 RETURNING *",[titulo,descricao,epic_id,prioridade,responsavel_id,responsavel_nome,data_prazo,status,posicao,req.params.id]);
     const t = r.rows[0];
     if (responsavel_id && responsavel_id!=old.responsavel_id) {
       const uRes = await client.query('SELECT u.id FROM usuarios u JOIN funcionarios f ON f.id=u.funcionario_id WHERE f.id=$1 AND u.ativo=true LIMIT 1',[responsavel_id]);
