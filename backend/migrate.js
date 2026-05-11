@@ -19,6 +19,7 @@ const SQL_FILES = [
   'db/schema_metas.sql',
   'db/schema_importacao_extrato.sql',
   'db/schema_projetos.sql',
+  'db/schema_scout.sql',
   'db/seed.sql',
   'db/seed_atletas.sql',
   'db/seed_financeiro.sql',
