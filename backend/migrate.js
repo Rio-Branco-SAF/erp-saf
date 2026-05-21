@@ -68,4 +68,4 @@ migrate().then(() => {
 }).catch((e) => {
   console.error('[MIGRATE] Erro fatal:', e.message);
   process.exit(1);
-});
+}); 
