@@ -1,22 +1,17 @@
 // ============================================================
 // ERP SAF — Configuração de Ambiente
 //
-// ⚠️  ANTES DO DEPLOY:
-//   1. Faça deploy do backend no Railway
-//   2. Copie a URL pública gerada pelo Railway
-//   3. Substitua o valor de API_URL abaixo
-//   4. Exemplo: https://erp-saf-production.up.railway.app
-//   5. Faça commit e push → Netlify republicará automaticamente
+// Backend e frontend estão no MESMO projeto Vercel.
+// A API é exposta em /api/* via serverless function (api/index.js).
+// Por isso usamos URL relativa: sem CORS, sem subdomínio extra.
 //
-// EM DESENVOLVIMENTO: troque para http://localhost:3001
+// Em desenvolvimento local, rode o backend em http://localhost:3001
+// e troque API_URL para "http://localhost:3001/api".
 // ============================================================
 window.ERP_CONFIG = {
-  // 🔴 TROQUE ESTA URL PELA URL DO SEU BACKEND NO RAILWAY:
-  API_URL: "https://backend-production-7c51.up.railway.app/api",
+  API_URL: "/api",
 
-  // Nome da SAF (aparece na tela de login e no topo do sistema)
   NOME_SAF: "Rio Branco SAF — Sistema de Gestão",
 
-  // Versão do sistema
   VERSAO: "1.0.0",
 };

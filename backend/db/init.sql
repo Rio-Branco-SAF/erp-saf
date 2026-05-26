@@ -108,6 +108,7 @@ CREATE TABLE documentos_funcionarios (
 CREATE TABLE usuarios (
   id             SERIAL PRIMARY KEY,
   funcionario_id INTEGER      REFERENCES funcionarios(id),
+  nome           VARCHAR(150),
   email          VARCHAR(150) NOT NULL UNIQUE,
   senha_hash     VARCHAR(255) NOT NULL,
   perfil         VARCHAR(20)  NOT NULL DEFAULT 'funcionario'
@@ -128,6 +129,19 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Helper: cria trigger BEFORE UPDATE chamando atualizar_updated_at() em uma tabela
+CREATE OR REPLACE FUNCTION criar_trigger_updated_at(tabela TEXT)
+RETURNS VOID AS $func$
+BEGIN
+  EXECUTE format(
+    'DROP TRIGGER IF EXISTS trg_%I_updated_at ON %I; '
+    'CREATE TRIGGER trg_%I_updated_at BEFORE UPDATE ON %I '
+    'FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();',
+    tabela, tabela, tabela, tabela
+  );
+END;
+$func$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_funcionarios_updated_at
   BEFORE UPDATE ON funcionarios
@@ -336,6 +350,17 @@ JOIN categorias_financeiras c  ON c.id = l.categoria_id
 LEFT JOIN centros_custo cc     ON cc.id = l.centro_custo_id
 LEFT JOIN contas_bancarias cb  ON cb.id = l.conta_bancaria_id
 LEFT JOIN funcionarios f       ON f.id  = l.criado_por;
+
+-- Compat view: nome legado "transacoes" mapeado para lancamentos_financeiros
+CREATE OR REPLACE VIEW transacoes AS
+SELECT
+  id, tipo, valor, descricao, status,
+  data_competencia AS data_transacao,
+  data_competencia, data_pagamento,
+  categoria_id, centro_custo_id, conta_bancaria_id,
+  created_at, updated_at
+FROM lancamentos_financeiros;
+
 -- ============================================================
 -- MÓDULO 3: PEDIDOS DE COMPRA
 -- ERP SAF — Schema do Banco de Dados
@@ -1181,7 +1206,7 @@ SELECT
 
     -- Folha (atletas + funcionários)
     (SELECT COALESCE(SUM(salario_bruto),0)       FROM contratos_atleta  WHERE status='ativo') AS folha_atletas,
-    (SELECT COALESCE(SUM(salario_base),0)         FROM funcionarios      WHERE status='ativo') AS folha_funcionarios,
+    (SELECT COALESCE(SUM(salario),0)              FROM funcionarios      WHERE status='ativo') AS folha_funcionarios,
 
     -- Atletas
     (SELECT COUNT(*) FROM atletas WHERE status='ativo')                          AS atletas_ativos,
@@ -1247,10 +1272,10 @@ UNION ALL
 SELECT
     'funcionario'                           AS categoria,
     f.id                                    AS pessoa_id,
-    f.nome,
+    f.nome_completo                         AS nome,
     f.cargo                                 AS cargo_posicao,
-    f.salario_base                          AS salario_bruto,
-    f.salario_base                          AS salario_carteira,
+    f.salario                               AS salario_bruto,
+    f.salario                               AS salario_carteira,
     0                                       AS complemento,
     NULL                                    AS contrato_ate,
     f.status
@@ -1267,12 +1292,12 @@ SELECT
     f.id,
     f.nome,
     f.categoria,
-    COUNT(pc.id)                            AS total_pedidos,
-    COUNT(CASE WHEN pc.status='concluido' THEN 1 END) AS pedidos_concluidos,
-    COALESCE(SUM(co.valor_total), 0)        AS volume_total
+    COUNT(DISTINCT pc.id)                                                 AS total_pedidos,
+    COUNT(DISTINCT CASE WHEN pc.status='concluido' THEN pc.id END)        AS pedidos_concluidos,
+    COALESCE(SUM(co.valor_total), 0)                                      AS volume_total
 FROM fornecedores f
-LEFT JOIN pedidos_compra pc ON pc.fornecedor_id = f.id
-LEFT JOIN cotacoes co ON co.pedido_id = pc.id AND co.selecionada = TRUE
+LEFT JOIN cotacoes        co ON co.fornecedor_id = f.id AND co.status = 'selecionada'
+LEFT JOIN pedidos_compra  pc ON pc.id = co.pedido_id
 GROUP BY f.id, f.nome, f.categoria
 ORDER BY volume_total DESC;
 
@@ -1284,14 +1309,14 @@ SELECT
     ea.competicao,
     ea.temporada,
     COUNT(DISTINCT ea.atleta_id)            AS atletas,
-    SUM(ea.jogos)                           AS total_jogos,
+    SUM(ea.jogos_disputados)                           AS total_jogos,
     SUM(ea.gols)                            AS total_gols,
     SUM(ea.assistencias)                    AS total_assistencias,
-    SUM(ea.clean_sheets)                    AS total_clean_sheets,
+    SUM(ea.jogos_sem_sofrer_gol)                    AS total_clean_sheets,
     SUM(ea.cartoes_amarelos)                AS total_amarelos,
     SUM(ea.cartoes_vermelhos)               AS total_vermelhos,
-    CASE WHEN SUM(ea.jogos) > 0
-        THEN ROUND(SUM(ea.gols)::NUMERIC / SUM(ea.jogos), 2)
+    CASE WHEN SUM(ea.jogos_disputados) > 0
+        THEN ROUND(SUM(ea.gols)::NUMERIC / SUM(ea.jogos_disputados), 2)
         ELSE 0
     END                                     AS media_gols_jogo
 FROM estatisticas_atleta ea
@@ -1308,10 +1333,10 @@ SELECT
     a.posicao,
     SUM(ea.gols)                            AS total_gols,
     SUM(ea.assistencias)                    AS total_assistencias,
-    SUM(ea.jogos)                           AS total_jogos,
-    SUM(ea.clean_sheets)                    AS total_clean_sheets,
-    CASE WHEN SUM(ea.jogos) > 0
-        THEN ROUND(SUM(ea.gols)::NUMERIC / SUM(ea.jogos), 2)
+    SUM(ea.jogos_disputados)                           AS total_jogos,
+    SUM(ea.jogos_sem_sofrer_gol)                    AS total_clean_sheets,
+    CASE WHEN SUM(ea.jogos_disputados) > 0
+        THEN ROUND(SUM(ea.gols)::NUMERIC / SUM(ea.jogos_disputados), 2)
         ELSE 0
     END                                     AS media_gols
 FROM atletas a
@@ -1907,7 +1932,7 @@ VALUES
 -- 15. Alemão (Centroavante — artilheiro)
 (15, 'CT-2026-015', 'profissional', '2023-06-01', '2026-05-31', 32000.00, 7000.00, 25000.00, 15000.00,3500000.00, 'ativo', 'Artilheiro da equipe. Renovação prioritária.'),
 -- 16. Will (Emprestado)
-(16, 'CT-2026-016', 'emprestimo',   '2026-01-01', '2026-06-30', 18000.00, 5000.00, 13000.00, 0,       NULL,       'ativo', 'Cedido pelo Fortaleza. Opção de compra por R$ 3,5M.', ),
+(16, 'CT-2026-016', 'emprestimo',   '2026-01-01', '2026-06-30', 18000.00, 5000.00, 13000.00, 0,       NULL,       'ativo', 'Cedido pelo Fortaleza. Opção de compra por R$ 3,5M.'),
 -- 17. Mateuzinho (Jovem)
 (17, 'CT-2026-017', 'formacao',     '2025-06-01', '2027-05-31', 3500.00,  3500.00, 0,         0,       30000.00,   'ativo', NULL);
 

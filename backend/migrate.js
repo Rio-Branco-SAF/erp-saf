@@ -9,27 +9,16 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
+// init.sql é o schema consolidado: todas as 37 tabelas base, views, funções E todos os
+// dados-semente (departamentos, funcionários, atletas, pedidos, jogos, etc).
+// Os outros schema_*.sql e seed_*.sql foram removidos por serem duplicados; alguns também
+// estavam corrompidos (schema.sql, schema_atletas.sql).
 const SQL_FILES = [
   'db/init.sql',
-  'db/schema_pedidos.sql',
-  'db/schema_atletas.sql',
-  'db/schema_financeiro.sql',
-  'db/schema.sql',
   'db/migration_001_auth.sql',
-  'db/schema_relatorios.sql',
-  'db/schema_investidores.sql',
-  'db/schema_jogos.sql',
-  'db/schema_metas.sql',
-  'db/schema_importacao_extrato.sql',
   'db/schema_projetos.sql',
   'db/schema_scout.sql',
-  'db/seed.sql',
-  'db/seed_atletas.sql',
-  'db/seed_financeiro.sql',
-  'db/seed_investidores.sql',
-  'db/seed_jogos.sql',
-  'db/seed_metas.sql',
-  'db/seed_pedidos.sql',
+  'db/schema_importacao_extrato.sql',
 ];
 
 async function migrate() {

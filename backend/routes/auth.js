@@ -259,7 +259,7 @@ router.post('/redefinir-senha',
   }
 );
 // — POST /api/auth/primeiro-acesso —————————————————————————————
-router.post('/primeiro-acesso', autenticar, async (req, res) => {
+router.post('/primeiro-acesso', authMW, async (req, res) => {
   const { nova_senha } = req.body;
     if (!nova_senha || nova_senha.length < 8) {
         return res.status(400).json({ erro: 'A nova senha deve ter pelo menos 8 caracteres.' });

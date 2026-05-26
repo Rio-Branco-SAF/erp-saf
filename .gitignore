@@ -22,6 +22,8 @@ desktop.ini
 .idea/
 *.swp
 *.swo
+.claude/
+.vercel/
 
 # ── Build / Cache ─────────────────────────────────────────────
 dist/

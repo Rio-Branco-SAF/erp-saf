@@ -1,4 +1,6 @@
-require('dotenv').config();
+// Carrega .env do diretório do próprio backend (independe do cwd).
+// Em produção (Vercel) o .env não existe — as vars vêm do painel.
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const express = require('express');
 const helmet  = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -106,19 +108,14 @@ app.use((err, _req, res, _next) => {
 });
 
 // ============================================================
-// Inicia o servidor
+// Inicia o servidor — só quando executado diretamente (node server.js).
+// Em serverless (Vercel), o arquivo é require()d e o app é exportado.
 // ============================================================
-app.listen(PORT, () => {
-  console.log(`\n🚀 ERP SAF — Backend rodando em http://localhost:${PORT}`);
-  console.log(`📋 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Endpoints disponíveis:`);
-  console.log(`   POST   /api/auth/login`);
-  console.log(`   GET    /api/auth/me`);
-  console.log(`   GET    /api/funcionarios`);
-  console.log(`   GET    /api/funcionarios/resumo`);
-  console.log(`   GET    /api/funcionarios/:id`);
-  console.log(`   POST   /api/funcionarios`);
-  console.log(`   PUT    /api/funcionarios/:id`);
-  console.log(`   PATCH  /api/funcionarios/:id/status`);
-  console.log(`   GET    /api/funcionarios/aux/departamentos\n`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 ERP SAF — Backend rodando em http://localhost:${PORT}`);
+    console.log(`📋 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
+
+module.exports = app;
