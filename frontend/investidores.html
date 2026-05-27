@@ -612,6 +612,27 @@ function ModuloInvestidores({ usuario }) {
     const [busca, setBusca] = useState('');
     const [filtroPerfil, setFiltroPerfil] = useState('');
     const [detalhe, setDetalhe] = useState(null);
+    const [modalCadInv, setModalCadInv] = useState(false);
+    const [salvandoInv, setSalvandoInv] = useState(false);
+    const [formInv, setFormInv] = useState({
+        nome:'', nome_fantasia:'', tipo:'pessoa_fisica', perfil:'socio',
+        cpf_cnpj:'', email:'', telefone:'', percentual_participacao:'', observacoes:''
+    });
+
+    const salvarInvestidor = async () => {
+        if (!formInv.nome || !formInv.perfil) { alert('Nome e perfil são obrigatórios.'); return; }
+        setSalvandoInv(true);
+        try {
+            const payload = { ...formInv,
+                percentual_participacao: formInv.percentual_participacao ? parseFloat(formInv.percentual_participacao) : 0 };
+            await apiFetch('/investidores', { method:'POST', body: JSON.stringify(payload) });
+            setModalCadInv(false);
+            setFormInv({ nome:'', nome_fantasia:'', tipo:'pessoa_fisica', perfil:'socio',
+                cpf_cnpj:'', email:'', telefone:'', percentual_participacao:'', observacoes:'' });
+            await carregar();
+        } catch(e) { alert('Erro: ' + (e.message||'verifique a conexão')); }
+        finally { setSalvandoInv(false); }
+    };
 
     const carregar = useCallback(async () => {
         setLoading(true);

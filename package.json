@@ -21,8 +21,18 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "pg": "^8.12.0",
     "multer": "^1.4.5-lts.1",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/parser": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/standalone": "^7.29.7",
+    "@babel/traverse": "^7.29.7",
+    "jsdom": "^29.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

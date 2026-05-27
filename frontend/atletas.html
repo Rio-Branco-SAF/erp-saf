@@ -1335,6 +1335,7 @@ const [naoAutorizado, setNaoAutorizado] = React.useState(false);
 // ============================================================
 function App() {
     const [usuario, setUsuario] = useState(USUARIO);
+    const [aba, setAba] = useState('elenco');
     function handleLogout() { TOKEN=null; USUARIO=null; localStorage.removeItem('erp_access'); localStorage.removeItem('erp_user'); setUsuario(null); }
     if (!usuario) return <Login onLogin={u=>setUsuario(u)}/>;
     return <>

@@ -448,10 +448,10 @@ function ModalJogo({ jogoId, onClose }) {
                 <div style={{ background:'var(--cinza2)', borderRadius:8, padding:14 }}>
                   <div style={{ fontSize:11, color:'var(--muted)', marginBottom:6 }}>📅 DATA E LOCAL</div>
                   <div style={{ fontWeight:600 }}>{fmtDateTime(jogo.data_jogo)}</div>
-                  <div style={{ color:'var(-mmuted)', fontSize:13, marginTop:2 }}>{jogo.local_jogo || '—'}</div>
+                  <div style={{ color:'var(--muted)', fontSize:13, marginTop:2 }}>{jogo.local_jogo || '—'}</div>
                 </div>
                 <div style={{ background:'var(--cinza2)', borderRadius:8, padding:14 }}>
-                  <div style={{ fontSize:11, color:'var(-mmuted)', marginBottom:6 }}>🎪 TIPO</div>
+                  <div style={{ fontSize:11, color:'var(--muted)', marginBottom:6 }}>🎪 TIPO</div>
                   <div style={{ fontWeight:600 }}>{jogo.tipo_jogo === 'mandante' ? '🏠 Mandante' : '✈️ Visitante'}</div>
                   <div style={{ color:'var(--muted)', fontSize:13, marginTop:2 }}>
                     {jogo.transmissao_tv && '📺 TV '}{jogo.transmissao_streaming && '🔴 Streaming'}
@@ -660,7 +660,7 @@ function ModalNovoJogo({ onClose, onSave }) {
         <div className="modal-body">
           <div className="form-grid">
             <div className="form-group">
-              <label>Competição">
+              <label>Competição</label>
               <select value={form.competicao} onChange={e => set('competicao', e.target.value)}>
                 <option>Série B</option>
                 <option>Copa do Brasil</option>
@@ -670,7 +670,7 @@ function ModalNovoJogo({ onClose, onSave }) {
               </select>
             </div>
             <div className="form-group">
-              <label>EřiRodada / Fase</label>
+              <label>Rodada / Fase</label>
               <input value={form.rodada} onChange={e => set('rodada', e.target.value)} placeholder="Ex: Rodada 12, Oitavas"/>
             </div>
             <div className="form-group full">
@@ -796,7 +796,7 @@ function App() {
         <div className="kpi-card azul"><div className="kpi-label">Gols Marcados</div><div className="kpi-value">{res.gols_marcados}</div><div className="kpi-sub">vs {res.gols_sofridos} sofridos</div></div>
         <div className="kpi-card roxo"><div className="kpi-label">Público Médio</div><div className="kpi-value">{Math.round(Number(res.media_publico||0)).toLocaleString('pt-BR')}</div><div className="kpi-sub">por jogo em casa</div></div>
         <div className="kpi-card verde"><div className="kpi-label">Receita Total</div><div className="kpi-value">{fmtK(res.receita_total)}</div><div className="kpi-sub">jogos realizados</div></div>
-        <div className="kpi-card azul"><div className="kpi-label">Próximos"><div className="kpi-value">{res.proximos}</div><div className="kpi-sub">jogos na agenda</div></div>
+        <div className="kpi-card azul"><div className="kpi-label">Próximos</div><div className="kpi-value">{res.proximos}</div><div className="kpi-sub">jogos na agenda</div></div>
       </div>
 
       {/* Filtros */}
