@@ -257,7 +257,7 @@
       const email = document.getElementById('email').value.trim();
       if (!email) { showError('Digite seu e-mail para recuperar a senha.'); return; }
       try {
-        const r = await fetch(`${API}/api/auth/esqueci-senha`, {
+        const r = await fetch(`${API}/auth/esqueci-senha`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email })
@@ -285,7 +285,7 @@
       clearError();
 
       try {
-        const r = await fetch(`${API}/api/auth/login`, {
+        const r = await fetch(`${API}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, senha })
