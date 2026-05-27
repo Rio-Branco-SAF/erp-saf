@@ -296,7 +296,7 @@ function Login({onLogin}) {
 function Sidebar({usuario,onLogout}){
     const ini=initials(usuario?.nome||'U');
     return <div className="sidebar">
-        <div className="sidebar-logo">⚽ ERP <span>SAF</span></div>
+        <div className="sidebar-logo"><img src="escudo.png" alt="Rio Branco SAF" style={{height:28,width:'auto',verticalAlign:'middle',marginRight:6}}/> ERP <span>SAF</span></div>
         <nav>
             <div className="nav-item" onClick={()=>window.location.href='index.html'}><span className="icon">👥</span> Funcionários</div>
             <div className="nav-item" onClick={()=>window.location.href='financeiro.html'}><span className="icon">💰</span> Financeiro</div>
