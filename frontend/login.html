@@ -297,8 +297,8 @@
           return;
         }
 
-        // Salvar tokens
-        localStorage.setItem('erp_access',  data.access_token);
+        // Salvar tokens (backend retorna { token, refresh_token, usuario })
+        localStorage.setItem('erp_access',  data.token);
         localStorage.setItem('erp_refresh', data.refresh_token);
         localStorage.setItem('erp_user',    JSON.stringify(data.usuario));
 
