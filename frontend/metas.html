@@ -241,7 +241,7 @@ async function apiFetch(path, options={}) {
         const headers={'Content-Type':'application/json'};
         if(TOKEN) headers['Authorization']='Bearer '+TOKEN;
         const res = await fetch(API_URL+path,{...options,headers});
-        if(res.status===401){TOKEN=null;localStorage.removeItem('erp_access');window.location.reload();}
+        if(res.status===401){TOKEN=null;localStorage.removeItem('erp_access');localStorage.removeItem('erp_user');window.location.href='login.html';}
         return await res.json();
     } catch(e){return null;}
 }

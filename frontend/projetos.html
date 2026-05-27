@@ -129,7 +129,7 @@ async function apiFetch(path, opts = {}) {
     ...opts,
     headers: { 'Content-Type': 'application/json', ...(TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {}), ...(opts.headers || {}) },
   });
-  if (res.status === 401) { TOKEN = null; localStorage.removeItem('erp_access'); window.location.reload(); }
+  if (res.status === 401) { TOKEN = null; localStorage.removeItem('erp_access'); localStorage.removeItem('erp_user'); window.location.href = 'login.html'; }
   if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.erro || 'Erro ' + res.status); }
   return res.json();
 }
