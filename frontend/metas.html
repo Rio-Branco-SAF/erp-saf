@@ -37,13 +37,13 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background: var(--bg);color: var(--texto);display:flex;min-height:100vh}
-.sidebar{width:220px;background:var(--sidebar-bg);color:var(--texto-leve);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
-.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:var(--card-bg);border-bottom:1px solid var(--card-borda)}
-.sidebar-logo span{color:#f59e0b}
+.sidebar{width:220px;background:var(--sidebar-bg);color:var(--texto-leve);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;border-right:1px solid var(--card-borda)}
+.sidebar-logo{padding:20px 16px;font-size:17px;font-weight:700;color:var(--texto);border-bottom:1px solid var(--card-borda)}
+.sidebar-logo span{color:var(--dourado-vivo)}
 .sidebar nav{flex:1;padding:12px 0}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s}
-.nav-item:hover{background:var(--card-borda);color:var(--card-borda)}
-.nav-item.active{background:var(--azul-dark);color:var(--card-bg)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;transition:.15s;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(212,160,23,.08);color:var(--texto)}
+.nav-item.active{background:rgba(212,160,23,.12);color:var(--dourado-vivo);border-left-color:var(--dourado);font-weight:600}
 .nav-item .icon{font-size:16px;width:20px;text-align:center}
 .sidebar-footer{padding:14px 16px;border-top:1px solid var(--card-borda)}
 .user-chip{display:flex;align-items:center;gap:8px}
@@ -296,7 +296,7 @@ function Login({onLogin}) {
 function Sidebar({usuario,onLogout}){
     const ini=initials(usuario?.nome||'U');
     return <div className="sidebar">
-        <div className="sidebar-logo">🏟️ ERP <span>SAF</span></div>
+        <div className="sidebar-logo">⚽ ERP <span>SAF</span></div>
         <nav>
             <div className="nav-item" onClick={()=>window.location.href='index.html'}><span className="icon">👥</span> Funcionários</div>
             <div className="nav-item" onClick={()=>window.location.href='financeiro.html'}><span className="icon">💰</span> Financeiro</div>

@@ -67,8 +67,8 @@
       color: rgba(255,255,255,.65); font-size: 12px; text-decoration: none;
       transition: all .15s; border-left: 3px solid transparent; cursor: pointer;
     }
-    .nav-item:hover { background: rgba(255,255,255,.07); color: #fff; }
-    .nav-item.ativo { background: rgba(59,130,246,.15); color: #60a5fa; border-left-color: #3b82f6; font-weight: 600; }
+    .nav-item:hover { background: rgba(212,160,23,.08); color: var(--texto); }
+    .nav-item.ativo { background: rgba(212,160,23,.12); color: var(--dourado-vivo); border-left-color: var(--dourado); font-weight: 600; }
     .nav-item.disabled { opacity: .4; cursor: not-allowed; }
     .nav-item .icon { font-size: 15px; width: 18px; text-align: center; }
 
@@ -1074,10 +1074,10 @@ function App() {
       {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <div className="icon">🔭</div>
+          <div className="icon">⚽</div>
           <div>
             <div className="title">ERP SAF</div>
-            <div className="sub">Prospecção</div>
+            <div className="sub">Sistema de Gestão</div>
           </div>
         </div>
         <nav className="sidebar-nav">
