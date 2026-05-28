@@ -1464,7 +1464,7 @@ function ModuloUsuarios({ usuario: usuarioLogado }) {
 // MÓDULO PROJETOS / KANBAN
 // ============================================================
 function ModuloProjetos({ usuario }) {
-  const API = window.APP_CONFIG?.API_URL || 'http://localhost:3001';
+  const API = (window.ERP_CONFIG && window.ERP_CONFIG.API_URL) || 'http://localhost:3001/api';
   const token = localStorage.getItem('erp_access');
   const hdrs = { 'Content-Type':'application/json', Authorization:'Bearer '+token };
   const [view, setView] = useState('lista');
