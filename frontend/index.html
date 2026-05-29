@@ -845,9 +845,10 @@ const DEMO_RESUMO = {
 // MÓDULO FUNCIONÁRIOS
 // ============================================================
 function ModuloFuncionarios({ usuario }) {
-  const [funcionarios, setFuncionarios]   = useState(DEMO_FUNCIONARIOS);
-  const [resumo, setResumo]               = useState(DEMO_RESUMO);
-  const [departamentos]                   = useState(DEMO_DEPARTAMENTOS);
+  const RESUMO_VAZIO = { total:0, ativos:0, ferias:0, afastados:0, desligados:0, folha_total:0, clt:0, pj:0 };
+  const [funcionarios, setFuncionarios]   = useState([]);
+  const [resumo, setResumo]               = useState(RESUMO_VAZIO);
+  const [departamentos, setDepartamentos] = useState([]);
   const [busca, setBusca]                 = useState('');
   const [filtroDept, setFiltroDept]       = useState('');
   const [filtroTipo, setFiltroTipo]       = useState('');
@@ -855,12 +856,32 @@ function ModuloFuncionarios({ usuario }) {
   const [pagina, setPagina]               = useState(1);
   const [modalForm, setModalForm]         = useState(null);   // null | {} | funcionario
   const [modalDetalhe, setModalDetalhe]   = useState(null);
+  const [loading, setLoading]             = useState(true);
   const LIMITE = 10;
 
-  // Filtragem local (demo — em produção envia query params para a API)
+  // Carrega dados reais da API
+  async function carregar() {
+    setLoading(true);
+    try {
+      const [lista, res, depts] = await Promise.all([
+        apiFetch('/funcionarios?limite=200').catch(() => null),
+        apiFetch('/funcionarios/resumo').catch(() => null),
+        apiFetch('/funcionarios/aux/departamentos').catch(() => null),
+      ]);
+      setFuncionarios(Array.isArray(lista?.dados) ? lista.dados : (Array.isArray(lista) ? lista : []));
+      if (res && typeof res === 'object') setResumo({ ...RESUMO_VAZIO, ...res });
+      setDepartamentos(Array.isArray(depts) ? depts : (Array.isArray(depts?.dados) ? depts.dados : []));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => { carregar(); }, []);
+
+  // Filtragem local
   const filtrados = funcionarios.filter(f => {
-    const ok_busca = !busca || f.nome_completo.toLowerCase().includes(busca.toLowerCase()) ||
-                     f.cargo.toLowerCase().includes(busca.toLowerCase());
+    const ok_busca = !busca || (f.nome_completo||'').toLowerCase().includes(busca.toLowerCase()) ||
+                     (f.cargo||'').toLowerCase().includes(busca.toLowerCase());
     const ok_dept  = !filtroDept || f.departamento_id == filtroDept;
     const ok_tipo  = !filtroTipo || f.tipo_contrato === filtroTipo;
     const ok_status= !filtroStatus || f.status === filtroStatus;
@@ -873,13 +894,16 @@ function ModuloFuncionarios({ usuario }) {
   function abrirNovo() { setModalForm({}); }
   function abrirEditar(f) { setModalForm(f); setModalDetalhe(null); }
 
-  function salvar(payload, editando) {
-    if (editando) {
-      setFuncionarios(prev => prev.map(f => f.id === payload.id ? { ...f, ...payload } : f));
-    } else {
-      const novo = { ...payload, id: Date.now(), departamento: departamentos.find(d=>d.id==payload.departamento_id)?.nome || '', historico_salarios: [], anos_casa: 0 };
-      setFuncionarios(prev => [...prev, novo]);
-      setResumo(r => ({ ...r, total: r.total + 1, ativos: r.ativos + 1 }));
+  async function salvar(payload, editando) {
+    try {
+      if (editando) {
+        await apiFetch('/funcionarios/' + payload.id, { method:'PUT', body: payload });
+      } else {
+        await apiFetch('/funcionarios', { method:'POST', body: payload });
+      }
+      await carregar();
+    } catch (e) {
+      alert('Erro ao salvar: ' + (e.message || 'verifique os dados'));
     }
   }
 

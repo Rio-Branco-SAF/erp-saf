@@ -1090,7 +1090,7 @@ function ModalDetalhe({ pedido: pedidoLista, onClose, onAtualizar, usuario }) {
 // ============================================================
 function ModuloPedidos({ usuario }) {
     const [pedidos, setPedidos] = useState([]);
-    const [resumo, setResumo] = useState(DEMO_RESUMO);
+    const [resumo, setResumo] = useState({ em_aberto:0, aguardando_aprovacao:0, em_cotacao:0, concluidos_mes:0, valor_gasto_mes:0, valor_em_aberto:0 });
     const [loading, setLoading] = useState(true);
     const [busca, setBusca] = useState('');
     const [filtroStatus, setFiltroStatus] = useState('');
@@ -1114,17 +1114,13 @@ function ModuloPedidos({ usuario }) {
             apiFetch('/pedidos/resumo')
         ]);
 
-        if (dadosRes && dadosRes.pedidos) {
+        if (dadosRes && Array.isArray(dadosRes.pedidos)) {
             setPedidos(dadosRes.pedidos);
-            setTotal(dadosRes.total);
+            setTotal(dadosRes.total ?? dadosRes.pedidos.length);
         } else {
-            // DEMO
-            let filtrados = DEMO_PEDIDOS;
-            if (busca) filtrados = filtrados.filter(p => p.titulo.toLowerCase().includes(busca.toLowerCase()) || p.numero.includes(busca));
-            if (filtroStatus) filtrados = filtrados.filter(p => p.status === filtroStatus);
-            if (filtroPrio) filtrados = filtrados.filter(p => p.prioridade === filtroPrio);
-            setPedidos(filtrados.slice((pagina-1)*POR_PAGINA, pagina*POR_PAGINA));
-            setTotal(filtrados.length);
+            // API falhou — mostra vazio em vez de demo
+            setPedidos([]);
+            setTotal(0);
         }
 
         if (resumoRes && resumoRes.em_aberto !== undefined) setResumo(resumoRes);
