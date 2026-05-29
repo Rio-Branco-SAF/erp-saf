@@ -845,7 +845,7 @@ const DEMO_RESUMO = {
 // MÓDULO FUNCIONÁRIOS
 // ============================================================
 function ModuloFuncionarios({ usuario }) {
-  const RESUMO_VAZIO = { total:0, ativos:0, ferias:0, afastados:0, desligados:0, folha_total:0, clt:0, pj:0 };
+  const RESUMO_VAZIO = { total:0, ativos:0, ferias:0, afastados:0, desligados:0, folha_total:0, folha_mensal:0, clt:0, pj:0 };
   const [funcionarios, setFuncionarios]   = useState([]);
   const [resumo, setResumo]               = useState(RESUMO_VAZIO);
   const [departamentos, setDepartamentos] = useState([]);
