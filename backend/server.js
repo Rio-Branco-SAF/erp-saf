@@ -20,6 +20,7 @@ const extratoRoutes      = require('./routes/extrato');
 const projetosRoutes     = require('./routes/projetos');
 const scoutRoutes        = require('./routes/scout');
 const prospeccaoRoutes   = require('./routes/prospeccao');
+const configRoutes       = require('./routes/configuracoes');
 
 
 const app  = express();
@@ -83,6 +84,7 @@ app.use('/api/extrato',      extratoRoutes);
 app.use('/api/projetos',     projetosRoutes);
 app.use('/api/scout',        scoutRoutes);
 app.use('/api/prospeccao',  prospeccaoRoutes);
+app.use('/api/config',       configRoutes);
 const seedDemoRoutes = require('./routes/seed_demo');
 app.use('/api/seed-demo',    seedDemoRoutes);
 
