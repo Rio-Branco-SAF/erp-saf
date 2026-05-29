@@ -6,14 +6,20 @@ const { Pool } = require('pg');
 
 let pool;
 
+// IMPORTANTE: Supabase Session pooler tem limite de 15 conexões. Como o backend
+// roda como serverless function na Vercel (várias instâncias podem ser invocadas
+// simultaneamente), cada instância usa max=1 conexão pra não estourar o limite.
+// Cada request fica curto e libera rápido.
+const POOL_MAX = process.env.PG_POOL_MAX ? parseInt(process.env.PG_POOL_MAX) : 1;
+
 if (process.env.DATABASE_URL) {
-  // Produção (Railway) - URL única
+  // Produção (Supabase via pooler) - URL única
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
-    max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 5000,
+    max: POOL_MAX,
+    idleTimeoutMillis: 10000,
+    connectionTimeoutMillis: 10000,
   });
 } else {
   // Desenvolvimento local - variáveis individuais
