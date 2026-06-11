@@ -1260,11 +1260,12 @@ function ModuloUsuarios({ usuario: usuarioLogado }) {
     setLoading(true);
     try {
       const [us, fs] = await Promise.all([
-        apiFetch('/usuarios').catch(() => DEMO_USUARIOS),
-        apiFetch('/funcionarios').catch(() => []),
+        apiFetch('/usuarios').catch(() => []),
+        apiFetch('/funcionarios?limite=200').catch(() => null),
       ]);
-      setUsuarios(us);
-      setFuncionarios(fs);
+      setUsuarios(Array.isArray(us) ? us : []);
+      // /api/funcionarios retorna { dados: [...], total, pagina, ... }
+      setFuncionarios(Array.isArray(fs?.dados) ? fs.dados : (Array.isArray(fs) ? fs : []));
     } finally { setLoading(false); }
   }
 
